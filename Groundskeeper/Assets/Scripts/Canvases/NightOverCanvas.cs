@@ -6,7 +6,7 @@ using TMPro;
 
 public class NightOverCanvas : MonoBehaviour {
     [SerializeField] GameObject background;
-    [SerializeField] TextMeshProUGUI coinText, killedText;
+    [SerializeField] TextMeshProUGUI killedText;
 
     private void Awake() {
         background.SetActive(false);
@@ -14,18 +14,25 @@ public class NightOverCanvas : MonoBehaviour {
 
 
     public void show() {
-        coinText.text = "Pay: " + GameInfo.calcCoins().ToString() + "g";
         killedText.text = "Monsters Killed: " + GameInfo.monstersKilled.ToString();
 
         background.transform.localScale = Vector3.zero;
         background.SetActive(true);
         background.transform.DOScale(1.0f, .5f);
+
+        FindObjectOfType<GameBoard>().saveBoard();
+    }
+
+    public void hide() {
+        background.transform.DOScale(0.0f, .15f);
+        FindObjectOfType<HouseDoorInteractable>().isTheEnd = true;
     }
 
 
     //  buttons
     public void nextNight() {
-        GameInfo.night++;
+        GameInfo.addNights(1);
+        TimeInfo.saveTime();
         FindObjectOfType<TransitionCanvas>().loadScene("game");
     }
 }

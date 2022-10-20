@@ -9,7 +9,10 @@ public class Weapon : ScriptableObject {
     public float knockback;
     public float cooldown;
 
+    public GameInfo.MonsterType targetType;
+
     public Vector2 trailPos;
 
     public Sprite sprite;
+    public AudioClip swingSound;
 }

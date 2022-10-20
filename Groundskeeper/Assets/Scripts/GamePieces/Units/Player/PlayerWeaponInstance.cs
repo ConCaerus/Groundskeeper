@@ -5,9 +5,14 @@ using DG.Tweening;
 
 public class PlayerWeaponInstance : WeaponInstance {
     [HideInInspector]
-    [SerializeField] public bool canAttack = false;
+    [SerializeField] public bool canAttack = true;
+
+    private void Awake() {
+        canAttack = true;
+    }
+
     public override void movementLogic() {
-        if(Input.GetMouseButtonDown(0) && canAttack)
+        if(Input.GetMouseButton(0) && canAttack && transform.lossyScale.x > 0f)
             attack();
         lookAtMouse();
     }

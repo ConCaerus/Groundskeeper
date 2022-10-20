@@ -10,7 +10,8 @@ public abstract class BuildingMortal : Mortal {
 
         //  show that this got hurt
         GetComponent<SpriteRenderer>().DOKill();
-        GetComponent<SpriteRenderer>().color = Color.red;
-        GetComponent<SpriteRenderer>().DOColor(Color.white, takeTime);
+        GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, GetComponent<SpriteRenderer>().color.a);
+        GetComponent<SpriteRenderer>().DOComplete();
+        GetComponent<SpriteRenderer>().DOColor(new Color(1.0f, 1.0f, 1.0f, GetComponent<SpriteRenderer>().color.a), takeTime);
     }
 }

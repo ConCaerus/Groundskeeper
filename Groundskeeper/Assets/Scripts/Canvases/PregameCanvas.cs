@@ -7,18 +7,24 @@ using TMPro;
 
 public class PregameCanvas : MonoBehaviour {
     [SerializeField] GameObject upper, lower;
-    [SerializeField] TextMeshProUGUI coinText;
+    [SerializeField] TextMeshProUGUI soulsText;
+    [SerializeField] CircularSlider timer;
+    float prepTime = 2 * 60; // 3 mins
 
 
     private void Start() {
-        GameInfo.addCoins(100);
-        coinText.text = GameInfo.coins.ToString() + "c";
+        transform.GetChild(0).gameObject.SetActive(true);
+        soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
+        StartCoroutine(startAfterTime());
     }
 
     private void Update() {
         if(EventSystem.current.IsPointerOverGameObject()) {
             FindObjectOfType<PlacementGrid>().clear();
         }
+        soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
+
+        FindObjectOfType<PlayerWeaponInstance>().canAttack = !(mouseOverUI() || FindObjectOfType<PlacementGrid>().placing);
     }
 
     public bool mouseOverUI() {
@@ -26,15 +32,18 @@ public class PregameCanvas : MonoBehaviour {
     }
 
     public bool updateCoins(int spent) {
-        if(GameInfo.coins < spent) {
-            coinText.DOKill();
-            coinText.color = Color.red;
-            coinText.DOColor(Color.white, .5f);
+        if(GameInfo.getSouls() < spent) {
+            soulsText.DOKill();
+            soulsText.color = Color.red;
+            soulsText.DOColor(Color.white, .5f);
             return false;
         }
-        GameInfo.addCoins(-spent);
-        coinText.text = GameInfo.coins.ToString() + "c";
+        GameInfo.addSouls(-spent);
         return true;
+    }
+
+    public bool prepping() {
+        return timer.value > 0f;
     }
 
 
@@ -54,13 +63,23 @@ public class PregameCanvas : MonoBehaviour {
         hide();
     }
 
-    public void helper() {
-        //  switch to setting helpers
-        FindObjectOfType<PlacementGrid>().state = FindObjectOfType<PlacementGrid>().state == 1 ? 0 : 1;
+    public void setPlacementObj(GameObject obj) {
+        FindObjectOfType<PlacementGrid>().changePlacing(obj, obj.gameObject == FindObjectOfType<PlacementGrid>().currentObj);
     }
 
-    public void defence() {
-        //  switch to setting defences
-        FindObjectOfType<PlacementGrid>().state = FindObjectOfType<PlacementGrid>().state == 2 ? 0 : 2;
+    IEnumerator startAfterTime() {
+        float elapsedTime = 0.0f, incTime = .25f;
+        timer.setValue(1f);
+
+        while(elapsedTime < prepTime) {
+            yield return new WaitForSeconds(incTime);
+            elapsedTime += incTime;
+            timer.setValue(1 - (elapsedTime / prepTime));
+            if(elapsedTime / prepTime > .85f)
+                timer.setColor(new Color(elapsedTime / prepTime, 0, 0, 1f));
+        }
+
+        yield return new WaitForSeconds(.5f);
+        ready();
     }
 }

@@ -18,27 +18,38 @@ public abstract class WeaponInstance : MonoBehaviour {
     Coroutine anim = null;
 
 
-    public int weaponInd = 0;
     public Weapon reference { get; private set; }
 
     public bool canMove = true;
 
     private void OnTriggerEnter2D(Collider2D col) {
-        if(target == attackTarget.Monsters && col.gameObject.tag == "Monster") {
+        if(target == attackTarget.Monsters && col.gameObject.tag == "Monster" && (reference.targetType == col.gameObject.GetComponent<Monster>().type || reference.targetType == GameInfo.MonsterType.Both)) {
             user.GetComponent<Attacker>().attack(col.gameObject, false);
             col.gameObject.GetComponentInChildren<SlashEffect>().slash(user.transform.position, rotObj.transform.GetChild(0).localRotation.x != 0f);
         }
-        else if(target == attackTarget.People && col.gameObject.tag == "Person")
+        else if(target == attackTarget.People && col.gameObject.tag == "Helper") {
             user.GetComponent<Attacker>().attack(col.gameObject, false);
+        }
+        else if(col.gameObject.tag == "Environment") {
+            FindObjectOfType<EnvironmentManager>().hitEnvironment(col.ClosestPoint(transform.position));
+        }
     }
 
     void Start() {
-        reference = FindObjectOfType<PresetLibrary>().getWeapon(weaponInd);
-        GetComponent<SpriteRenderer>().sprite = reference.sprite;
+        updateReference(GameInfo.getPlayerWeaponIndex());
         GetComponent<Collider2D>().enabled = false;
-        trail.gameObject.transform.localPosition = reference.trailPos;
         trail.emitting = false;
         transform.localPosition = offsetFromUser;
+    }
+    
+    public void updateReference(int index) {
+        reference = FindObjectOfType<PresetLibrary>().getWeapon(index);
+
+        //  makes it so the player can attack both physical and spiritual monsters
+        if(user.tag == "Player")
+            reference.targetType = GameInfo.MonsterType.Both;
+        GetComponent<SpriteRenderer>().sprite = reference.sprite;
+        trail.gameObject.transform.localPosition = reference.trailPos;
     }
 
     private void Update() {
@@ -58,7 +69,7 @@ public abstract class WeaponInstance : MonoBehaviour {
             rotObj.transform.localPosition = Vector3.zero;
             rotObj.transform.rotation = Quaternion.Lerp(rotObj.transform.rotation, Quaternion.AngleAxis(angle + 45, Vector3.forward), speed * Time.deltaTime);
 
-            FindObjectOfType<LayerSorter>().requestNewSortingLayer(gameObject);
+            FindObjectOfType<LayerSorter>().requestNewSortingLayer(transform.position.y, GetComponent<SpriteRenderer>());
             rotObj.transform.GetChild(0).localRotation = mousePos.x > user.transform.position.x ? Quaternion.Euler(0.0f, 0.0f, 0.0f) : Quaternion.Euler(180.0f, 0.0f, 90.0f);
         }
     }
@@ -72,7 +83,7 @@ public abstract class WeaponInstance : MonoBehaviour {
             rotObj.transform.localPosition = Vector3.zero;
             rotObj.transform.rotation = Quaternion.Lerp(rotObj.transform.rotation, Quaternion.AngleAxis(angle + 45, Vector3.forward), speed * Time.deltaTime);
 
-            FindObjectOfType<LayerSorter>().requestNewSortingLayer(gameObject);
+            FindObjectOfType<LayerSorter>().requestNewSortingLayer(transform.position.y, GetComponent<SpriteRenderer>());
             rotObj.transform.GetChild(0).localRotation = pos.x > user.transform.position.x ? Quaternion.Euler(0.0f, 0.0f, 0.0f) : Quaternion.Euler(180.0f, 0.0f, 90.0f);
         }
     }
@@ -84,6 +95,8 @@ public abstract class WeaponInstance : MonoBehaviour {
     public void attack() {
         if(anim != null)
             return;
+        if(reference.swingSound != null)
+            FindObjectOfType<AudioManager>().playSound(reference.swingSound, transform.position);
         anim = StartCoroutine(attackAnim());
     }
 

@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Helper : Attacker {
-    public enum helpType {
-        All, Attack, Repair
+    public enum helperType {
+        All, Attack, Repair, Heal
     }
 
-    public string name;
     public float speed;
-    public int cost;
     public int helpAmount;
-    public helpType help;
+    public helperType helpType;
     public Sprite sprite;
 }

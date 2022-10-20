@@ -7,6 +7,6 @@ public class HelperWeaponInstance : WeaponInstance {
         if(user.GetComponent<HelperInstance>().hasTarget)
             lookAtPos(user.GetComponent<HelperInstance>().target);
         else
-            lookAtPos(GameObject.FindGameObjectWithTag("Player").transform.position);
+            lookAtPos((Vector2)user.gameObject.transform.position + Vector2.right);
     }
 }

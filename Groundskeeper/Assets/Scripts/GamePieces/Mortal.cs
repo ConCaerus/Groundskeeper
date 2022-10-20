@@ -4,8 +4,23 @@ using UnityEngine;
 using DG.Tweening;
 
 public abstract class Mortal : MonoBehaviour {
-    [SerializeField] public int health;
+    [SerializeField] public int maxHealth;
+    [SerializeField] int unitHealth;
+    [SerializeField] AudioClip hurtSound;
+    public int health {
+        get {
+            return unitHealth;
+        }
+
+        set {
+            unitHealth = value;
+            if(healthBar != null)
+                healthBar.updateBar();
+        }
+    }
     protected bool invincible = false;
+
+    public HealthBar healthBar = null;
 
     public abstract void die();
 
@@ -16,6 +31,8 @@ public abstract class Mortal : MonoBehaviour {
             return;
         if(activateInvinc)
             StartCoroutine(invincTimer());
+        if(hurtSound != null)
+            FindObjectOfType<AudioManager>().playSound(hurtSound, transform.position);
 
         health -= dmg;
         //  check for death

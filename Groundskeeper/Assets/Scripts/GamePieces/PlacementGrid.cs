@@ -4,20 +4,23 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class PlacementGrid : MonoBehaviour {
-    [SerializeField] List<thing> helpers, defences;
-    [SerializeField] GameObject holder;
+    [SerializeField] GameObject holder, passivesHolder;
     Tilemap map;
 
-    [HideInInspector]
-    [SerializeField] public int state = 0;  //  0 - nothing,    1 - helpers,    2 - defences
+    [SerializeField][HideInInspector] public bool placing = false;
 
-    List<Vector3Int> unusableHelperPoses = new List<Vector3Int>();
-    List<Vector3Int> unusableDefencePoses = new List<Vector3Int>();
+    [HideInInspector] public GameObject currentObj = null;
+    [SerializeField] CircleCollider2D houseRadiusCollider;
 
     [System.Serializable]
     public struct thing {
         public Tile tile;
         public GameObject obj;
+    }
+
+    [System.Serializable]
+    public enum obstacleTag {
+        Helper, Defence, Misc
     }
 
 
@@ -26,26 +29,35 @@ public class PlacementGrid : MonoBehaviour {
         map.ClearAllTiles();
     }
 
-    private void Start() {
-        //  add all of the tiles that are under the house into the unusable lists
-        var h = GameObject.FindGameObjectWithTag("House");
-        var l = map.WorldToCell(new Vector3(h.transform.position.x - h.transform.localScale.x / 2f, 0, 0)).x;
-        var r = map.WorldToCell(new Vector3(h.transform.position.x + h.transform.localScale.x / 2f, 0, 0)).x;
-        var t = map.WorldToCell(new Vector3(0, h.transform.position.y + h.transform.localScale.y / 2f, 0)).y;
-        var b = map.WorldToCell(new Vector3(0, h.transform.position.y - h.transform.localScale.y / 2f, 0)).y;
-        for(int x = l; x < r; x++) {
-            for(int y = b; y < t; y++) {
-                unusableHelperPoses.Add(new Vector3Int(x, y, 0));
-                unusableDefencePoses.Add(new Vector3Int(x, y, 0));
-            }
-        }
-    }
-
     private void Update() {
-        if(state > 0) {
+        if(placing) {
             move();
+            var pos = map.WorldToCell(GameInfo.mousePos());
+            var p = map.CellToWorld(pos);
+            p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
 
-            if(Input.GetMouseButton(0) && !FindObjectOfType<PregameCanvas>().mouseOverUI()) {
+            if(!currentObj.GetComponent<Buyable>().canBePlacedOutsideLight) {
+                var r = houseRadiusCollider.gameObject.transform.lossyScale.x * houseRadiusCollider.radius;
+                var d = Mathf.Sqrt(Mathf.Pow(p.x, 2) + Mathf.Pow(p.y, 2));
+                bool inBounds = d < r;
+
+                if(!inBounds)
+                    map.color = Color.red;
+            }
+
+            //  checks if the icon is hovering over anything it shouldn't
+            LayerMask layermask = LayerMask.GetMask("Player");
+            layermask += LayerMask.GetMask("HouseFloor");
+            foreach(var i in currentObj.GetComponent<Buyable>().placementObstacleLayers) {
+                layermask += LayerMask.GetMask(i.ToString());
+            }
+            RaycastHit2D hit = Physics2D.Raycast(p, Vector3.forward, Mathf.Infinity, layermask);
+            Debug.DrawRay(p, Vector3.forward, Color.white, 1f);
+            if(hit) {
+                map.color = Color.red;
+            }
+
+            if(Input.GetMouseButton(0) && !FindObjectOfType<PregameCanvas>().mouseOverUI() && map.color == Color.green) {
                 place();
             }
             else if(Input.GetMouseButton(1) && !FindObjectOfType<PregameCanvas>().mouseOverUI()) {
@@ -54,28 +66,24 @@ public class PlacementGrid : MonoBehaviour {
         }
     }
 
+    public void changePlacing(GameObject thing, bool toggle) {
+        placing = toggle ? !placing : true;
+        currentObj = thing;
+    }
+
     public void move() {
         clear();
         var pos = map.WorldToCell(GameInfo.mousePos());
 
         map.color = Color.green;
-        foreach(var i in state == 1 ? unusableHelperPoses : unusableDefencePoses) {
-            if(i == new Vector3Int(pos.x, pos.y, i.z)) {
-                map.color = Color.red;
-            }
-        }
 
-        if(state == 1)
-            map.SetTile(pos, helpers[0].tile);
-        else if(state == 2)
-            map.SetTile(pos, defences[0].tile);
+        map.SetTile(pos, currentObj.GetComponent<Buyable>().tile);
     }
-
     public void end() {
         map.enabled = false;
-        state = 0;
+        placing = false;
+        currentObj = null;
     }
-
     public void place() {
         //  can't place in this spot
         if(map.color == Color.red)
@@ -83,70 +91,47 @@ public class PlacementGrid : MonoBehaviour {
 
         //  extracts the info from the thing stuct
         GameObject obj = null;
-        if(state == 1) {
-            //  checks if the player can afford to place
-            if(!FindObjectOfType<PregameCanvas>().updateCoins(helpers[0].obj.GetComponent<HelperInstance>().cost))
-                return;
-            obj = Instantiate(helpers[0].obj, holder.transform);
-        }
-        else if(state == 2) {
-            //  checks if the player can afford to place
-            if(!FindObjectOfType<PregameCanvas>().updateCoins(defences[0].obj.GetComponent<DefenceInstance>().cost))
-                return;
-            obj = Instantiate(defences[0].obj, holder.transform);
-        }
-
-        //  places the object in the correct spot
+        //  checks if the player can afford to place
+        if(!FindObjectOfType<PregameCanvas>().updateCoins(currentObj.GetComponent<Buyable>().cost))
+            return;
         var pos = map.CellToWorld(map.WorldToCell(GameInfo.mousePos())) + new Vector3(map.cellSize.x / 2f, map.cellSize.y / 2f);
-        obj.transform.position = pos;
+        if(currentObj.GetComponent<DefenceInstance>() == null) {
+            obj = Instantiate(currentObj.gameObject, holder.transform);
 
+            //  places the object in the correct spot
+            obj.transform.position = pos;
 
-        //  updates unusable lists with this pos
-        if(state == 1) {
-            unusableHelperPoses.Add(map.WorldToCell(GameInfo.mousePos()));
-            obj.GetComponent<HelperInstance>().startingPos = pos;
+            if(obj.GetComponent<HelperInstance>() != null)
+                obj.GetComponent<HelperInstance>().startingPos = pos;
         }
-        else if(state == 2)
-            unusableDefencePoses.Add(map.WorldToCell(GameInfo.mousePos()));
-    }
+        else {
+            obj = FindObjectOfType<DefenceHolderSpawner>().spawnDefence(currentObj.gameObject, pos);
+        }
 
+        obj.GetComponent<Buyable>().animateBeingPlaced();
+    }
     public void remove() {
         if(map.color == Color.green)
             return;
         bool found = false;
+        int c = 0;
 
         var pos = map.CellToWorld(map.WorldToCell(GameInfo.mousePos())) + new Vector3(map.cellSize.x / 2f, map.cellSize.y / 2f);
-        if(state == 1) {
-            if(!unusableHelperPoses.Contains(map.WorldToCell(GameInfo.mousePos())))
-                return;
-
-            foreach(var i in GameObject.FindGameObjectsWithTag("Person")) {
-                if(i.GetComponent<HelperInstance>().startingPos == (Vector2)pos) {
-                    Destroy(i.gameObject);
-                    found = true;
-                    break;
-                }
+        GameObject f = null;
+        foreach(var i in FindObjectsOfType<Buyable>()) {
+            if(i.transform.position == pos || (i.GetComponent<HelperInstance>() != null && i.GetComponent<HelperInstance>().startingPos == (Vector2)pos)) {
+                c = i.GetComponent<Buyable>().cost;
+                f = i.gameObject;
+                found = true;
+                break;
             }
-            if(found)
-                unusableHelperPoses.Remove(map.WorldToCell(GameInfo.mousePos()));
-            else return;
         }
-        else if(state == 2) {
-            if(!unusableDefencePoses.Contains(map.WorldToCell(GameInfo.mousePos())))
-                return;
-
-            foreach(var i in GameObject.FindGameObjectsWithTag("Defence")) {
-                if((Vector2)i.transform.position == (Vector2)pos) {
-                    Destroy(i.gameObject);
-                    found = true;
-                    break;
-                }
-            }
-            if(found)
-                unusableDefencePoses.Remove(map.WorldToCell(GameInfo.mousePos()));
-            else return;
+        if(found) {
+            Destroy(f.gameObject);
         }
+        else return;
 
+        FindObjectOfType<PregameCanvas>().updateCoins(-c);
         map.color = Color.green;
     }
 

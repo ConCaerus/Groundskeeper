@@ -5,11 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - Weapon
-  - Person
   - Building
   - House
   - Monster
   - Defence
+  - Helper
+  - Light
+  - Passive
+  - Environment
+  - Bystander
   layers:
   - Default
   - TransparentFX
@@ -17,15 +21,15 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Monster
+  - Light
+  - Helper
+  - Defence
+  - Building
+  - House
+  - HouseFloor
+  - Passive
   - 
   - 
   - 
@@ -44,7 +48,10 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Enivironment
+  - name: BackgroundEnvironment
+    uniqueID: 2403204097
+    locked: 0
+  - name: Environment
     uniqueID: 2006433231
     locked: 0
   - name: Default
@@ -52,4 +59,10 @@ TagManager:
     locked: 0
   - name: Effects
     uniqueID: 3276117047
+    locked: 0
+  - name: Lighting
+    uniqueID: 4229490781
+    locked: 0
+  - name: UI
+    uniqueID: 2566483543
     locked: 0

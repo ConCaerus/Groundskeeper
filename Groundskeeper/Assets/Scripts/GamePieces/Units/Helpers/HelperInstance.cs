@@ -7,42 +7,39 @@ public class HelperInstance : Helper {
     Vector2 targetMoveInfo;
     float accSpeed = .1f, slowSpeed = 18.0f;
 
-    public bool hasTarget = false;
-    public bool inReach = false;
+    [HideInInspector] public Transform followingTransform;
+    Vector2 spriteOriginal, shadowOriginal;   //  for showing and hiding
+
+    [HideInInspector] public bool hasTarget = false;
+    [HideInInspector] public bool inReach = false;
     public Vector2 target { get; private set; }
-    public Vector2 startingPos;
+    [HideInInspector] public Vector2 startingPos;
 
     private void Awake() {
         stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         startingPos = transform.position;
     }
 
-    private void OnCollisionStay2D(Collision2D col) {
-        FindObjectOfType<LayerSorter>().requestNewSortingLayer(spriteObj);
-    }
-
-    private void OnTriggerStay2D(Collider2D col) {
-        if(col.gameObject.tag == "Monster") {
-            GetComponentInChildren<HelperWeaponInstance>().attack();
-            inReach = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D col) {
-        if(col.gameObject.tag == "Monster") {
-            inReach = false;
-        }
+    private void Start() {
+        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponents<Collider2D>()[0].isTrigger ? GetComponents<Collider2D>()[1] : GetComponents<Collider2D>()[0], spriteObj.GetComponent<SpriteRenderer>());
+        FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
+        FindObjectOfType<UnitMovementUpdater>().addHelper(this);
+        FindObjectOfType<HelperManager>().addHelper(this);
+        spriteOriginal = spriteObj.transform.localScale;
+        shadowOriginal = shadowObj.transform.localScale;
     }
 
     #region ---   MOVEMENT SHIT   ---
-    private void FixedUpdate() {
+    public void updateMovement() {
         //  move the object
-        target = FindObjectOfType<TargetFinder>().getTargetForHelper(gameObject);
+        if(followingTransform != null)
+            target = followingTransform.position;
         if(!inReach)
-            moveToPos(target, GetComponent<Rigidbody2D>(), speed);
-        //  if player is not moving, decrement the movementInfo
-        //  if player is moving, increase the movementInfo to target value
+            moveToPos(target, GetComponentInParent<Rigidbody2D>(), speed);
         moveInfo = hasTarget && !inReach ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, Vector2.zero, slowSpeed * 100.0f * Time.fixedDeltaTime);
+    }
+    public void updateTarget() {
+        target = FindObjectOfType<TargetFinder>().getTargetForHelper(gameObject);
     }
     public override bool restartWalkAnim() {
         return hasTarget && !inReach;
@@ -73,6 +70,13 @@ public class HelperInstance : Helper {
     public override WalkAnimInfo getWalkInfo() {
         return new WalkAnimInfo(.2f, .7f, 25f, 5f);
     }
+
+    public override Vector2 getSpriteOriginalScale() {
+        return spriteOriginal;
+    }
+    public override Vector2 getShadowOriginalScale() {
+        return shadowOriginal;
+    }
     #endregion
 
 
@@ -86,11 +90,16 @@ public class HelperInstance : Helper {
     public override float getKnockback() {
         return GetComponentInChildren<HelperWeaponInstance>().reference.knockback;
     }
+    public override void specialEffectOnAttack() {
+    }
     #endregion
 
 
     #region ---   MORTAL SHIT   ---
     public override void die() {
+        FindObjectOfType<GameBoard>().aHelpers.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
+        if(healthBar != null)
+            Destroy(healthBar.gameObject);
         Destroy(gameObject);
     }
     #endregion

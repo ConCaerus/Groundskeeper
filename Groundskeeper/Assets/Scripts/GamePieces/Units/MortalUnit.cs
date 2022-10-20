@@ -4,8 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 
 public abstract class MortalUnit : Mortal {
-
-
     public override void customHitLogic(float knockback, Vector2 origin, bool stunMonster = true) {
         var rb = gameObject.GetComponent<Rigidbody2D>();
         //  take knockback
@@ -21,7 +19,13 @@ public abstract class MortalUnit : Mortal {
             GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().DOKill();
             GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().color = Color.red;
             GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().DOColor(Color.white, takeTime);
-            FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Movement>().spriteObj.gameObject);
+
+            foreach(var i in GetComponents<Collider2D>()) {
+                if(!i.isTrigger) {
+                    FindObjectOfType<LayerSorter>().requestNewSortingLayer(i, GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>());
+                    break;
+                }
+            }
 
             if(GetComponent<MonsterInstance>() != null && stunMonster)
                 GetComponent<MonsterInstance>().stopMovingForATime(takeTime);

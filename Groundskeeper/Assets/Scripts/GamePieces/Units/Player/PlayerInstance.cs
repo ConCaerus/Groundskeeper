@@ -5,14 +5,29 @@ using DG.Tweening;
 
 public class PlayerInstance : Attacker {
     [SerializeField] float walkSpeed = 8.0f, runSpeed = 18.0f, accSpeed = .1f, slowSpeed = 18.0f;
+    float unitStamina = 100f;
+    public float stamina {
+        get {
+            return unitStamina;
+        }
+
+        set {
+            unitStamina = value;
+            FindObjectOfType<StaminaSlider>().updateSlider(value, 100f);
+        }
+    }
+    float stamInc = 0.0f;
     InputMaster controls;
+
+
+    Vector2 spriteOriginal, shadowOriginal;   //  for showing and hiding
 
     Vector2 moveInfo;
     Vector2 targetMoveInfo;
     Rigidbody2D rb;
 
     private void OnCollisionStay2D(Collision2D col) {
-        FindObjectOfType<LayerSorter>().requestNewSortingLayer(spriteObj);
+        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
     }
 
     #region ---   MOVEMENT SHIT   ---
@@ -22,6 +37,13 @@ public class PlayerInstance : Attacker {
         DOTween.Init();
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
+        GetComponentInChildren<HealthBar>().setParent(gameObject);
+    }
+
+    private void Start() {
+        FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
+        spriteOriginal = spriteObj.transform.localScale;
+        shadowOriginal = shadowObj.transform.localScale;
     }
     private void FixedUpdate() {
         //  check if game is over
@@ -33,7 +55,9 @@ public class PlayerInstance : Attacker {
         }
 
         //  move the object
-        moveWithDir(moveInfo, rb, controls.Player.Sprint.IsPressed() ? runSpeed : walkSpeed);
+        moveWithDir(moveInfo, rb, controls.Player.Sprint.IsPressed() && stamina > 0f ? runSpeed : walkSpeed);
+        stamina = Mathf.Clamp(stamina - (controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? 1 : -.5f - stamInc), 0f, 100f);
+        stamInc += controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? -stamInc : .01f;
 
         //  if player is not moving, decrement the movementInfo
         //  if player is moving, increase the movementInfo to target value
@@ -54,7 +78,7 @@ public class PlayerInstance : Attacker {
     public override void updateSprite(Vector2 movingDir) {
         //  not moving, face forward
         if(movingDir == Vector2.zero) {
-            spriteObj.GetComponent<SpriteRenderer>().sprite = forwardSprite;
+            return;
         }
 
         //  moving more along the y axis, set to a y axis sprite
@@ -76,6 +100,13 @@ public class PlayerInstance : Attacker {
     public override WalkAnimInfo getWalkInfo() {
         return new WalkAnimInfo(.2f, .7f, 25f, 5f);
     }
+
+    public override Vector2 getSpriteOriginalScale() {
+        return spriteOriginal;
+    }
+    public override Vector2 getShadowOriginalScale() {
+        return shadowOriginal;
+    }
     #endregion
 
 
@@ -88,6 +119,8 @@ public class PlayerInstance : Attacker {
     }
     public override float getKnockback() {
         return GetComponentInChildren<PlayerWeaponInstance>().reference.knockback;
+    }
+    public override void specialEffectOnAttack() {
     }
     #endregion
 
@@ -102,6 +135,7 @@ public class PlayerInstance : Attacker {
         GameInfo.playing = false;
         FindObjectOfType<GameOverCanvas>().show();
         Destroy(gameObject);
+        Destroy(healthBar.gameObject);
     }
     #endregion
 }

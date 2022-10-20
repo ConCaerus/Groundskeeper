@@ -7,14 +7,20 @@ public abstract class Monster : Attacker {
         All, People, Buildings, House
     }
 
-    public string name;
+    public enum monsterType {
+        Zombie, Vampire, Wisp
+    }
+
+    public monsterType mType;
     public float speed;
     public int attackDamage;
     public int damageToDefences;
     public int diff = 0;
-    public int earliestWave = 0;
+    public float soulsGiven = 0f;
+    public int earliestNight = 0;
     public targetType favoriteTarget;
-    public GameInfo.EnemyType type;
+    public GameInfo.MonsterType type;
+    public bool flying = false;
     public float scareRadius;
     public Sprite sprite;
 }

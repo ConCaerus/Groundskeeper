@@ -24,6 +24,7 @@ public class TransitionCanvas : MonoBehaviour {
     public void loadScene(string name) {
         if(loader != null)
             return;
+        Time.timeScale = 1f;
         loader = StartCoroutine(loadSceneWaiter(name));
     }
 

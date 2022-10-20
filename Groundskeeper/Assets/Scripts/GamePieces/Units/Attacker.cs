@@ -10,10 +10,14 @@ public abstract class Attacker : Movement {
     public abstract int getDamage();
     public abstract float getAttackCoolDown();
     public abstract float getKnockback();
+    public abstract void specialEffectOnAttack();
 
     public void attack(GameObject target, bool cooldown) {
         if(canAttack && target.gameObject.GetComponent<Mortal>() != null) {
+            if(target == FindObjectOfType<HouseInstance>().gameObject)
+                FindObjectOfType<GameUICanvas>().showHouseHealth();
             target.gameObject.GetComponent<Mortal>().takeDamage(getDamage(), getKnockback(), transform.position, true);
+            specialEffectOnAttack();
             if(cooldown)
                 startCooldown();
         }

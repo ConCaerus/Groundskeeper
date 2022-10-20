@@ -10,9 +10,16 @@ public class TickDamager : MonoBehaviour {
         public float timeBtwTicks;
         public int determinedTickCount; // set to -1 for no determined tick count
         public Coroutine ticker = null;
+        public int touchingCount = 1;
 
         public TickInfo(GameObject m, action ac, float btwTime, int endAfterCount = -1) {
             obj = m;
+            tickAction = ac;
+            timeBtwTicks = btwTime;
+            determinedTickCount = endAfterCount;
+        }
+
+        public void updateInfo(action ac, float btwTime, int endAfterCount = -1) {
             tickAction = ac;
             timeBtwTicks = btwTime;
             determinedTickCount = endAfterCount;
@@ -21,16 +28,33 @@ public class TickDamager : MonoBehaviour {
 
     List<TickInfo> ticks = new List<TickInfo>();
 
-    public void addTick(TickInfo info) {
-        ticks.Add(info);
-        ticks[ticks.Count - 1].ticker = StartCoroutine(tick(ticks[ticks.Count - 1]));
+    public void addTick(GameObject m, DefenceInstance def) {
+        int index = getTickIndex(m);
+        //  create a tick for a new object
+        if(index == -1) {
+            var t = new TickInfo(m, def.dealDamage, def.btwHitTime, def.tickCount);
+            ticks.Add(t);
+            StartCoroutine(tick(ticks[ticks.Count - 1]));
+        }
+
+        //  increment the touching count of the already ticking object
+        else {
+            ticks[index].updateInfo(def.dealDamage, def.btwHitTime, def.tickCount);
+            ticks[index].touchingCount++;
+        }
+
+        m.GetComponent<MonsterInstance>().affectedMoveAmt = def.slowAmt;
     }
     public void removeTick(GameObject m) {
-        foreach(var i in ticks) {
-            if(m == i.obj) {
-                StopCoroutine(i.ticker);
-                ticks.Remove(i);
-                return;
+        int index = getTickIndex(m);
+
+        if(index == -1)
+            return;
+        else {
+            ticks[index].touchingCount--;
+            if(ticks[index].touchingCount == 0) {
+                ticks.RemoveAt(index);
+                m.GetComponent<MonsterInstance>().affectedMoveAmt = 0f;
             }
         }
     }
@@ -38,12 +62,12 @@ public class TickDamager : MonoBehaviour {
         ticks.RemoveAt(index);
     }
 
-    public bool contains(GameObject obj) {
-        foreach(var i in ticks) {
-            if(i.obj == obj)
-                return true;
+    public int getTickIndex(GameObject m) {
+        for(int i = 0; i < ticks.Count; i++) {
+            if(ticks[i].obj == m)
+                return i;
         }
-        return false;
+        return -1;
     }
 
     public IEnumerator tick(TickInfo info) {
@@ -59,7 +83,7 @@ public class TickDamager : MonoBehaviour {
 
         if(info.obj != null)
             info.ticker = StartCoroutine(tick(info));
-        else
+        else 
             ticks.Remove(info);
     }
 }

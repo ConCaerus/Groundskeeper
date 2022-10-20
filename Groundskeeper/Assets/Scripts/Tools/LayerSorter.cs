@@ -5,13 +5,21 @@ using UnityEngine;
 public class LayerSorter : MonoBehaviour {
 
 
-    private void Start() {
-        foreach(var i in FindObjectsOfType<SpriteRenderer>())
-            requestNewSortingLayer(i.gameObject);
+
+    public void requestNewSortingLayer(Collider2D col, SpriteRenderer sprite) {
+        requestNewSortingLayer(col.bounds.center.y, sprite);
     }
 
+    public void requestNewSortingLayer(float y, SpriteRenderer sprite) {
+        sprite.sortingOrder = -(int)(y * 100.0f);
+    }
 
-    public void requestNewSortingLayer(GameObject obj) {
-        obj.GetComponent<SpriteRenderer>().sortingOrder = -(int)(obj.gameObject.transform.position.y * 100.0f);
+    public void waitAndRequestNewSortingLayer(Collider2D col, SpriteRenderer sprite) {
+        StartCoroutine(waitAndSetSortingLayer(col, sprite));
+    }
+
+    IEnumerator waitAndSetSortingLayer(Collider2D col, SpriteRenderer sprite) {
+        yield return new WaitForSeconds(.1f);
+        requestNewSortingLayer(col, sprite);
     }
 }
