@@ -47,6 +47,7 @@ public class MonsterSpawner : MonoBehaviour {
             if(GameInfo.wave > GameInfo.wavesPerNight()) {
                 FindObjectOfType<GameUICanvas>().addSoulsToBank();
                 FindObjectOfType<NightOverCanvas>().show();
+                FindObjectOfType<HouseInstance>().showDoorArrow();
                 enabled = false;
             }
             FindObjectOfType<GameUICanvas>().updateCount();

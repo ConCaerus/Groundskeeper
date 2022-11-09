@@ -9,10 +9,9 @@ public class CatalogInteractable : Interactable {
     }
 
     public override void interact() {
-        FindObjectOfType<UnlockBuyableCanvas>().show();
+        FindObjectOfType<BuyTreeCanvas>().show();
     }
-
     public override void deinteract() {
-        FindObjectOfType<UnlockBuyableCanvas>().hide();
+        FindObjectOfType<BuyTreeCanvas>().hide();
     }
 }

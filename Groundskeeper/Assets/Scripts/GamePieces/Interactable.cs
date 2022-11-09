@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class Interactable : MonoBehaviour {
     InputMaster controls;
 
-    bool touching = false, interacting = false;
+    protected bool touching = false, interacting = false;
 
     [SerializeField] bool toggleMovement = true;
     [SerializeField] float helpOffset = 1.0f;

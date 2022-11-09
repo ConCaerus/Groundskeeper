@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
 public class PregameCanvas : MonoBehaviour {
-    [SerializeField] GameObject upper, lower;
+    [SerializeField] GameObject upper, lower, lowerGenericButtonHolder;
     [SerializeField] TextMeshProUGUI soulsText;
     [SerializeField] CircularSlider timer;
     float prepTime = 2 * 60; // 3 mins
@@ -16,6 +17,22 @@ public class PregameCanvas : MonoBehaviour {
         transform.GetChild(0).gameObject.SetActive(true);
         soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
         StartCoroutine(startAfterTime());
+
+        //  remove buttons that don't have shit unlocked
+        foreach(var i in lowerGenericButtonHolder.GetComponentsInChildren<Button>()) {
+            if(i.GetComponentInChildren<TextMeshProUGUI>().text == "Helpers") {
+                if(FindObjectOfType<BuyableLibrary>().getHelpers().Count == 0)
+                    i.gameObject.SetActive(false);
+            }
+            else if(i.GetComponentInChildren<TextMeshProUGUI>().text == "Defences") {
+                if(FindObjectOfType<BuyableLibrary>().getDefences().Count == 0)
+                    i.gameObject.SetActive(false);
+            }
+            else if(i.GetComponentInChildren<TextMeshProUGUI>().text == "Structures") {
+                if(FindObjectOfType<BuyableLibrary>().getStructures().Count == 0)
+                    i.gameObject.SetActive(false);
+            }
+        }
     }
 
     private void Update() {

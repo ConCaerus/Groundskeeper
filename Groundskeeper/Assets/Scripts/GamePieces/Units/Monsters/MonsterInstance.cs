@@ -36,11 +36,12 @@ public class MonsterInstance : Monster {
     }
 
     private void Start() {
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
-        hide();
+        //hide();
     }
 
     #region ---   MOVEMENT SHIT   ---

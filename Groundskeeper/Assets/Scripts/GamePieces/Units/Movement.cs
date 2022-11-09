@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.SceneManagement;
 
 public abstract class Movement : MortalUnit {
     public Sprite forwardSprite, backSprite, leftSprite, rightSprite;

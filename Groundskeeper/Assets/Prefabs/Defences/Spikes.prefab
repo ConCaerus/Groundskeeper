@@ -144,9 +144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unlocked: 0
   cost: 7
-  title: Spikes
+  title: 2
   canBePlacedOutsideLight: 0
   placementObstacleLayers: 0200000001000000
   tile: {fileID: 11400000, guid: 937b47b7d8729504ea240264a4a310b8, type: 2}

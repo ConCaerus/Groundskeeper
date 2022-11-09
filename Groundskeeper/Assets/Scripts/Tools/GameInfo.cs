@@ -5,12 +5,12 @@ using UnityEngine;
 public static class GameInfo {
     public static bool playing { get; set; } = true;
     public static int wave { get; set; } = 0;
-    public static int wavesPerNight() { return 2; }
+    public static int wavesPerNight() { return 1; }
 
     public static int monstersKilled { get; set; } = 0;
 
     //  nights / waves / enemies shit
-    
+
     static string soulTag = "souls";
     static string nightTag = "nights";
     static string lastSeenEnemyTag = "LastSeenEnemyTag";
@@ -18,6 +18,9 @@ public static class GameInfo {
     //  player shit
 
     static string pWeaponIndex = "PlayerWeaponInex";
+    static string getPWeaponBuffTag(int weaponIndex) {
+        return "PlayerWeaponBuff" + weaponIndex.ToString();
+    }
 
     //  Game Board shit
 
@@ -32,6 +35,10 @@ public static class GameInfo {
 
     public static string envTag = "EnvTag";
     public static string envCount = "envCount";
+
+    //  Buy tree shit
+    public static string buyTreeTag = "BuyTreeTag";
+    static string helperDamageBuffTag = "HelperDamageBuff";
 
     //  unlocked shit
 
@@ -61,6 +68,7 @@ public static class GameInfo {
         Inventory.clear();
         Inventory.addWeapon(0);
         setPlayerWeaponIndex(0);
+        SaveData.deleteKey(buyTreeTag);
     }
     public static void clearBoard() {
         //      clears all of the shit before saving new shit
@@ -99,6 +107,7 @@ public static class GameInfo {
         return SaveData.getFloat(soulTag);
     }
 
+    //          NIGHTS / WAVES / ENEMIES
     public static void addNights(int n) {
         SaveData.setInt(nightTag, SaveData.getInt(nightTag) + n);
     }
@@ -119,6 +128,7 @@ public static class GameInfo {
         return SaveData.getInt(lastSeenEnemyTag);
     }
 
+    //  player weapon index
     public static int getPlayerWeaponIndex() {
         return SaveData.getInt(pWeaponIndex);
     }
@@ -126,9 +136,12 @@ public static class GameInfo {
         SaveData.setInt(pWeaponIndex, ind);
     }
 
+    //  buyables
     public static void lockAllBuyables() {
-        for(int i = 0; i < SaveData.getInt(buyableCount); i++)
+        for(int i = 0; i < SaveData.getInt(buyableCount); i++) {
             SaveData.setInt(unlockedBuyableTag(i), 0);
+            Debug.Log(i);
+        }
     }
     public static void unlockBuyable(int index) {
         //  index is supposed to be the index of the buyable in the buyable library
@@ -137,4 +150,43 @@ public static class GameInfo {
     public static bool isBuyableUnlocked(int index) {
         return SaveData.getInt(unlockedBuyableTag(index)) == 1;
     }
+
+    //          BUFFS
+    //  helper buffs
+    public static void setHelperDamageBuff(float buff) {
+        SaveData.setFloat(helperDamageBuffTag, buff);
+    }
+    public static float getHelperDamageBuff() {
+        return SaveData.getFloat(helperDamageBuffTag);
+    }
+
+    //  player weapon buffs
+    public static void setPlayerWeaponDamageBuff(int weaponInd, float buff) {
+        var data = SaveData.getString(getPWeaponBuffTag(weaponInd));
+        weaponBuff buffs = string.IsNullOrEmpty(data) ? new weaponBuff() : JsonUtility.FromJson<weaponBuff>(data);
+
+        buffs.dmgBuff = buff;
+
+        var d = JsonUtility.ToJson(buffs);
+        SaveData.setString(getPWeaponBuffTag(weaponInd), d);
+    }
+    public static void setPlayerWeaponSpeedBuff(int weaponInd, float buff) {
+        var data = SaveData.getString(getPWeaponBuffTag(weaponInd));
+        weaponBuff buffs = string.IsNullOrEmpty(data) ? new weaponBuff() : JsonUtility.FromJson<weaponBuff>(data);
+
+        buffs.speedBuff = buff;
+
+        var d = JsonUtility.ToJson(buffs);
+        SaveData.setString(getPWeaponBuffTag(weaponInd), d);
+    }
+    public static weaponBuff getPWeaponBuff(int weaponInd) {
+        var data = SaveData.getString(getPWeaponBuffTag(weaponInd));
+        return string.IsNullOrEmpty(data) ? new weaponBuff() : JsonUtility.FromJson<weaponBuff>(data);
+    }
+}
+
+[System.Serializable]
+public class weaponBuff {
+    public float dmgBuff = 1.0f;
+    public float speedBuff = 1.0f;
 }

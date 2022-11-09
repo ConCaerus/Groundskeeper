@@ -144,9 +144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unlocked: 0
   cost: 3
-  title: Tar
+  title: 3
   canBePlacedOutsideLight: 0
   placementObstacleLayers: 0200000001000000
   tile: {fileID: 11400000, guid: c2251c18002d2da45919ac96220f92a0, type: 2}

@@ -11,20 +11,20 @@ public class DefenceHolderSpawner : MonoBehaviour {
 
     public GameObject spawnDefence(GameObject defence, Vector2 pos) {
         //  create a new holder
-        if(!usedNames.Contains(defence.GetComponent<Buyable>().title)) {
+        if(!usedNames.Contains(defence.GetComponent<Buyable>().title.ToString())) {
             var h = Instantiate(dHolder, transform);
             h.transform.localPosition = Vector3.zero;
             holders.Add(h);
 
             var obj = Instantiate(defence, h.transform);
-            usedNames.Add(defence.GetComponent<Buyable>().title);
+            usedNames.Add(defence.GetComponent<Buyable>().title.ToString());
             obj.transform.position = pos;
 
             return obj;
         }
         //  use an existing holder
         else {
-            var h = holders[usedNames.IndexOf(defence.GetComponent<Buyable>().title)];
+            var h = holders[usedNames.IndexOf(defence.GetComponent<Buyable>().title.ToString())];
             var obj = Instantiate(defence, h.transform);
             obj.transform.position = pos;
 

@@ -6,6 +6,7 @@ using DG.Tweening;
 public class HouseInstance : Building {
     [HideInInspector]
     [SerializeField] public float viewDist = 80f;
+    [SerializeField] GameObject arrow;
 
     List<MortalUnit> inTopUnits = new List<MortalUnit>();   //  fuckers that want the house to hide it's top
 
@@ -32,6 +33,25 @@ public class HouseInstance : Building {
                 GetComponent<SpriteRenderer>().DOColor(new Color(c.r, c.g, c.b, 1f), .25f);
             }
         }
+    }
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.Space))
+            showDoorArrow();
+    }
+
+    public void showDoorArrow() {
+        arrow.SetActive(true);
+        StartCoroutine(doorArrowAnim());
+    }
+
+    IEnumerator doorArrowAnim() {
+        float t = .5f, m = 1.5f;
+        arrow.transform.DOLocalMoveY(arrow.transform.localPosition.y - m, t);
+        yield return new WaitForSeconds(t);
+        arrow.transform.DOLocalMoveY(arrow.transform.localPosition.y + m, t);
+        yield return new WaitForSeconds(t);
+        StartCoroutine(doorArrowAnim());
     }
 
     public override void die() {

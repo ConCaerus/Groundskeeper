@@ -28,7 +28,6 @@ public class DebuggerWindow : EditorWindow {
             GameInfo.clearBoard();
         if(GUILayout.Button("Clear Save")) {
             GameInfo.resetVars();
-            GameInfo.resetSave();
             SaveData.deleteCurrentSave();
         }
         GUILayout.EndHorizontal();

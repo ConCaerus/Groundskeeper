@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HelperInstance : Helper {
+public class LumberjackInstance : Helper {
     Vector2 moveInfo;
     Vector2 targetMoveInfo;
     float accSpeed = .1f, slowSpeed = 18.0f;
@@ -24,7 +24,7 @@ public class HelperInstance : Helper {
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponents<Collider2D>()[0].isTrigger ? GetComponents<Collider2D>()[1] : GetComponents<Collider2D>()[0], spriteObj.GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         FindObjectOfType<UnitMovementUpdater>().addHelper(this);
-        FindObjectOfType<HelperManager>().addHelper(this);
+        FindObjectOfType<HelperAttackManager>().addHelper(this);
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
     }
@@ -82,13 +82,15 @@ public class HelperInstance : Helper {
 
     #region ---   ATTACKER SHIT   ---
     public override float getAttackCoolDown() {
-        return GetComponentInChildren<HelperWeaponInstance>().reference.cooldown;
+        return GetComponentInChildren<LumberjackWeaponInstance>().reference.cooldown;
     }
     public override int getDamage() {
-        return GetComponentInChildren<HelperWeaponInstance>().reference.damage;
+        int baseDmg = GetComponentInChildren<LumberjackWeaponInstance>().reference.damage;
+        float boostyWoosty = GameInfo.getHelperDamageBuff();
+        return (int)(baseDmg * boostyWoosty);
     }
     public override float getKnockback() {
-        return GetComponentInChildren<HelperWeaponInstance>().reference.knockback;
+        return GetComponentInChildren<LumberjackWeaponInstance>().reference.knockback;
     }
     public override void specialEffectOnAttack() {
     }

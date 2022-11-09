@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class PlacementGrid : MonoBehaviour {
-    [SerializeField] GameObject holder, passivesHolder;
+    [SerializeField] GameObject holder;
     Tilemap map;
 
     [SerializeField][HideInInspector] public bool placing = false;
@@ -20,7 +20,7 @@ public class PlacementGrid : MonoBehaviour {
 
     [System.Serializable]
     public enum obstacleTag {
-        Helper, Defence, Misc
+        Helper, Defence, Structure
     }
 
 
@@ -101,8 +101,8 @@ public class PlacementGrid : MonoBehaviour {
             //  places the object in the correct spot
             obj.transform.position = pos;
 
-            if(obj.GetComponent<HelperInstance>() != null)
-                obj.GetComponent<HelperInstance>().startingPos = pos;
+            if(obj.GetComponent<LumberjackInstance>() != null)
+                obj.GetComponent<LumberjackInstance>().startingPos = pos;
         }
         else {
             obj = FindObjectOfType<DefenceHolderSpawner>().spawnDefence(currentObj.gameObject, pos);
@@ -119,7 +119,7 @@ public class PlacementGrid : MonoBehaviour {
         var pos = map.CellToWorld(map.WorldToCell(GameInfo.mousePos())) + new Vector3(map.cellSize.x / 2f, map.cellSize.y / 2f);
         GameObject f = null;
         foreach(var i in FindObjectsOfType<Buyable>()) {
-            if(i.transform.position == pos || (i.GetComponent<HelperInstance>() != null && i.GetComponent<HelperInstance>().startingPos == (Vector2)pos)) {
+            if(i.transform.position == pos || (i.GetComponent<LumberjackInstance>() != null && i.GetComponent<LumberjackInstance>().startingPos == (Vector2)pos)) {
                 c = i.GetComponent<Buyable>().cost;
                 f = i.gameObject;
                 found = true;

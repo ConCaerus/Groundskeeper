@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 584804265930927880}
   - component: {fileID: 2886774611030385497}
   - component: {fileID: 1036325106104430852}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 6781478881865433257}
   - component: {fileID: 6781478881865433256}
   - component: {fileID: 721251196033553166}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: tree
   m_TagString: Environment
   m_Icon: {fileID: 0}

@@ -7,7 +7,7 @@ public class GameBoard : MonoBehaviour {
     [SerializeField] GameObject holder, envHolder;
 
 
-    [HideInInspector] public KdTree<HelperInstance> aHelpers = new KdTree<HelperInstance>();
+    [HideInInspector] public KdTree<LumberjackInstance> aHelpers = new KdTree<LumberjackInstance>();
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
@@ -70,7 +70,7 @@ public class GameBoard : MonoBehaviour {
             var d = SaveData.getString(GameInfo.miscTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-            var obj = FindObjectOfType<BuyableLibrary>().getMiscBuyable(data.name);
+            var obj = FindObjectOfType<BuyableLibrary>().getStructure(data.name);
             Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
         }
 
@@ -156,7 +156,7 @@ public class ObjectSaveData {
     }
 
     public ObjectSaveData(Buyable b) {
-        name = b.title;
+        name = b.title.ToString();
         pos = b.transform.position;
     }
 

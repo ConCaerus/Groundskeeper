@@ -21,6 +21,8 @@ public class GameUICanvas : MonoBehaviour {
     }
 
     public void updateCount() {
+        if(GameInfo.wave > GameInfo.wavesPerNight())
+            return;
         waveCount.text = GameInfo.wave.ToString() + "/" + GameInfo.wavesPerNight().ToString();
     }
     public void incSouls(float s) {

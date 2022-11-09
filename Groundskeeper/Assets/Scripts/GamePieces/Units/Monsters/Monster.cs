@@ -8,7 +8,7 @@ public abstract class Monster : Attacker {
     }
 
     public enum monsterType {
-        Zombie, Vampire, Wisp
+        Zombie, Vampire, Wisp, Wraith
     }
 
     public monsterType mType;
@@ -21,6 +21,5 @@ public abstract class Monster : Attacker {
     public targetType favoriteTarget;
     public GameInfo.MonsterType type;
     public bool flying = false;
-    public float scareRadius;
     public Sprite sprite;
 }

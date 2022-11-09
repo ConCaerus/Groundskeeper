@@ -8,7 +8,7 @@ public class UnitMovementUpdater : MonoBehaviour {
     private void FixedUpdate() {
         foreach(var i in FindObjectsOfType<MonsterInstance>())
             i.updateMovement();
-        foreach(var i in FindObjectsOfType<HelperInstance>()) {
+        foreach(var i in FindObjectsOfType<LumberjackInstance>()) {
             i.updateMovement();
         }
     }
@@ -16,7 +16,7 @@ public class UnitMovementUpdater : MonoBehaviour {
     public void addMonster(MonsterInstance monster) {
         StartCoroutine(waitToFindANewTargetForMonster(monster));
     }
-    public void addHelper(HelperInstance helper) {
+    public void addHelper(LumberjackInstance helper) {
         StartCoroutine(waitToFindANewTargetForHelper(helper));
     }
 
@@ -29,7 +29,7 @@ public class UnitMovementUpdater : MonoBehaviour {
         }
     }
 
-    IEnumerator waitToFindANewTargetForHelper(HelperInstance helper) {
+    IEnumerator waitToFindANewTargetForHelper(LumberjackInstance helper) {
         yield return new WaitForSeconds(.25f);
         if(helper != null && helper.gameObject != null) {
             helper.updateTarget();

@@ -6,7 +6,6 @@ public class TargetFinder : MonoBehaviour {
     //  max dist that an enemy will care about whether or not they are close to a thing
     //  if they are out of range from everything, they will walk towards the house
     float monsterDistToCare = 15.0f;
-    float monsterInfatuatedDist = 30.0f;
     float helperDistToCare = 25.0f;
 
     public Vector2 getTargetForMonster(GameObject monster) {
@@ -23,28 +22,35 @@ public class TargetFinder : MonoBehaviour {
         }
         if(m.favoriteTarget == Monster.targetType.Buildings || m.favoriteTarget == Monster.targetType.All) {
             relevantCols += LayerMask.GetMask("Building");
-            if(Vector2.Distance(monster.transform.position, Vector2.zero) < monsterInfatuatedDist) {
-                m.infatuated = true;
-                return Vector2.zero;
-            }
         }
         if(m.favoriteTarget == Monster.targetType.House || m.favoriteTarget == Monster.targetType.All) {
-            relevantCols += LayerMask.GetMask("House");
-            if(Vector2.Distance(monster.transform.position, Vector2.zero) < monsterInfatuatedDist) {
-                m.infatuated = true;
+            if(m.infatuated)
                 return Vector2.zero;
-            }
+            relevantCols += LayerMask.GetMask("House");
         }
 
         var cols = Physics2D.OverlapCircleAll(monster.transform.position, monsterDistToCare, relevantCols);
 
         //  if no collisions, have the monster move closer to the house
         if(cols.Length == 0)
-            return Vector2.zero;
+            return (m.favoriteTarget == Monster.targetType.People && GameObject.FindGameObjectWithTag("Player") != null) ? (Vector2)GameObject.FindGameObjectWithTag("Player").transform.position : Vector2.zero;
 
         KdTree<Transform> rel = new KdTree<Transform>();
+        bool seesScarecrow = false;
         foreach(var i in cols) {
-            rel.Add(i.gameObject.transform);
+            //  sees scarecrow
+            if(i.gameObject.GetComponent<ScarecrowInstance>() != null) {
+                //  if it's the first, reset the list and set the search for only scarecrows
+                if(!seesScarecrow) {
+                    seesScarecrow = true;
+                    rel = new KdTree<Transform>();
+                }
+                rel.Add(i.gameObject.transform);
+            }
+
+            //  otherwise, add the object to a list to see what is closest
+            if(!seesScarecrow)
+                rel.Add(i.gameObject.transform);
         }
 
         var closest = rel.FindClosest(monster.transform.position);
@@ -55,10 +61,10 @@ public class TargetFinder : MonoBehaviour {
 
 
     public Vector2 getTargetForHelper(GameObject helper) {
-        if(helper.GetComponent<HelperInstance>() == null)
+        if(helper.GetComponent<LumberjackInstance>() == null)
             return helper.transform.position;
 
-        var h = helper.GetComponent<HelperInstance>();
+        var h = helper.GetComponent<LumberjackInstance>();
         h.followingTransform = null;
         h.hasTarget = (Vector2)helper.transform.position != h.startingPos;
 

@@ -19,6 +19,8 @@ public class PlayerInstance : Attacker {
     float stamInc = 0.0f;
     InputMaster controls;
 
+    float initLightSize;
+
 
     Vector2 spriteOriginal, shadowOriginal;   //  for showing and hiding
 
@@ -41,6 +43,7 @@ public class PlayerInstance : Attacker {
     }
 
     private void Start() {
+        initLightSize = GetComponentInChildren<FunkyCode.Light2D>().size;
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
@@ -62,6 +65,17 @@ public class PlayerInstance : Attacker {
         //  if player is not moving, decrement the movementInfo
         //  if player is moving, increase the movementInfo to target value
         moveInfo = controls.Player.Move.inProgress ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, Vector2.zero, slowSpeed * 100.0f * Time.fixedDeltaTime);
+
+        //  adjusts the player's light based on how far they are to the edge
+        //      player is out of bounds, so turn off their light
+        if(Vector2.Distance(transform.position, Vector2.zero) >= 75f) {
+            DOTween.To(() => GetComponentInChildren<FunkyCode.Light2D>().size, x => GetComponentInChildren<FunkyCode.Light2D>().size = x, 0f, .25f);
+        }
+        //  player is in bounds, so tune their light based on how far they are from the edge
+        else {
+            var distPerc = Vector2.Distance(transform.position, Vector2.zero) / 100f;   //  a little over the edge to give the player a little light at the edge
+            GetComponentInChildren<FunkyCode.Light2D>().size = initLightSize * (1 - distPerc);
+        }
     }
     void movementChange(Vector2 dir) {
         targetMoveInfo = dir;
@@ -112,10 +126,10 @@ public class PlayerInstance : Attacker {
 
     #region ---   ATTACKER SHIT   ---
     public override float getAttackCoolDown() {
-        return GetComponentInChildren<PlayerWeaponInstance>().reference.cooldown;
+        return GetComponentInChildren<PlayerWeaponInstance>().reference.cooldown * GameInfo.getPWeaponBuff(GameInfo.getPlayerWeaponIndex()).speedBuff;
     }
     public override int getDamage() {
-        return GetComponentInChildren<PlayerWeaponInstance>().reference.damage;
+        return (int)(GetComponentInChildren<PlayerWeaponInstance>().reference.damage * GameInfo.getPWeaponBuff(GameInfo.getPlayerWeaponIndex()).dmgBuff);
     }
     public override float getKnockback() {
         return GetComponentInChildren<PlayerWeaponInstance>().reference.knockback;
