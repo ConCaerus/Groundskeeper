@@ -10,6 +10,10 @@ public abstract class Movement : MortalUnit {
     Coroutine moveWaiter = null;
     protected bool canMove = true;
     bool shown = true;
+    bool beingAttackedByMonster = false;
+    Coroutine beingAttackedWaiter = null;
+    float inhibitMod = .35f;
+    [SerializeField] ParticleSystem movementParticles = null;   //  should already be an object parented to the mover's feet
 
     //  abstract because monsters change their sprites differently to everyone else
     public abstract void updateSprite(Vector2 movingDir);
@@ -17,7 +21,8 @@ public abstract class Movement : MortalUnit {
     protected void moveWithDir(Vector2 info, Rigidbody2D rb, float speed) {
         if(!canMove)
             return;
-        rb.velocity = info * speed * 100.0f * Time.fixedDeltaTime;
+        var s = speed * 100.0f * (beingAttackedByMonster ? inhibitMod : 1.0f);
+        rb.velocity = info * s * Time.fixedDeltaTime;
         if(info.x != 0.0f || info.y != 0.0f) {
             if(anim == null)
                 anim = StartCoroutine(walkAnim());
@@ -33,7 +38,8 @@ public abstract class Movement : MortalUnit {
             if(anim == null)
                 anim = StartCoroutine(walkAnim());
         }
-        rb.MovePosition(Vector2.MoveTowards(rb.gameObject.transform.position, pos, speed * 10.0f * Time.fixedDeltaTime));
+        var s = speed * 10.0f * (beingAttackedByMonster ? inhibitMod : 1.0f);
+        rb.MovePosition(Vector2.MoveTowards(rb.gameObject.transform.position, pos, s * Time.fixedDeltaTime));
 
         updateSprite(pos - (Vector2)transform.position);
     }
@@ -43,10 +49,16 @@ public abstract class Movement : MortalUnit {
 
     protected IEnumerator walkAnim(bool jumpDir = true) {
         spriteObj.transform.DOPunchPosition(new Vector3(0.0f, 0.7f, 0.0f), getWalkInfo().time);
-        shadowObj.transform.DOComplete();
-        Vector2 shadOriginal = shadowObj.transform.localScale;
+        if(shadowObj != null)
+            shadowObj.transform.DOComplete();
+        Vector2 shadOriginal = Vector2.zero;
+        if(shadowObj != null)
+            shadOriginal = shadowObj.transform.localScale;
 
         //  play walk sound
+
+        if(movementParticles != null)
+            movementParticles.Play();
 
         if(jumpDir)
             spriteObj.transform.DOPunchRotation(new Vector3(0.0f, 0.0f, Random.Range(getWalkInfo().minRot, getWalkInfo().maxRot)), getWalkInfo().time);
@@ -62,11 +74,15 @@ public abstract class Movement : MortalUnit {
             }
         }
 
-        shadowObj.transform.DOScale(new Vector2(shadOriginal.x / 2.0f, shadOriginal.y / 1.5f), getWalkInfo().time / 2.0f);
-        yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
-        shadowObj.transform.DOComplete();
-        shadowObj.transform.DOScale(shadOriginal, getWalkInfo().time / 2.0f);
-        yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
+        if(shadowObj != null) {
+            shadowObj.transform.DOScale(new Vector2(shadOriginal.x / 2.0f, shadOriginal.y / 1.5f), getWalkInfo().time / 2.0f);
+            yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
+            shadowObj.transform.DOComplete();
+            shadowObj.transform.DOScale(shadOriginal, getWalkInfo().time / 2.0f);
+            yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
+        }
+        else
+            yield return new WaitForSeconds(getWalkInfo().time);
 
         anim = restartWalkAnim() ? StartCoroutine(walkAnim(!jumpDir)) : null;
     }
@@ -122,6 +138,29 @@ public abstract class Movement : MortalUnit {
     public abstract Vector2 getShadowOriginalScale();
 
     public abstract bool restartWalkAnim();
+
+    public void inhibitMovementCauseBeingAttacked() {
+        beingAttackedByMonster = true;
+        if(beingAttackedWaiter != null)
+            StopCoroutine(beingAttackedWaiter);
+        beingAttackedWaiter = StartCoroutine(resetBeingAttackedByMonster());
+    }
+    protected void stopInhibitingMovement() {
+        beingAttackedByMonster = false;
+        if(beingAttackedWaiter != null)
+            StopCoroutine(beingAttackedWaiter);
+        StartCoroutine(waitForNextFrameToStopInhibitation());
+    }
+    IEnumerator waitForNextFrameToStopInhibitation() {
+        yield return new WaitForEndOfFrame();
+        beingAttackedByMonster = false;
+    }
+
+    IEnumerator resetBeingAttackedByMonster() {
+        yield return new WaitForSeconds(.35f);
+        beingAttackedByMonster = false;
+        beingAttackedWaiter = null;
+    }
 }
 
 

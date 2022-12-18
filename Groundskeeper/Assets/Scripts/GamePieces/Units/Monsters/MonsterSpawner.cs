@@ -5,8 +5,10 @@ using UnityEngine;
 public class MonsterSpawner : MonoBehaviour {
     List<GameObject> monsterPresets = new List<GameObject>();
 
-    float rad = 150f;
+    float rad = 75f;
     float maxSpread = 80f;
+
+    [SerializeField] int nightsBetweenDirAddition = 3;  //  monsters can spawn from 1 additional direction after this number of nights
 
     public bool spawning { get; set; } = false;
     //  Types of monsters<leaders of those types of monsters<followers of the leaders of those types of monsters>>
@@ -18,7 +20,7 @@ public class MonsterSpawner : MonoBehaviour {
 
     class waveInfo {
         public List<int> enemyNumbers;
-        public direction dir;
+        public direction[] dir;
 
         public waveInfo() {
             enemyNumbers = new List<int>();
@@ -44,17 +46,49 @@ public class MonsterSpawner : MonoBehaviour {
     private void Update() {
         if(spawning && GameObject.FindGameObjectsWithTag("Monster").Length == 0) {
             GameInfo.wave++;
+
+            //  THE GAME IS OVER
             if(GameInfo.wave > GameInfo.wavesPerNight()) {
+                FindObjectOfType<GameBoard>().saveBoard();
                 FindObjectOfType<GameUICanvas>().addSoulsToBank();
-                FindObjectOfType<NightOverCanvas>().show();
                 FindObjectOfType<HouseInstance>().showDoorArrow();
+                FindObjectOfType<WaveWarnerRose>().warn(new direction[] { (direction)30 }); //  wave warner hides all dots
+                FindObjectOfType<HouseDoorInteractable>().isTheEnd = true;
                 enabled = false;
+                return;
             }
             FindObjectOfType<GameUICanvas>().updateCount();
             startNewWave();
         }
     }
 
+
+    waveInfo calcWave() {
+        waveInfo info = new waveInfo();
+        var diff = calcWaveDiff();
+
+        while(diff > 0) {
+            info.enemyNumbers[0]++;
+            diff -= monsterPresets[0].GetComponent<Monster>().diff;
+        }
+
+        if(GameInfo.getNightCount() < nightsBetweenDirAddition * 1)
+            info.dir = new direction[] { (direction)Random.Range(1, 5) };
+        else if(GameInfo.getNightCount() < nightsBetweenDirAddition * 2)
+            info.dir = new direction[] { (direction)Random.Range(1, 5), (direction)Random.Range(1, 5) };
+        else if(GameInfo.getNightCount() < nightsBetweenDirAddition * 3)
+            info.dir = new direction[] { (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5) };
+        else if(GameInfo.getNightCount() < nightsBetweenDirAddition * 4)
+            info.dir = new direction[] { (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5) };
+
+        return info;
+    }
+
+    int calcWaveDiff() {
+        int d1 = GameInfo.wave + 1;
+        int d2 = GameInfo.getNightCount() + 1;
+        return (int)(d1 * 2.5f) + (int)(d2 * 5);
+    }
 
 
     void startNewWave() {
@@ -69,7 +103,7 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     IEnumerator spawnMonsters(waveInfo info) {
-        FindObjectOfType<GameUICanvas>().warnForWave(info.dir);
+        FindObjectOfType<WaveWarnerRose>().warn(info.dir);
         FindObjectOfType<GameBoard>().monsters.Clear();
         monsterGroups.Clear();
 
@@ -79,64 +113,65 @@ public class MonsterSpawner : MonoBehaviour {
 
         float minDistToLight = 25f;
         int numOfLeaders = 5;
+        for(int l = 0; l < info.dir.Length; l++) {  //  loop through the number of directions the monsters can spawn from
+            for(int i = 0; i < info.enemyNumbers.Count; i++) {  //  loop through the types of monsters
+                KdTree<MonsterInstance> leaders = new KdTree<MonsterInstance>();
+                for(int j = 0; j <= info.enemyNumbers[i] / info.dir.Length; j++) {    //  spawn the number of that type of monster
+                    var temp = Instantiate(monsterPresets[i].gameObject, transform);
 
-        for(int i = 0; i < info.enemyNumbers.Count; i++) {  //  loop through the types of monsters
-            KdTree<MonsterInstance> leaders = new KdTree<MonsterInstance>();
-            for(int j = 0; j <= info.enemyNumbers[i]; j++) {    //  spawn the number of that type of monster
-                var temp = Instantiate(monsterPresets[i].gameObject, transform);
+                    bool tooClose = true;
+                    Vector3 pos = j < numOfLeaders ? getPosAlongCircle(transform.position, rad, info.dir[l], (maxSpread / (numOfLeaders - i)) - (maxSpread / 2f)) : getRandomPosAlongCircle(transform.position, rad, info.dir[l]);
+                    int layer = LayerMask.GetMask("Light");
+                    while(tooClose) {
+                        pos = getRandomPosAlongCircle(transform.position, rad, info.dir[l]);
+                        tooClose = false;
+                        RaycastHit2D hit = Physics2D.Raycast(pos, -pos, Vector2.Distance(pos, Vector2.zero), layer);
 
-                bool tooClose = true;
-                Vector3 pos = j < numOfLeaders ? getPosAlongCircle(transform.position, rad, info.dir, (maxSpread / (numOfLeaders - i)) - (maxSpread / 2f)) : getRandomPosAlongCircle(transform.position, rad, info.dir);
-                int layer = LayerMask.GetMask("Light");
-                while(tooClose) {
-                    pos = getRandomPosAlongCircle(transform.position, rad, info.dir);
-                    tooClose = false;
-                    RaycastHit2D hit = Physics2D.Raycast(pos, -pos, Vector2.Distance(pos, Vector2.zero), layer);
+                        if(hit.collider != null) {
+                            //  immideitly hit
+                            if(hit.point == (Vector2)pos) {
+                                rad += 25f;
+                                tooClose = true;
+                            }
 
-                    if(hit.collider != null) {
-                        //  immideitly hit
-                        if(hit.point == (Vector2)pos) {
-                            rad += 25f;
-                            tooClose = true;
+                            //  get the deets from the triangle formed between the hit.point and the pos
+                            var dist = Vector2.Distance(pos, hit.point);
+                            var xOff = hit.point.x - pos.x;
+                            var theta = Mathf.Acos(xOff / dist);
+
+
+                            //  find the point along the line that is the minDist away from the hit
+                            var d = dist - minDistToLight;
+                            var x = d * Mathf.Cos(theta);
+                            var y = d * Mathf.Sin(theta);
+                            y *= pos.y > 0.0f ? -1f : 1f;
+
+                            /*
+                            Debug.DrawLine(hit.point, pos, Color.white, 100f);
+                            Debug.DrawLine(pos + new Vector3(x, y), pos, Color.green, 100f);
+                            Debug.DrawLine(pos, new Vector2(pos.x + xOff, pos.y), Color.white, 100f);
+                            Debug.DrawLine(hit.point, new Vector2(pos.x + xOff, pos.y), Color.cyan, 100f);
+                            */
+                            pos += new Vector3(x, y);
                         }
-
-                        //  get the deets from the triangle formed between the hit.point and the pos
-                        var dist = Vector2.Distance(pos, hit.point);
-                        var xOff = hit.point.x - pos.x;
-                        var theta = Mathf.Acos(xOff / dist);
-
-
-                        //  find the point along the line that is the minDist away from the hit
-                        var d = dist - minDistToLight;
-                        var x = d * Mathf.Cos(theta);
-                        var y = d * Mathf.Sin(theta);
-                        y *= pos.y > 0.0f ? -1f : 1f;
-
-                        /*
-                        Debug.DrawLine(hit.point, pos, Color.white, 100f);
-                        Debug.DrawLine(pos + new Vector3(x, y), pos, Color.green, 100f);
-                        Debug.DrawLine(pos, new Vector2(pos.x + xOff, pos.y), Color.white, 100f);
-                        Debug.DrawLine(hit.point, new Vector2(pos.x + xOff, pos.y), Color.cyan, 100f);
-                        */
-                        pos += new Vector3(x, y);
                     }
-                }
 
-                temp.transform.position = pos;
-                if(j < numOfLeaders) {
-                    temp.GetComponent<MonsterInstance>().setAsLeader();
+                    temp.transform.position = pos;
+                    if(j < numOfLeaders) {
+                        temp.GetComponent<MonsterInstance>().setAsLeader();
 
-                    //  create an new grouping under the monster type and set the first monster in that list as this leader
-                    monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType].Add(new List<MonsterInstance>());
-                    monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType].Count - 1].Add(temp.GetComponent<MonsterInstance>());
-                    leaders.Add(temp.GetComponent<MonsterInstance>());
+                        //  create an new grouping under the monster type and set the first monster in that list as this leader
+                        monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType].Add(new List<MonsterInstance>());
+                        monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType].Count - 1].Add(temp.GetComponent<MonsterInstance>());
+                        leaders.Add(temp.GetComponent<MonsterInstance>());
+                    }
+                    else {
+                        monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))].Add(temp.GetComponent<MonsterInstance>());
+                        temp.GetComponent<MonsterInstance>().closestLeader = monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0];
+                    }
+                    FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>());
+                    yield return new WaitForSeconds(Random.Range(0f, .2f));
                 }
-                else {
-                    monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))].Add(temp.GetComponent<MonsterInstance>());
-                    temp.GetComponent<MonsterInstance>().closestLeader = monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0];
-                }
-                FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>());
-                yield return new WaitForSeconds(Random.Range(0f, .2f));
             }
         }
     }
@@ -190,26 +225,6 @@ public class MonsterSpawner : MonoBehaviour {
         pos.y = center.y + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
         pos.z = center.z;
         return pos;
-    }
-
-
-    waveInfo calcWave() {
-        waveInfo info = new waveInfo();
-        var diff = calcWaveDiff();
-
-        while(diff > 0) {
-            info.enemyNumbers[0]++;
-            diff -= monsterPresets[0].GetComponent<Monster>().diff;
-        }
-
-        info.dir = (direction)Random.Range(1, 5);
-
-        return info;
-    }
-
-    int calcWaveDiff() {
-        int diff = GameInfo.wave + 1;
-        return diff * 10 + (diff / 10) * 10;
     }
 
 

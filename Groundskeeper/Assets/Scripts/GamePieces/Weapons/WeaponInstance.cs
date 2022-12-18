@@ -25,6 +25,9 @@ public abstract class WeaponInstance : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D col) {
         if(target == attackTarget.Monsters && col.gameObject.tag == "Monster" && (reference.targetType == col.gameObject.GetComponent<Monster>().type || reference.targetType == GameInfo.MonsterType.Both)) {
             user.GetComponent<Attacker>().attack(col.gameObject, false);
+            if(GetComponentInParent<PlayerInstance>() != null) {
+                FindObjectOfType<CameraMovement>().shake(FindObjectOfType<PlayerInstance>().getDamage());
+            }
             col.gameObject.GetComponentInChildren<SlashEffect>().slash(user.transform.position, rotObj.transform.GetChild(0).localRotation.x != 0f);
         }
         else if(target == attackTarget.People && col.gameObject.tag == "Helper") {
@@ -100,6 +103,10 @@ public abstract class WeaponInstance : MonoBehaviour {
         anim = StartCoroutine(attackAnim());
     }
 
+    public void chargeWindBack() {
+
+    }
+
     IEnumerator attackAnim() {
         canMove = false;
         trail.emitting = true;
@@ -131,7 +138,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         user.GetComponent<Attacker>().startCooldown();
 
         //  wait for cooldown
-        yield return new WaitForSeconds(reference.cooldown);
+        yield return new WaitForSeconds(user.GetComponent<Attacker>().getAttackCoolDown() - windTime - swingTime);
         anim = null;
     }
 }

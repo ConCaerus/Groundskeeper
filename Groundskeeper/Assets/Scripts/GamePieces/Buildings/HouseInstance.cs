@@ -7,10 +7,12 @@ public class HouseInstance : Building {
     [HideInInspector]
     [SerializeField] public float viewDist = 80f;
     [SerializeField] GameObject arrow;
+    [SerializeField] GameObject bloodParticles;
 
     List<MortalUnit> inTopUnits = new List<MortalUnit>();   //  fuckers that want the house to hide it's top
 
     private void OnTriggerEnter2D(Collider2D col) {
+        //  let the house be clear
         if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
             var c = GetComponent<SpriteRenderer>().color;
             GetComponent<SpriteRenderer>().DOComplete();
@@ -19,8 +21,14 @@ public class HouseInstance : Building {
         }
     }
 
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.Space))
+            customHitLogic(0.0f, Vector2.zero);
+    }
+
 
     private void OnTriggerExit2D(Collider2D col) {
+        //  let the house not be clear anymore
         if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
             inTopUnits.Remove(col.gameObject.GetComponent<MortalUnit>());
             for(int i = inTopUnits.Count - 1; i >= 0; i--) {
@@ -35,23 +43,29 @@ public class HouseInstance : Building {
         }
     }
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.Space))
-            showDoorArrow();
-    }
-
     public void showDoorArrow() {
         arrow.SetActive(true);
-        StartCoroutine(doorArrowAnim());
+        var or = arrow.transform.localScale;
+        arrow.transform.localScale = Vector3.zero;
+        arrow.transform.DOScale(or, .25f);
+        StartCoroutine(doorArrowAnim(.25f));
     }
 
-    IEnumerator doorArrowAnim() {
+    IEnumerator doorArrowAnim(float waitForArrowToShowTime = 0.0f) {
+        yield return new WaitForSeconds(waitForArrowToShowTime);
         float t = .5f, m = 1.5f;
         arrow.transform.DOLocalMoveY(arrow.transform.localPosition.y - m, t);
         yield return new WaitForSeconds(t);
         arrow.transform.DOLocalMoveY(arrow.transform.localPosition.y + m, t);
         yield return new WaitForSeconds(t);
         StartCoroutine(doorArrowAnim());
+    }
+
+    public override GameObject getBloodParticles() {
+        return bloodParticles;
+    }
+    public override Color getStartingColor() {
+        return Color.white;
     }
 
     public override void die() {

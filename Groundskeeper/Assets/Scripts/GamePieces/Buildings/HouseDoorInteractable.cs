@@ -10,6 +10,12 @@ public class HouseDoorInteractable : Interactable {
         FindObjectOfType<TransitionCanvas>().loadScene("House");
     }
 
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.Space))
+            foreach(var i in FindObjectsOfType<MonsterInstance>())
+                i.die();
+    }
+
     public override void deinteract() {
         //  nothing 
     }

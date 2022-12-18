@@ -15,10 +15,12 @@ public class DebuggerWindow : EditorWindow {
 
     private void OnGUI() {
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("+100c"))
+        if(GUILayout.Button("+100s"))
             GameInfo.addSouls(100);
-        if(GUILayout.Button("+1000c"))
+        if(GUILayout.Button("+1000s"))
             GameInfo.addSouls(1000);
+        if(GUILayout.Button("+100000s"))
+            GameInfo.addSouls(100000);
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
@@ -27,8 +29,8 @@ public class DebuggerWindow : EditorWindow {
         if(GUILayout.Button("Clear Board Save"))
             GameInfo.clearBoard();
         if(GUILayout.Button("Clear Save")) {
-            GameInfo.resetVars();
             SaveData.deleteCurrentSave();
+            GameInfo.resetSave();
         }
         GUILayout.EndHorizontal();
 
@@ -40,6 +42,11 @@ public class DebuggerWindow : EditorWindow {
             GameInfo.addNights(1);
         if(GUILayout.Button("Coin Count"))
             Debug.Log("Night: " + GameInfo.getSouls());
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Unlock Everything"))
+            FindObjectOfType<BuyableLibrary>().unlockAll();
         GUILayout.EndHorizontal();
     }
 }

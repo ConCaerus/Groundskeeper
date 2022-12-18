@@ -15,18 +15,25 @@ public class LumberjackInstance : Helper {
     public Vector2 target { get; private set; }
     [HideInInspector] public Vector2 startingPos;
 
+    [SerializeField] GameObject bloodParticles;
+
     private void Awake() {
         stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         startingPos = transform.position;
     }
 
     private void Start() {
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponents<Collider2D>()[0].isTrigger ? GetComponents<Collider2D>()[1] : GetComponents<Collider2D>()[0], spriteObj.GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         FindObjectOfType<UnitMovementUpdater>().addHelper(this);
         FindObjectOfType<HelperAttackManager>().addHelper(this);
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
+
+        //  apply health buff
+        maxHealth = (int)(maxHealth * GameInfo.getHelperHealthBuff());
+        health = maxHealth;
     }
 
     #region ---   MOVEMENT SHIT   ---
@@ -92,12 +99,18 @@ public class LumberjackInstance : Helper {
     public override float getKnockback() {
         return GetComponentInChildren<LumberjackWeaponInstance>().reference.knockback;
     }
-    public override void specialEffectOnAttack() {
+    public override void specialEffectOnAttack(GameObject defender) {
     }
     #endregion
 
 
     #region ---   MORTAL SHIT   ---
+    public override GameObject getBloodParticles() {
+        return bloodParticles;
+    }
+    public override Color getStartingColor() {
+        return Color.white;
+    }
     public override void die() {
         FindObjectOfType<GameBoard>().aHelpers.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
         if(healthBar != null)

@@ -107,9 +107,41 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4491519273356150156}
     m_Modifications:
+    - target: {fileID: 489308101144281290, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 845459227498576843, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 877736237757425378, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1021174827154094513, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Color.b
+      value: 0.30980393
+      objectReference: {fileID: 0}
+    - target: {fileID: 1021174827154094513, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Color.g
+      value: 0.16470589
+      objectReference: {fileID: 0}
+    - target: {fileID: 1021174827154094513, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Color.r
+      value: 0.5568628
+      objectReference: {fileID: 0}
     - target: {fileID: 1173292129674682693, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
       propertyPath: m_Name
       value: HealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173292129674682693, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4168775435522279433, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5861132995845839325, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
       propertyPath: m_AnchorMax.x
@@ -118,6 +150,10 @@ PrefabInstance:
     - target: {fileID: 5861132995845839325, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6657186819062670575, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8687423481317859061, guid: b0011a37bf3abf8409d829c6a134d0e2, type: 3}
       propertyPath: m_Pivot.x

@@ -11,6 +11,8 @@ public class PlayerHouseInstance : Movement {
     Vector2 targetMoveInfo;
     Rigidbody2D rb;
 
+    [SerializeField] GameObject bloodParticles;
+
     private void OnCollisionStay2D(Collision2D col) {
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
     }
@@ -81,6 +83,12 @@ public class PlayerHouseInstance : Movement {
 
 
     #region ---   MORTAL SHIT   ---
+    public override GameObject getBloodParticles() {
+        return bloodParticles;
+    }
+    public override Color getStartingColor() {
+        return Color.white;
+    }
     public override void die() {
         //  the player shouldn't die inside the house
     }

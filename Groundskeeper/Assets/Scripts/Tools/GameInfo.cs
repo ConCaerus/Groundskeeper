@@ -5,7 +5,7 @@ using UnityEngine;
 public static class GameInfo {
     public static bool playing { get; set; } = true;
     public static int wave { get; set; } = 0;
-    public static int wavesPerNight() { return 1; }
+    public static int wavesPerNight() { return 5; }
 
     public static int monstersKilled { get; set; } = 0;
 
@@ -38,13 +38,19 @@ public static class GameInfo {
 
     //  Buy tree shit
     public static string buyTreeTag = "BuyTreeTag";
+    //  buffs
     static string helperDamageBuffTag = "HelperDamageBuff";
+    static string helperHealthBuffTag = "HelperHealthBuff";
+    static string defenceDamageBuffTag = "DefenceDamageBuff";
+    static string structureHealthBuffTag = "StructureHealthBuff";
+    static string pWeaponDamageBuffTag = "PlayerWeaponDamageBuff";
+    static string pWeaponSpeedBuffTag = "PlayerWeaponSpeedBuff";
 
     //  unlocked shit
 
     public static string buyableCount = "numOfBuyables";
-    public static string unlockedBuyableTag(int index) {
-        return "UnlockedBuyable" + index.ToString();
+    public static string unlockedBuyableTag(Buyable.buyableTitle title) {
+        return "UnlockedBuyable: " + title;
     }
 
 
@@ -63,12 +69,10 @@ public static class GameInfo {
         setSouls(100);
         resetNights();
         resetLastSeenEnemy();
-        lockAllBuyables();
         clearBoard();
         Inventory.clear();
         Inventory.addWeapon(0);
         setPlayerWeaponIndex(0);
-        SaveData.deleteKey(buyTreeTag);
     }
     public static void clearBoard() {
         //      clears all of the shit before saving new shit
@@ -137,18 +141,17 @@ public static class GameInfo {
     }
 
     //  buyables
-    public static void lockAllBuyables() {
-        for(int i = 0; i < SaveData.getInt(buyableCount); i++) {
-            SaveData.setInt(unlockedBuyableTag(i), 0);
-            Debug.Log(i);
+    public static void lockAllBuyables(BuyableLibrary bl) {
+        foreach(var i in bl.buyables()) {
+            foreach(var j in i)
+                SaveData.setInt(unlockedBuyableTag(j.GetComponent<Buyable>().title), 0);
         }
     }
-    public static void unlockBuyable(int index) {
-        //  index is supposed to be the index of the buyable in the buyable library
-        SaveData.setInt(unlockedBuyableTag(index), 1);
+    public static void unlockBuyable(Buyable.buyableTitle title) {
+        SaveData.setInt(unlockedBuyableTag(title), 1);
     }
-    public static bool isBuyableUnlocked(int index) {
-        return SaveData.getInt(unlockedBuyableTag(index)) == 1;
+    public static bool isBuyableUnlocked(Buyable.buyableTitle title) {
+        return SaveData.getInt(unlockedBuyableTag(title)) == 1;
     }
 
     //          BUFFS
@@ -156,37 +159,55 @@ public static class GameInfo {
     public static void setHelperDamageBuff(float buff) {
         SaveData.setFloat(helperDamageBuffTag, buff);
     }
+    public static void incHelperDamageBuff(float buff) {
+        setHelperDamageBuff(buff + getHelperDamageBuff());
+    }
     public static float getHelperDamageBuff() {
-        return SaveData.getFloat(helperDamageBuffTag);
+        return SaveData.getFloat(helperDamageBuffTag) == 0f ? 1f : SaveData.getFloat(helperDamageBuffTag);
     }
-
-    //  player weapon buffs
-    public static void setPlayerWeaponDamageBuff(int weaponInd, float buff) {
-        var data = SaveData.getString(getPWeaponBuffTag(weaponInd));
-        weaponBuff buffs = string.IsNullOrEmpty(data) ? new weaponBuff() : JsonUtility.FromJson<weaponBuff>(data);
-
-        buffs.dmgBuff = buff;
-
-        var d = JsonUtility.ToJson(buffs);
-        SaveData.setString(getPWeaponBuffTag(weaponInd), d);
+    public static void setHelperHealthBuff(float buff) {
+        SaveData.setFloat(helperHealthBuffTag, buff);
     }
-    public static void setPlayerWeaponSpeedBuff(int weaponInd, float buff) {
-        var data = SaveData.getString(getPWeaponBuffTag(weaponInd));
-        weaponBuff buffs = string.IsNullOrEmpty(data) ? new weaponBuff() : JsonUtility.FromJson<weaponBuff>(data);
-
-        buffs.speedBuff = buff;
-
-        var d = JsonUtility.ToJson(buffs);
-        SaveData.setString(getPWeaponBuffTag(weaponInd), d);
+    public static void incHelperHealthBuff(float buff) {
+        setHelperHealthBuff(buff + getHelperHealthBuff());
     }
-    public static weaponBuff getPWeaponBuff(int weaponInd) {
-        var data = SaveData.getString(getPWeaponBuffTag(weaponInd));
-        return string.IsNullOrEmpty(data) ? new weaponBuff() : JsonUtility.FromJson<weaponBuff>(data);
+    public static float getHelperHealthBuff() {
+        return SaveData.getFloat(helperHealthBuffTag) == 0f ? 1f : SaveData.getFloat(helperHealthBuffTag);
     }
-}
-
-[System.Serializable]
-public class weaponBuff {
-    public float dmgBuff = 1.0f;
-    public float speedBuff = 1.0f;
+    public static void setDefenceDamageBuff(float buff) {
+        SaveData.setFloat(defenceDamageBuffTag, buff);
+    }
+    public static void incDefenceDamageBuff(float buff) {
+        SaveData.setFloat(defenceDamageBuffTag, buff + getDefenceDamageBuff());
+    }
+    public static float getDefenceDamageBuff() {
+        return SaveData.getFloat(defenceDamageBuffTag) == 0f ? 1f : SaveData.getFloat(defenceDamageBuffTag);
+    }
+    public static void setStructureHealthBuff(float buff) {
+        SaveData.setFloat(structureHealthBuffTag, buff);
+    }
+    public static void incStructureHealthBuff(float buff) {
+        SaveData.setFloat(structureHealthBuffTag, buff + getStructureHealthBuff());
+    }
+    public static float getStructureHealthBuff() {
+        return SaveData.getFloat(structureHealthBuffTag) == 0f ? 1f : SaveData.getFloat(structureHealthBuffTag);
+    }
+    public static void setPWeaponDamageBuff(float buff) {
+        SaveData.setFloat(pWeaponDamageBuffTag, buff);
+    }
+    public static void incPWeaponDamageBuff(float buff) {
+        SaveData.setFloat(pWeaponDamageBuffTag, buff + getPWeaponDamageBuff());
+    }
+    public static float getPWeaponDamageBuff() {
+        return SaveData.getFloat(pWeaponDamageBuffTag) == 0f ? 1f : SaveData.getFloat(pWeaponDamageBuffTag);
+    }
+    public static void setPWeaponSpeedBuff(float buff) {
+        SaveData.setFloat(pWeaponSpeedBuffTag, buff);
+    }
+    public static void incPWeaponSpeedBuff(float buff) {
+        SaveData.setFloat(pWeaponSpeedBuffTag, buff + getPWeaponSpeedBuff());
+    }
+    public static float getPWeaponSpeedBuff() {
+        return SaveData.getFloat(pWeaponSpeedBuffTag) == 0f ? 1f : SaveData.getFloat(pWeaponSpeedBuffTag);
+    }
 }

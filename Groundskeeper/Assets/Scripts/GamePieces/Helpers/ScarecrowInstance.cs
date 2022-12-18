@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ScarecrowInstance : Helper {
+    [SerializeField] GameObject bloodParticles;
 
     //  functions that don't do squat but i'm too lazy to make the helper class not need these
     public override void customHitLogic(float knockback, Vector2 origin, bool stunMonster = true) {
@@ -32,7 +33,14 @@ public class ScarecrowInstance : Helper {
     public override Vector2 getSpriteOriginalScale() {
         return spriteObj.transform.localScale;
     }
-    public override void specialEffectOnAttack() {
+    public override void specialEffectOnAttack(GameObject defender) {
+    }
+
+    public override GameObject getBloodParticles() {
+        return bloodParticles;
+    }
+    public override Color getStartingColor() {
+        return Color.white;
     }
 
 

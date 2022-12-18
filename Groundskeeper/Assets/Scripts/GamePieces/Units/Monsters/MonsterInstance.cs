@@ -18,6 +18,8 @@ public class MonsterInstance : Monster {
     Vector2 spriteOriginal, shadowOriginal;   //  for showing and hiding
 
     [HideInInspector] public float affectedMoveAmt = 0f;
+    [SerializeField] GameObject bloodParticles, soulParticles;
+    Color normColor;
 
 
     private void OnCollisionStay2D(Collision2D col) {
@@ -39,9 +41,16 @@ public class MonsterInstance : Monster {
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
+
+        //  randomize the look of the monster
+        float sizeDiff = Random.Range(1.0f - .2f, 1.0f + .2f), minColor = .4f, maxColor = .9f;
+        transform.localScale = new Vector3(sizeDiff, sizeDiff);
+        normColor = new Color(Random.Range(minColor, maxColor), Random.Range(minColor, maxColor), Random.Range(minColor, maxColor), spriteObj.GetComponent<SpriteRenderer>().color.a);
+        spriteObj.GetComponent<SpriteRenderer>().color = normColor;
+
         spriteOriginal = spriteObj.transform.localScale;
-        shadowOriginal = shadowObj.transform.localScale;
-        //hide();
+        if(shadowObj != null)
+            shadowOriginal = shadowObj.transform.localScale;
     }
 
     #region ---   MOVEMENT SHIT   ---
@@ -54,10 +63,13 @@ public class MonsterInstance : Monster {
     public void updateMovement() {
         //  following person
         if(!leader && closestLeader != null) {
+            //  move towards the same person / structure as the leader
             if(closestLeader.followingTransform != null)
                 moveTarget = closestLeader.followingTransform.position;
-            else
+            //  move towards the same position as the leader with the same offset as current
+            else {
                 moveTarget = closestLeader.moveTarget;
+            }
         }
         else {
             if(followingTransform != null)
@@ -112,16 +124,23 @@ public class MonsterInstance : Monster {
     public override float getKnockback() {
         return attackKnockBack;
     }
-    public override void specialEffectOnAttack() {
+    public override void specialEffectOnAttack(GameObject defender) {
         if(mType == monsterType.Vampire) {
             health = Mathf.Clamp(health + attackDamage, 0, maxHealth);
         }
+        if(defender.GetComponent<PlayerInstance>() != null)
+            defender.GetComponent<Movement>().inhibitMovementCauseBeingAttacked();
     }
     #endregion
 
 
     #region ---   MORTAL SHIT   ---
-
+    public override GameObject getBloodParticles() {
+        return bloodParticles;
+    }
+    public override Color getStartingColor() {
+        return normColor;
+    }
     public override void die() {
         FindObjectOfType<GameBoard>().monsters.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
         if(leader && FindObjectOfType<GameBoard>().monsters.Count > 0)
@@ -130,10 +149,14 @@ public class MonsterInstance : Monster {
             FindObjectOfType<MonsterSpawner>().removeMonsterFromGroup(this);
         GameInfo.monstersKilled++;
         FindObjectOfType<GameUICanvas>().incSouls(soulsGiven);
+        var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null);
+        s.GetComponent<ParticleSystem>().emission.SetBurst(0, new ParticleSystem.Burst(.5f, soulsGiven * 4.0f));
+        s.GetComponent<ParticleSystem>().Play();
+        Destroy(s, s.GetComponent<ParticleSystem>().main.duration);
         transform.DOScale(0f, .25f);
         if(healthBar != null)
             Destroy(healthBar.gameObject);
-        Destroy(gameObject, .26f);
+        Destroy(gameObject, .26f);    //  give time for the particles to clear
         enabled = false;
     }
     #endregion

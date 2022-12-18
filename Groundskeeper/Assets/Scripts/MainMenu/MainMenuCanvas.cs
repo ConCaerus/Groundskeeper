@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MainMenuCanvas : MonoBehaviour {
+    [SerializeField] GameObject menu, save;
 
     private void Start() {
-        for(int i = 0; i < transform.childCount; i++)
-            transform.GetChild(i).gameObject.SetActive(i == 0);
+        menu.SetActive(true);
+        save.SetActive(false);
     }
 
     public void quit() {

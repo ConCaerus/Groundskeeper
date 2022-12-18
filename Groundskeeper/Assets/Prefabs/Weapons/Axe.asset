@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd6a8323815a8a84784a06b1d105a80c, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: 
-  name: Axe
+  title: Axe
   damage: 15
-  knockback: 3
+  knockback: 2
   cooldown: 0.65
   targetType: 1
   trailPos: {x: 1.33, y: -0.13}

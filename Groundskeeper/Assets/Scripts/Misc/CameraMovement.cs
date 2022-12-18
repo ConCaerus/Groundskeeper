@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class CameraMovement : MonoBehaviour {
     [SerializeField] float speed, scrollSpeed;
     [SerializeField] float maxZoom = 25, minZoom = 10;
     [SerializeField] bool canZoom = true;
     [SerializeField] Vector3 offsetFromPlayer = Vector2.zero;
+
+    Coroutine shakeCenterer = null;
 
     private void Start() {
         var pos = GameObject.FindGameObjectWithTag("Player").transform.position;
@@ -32,5 +35,20 @@ public class CameraMovement : MonoBehaviour {
             var target = delta < 0f ? scrollSpeed * 100.0f * Time.deltaTime : -scrollSpeed * 100.0f * Time.deltaTime;
             Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + target, minZoom, maxZoom);
         }
+    }
+
+    public void shake(float dmg) {
+        var s = Mathf.Clamp(dmg / 50.0f, 0.0f, 5.0f);
+        transform.parent.DOShakePosition(.25f, s);
+        if(shakeCenterer != null)
+            StopCoroutine(shakeCenterer);
+        shakeCenterer = StartCoroutine(centerShake(.25f));
+    }
+
+    IEnumerator centerShake(float t) {
+        yield return new WaitForSeconds(t);
+
+        transform.parent.DOLocalMove(Vector3.zero, .15f);
+        shakeCenterer = null;
     }
 }

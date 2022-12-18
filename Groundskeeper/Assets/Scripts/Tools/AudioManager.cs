@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
     [SerializeField] AudioSource effectPlayer, musicPlayer;
+    [SerializeField] AudioClip[] playOnStartAndKeepPlaying;
 
 
     List<AudioClip> playedClips = new List<AudioClip>();
@@ -11,6 +12,11 @@ public class AudioManager : MonoBehaviour {
 
     private void Awake() {
         StartCoroutine(refreshPlaylist());
+    }
+
+    private void Start() {
+        foreach(var i in playOnStartAndKeepPlaying)
+            playMusic(i, true);
     }
 
     public void playSound(AudioClip clip, Vector2 pos, bool randomize = true) {

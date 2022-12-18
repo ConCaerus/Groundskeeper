@@ -21,6 +21,7 @@ public class GameBoard : MonoBehaviour {
         loadBoard();
     }
 
+    //  NOTE: BOARD RESETS AUTOMATICALLY ON NIGHT 0
     public void saveBoard() {
         int hIndex = 0, dIndex = 0, pIndex = 0;
         //      clears all of the shit before saving new shit
@@ -50,6 +51,8 @@ public class GameBoard : MonoBehaviour {
         SaveData.setInt(GameInfo.lastSavedHelperCount, hIndex);
         SaveData.setInt(GameInfo.lastSavedDefenceCount, dIndex);
         SaveData.setInt(GameInfo.lastSavedMiscCount, pIndex);
+
+        saveEnvironment();
     }
     public void loadBoard() {
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedHelperCount); i++) {
@@ -77,9 +80,21 @@ public class GameBoard : MonoBehaviour {
         spawnEnvironment();
     }
 
+    public void saveEnvironment() {
+        //  clears the save data
+        for(int i = 0; i < SaveData.getInt(GameInfo.envCount); i++)
+            SaveData.deleteKey(GameInfo.envTag + i.ToString());
+
+        //  store the list
+        for(int i = 0; i < environment.Count; i++) {
+            var save = new ObjectSaveData(environment[i]);
+            var data = JsonUtility.ToJson(save);
+            SaveData.setString(GameInfo.envTag + i.ToString(), data);
+        }
+        SaveData.setInt(GameInfo.envCount, environment.Count);
+    }
 
     public void spawnEnvironment() {
-        //  has no environment so spawn more
         StartCoroutine(environmentSpawner(SaveData.getInt(GameInfo.envCount) != 0));
         FindObjectOfType<EnvironmentManager>().finishSpawning();
     }
@@ -130,7 +145,7 @@ public class GameBoard : MonoBehaviour {
                 var d = SaveData.getString(GameInfo.envTag + i.ToString());
                 var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-                var o = FindObjectOfType<EnvironmentManager>().spawnEnv(FindObjectOfType<PresetLibrary>().getRandomEnvironment(), data.pos);
+                var o = FindObjectOfType<EnvironmentManager>().spawnEnv(FindObjectOfType<PresetLibrary>().getEnvironment(data.name), data.pos);
 
                 if(o.GetComponent<Collider2D>() != null)
                     FindObjectOfType<LayerSorter>().requestNewSortingLayer(o.GetComponent<Collider2D>(), o.transform.GetChild(0).GetComponent<SpriteRenderer>());

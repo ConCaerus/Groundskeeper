@@ -17,9 +17,8 @@ public abstract class MortalUnit : Mortal {
         //  show that this got hurt
         if(GetComponent<Movement>() != null) {
             GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().DOKill();
-            var a = GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().color.a;
-            GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f, a);
-            GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().DOColor(new Color(1f, 1f, 1f, a), takeTime);
+            GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f, getStartingColor().a);
+            GetComponent<Movement>().spriteObj.GetComponent<SpriteRenderer>().DOColor(getStartingColor(), takeTime);
 
             foreach(var i in GetComponents<Collider2D>()) {
                 if(!i.isTrigger) {

@@ -1,5 +1,97 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1605338074300620544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4352467192718510077}
+  - component: {fileID: 6530197272115351198}
+  m_Layer: 6
+  m_Name: Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4352467192718510077
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605338074300620544}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.58, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4020595392461985259}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6530197272115351198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1605338074300620544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85a34663ca705a54eac3205e225a6d45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightType: 0
+  lightPresetId: 0
+  eventPresetId: 0
+  lightLayer: 0
+  occlusionLayer: 0
+  translucentLayer: 2
+  translucentPresetId: 0
+  color: {r: 2.2322829, g: 2.2322829, b: 2.2322829, a: 0.35}
+  size: 8
+  spotAngleInner: 360
+  spotAngleOuter: 360
+  coreSize: 0.5
+  falloff: 0
+  lightStrength: 0.072
+  outerAngle: 20.5
+  lightRadius: 1
+  shadowDistanceClose: 0
+  shadowDistanceFar: 5
+  maskTranslucencyQuality: 1
+  maskTranslucencyStrength: 0.5
+  applyRotation: 0
+  textureSize: 1
+  meshMode:
+    enable: 0
+    alpha: 0.344
+    shader: 1
+    materials:
+    - {fileID: 0}
+    sortingLayer:
+      name: Default
+      Order: 0
+  bumpMap:
+    intensity: 0.982
+    depth: 1
+  whenInsideCollider: 2
+  lightSprite: 0
+  sprite: {fileID: 21300000, guid: 6592d6be03fd808449716a11558d506f, type: 3}
+  spriteFlipX: 0
+  spriteFlipY: 0
+  freeFormFalloff: 1
+  freeFormPoint: 1
+  freeFormFalloffStrength: 1
+  freeFormPoints:
+    points:
+    - {x: 1, y: 0}
+    - {x: -0.50000006, y: 0.8660254}
+    - {x: -0.4999999, y: -0.86602545}
+  drawingEnabled: 1
+  drawingTranslucencyEnabled: 1
 --- !u!1 &5885474163079569782
 GameObject:
   m_ObjectHideFlags: 0
@@ -72,7 +164,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f0c3013faa6a93d4db6bc88e5e7e02ac, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -262,9 +354,9 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.023654938, y: 0.045968056}
-      - {x: -0.56011873, y: -1.185322}
-      - {x: 0.5811334, y: -1.1958491}
+    - - {x: -0.11935806, y: -1.1547015}
+      - {x: -0.28170305, y: -2.0814738}
+      - {x: 0.08520371, y: -2.2225084}
 --- !u!50 &6186354697606408479
 Rigidbody2D:
   serializedVersion: 4
@@ -302,7 +394,7 @@ MonoBehaviour:
   title: 5
   canBePlacedOutsideLight: 0
   placementObstacleLayers: 0000000002000000
-  tile: {fileID: 11400000, guid: 0d7e9ac76e8384d488c605869e0998d1, type: 2}
+  tile: {fileID: 11400000, guid: 500c86a80a7354248b654d42789d49a4, type: 2}
   mainCollider: {fileID: 781272015645960741}
   mainSprite: {fileID: 5885474163079569800}
   placementCollider: {fileID: 5332476629860305533, guid: aaa10add58a6aaa4cbb8f04007a16132, type: 3}
@@ -323,16 +415,18 @@ MonoBehaviour:
   unitHealth: 250
   hurtSound: {fileID: 0}
   healthBar: {fileID: 0}
-  forwardSprite: {fileID: 21300000, guid: 68fdd4694eb9a8a43bbe71b7e38d5365, type: 3}
-  backSprite: {fileID: 21300000, guid: b7697c7f188045345bc97c961b3c63a1, type: 3}
-  leftSprite: {fileID: 21300000, guid: 668915004a7013a43941460fa00d0c23, type: 3}
-  rightSprite: {fileID: 21300000, guid: 08936d720dc91e34aa3e1726061d25bc, type: 3}
+  forwardSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
+  backSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
+  leftSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
+  rightSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
   spriteObj: {fileID: 5885474163079569782}
   shadowObj: {fileID: 5885474163258482202}
+  movementParticles: {fileID: 0}
   speed: 0
   helpAmount: 0
   helpType: 0
-  sprite: {fileID: 21300000, guid: 68fdd4694eb9a8a43bbe71b7e38d5365, type: 3}
+  sprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
+  bloodParticles: {fileID: 0}
 --- !u!1 &8522752653620781266
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,6 +456,7 @@ Transform:
   m_Children:
   - {fileID: 5885474163079569801}
   - {fileID: 5885474163258482205}
+  - {fileID: 4352467192718510077}
   m_Father: {fileID: 5885474163630609343}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

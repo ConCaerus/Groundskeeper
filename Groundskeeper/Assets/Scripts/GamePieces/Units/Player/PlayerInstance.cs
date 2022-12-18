@@ -13,7 +13,7 @@ public class PlayerInstance : Attacker {
 
         set {
             unitStamina = value;
-            FindObjectOfType<StaminaSlider>().updateSlider(value, 100f);
+            FindObjectOfType<PlayerUICanvas>().updateStamSlider(value, 100f);
         }
     }
     float stamInc = 0.0f;
@@ -27,6 +27,8 @@ public class PlayerInstance : Attacker {
     Vector2 moveInfo;
     Vector2 targetMoveInfo;
     Rigidbody2D rb;
+
+    [SerializeField] GameObject bloodParticles;
 
     private void OnCollisionStay2D(Collision2D col) {
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
@@ -58,13 +60,14 @@ public class PlayerInstance : Attacker {
         }
 
         //  move the object
-        moveWithDir(moveInfo, rb, controls.Player.Sprint.IsPressed() && stamina > 0f ? runSpeed : walkSpeed);
+        moveWithDir(moveInfo, rb, isSprinting() ? runSpeed : walkSpeed);
         stamina = Mathf.Clamp(stamina - (controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? 1 : -.5f - stamInc), 0f, 100f);
         stamInc += controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? -stamInc : .01f;
 
         //  if player is not moving, decrement the movementInfo
         //  if player is moving, increase the movementInfo to target value
         moveInfo = controls.Player.Move.inProgress ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, Vector2.zero, slowSpeed * 100.0f * Time.fixedDeltaTime);
+
 
         //  adjusts the player's light based on how far they are to the edge
         //      player is out of bounds, so turn off their light
@@ -112,7 +115,7 @@ public class PlayerInstance : Attacker {
         }
     }
     public override WalkAnimInfo getWalkInfo() {
-        return new WalkAnimInfo(.2f, .7f, 25f, 5f);
+        return new WalkAnimInfo(.2f, .7f, 20f, 0f);
     }
 
     public override Vector2 getSpriteOriginalScale() {
@@ -121,25 +124,35 @@ public class PlayerInstance : Attacker {
     public override Vector2 getShadowOriginalScale() {
         return shadowOriginal;
     }
+    public bool isSprinting() {
+        return controls.Player.Sprint.IsPressed() && stamina > 0f;
+    }
     #endregion
 
 
     #region ---   ATTACKER SHIT   ---
     public override float getAttackCoolDown() {
-        return GetComponentInChildren<PlayerWeaponInstance>().reference.cooldown * GameInfo.getPWeaponBuff(GameInfo.getPlayerWeaponIndex()).speedBuff;
+        return GetComponentInChildren<PlayerWeaponInstance>().reference.cooldown / GameInfo.getPWeaponSpeedBuff();
     }
     public override int getDamage() {
-        return (int)(GetComponentInChildren<PlayerWeaponInstance>().reference.damage * GameInfo.getPWeaponBuff(GameInfo.getPlayerWeaponIndex()).dmgBuff);
+        return (int)(GetComponentInChildren<PlayerWeaponInstance>().reference.damage * GameInfo.getPWeaponDamageBuff() * GetComponentInChildren<PlayerWeaponInstance>().chargeMod);
     }
     public override float getKnockback() {
         return GetComponentInChildren<PlayerWeaponInstance>().reference.knockback;
     }
-    public override void specialEffectOnAttack() {
+    public override void specialEffectOnAttack(GameObject defender) {
+        stopInhibitingMovement();
     }
     #endregion
 
 
     #region ---   MORTAL SHIT   ---
+    public override GameObject getBloodParticles() {
+        return bloodParticles;
+    }
+    public override Color getStartingColor() {
+        return Color.white;
+    }
     public override void die() {
         //  create a new empty player obj
         var obj = new GameObject("deadPlayer");

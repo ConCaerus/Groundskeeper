@@ -5,7 +5,7 @@ using UnityEngine;
 public class HelperAttackManager : MonoBehaviour {
 
 
-    float inReachDist = 4.5f;
+    float inReachDist = 4.0f;
 
     public void addHelper(LumberjackInstance hel) {
         StartCoroutine(attackLogic(hel));

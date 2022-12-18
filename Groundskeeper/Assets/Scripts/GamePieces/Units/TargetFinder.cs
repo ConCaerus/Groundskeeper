@@ -6,7 +6,7 @@ public class TargetFinder : MonoBehaviour {
     //  max dist that an enemy will care about whether or not they are close to a thing
     //  if they are out of range from everything, they will walk towards the house
     float monsterDistToCare = 15.0f;
-    float helperDistToCare = 25.0f;
+    float helperDistToCare = 10.0f;
 
     public Vector2 getTargetForMonster(GameObject monster) {
         if(monster.GetComponent<MonsterInstance>() == null)

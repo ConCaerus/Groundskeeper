@@ -8,29 +8,41 @@ using TMPro;
 
 public class PregameCanvas : MonoBehaviour {
     [SerializeField] GameObject upper, lower, lowerGenericButtonHolder;
-    [SerializeField] TextMeshProUGUI soulsText;
+    [SerializeField] public TextMeshProUGUI soulsText;  //  referenced in PlacementGrid place()
     [SerializeField] CircularSlider timer;
-    float prepTime = 2 * 60; // 3 mins
+    float prepTime = 2 * 60; // 2 mins
+
+    [SerializeField] AudioClip gameMusic;
 
 
     private void Start() {
+        FindObjectOfType<GameUICanvas>().hide();
         transform.GetChild(0).gameObject.SetActive(true);
         soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
         StartCoroutine(startAfterTime());
 
-        //  remove buttons that don't have shit unlocked
-        foreach(var i in lowerGenericButtonHolder.GetComponentsInChildren<Button>()) {
-            if(i.GetComponentInChildren<TextMeshProUGUI>().text == "Helpers") {
-                if(FindObjectOfType<BuyableLibrary>().getHelpers().Count == 0)
-                    i.gameObject.SetActive(false);
-            }
-            else if(i.GetComponentInChildren<TextMeshProUGUI>().text == "Defences") {
-                if(FindObjectOfType<BuyableLibrary>().getDefences().Count == 0)
-                    i.gameObject.SetActive(false);
-            }
-            else if(i.GetComponentInChildren<TextMeshProUGUI>().text == "Structures") {
-                if(FindObjectOfType<BuyableLibrary>().getStructures().Count == 0)
-                    i.gameObject.SetActive(false);
+        //  player doesn't have anything unlocked, so remove the lower bar
+        if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper) == 0 && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence) == 0 && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure) == 0) {
+            lower.SetActive(false);
+        }
+        else {
+            //  remove buttons that don't have shit unlocked
+            foreach(var i in lowerGenericButtonHolder.GetComponentsInChildren<Button>()) {
+                if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Helper) {
+                    i.GetComponent<PregameBuyableButton>().manageNewDot();
+                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper) == 0)
+                        i.gameObject.SetActive(false);
+                }
+                else if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Defence) {
+                    i.GetComponent<PregameBuyableButton>().manageNewDot();
+                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence) == 0)
+                        i.gameObject.SetActive(false);
+                }
+                else if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Structure) {
+                    i.GetComponent<PregameBuyableButton>().manageNewDot();
+                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure) == 0)
+                        i.gameObject.SetActive(false);
+                }
             }
         }
     }
@@ -48,17 +60,6 @@ public class PregameCanvas : MonoBehaviour {
         return EventSystem.current.IsPointerOverGameObject();
     }
 
-    public bool updateCoins(int spent) {
-        if(GameInfo.getSouls() < spent) {
-            soulsText.DOKill();
-            soulsText.color = Color.red;
-            soulsText.DOColor(Color.white, .5f);
-            return false;
-        }
-        GameInfo.addSouls(-spent);
-        return true;
-    }
-
     public bool prepping() {
         return timer.value > 0f;
     }
@@ -67,16 +68,20 @@ public class PregameCanvas : MonoBehaviour {
     void hide() {
         float t = 2f;
         float amt = 500f;
-        lower.GetComponent<RectTransform>().DOAnchorPosY(-amt, t);
+        if(lower != null)
+            lower.GetComponent<RectTransform>().DOAnchorPosY(-amt, t);
         upper.GetComponent<RectTransform>().DOAnchorPosY(amt, t);
         Destroy(gameObject, t);
     }
 
     //  buttons
     public void ready() {
+        FindObjectOfType<GameBoard>().saveBoard();
+        FindObjectOfType<GameUICanvas>().show();
         FindObjectOfType<MonsterSpawner>().spawning = true;
         FindObjectOfType<PlacementGrid>().end();
         FindObjectOfType<PlayerWeaponInstance>().canAttack = true;
+        FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
         hide();
     }
 

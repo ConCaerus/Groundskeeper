@@ -191,7 +191,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1477919414227495092}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -22.35, y: -0.9673549, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5898949283679079693}
@@ -234,6 +234,7 @@ MonoBehaviour:
   maxHealth: 30
   unitHealth: 30
   hurtSound: {fileID: 8300000, guid: 9baf9dc19f77df447b41ed0eeb03a23f, type: 3}
+  bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
   healthBar: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: 76ddb35818606eb48860a478e68d0aa8, type: 3}
   backSprite: {fileID: 21300000, guid: efd66f59c48c1ce46b5ebe7591249e59, type: 3}
@@ -241,24 +242,25 @@ MonoBehaviour:
   rightSprite: {fileID: 21300000, guid: 25b14c2db38cf4749a058bb13bc5ad22, type: 3}
   spriteObj: {fileID: 1477919413779669650}
   shadowObj: {fileID: 1477919413712165063}
-  darknessParticles: {fileID: 5869601839018263918, guid: 1980d2bbf24ea6b4ba7320c6201d4d0a, type: 3}
+  movementParticles: {fileID: 838880790227583927}
   mType: 0
   speed: 0.5
   attackDamage: 5
   damageToDefences: 1
   diff: 1
-  soulsGiven: 0.25
+  soulsGiven: 1
   earliestNight: 0
   favoriteTarget: 0
   type: 1
   flying: 0
-  scareRadius: 0
   sprite: {fileID: 21300000, guid: 76ddb35818606eb48860a478e68d0aa8, type: 3}
   attackCoolDown: 0.5
   attackKnockBack: 0
   followingTransform: {fileID: 0}
   closestLeader: {fileID: 0}
   affectedMoveAmt: 0
+  bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
+  soulParticles: {fileID: 656110837553578308, guid: f2cdc443f20380e499b92936481b8140, type: 3}
 --- !u!60 &4429582821961573204
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -317,6 +319,7 @@ Transform:
   - {fileID: 1477919413779669661}
   - {fileID: 1477919413712165062}
   - {fileID: 7661736947752663991}
+  - {fileID: 9184030249835340451}
   m_Father: {fileID: 1477919414227495094}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -389,4 +392,71 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2583426695933466623, guid: dadd8144b52b4b647aed6b3afea9a04b, type: 3}
   m_PrefabInstance: {fileID: 5299005913202977864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6650053442455126429
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5898949283679079693}
+    m_Modifications:
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7201995533073026505, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+      propertyPath: m_Name
+      value: GrassMovementParticles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+--- !u!4 &9184030249835340451 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+  m_PrefabInstance: {fileID: 6650053442455126429}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &838880790227583927 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6335986319718400554, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+  m_PrefabInstance: {fileID: 6650053442455126429}
   m_PrefabAsset: {fileID: 0}
