@@ -21,6 +21,9 @@ public class MonsterInstance : Monster {
     [SerializeField] GameObject bloodParticles, soulParticles;
     Color normColor;
 
+    [HideInInspector] public int relevantWave;
+    [HideInInspector] public MonsterSpawner.direction direction;
+
 
     private void OnCollisionStay2D(Collision2D col) {
         if(canAttack) {
@@ -142,21 +145,41 @@ public class MonsterInstance : Monster {
         return normColor;
     }
     public override void die() {
+        //  removes the monster from the game board monsters
         FindObjectOfType<GameBoard>().monsters.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
-        if(leader && FindObjectOfType<GameBoard>().monsters.Count > 0)
-            FindObjectOfType<MonsterSpawner>().passOnLeadership(this);
+
+        //  passes on leader ship if is leader and there are still monsters from this wave
+        if(leader && FindObjectOfType<MonsterSpawner>().stillHasMonstersFromWave(relevantWave))
+            FindObjectOfType<MonsterSpawner>().passOnLeadership(this, relevantWave);
+        //  either not a leader, or there are no more monsters from this wave. Either way, remove it from the monsterSpawner list
         else
-            FindObjectOfType<MonsterSpawner>().removeMonsterFromGroup(this);
+            FindObjectOfType<MonsterSpawner>().removeMonsterFromGroup(this, relevantWave);
+        //  start a new wave if this was the last monster of the wave
+        if(!FindObjectOfType<MonsterSpawner>().stillHasMonstersFromWave(relevantWave)) {
+            if(relevantWave == GameInfo.wavesPerNight() - 1)    //  this is the last monster of the night
+                FindObjectOfType<MonsterSpawner>().endGame();
+            else if(relevantWave == GameInfo.wave)              //  this monster is the last monster of the current wave
+                FindObjectOfType<MonsterSpawner>().startNewWave();  //  this updates the rose also
+            else                                                //  this monster isn't important, so update the rose
+                FindObjectOfType<WaveWarnerRose>().updateForDirection(direction);
+        }
+
+        //  boring stuff
+        FindObjectOfType<HouseInstance>().removeUnitFromInTopUnits(this);
         GameInfo.monstersKilled++;
         FindObjectOfType<GameUICanvas>().incSouls(soulsGiven);
+
+        //  fliar
         var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null);
         s.GetComponent<ParticleSystem>().emission.SetBurst(0, new ParticleSystem.Burst(.5f, soulsGiven * 4.0f));
         s.GetComponent<ParticleSystem>().Play();
         Destroy(s, s.GetComponent<ParticleSystem>().main.duration);
         transform.DOScale(0f, .25f);
+
+        //  cleanup
         if(healthBar != null)
             Destroy(healthBar.gameObject);
-        Destroy(gameObject, .26f);    //  give time for the particles to clear
+        Destroy(gameObject, .26f);
         enabled = false;
     }
     #endregion

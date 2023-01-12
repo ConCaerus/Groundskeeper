@@ -13,6 +13,8 @@ public class PauseMenu : MonoBehaviour {
 
 
     public void togglePause() {
+        if(FindObjectOfType<OptionsCanvas>() != null)
+            return;
         var background = transform.GetChild(0).gameObject;
         if(!background.activeInHierarchy) {
             background.SetActive(true);
@@ -27,10 +29,6 @@ public class PauseMenu : MonoBehaviour {
 
     public void resume() {
         togglePause();
-    }
-
-    public void options() {
-        //  show options
     }
 
     public void menu() {

@@ -23,6 +23,8 @@ public class PlayerWeaponInstance : WeaponInstance {
             }
             //  player released their attack, whether it's charged or not
             else if(!Input.GetMouseButton(0) && charger != null) {
+                if(FindObjectOfType<GameTutorialCanvas>() != null)
+                    FindObjectOfType<GameTutorialCanvas>().hasAttacked();
                 StopCoroutine(charger);
                 charger = null;
                 FindObjectOfType<PlayerUICanvas>().updateChargeSlider(0.0f, 1.0f);

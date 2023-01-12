@@ -15,31 +15,27 @@ public class HouseInstance : Building {
         //  let the house be clear
         if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
             var c = GetComponent<SpriteRenderer>().color;
-            GetComponent<SpriteRenderer>().DOComplete();
-            GetComponent<SpriteRenderer>().DOColor(new Color(c.r, c.g, c.b, .5f), .15f);
+            GetComponent<SpriteRenderer>().DOBlendableColor(new Color(c.r, c.g, c.b, 0.5f), .25f);
             inTopUnits.Add(col.gameObject.GetComponent<MortalUnit>());
         }
     }
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.Space))
-            customHitLogic(0.0f, Vector2.zero);
-    }
-
-
     private void OnTriggerExit2D(Collider2D col) {
         //  let the house not be clear anymore
         if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
-            inTopUnits.Remove(col.gameObject.GetComponent<MortalUnit>());
-            for(int i = inTopUnits.Count - 1; i >= 0; i--) {
-                if(inTopUnits[i] == null || inTopUnits[i].health <= 0f)
-                    inTopUnits.RemoveAt(i);
-            }
-            if(inTopUnits.Count == 0) {
-                var c = GetComponent<SpriteRenderer>().color;
-                GetComponent<SpriteRenderer>().DOComplete();
-                GetComponent<SpriteRenderer>().DOColor(new Color(c.r, c.g, c.b, 1f), .25f);
-            }
+            removeUnitFromInTopUnits(col.gameObject.GetComponent<MortalUnit>());
+        }
+    }
+
+    public void removeUnitFromInTopUnits(MortalUnit unit) {
+        inTopUnits.Remove(unit);
+        for(int i = inTopUnits.Count - 1; i >= 0; i--) {
+            if(inTopUnits[i] == null || inTopUnits[i].health <= 0f)
+                inTopUnits.RemoveAt(i);
+        }
+        if(inTopUnits.Count == 0) {
+            var c = GetComponent<SpriteRenderer>().color;
+            GetComponent<SpriteRenderer>().DOBlendableColor(new Color(c.r, c.g, c.b, 1f), .25f);
         }
     }
 

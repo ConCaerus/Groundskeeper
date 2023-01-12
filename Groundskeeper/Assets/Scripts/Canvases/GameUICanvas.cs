@@ -44,7 +44,7 @@ public class GameUICanvas : MonoBehaviour {
     }
 
     public void addSoulsToBank() {
-        GameInfo.addSouls(soulsRecieved);
+        GameInfo.addSouls(soulsRecieved, false);
     }
 
     public void showHouseHealth() {

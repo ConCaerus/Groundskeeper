@@ -15,12 +15,12 @@ public class DebuggerWindow : EditorWindow {
 
     private void OnGUI() {
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("+100s"))
-            GameInfo.addSouls(100);
+        if(GUILayout.Button("+100s")) 
+            GameInfo.addSouls(100, true);
         if(GUILayout.Button("+1000s"))
-            GameInfo.addSouls(1000);
+            GameInfo.addSouls(1000, true);
         if(GUILayout.Button("+100000s"))
-            GameInfo.addSouls(100000);
+            GameInfo.addSouls(100000, true);
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();

@@ -20,8 +20,8 @@ public static class SaveData {
         PlayerPrefs.SetString(saveIndexTag() + tag, save);
         PlayerPrefs.Save();
     }
-    public static string getString(string tag) {
-        return PlayerPrefs.GetString(saveIndexTag() + tag, null);
+    public static string getString(string tag, string catcher = null) {
+        return PlayerPrefs.GetString(saveIndexTag() + tag, catcher);
     }
     public static string getStringInSave(int index, string tag) {
         return PlayerPrefs.GetString(saveTag(index) + tag, null);
@@ -33,8 +33,8 @@ public static class SaveData {
         PlayerPrefs.SetInt(saveIndexTag() + tag, save);
         PlayerPrefs.Save();
     }
-    public static int getInt(string tag) {
-        return PlayerPrefs.GetInt(saveIndexTag() + tag, 0);
+    public static int getInt(string tag, int catcher = 0) {
+        return PlayerPrefs.GetInt(saveIndexTag() + tag, catcher);
     }
     public static int getIntInSave(int index, string tag) {
         return PlayerPrefs.GetInt(saveTag(index) + tag, 0);
@@ -46,8 +46,8 @@ public static class SaveData {
         PlayerPrefs.SetFloat(saveIndexTag() + tag, save);
         PlayerPrefs.Save();
     }
-    public static float getFloat(string tag) {
-        return PlayerPrefs.GetFloat(saveIndexTag() + tag, 0.0f);
+    public static float getFloat(string tag, float catcher = 0.0f) {
+        return PlayerPrefs.GetFloat(saveIndexTag() + tag, catcher);
     }
     public static float getFloatInSave(int index, string tag) {
         return PlayerPrefs.GetFloat(saveTag(index) + tag, 0.0f);

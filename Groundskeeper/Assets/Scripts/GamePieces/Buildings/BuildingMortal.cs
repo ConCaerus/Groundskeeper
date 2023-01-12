@@ -9,9 +9,8 @@ public abstract class BuildingMortal : Mortal {
         float takeTime = .5f;
 
         //  show that this got hurt
-        GetComponent<SpriteRenderer>().DOKill();
         GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, GetComponent<SpriteRenderer>().color.a);
-        GetComponent<SpriteRenderer>().DOColor(new Color(1.0f, 1.0f, 1.0f, GetComponent<SpriteRenderer>().color.a), takeTime);
+        GetComponent<SpriteRenderer>().DOBlendableColor(new Color(1.0f, 1.0f, 1.0f, GetComponent<SpriteRenderer>().color.a), takeTime);
 
         if(gameObject.tag == "House")
             FindObjectOfType<CameraMovement>().shake(10f);

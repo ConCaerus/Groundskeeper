@@ -44,7 +44,7 @@ public class SoulTransactionHandler : MonoBehaviour {
         DOTween.Init();
     }
 
-    public bool tryTransaction(float cost, TextMeshProUGUI soulsText) {
+    public bool tryTransaction(float cost, TextMeshProUGUI soulsText, bool saveSouls) {
         soulsText.DOComplete();
         soulsText.transform.DOComplete();
 
@@ -61,7 +61,7 @@ public class SoulTransactionHandler : MonoBehaviour {
         //  player do be bitchin'
         //  transaction
         float prevSouls = GameInfo.getSouls();
-        GameInfo.addSouls(-cost);
+        GameInfo.addSouls(-cost, saveSouls);
         float aftSouls = GameInfo.getSouls();
 
         //  make spent texts

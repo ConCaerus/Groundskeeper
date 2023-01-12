@@ -59,18 +59,17 @@ public class LumberjackInstance : Helper {
         }
 
         //  moving more along the y axis, set to a y axis sprite
-        else if(Mathf.Abs(movingDir.x) < .5f && Mathf.Abs(movingDir.y) > .5f) {
+        else if(Mathf.Abs(movingDir.x) < .1f && Mathf.Abs(movingDir.y) > .1f) {
             if(movingDir.y > 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = backSprite;
             else
                 spriteObj.GetComponent<SpriteRenderer>().sprite = forwardSprite;
         }
-
         //  set to a x axis sprite
         else {
             if(movingDir.x > 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = rightSprite;
-            else
+            else if(movingDir.x < 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = leftSprite;
         }
     }

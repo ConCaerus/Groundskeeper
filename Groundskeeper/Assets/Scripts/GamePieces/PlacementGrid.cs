@@ -92,7 +92,7 @@ public class PlacementGrid : MonoBehaviour {
         //  extracts the info from the thing stuct
         GameObject obj = null;
         //  checks if the player can afford to place
-        if(!FindObjectOfType<SoulTransactionHandler>().tryTransaction(currentObj.GetComponent<Buyable>().cost, FindObjectOfType<PregameCanvas>().soulsText))
+        if(!FindObjectOfType<SoulTransactionHandler>().tryTransaction(currentObj.GetComponent<Buyable>().cost, FindObjectOfType<PregameCanvas>().soulsText, false))
             return;
         var pos = map.CellToWorld(map.WorldToCell(GameInfo.mousePos())) + new Vector3(map.cellSize.x / 2f, map.cellSize.y / 2f);
         if(currentObj.GetComponent<DefenceInstance>() == null) {
@@ -131,7 +131,7 @@ public class PlacementGrid : MonoBehaviour {
         }
         else return;
 
-        FindObjectOfType<SoulTransactionHandler>().tryTransaction(-c, FindObjectOfType<PregameCanvas>().soulsText);
+        FindObjectOfType<SoulTransactionHandler>().tryTransaction(-c, FindObjectOfType<PregameCanvas>().soulsText, false);
         map.color = Color.green;
     }
 

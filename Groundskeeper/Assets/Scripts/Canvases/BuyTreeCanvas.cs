@@ -70,7 +70,7 @@ public class BuyTreeCanvas : MonoBehaviour {
             (float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1)) / bl.getTotalNumberOfBuyables(t),
             delegate {
                 //  checks money
-                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(h.GetComponent<BuyTreeNode>().cost, soulsText)) {
+                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(h.GetComponent<BuyTreeNode>().cost, soulsText, true)) {
                     //  checks if there are any more locked buyables of that type
                     if(bl.unlockRandomBuyableOfType(t, bl.getRelevantUnlockTierForBuyableType(t))) {
                         //  transaction
@@ -115,7 +115,7 @@ public class BuyTreeCanvas : MonoBehaviour {
         setupSlider(o.GetComponent<BuyTreeNode>().getSlider(), true, 0.0f, delegate {
             //  checks if the player is allowed to buy this upgrade
             if(o.GetComponent<BuyTreeNode>().canIncrease(subMaxTier)) {
-                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(o.GetComponent<BuyTreeNode>().cost, soulsText)) {
+                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(o.GetComponent<BuyTreeNode>().cost, soulsText, true)) {
                     subLogic(sInd, s, o.GetComponent<BuyTreeNode>().tier);
 
                     updateSubSlider(sInd, s, o.GetComponent<BuyTreeNode>());

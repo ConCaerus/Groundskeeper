@@ -8,7 +8,7 @@ public class GameBoard : MonoBehaviour {
 
 
     [HideInInspector] public KdTree<LumberjackInstance> aHelpers = new KdTree<LumberjackInstance>();
-    [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();
+    [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
 
@@ -47,6 +47,7 @@ public class GameBoard : MonoBehaviour {
             pIndex++;
         }
 
+        GameInfo.saveSouls();
         //      saves how many new shit got saved for the next time the shit gets cleared
         SaveData.setInt(GameInfo.lastSavedHelperCount, hIndex);
         SaveData.setInt(GameInfo.lastSavedDefenceCount, dIndex);

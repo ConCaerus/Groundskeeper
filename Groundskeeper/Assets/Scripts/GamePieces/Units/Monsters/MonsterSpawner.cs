@@ -8,11 +8,13 @@ public class MonsterSpawner : MonoBehaviour {
     float rad = 75f;
     float maxSpread = 80f;
 
+    float timeBtwWaves = 15f;
+
     [SerializeField] int nightsBetweenDirAddition = 3;  //  monsters can spawn from 1 additional direction after this number of nights
 
-    public bool spawning { get; set; } = false;
-    //  Types of monsters<leaders of those types of monsters<followers of the leaders of those types of monsters>>
-    List<List<List<MonsterInstance>>> monsterGroups = new List<List<List<MonsterInstance>>>();
+    waveInfo curWave;
+    //  Wave that the monsters belong to <Types of monsters <leaders of those types of monsters <followers of the leaders of those types of monsters>>
+    List<List<List<List<MonsterInstance>>>> monsterGroups = new List<List<List<List<MonsterInstance>>>>();
 
     public enum direction {
         All, North, East, South, West
@@ -37,29 +39,21 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     private void Awake() {
+        for(int i = 0; i < GameInfo.wavesPerNight(); i++)
+            monsterGroups.Add(new List<List<List<MonsterInstance>>>());
+
         monsterPresets.Clear();
         for(int i = 0; i < FindObjectOfType<PresetLibrary>().getMonsterCount(); i++)
             monsterPresets.Add(FindObjectOfType<PresetLibrary>().getMonster(i));
     }
 
-
-    private void Update() {
-        if(spawning && GameObject.FindGameObjectsWithTag("Monster").Length == 0) {
-            GameInfo.wave++;
-
-            //  THE GAME IS OVER
-            if(GameInfo.wave > GameInfo.wavesPerNight()) {
-                FindObjectOfType<GameBoard>().saveBoard();
-                FindObjectOfType<GameUICanvas>().addSoulsToBank();
-                FindObjectOfType<HouseInstance>().showDoorArrow();
-                FindObjectOfType<WaveWarnerRose>().warn(new direction[] { (direction)30 }); //  wave warner hides all dots
-                FindObjectOfType<HouseDoorInteractable>().isTheEnd = true;
-                enabled = false;
-                return;
-            }
-            FindObjectOfType<GameUICanvas>().updateCount();
-            startNewWave();
-        }
+    public void endGame() {
+        FindObjectOfType<GameBoard>().saveBoard();
+        FindObjectOfType<GameUICanvas>().addSoulsToBank();
+        FindObjectOfType<HouseInstance>().showDoorArrow();
+        FindObjectOfType<WaveWarnerRose>().warn(new direction[] { (direction)30 }, timeBtwWaves); //  wave warner hides all dots
+        FindObjectOfType<HouseDoorInteractable>().isTheEnd = true;
+        enabled = false;
     }
 
 
@@ -80,7 +74,6 @@ public class MonsterSpawner : MonoBehaviour {
             info.dir = new direction[] { (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5) };
         else if(GameInfo.getNightCount() < nightsBetweenDirAddition * 4)
             info.dir = new direction[] { (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5) };
-
         return info;
     }
 
@@ -91,24 +84,25 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
 
-    void startNewWave() {
+    public void startNewWave() {
         //  check if a new enemy should be seen
         while(GameInfo.getLastSeenEnemyIndex() < monsterPresets.Count - 1 && monsterPresets[GameInfo.getLastSeenEnemyIndex() + 1].GetComponent<Monster>().earliestNight <= GameInfo.getNightCount()) {
             GameInfo.incLastSeenEnemy();
         }
 
+        GameInfo.wave++;
+        FindObjectOfType<GameUICanvas>().updateCount();
+        //  adds another monster group
+        curWave = calcWave();
         //  choose a new direction for the wave
-
-        StartCoroutine(spawnMonsters(calcWave()));
+        StartCoroutine(spawnMonsters(curWave));
     }
 
     IEnumerator spawnMonsters(waveInfo info) {
-        FindObjectOfType<WaveWarnerRose>().warn(info.dir);
-        FindObjectOfType<GameBoard>().monsters.Clear();
-        monsterGroups.Clear();
+        FindObjectOfType<WaveWarnerRose>().warn(info.dir, timeBtwWaves);
 
         for(int i = 0; i <= GameInfo.getLastSeenEnemyIndex(); i++) {
-            monsterGroups.Add(new List<List<MonsterInstance>>());
+            monsterGroups[GameInfo.wave].Add(new List<List<MonsterInstance>>());
         }
 
         float minDistToLight = 25f;
@@ -161,27 +155,29 @@ public class MonsterSpawner : MonoBehaviour {
                         temp.GetComponent<MonsterInstance>().setAsLeader();
 
                         //  create an new grouping under the monster type and set the first monster in that list as this leader
-                        monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType].Add(new List<MonsterInstance>());
-                        monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType].Count - 1].Add(temp.GetComponent<MonsterInstance>());
+                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType].Add(new List<MonsterInstance>());
+                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType][monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType].Count - 1].Add(temp.GetComponent<MonsterInstance>());
                         leaders.Add(temp.GetComponent<MonsterInstance>());
                     }
                     else {
-                        monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))].Add(temp.GetComponent<MonsterInstance>());
-                        temp.GetComponent<MonsterInstance>().closestLeader = monsterGroups[(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0];
+                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))].Add(temp.GetComponent<MonsterInstance>());
+                        temp.GetComponent<MonsterInstance>().closestLeader = monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0];
                     }
-                    FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>());
+                    temp.GetComponent<MonsterInstance>().direction = info.dir[l];
+                    temp.GetComponent<MonsterInstance>().relevantWave = GameInfo.wave;
+                    FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>()); 
                     yield return new WaitForSeconds(Random.Range(0f, .2f));
                 }
             }
         }
     }
 
-    public void passOnLeadership(MonsterInstance l) {
-        foreach(var i in monsterGroups[(int)l.GetComponent<MonsterInstance>().mType]) {
+    public void passOnLeadership(MonsterInstance l, int relevantWave) {
+        foreach(var i in monsterGroups[relevantWave][(int)l.GetComponent<MonsterInstance>().mType]) {
             if(i[0] == l) { //  found the right list
                 //  checks if it's the last one in the group
                 if(i.Count <= 1) {
-                    monsterGroups[(int)l.GetComponent<MonsterInstance>().mType].Remove(i);
+                    monsterGroups[relevantWave][(int)l.GetComponent<MonsterInstance>().mType].Remove(i);
                     return;
                 }
 
@@ -197,13 +193,23 @@ public class MonsterSpawner : MonoBehaviour {
         }
     }
 
-    public void removeMonsterFromGroup(MonsterInstance m) {
-        foreach(var i in monsterGroups[(int)m.GetComponent<MonsterInstance>().mType]) {
+    public void removeMonsterFromGroup(MonsterInstance m, int relevantWave) {
+        foreach(var i in monsterGroups[relevantWave][(int)m.GetComponent<MonsterInstance>().mType]) {
             if(i.Contains(m)) {
                 i.Remove(m);
                 return;
             }
         }
+    }
+
+    public bool stillHasMonstersFromWave(int waveInd) {
+        foreach(var i in monsterGroups[waveInd]) {
+            foreach(var j in i) {
+                if(j.Count > 0)
+                    return true;
+            }
+        }
+        return false;
     }
 
     Vector3 getRandomPosAlongCircle(Vector3 center, float radius, direction dir) {

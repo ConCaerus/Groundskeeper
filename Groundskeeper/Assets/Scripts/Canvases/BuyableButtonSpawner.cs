@@ -66,16 +66,11 @@ public class BuyableButtonSpawner : MonoBehaviour {
                 FindObjectOfType<BuyableLibrary>().playerSawBuyable(b.title);
             }
             if(dot.GetComponentInParent<PregameBuyableButton>() == null) {
-                bool hasSeens = false;
-                foreach(var i in FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(b.bType)) {
-                    if(FindObjectOfType<BuyableLibrary>().hasPlayerSeenBuyable(i.GetComponent<Buyable>().title)) {
-                        hasSeens = true;
+                foreach(var i in FindObjectsOfType<PregameBuyableButton>()) {
+                    if(i.getType() == b.bType) {
+                        i.manageNewDot();
                         break;
                     }
-                }
-                if(!hasSeens) {
-                    foreach(var j in FindObjectsOfType<PregameBuyableButton>())
-                        j.manageNewDot();
                 }
             }
         });

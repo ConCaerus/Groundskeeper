@@ -18,9 +18,6 @@ public static class GameInfo {
     //  player shit
 
     static string pWeaponIndex = "PlayerWeaponInex";
-    static string getPWeaponBuffTag(int weaponIndex) {
-        return "PlayerWeaponBuff" + weaponIndex.ToString();
-    }
 
     //  Game Board shit
 
@@ -53,20 +50,31 @@ public static class GameInfo {
         return "UnlockedBuyable: " + title;
     }
 
+    //  options / settings
+    static string masterVolumeTag = "MasterVolumeTag";
+    static string musicVolumeTag = "MusicVolumeTag";
+    static string sfxVolumeTag = "SFXVolumeTag";
+    static string screenModeTag = "ScreenMode";
+    static string vsyncTag = "VsyncTag";
+
 
     public enum MonsterType {
         Both, Physical, Spiritual
     }
 
+    //  makes it so if the player buys something and leaves the game before the board saves, they don't lose any souls
+    public static float souls;
 
-    public static void resetVars() {
+    public static void init() {
         playing = true;
         wave = 0;
         monstersKilled = 0;
         monstersKilled = 0;
+        souls = getSouls(true);
     }
     public static void resetSave() {
-        setSouls(100);
+        souls = 100;
+        saveSouls();
         resetNights();
         resetLastSeenEnemy();
         clearBoard();
@@ -101,14 +109,16 @@ public static class GameInfo {
 
 
     //  saves
-    public static void addSouls(float c) {
-        SaveData.setFloat(soulTag, SaveData.getFloat(soulTag) + c);
+    public static void addSouls(float c, bool saveAfter) {
+        souls += c;
+        if(saveAfter)
+            saveSouls();
     }
-    static void setSouls(float c) {
-        SaveData.setFloat(soulTag, c);
+    public static void saveSouls() {  //  scary function OwO
+        SaveData.setFloat(soulTag, souls);
     }
-    public static float getSouls() {
-        return SaveData.getFloat(soulTag);
+    public static float getSouls(bool getSaved = false) {
+        return getSaved ? SaveData.getFloat(soulTag) : souls;
     }
 
     //          NIGHTS / WAVES / ENEMIES
@@ -209,5 +219,38 @@ public static class GameInfo {
     }
     public static float getPWeaponSpeedBuff() {
         return SaveData.getFloat(pWeaponSpeedBuffTag) == 0f ? 1f : SaveData.getFloat(pWeaponSpeedBuffTag);
+    }
+
+    public static void setVolumeOptions(float master, float music, float sfx) {
+        SaveData.setFloat(masterVolumeTag, master);
+        SaveData.setFloat(musicVolumeTag, music);
+        SaveData.setFloat(sfxVolumeTag, sfx);
+    }
+    public static void resetVolumeOptions() {
+        SaveData.deleteKey(masterVolumeTag);
+        SaveData.deleteKey(musicVolumeTag);
+        SaveData.deleteKey(sfxVolumeTag);
+    }
+    //  Master, Music, SFX
+    public static float[] getVolumeOptions() {
+        return new float[3] {
+            SaveData.getFloat(masterVolumeTag, 1.0f),
+            SaveData.getFloat(musicVolumeTag, 1.0f),
+            SaveData.getFloat(sfxVolumeTag, 1.0f)
+        };
+    }
+
+    public static void setScreenMode(FullScreenMode mode) {
+        SaveData.setInt(screenModeTag, (int)mode);
+    }
+    public static FullScreenMode getScreenMode() {
+        return (FullScreenMode)SaveData.getInt(screenModeTag);
+    }
+    public static void setVsync(bool b) {
+        SaveData.setInt(vsyncTag, b ? 1 : 0);
+    }
+    //  gets set in awake function of transition canvas
+    public static bool getVsync() {
+        return SaveData.getInt(vsyncTag) == 1;
     }
 }

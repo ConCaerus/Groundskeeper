@@ -13,10 +13,6 @@ public class PlayerHouseInstance : Movement {
 
     [SerializeField] GameObject bloodParticles;
 
-    private void OnCollisionStay2D(Collision2D col) {
-        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
-    }
-
     #region ---   MOVEMENT SHIT   ---
     private void Awake() {
         controls = new InputMaster();
@@ -28,7 +24,7 @@ public class PlayerHouseInstance : Movement {
 
     private void FixedUpdate() {
         //  move the object
-        moveWithDir(new Vector2(moveInfo.x, 0f), rb, walkSpeed);
+        moveWithDir(moveInfo, rb, walkSpeed);
 
         //  if player is not moving, decrement the movementInfo
         //  if player is moving, increase the movementInfo to target value
@@ -47,24 +43,22 @@ public class PlayerHouseInstance : Movement {
         return controls.Player.Move.inProgress;
     }
     public override void updateSprite(Vector2 movingDir) {
-        //  not moving, face forward
-        if(movingDir == Vector2.zero) {
+        //  not moving
+        if(movingDir == Vector2.zero)
             return;
-        }
 
         //  moving more along the y axis, set to a y axis sprite
-        else if(Mathf.Abs(movingDir.x) < .5f && Mathf.Abs(movingDir.y) > .5f) {
+        else if(Mathf.Abs(movingDir.x) < .1f && Mathf.Abs(movingDir.y) > .1f) {
             if(movingDir.y > 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = backSprite;
             else
                 spriteObj.GetComponent<SpriteRenderer>().sprite = forwardSprite;
         }
-
         //  set to a x axis sprite
         else {
             if(movingDir.x > 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = rightSprite;
-            else
+            else if(movingDir.x < 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = leftSprite;
         }
     }

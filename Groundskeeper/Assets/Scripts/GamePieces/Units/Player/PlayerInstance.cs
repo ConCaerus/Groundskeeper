@@ -64,6 +64,13 @@ public class PlayerInstance : Attacker {
         stamina = Mathf.Clamp(stamina - (controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? 1 : -.5f - stamInc), 0f, 100f);
         stamInc += controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? -stamInc : .01f;
 
+        if(FindObjectOfType<GameTutorialCanvas>() != null) {
+            if(isSprinting())
+                FindObjectOfType<GameTutorialCanvas>().hasSprinted();
+            if(Mathf.Abs(moveInfo.x) > 0f || Mathf.Abs(moveInfo.y) > 0f)
+                FindObjectOfType<GameTutorialCanvas>().hasMoved();
+        }
+
         //  if player is not moving, decrement the movementInfo
         //  if player is moving, increase the movementInfo to target value
         moveInfo = controls.Player.Move.inProgress ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, Vector2.zero, slowSpeed * 100.0f * Time.fixedDeltaTime);
@@ -93,24 +100,22 @@ public class PlayerInstance : Attacker {
         return controls.Player.Move.inProgress;
     }
     public override void updateSprite(Vector2 movingDir) {
-        //  not moving, face forward
-        if(movingDir == Vector2.zero) {
+        //  not moving
+        if(movingDir == Vector2.zero) 
             return;
-        }
 
         //  moving more along the y axis, set to a y axis sprite
-        else if(Mathf.Abs(movingDir.x) < .5f && Mathf.Abs(movingDir.y) > .5f) {
+        else if(Mathf.Abs(movingDir.x) < .1f && Mathf.Abs(movingDir.y) > .1f) {
             if(movingDir.y > 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = backSprite;
             else
                 spriteObj.GetComponent<SpriteRenderer>().sprite = forwardSprite;
         }
-
         //  set to a x axis sprite
         else {
             if(movingDir.x > 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = rightSprite;
-            else
+            else if(movingDir.x < 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = leftSprite;
         }
     }

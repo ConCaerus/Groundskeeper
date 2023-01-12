@@ -10,7 +10,7 @@ public class PregameBuyableButton : MonoBehaviour {
     [SerializeField] GameObject newDot;
 
 
-    private void Start() {
+    private void Awake() {
         newDot.SetActive(false);
     }
 
@@ -22,10 +22,11 @@ public class PregameBuyableButton : MonoBehaviour {
                 break;
             }
         }
-
-        if(hasNew)
+        
+        if(hasNew && !newDot.activeInHierarchy)
             StartCoroutine(FindObjectOfType<BuyableButtonSpawner>().setupDot(transform, newDot.transform, null));
-        newDot.SetActive(hasNew);
+        else if(!hasNew && newDot.activeInHierarchy)
+            newDot.SetActive(false);
     }
 
     public Buyable.buyType getType() {

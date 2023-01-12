@@ -6,8 +6,11 @@ using DG.Tweening;
 public class WaveWarnerRose : MonoBehaviour {
     [SerializeField] GameObject[] dots; //  0 - north, 1 - east, 2 - south, 3 - west
     [SerializeField] GameObject warning;
+    [SerializeField] CircularSlider timer;
 
-    Coroutine dAnim = null;
+    [SerializeField] Color[] timerColors;
+
+    Coroutine[] dAnim = { null, null, null, null };
 
     private void Start() {
         foreach(var i in dots)
@@ -15,47 +18,74 @@ public class WaveWarnerRose : MonoBehaviour {
         warning.transform.localScale = Vector3.zero;
     }
 
-    public void warn(MonsterSpawner.direction[] dir) {
-        if(dAnim != null)
-            StopCoroutine(dAnim);
+    public void warn(MonsterSpawner.direction[] dir, float timeTillNextWave) {
+        foreach(var i in dAnim) {
+            if(i != null)
+                StopCoroutine(i);
+        }
+
+        bool[] seen = { false, false, false, false };
+
+        timer.setValue(1.0f);
+        timer.doValue(0.0f, timeTillNextWave, delegate { FindObjectOfType<MonsterSpawner>().startNewWave(); });
+        timer.setColor(timerColors[0]);
+        timer.doColor(timerColors[1], timeTillNextWave);
 
         float disTime = .15f;
         foreach(var i in dots) {
             i.transform.DOKill();
             i.transform.DOScale(0f, disTime);
         }
+
+
+        //  shows any lingering monsters' incoming direction
+        foreach(var i in FindObjectsOfType<MonsterInstance>()) {
+            int ind = (int)i.direction - 1;
+            if(seen[ind])
+                continue;
+            dAnim[ind] = StartCoroutine(dotAnim(dots[ind], 1f));
+            seen[ind] = true;
+        }
+
+        //  shows the new, incoming wave direction
         foreach(var i in dir) {
-            switch(i) {
-                case MonsterSpawner.direction.North:
-                    dAnim = StartCoroutine(dotAnim(dots[0]));
-                    break;
-                case MonsterSpawner.direction.East:
-                    dAnim = StartCoroutine(dotAnim(dots[1]));
-                    break;
-                case MonsterSpawner.direction.South:
-                    dAnim = StartCoroutine(dotAnim(dots[2]));
-                    break;
-                case MonsterSpawner.direction.West:
-                    dAnim = StartCoroutine(dotAnim(dots[3]));
-                    break;
-            }
+            int ind = (int)i - 1;
+            if(seen[ind])
+                continue;
+            dAnim[ind] = StartCoroutine(dotAnim(dots[ind], .5f));
+            seen[ind] = true;
         }
 
         StartCoroutine(attentionGrabber());
     }
 
 
-    IEnumerator dotAnim(GameObject d) {
+    public void updateForDirection(MonsterSpawner.direction dir) {
+        Debug.Log("here");
+        int ind = (int)dir - 1;
+        if(dAnim[ind] == null)
+            return;
+
+        foreach(var i in FindObjectOfType<GameBoard>().monsters) {
+            if(i.direction == dir)
+                return;
+        }
+
+        StopCoroutine(dAnim[ind]);
+    }
+
+
+    IEnumerator dotAnim(GameObject d, float mult) {
         yield return new WaitForSeconds(1.25f);
 
         float sizeTime = .15f;
         while(true) {
             //  grow big
-            d.transform.DOScale(1.0f, sizeTime);
+            d.transform.DOScale(1.0f * mult, sizeTime);
             yield return new WaitForSeconds(sizeTime * 2.0f);
 
             //  shrink small
-            d.transform.DOScale(.75f, sizeTime);
+            d.transform.DOScale(.75f * mult, sizeTime);
             yield return new WaitForSeconds(sizeTime * 2.0f);
         }
     }

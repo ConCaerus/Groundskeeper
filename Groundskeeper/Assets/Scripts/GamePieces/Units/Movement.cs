@@ -32,8 +32,9 @@ public abstract class Movement : MortalUnit {
     }
 
     protected void moveToPos(Vector2 pos, Rigidbody2D rb, float speed) {
-        if(!canMove)
+        if(!canMove)    //  unit cannot move
             return;
+
         if(pos != (Vector2)rb.gameObject.transform.position) {
             if(anim == null)
                 anim = StartCoroutine(walkAnim());

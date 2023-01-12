@@ -19,7 +19,7 @@ public class EnvironmentInstance : MonoBehaviour {
             GetComponent<Collider2D>().enabled = false;
             GetComponentInParent<CompositeCollider2D>().GenerateGeometry();
             Destroy(gameObject, .25f);
-            GameInfo.addSouls(Random.Range(1, 6));
+            GameInfo.addSouls(Random.Range(1, 6), false);
         }
     }
 

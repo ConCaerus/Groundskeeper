@@ -19,7 +19,6 @@ public class PregameCanvas : MonoBehaviour {
         FindObjectOfType<GameUICanvas>().hide();
         transform.GetChild(0).gameObject.SetActive(true);
         soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
-        StartCoroutine(startAfterTime());
 
         //  player doesn't have anything unlocked, so remove the lower bar
         if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper) == 0 && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence) == 0 && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure) == 0) {
@@ -33,18 +32,24 @@ public class PregameCanvas : MonoBehaviour {
                     if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper) == 0)
                         i.gameObject.SetActive(false);
                 }
-                else if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Defence) {
+                if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Defence) {
                     i.GetComponent<PregameBuyableButton>().manageNewDot();
                     if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence) == 0)
                         i.gameObject.SetActive(false);
                 }
-                else if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Structure) {
+                if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Structure) {
                     i.GetComponent<PregameBuyableButton>().manageNewDot();
                     if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure) == 0)
                         i.gameObject.SetActive(false);
                 }
             }
         }
+
+        //  start the timer
+        timer.setValue(1.0f);
+        timer.doValue(0.0f, prepTime, delegate { ready(); });
+        timer.setColor(Color.white);
+        timer.doColor(Color.red, prepTime);
     }
 
     private void Update() {
@@ -78,7 +83,7 @@ public class PregameCanvas : MonoBehaviour {
     public void ready() {
         FindObjectOfType<GameBoard>().saveBoard();
         FindObjectOfType<GameUICanvas>().show();
-        FindObjectOfType<MonsterSpawner>().spawning = true;
+        FindObjectOfType<MonsterSpawner>().startNewWave();
         FindObjectOfType<PlacementGrid>().end();
         FindObjectOfType<PlayerWeaponInstance>().canAttack = true;
         FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
@@ -87,21 +92,5 @@ public class PregameCanvas : MonoBehaviour {
 
     public void setPlacementObj(GameObject obj) {
         FindObjectOfType<PlacementGrid>().changePlacing(obj, obj.gameObject == FindObjectOfType<PlacementGrid>().currentObj);
-    }
-
-    IEnumerator startAfterTime() {
-        float elapsedTime = 0.0f, incTime = .25f;
-        timer.setValue(1f);
-
-        while(elapsedTime < prepTime) {
-            yield return new WaitForSeconds(incTime);
-            elapsedTime += incTime;
-            timer.setValue(1 - (elapsedTime / prepTime));
-            if(elapsedTime / prepTime > .85f)
-                timer.setColor(new Color(elapsedTime / prepTime, 0, 0, 1f));
-        }
-
-        yield return new WaitForSeconds(.5f);
-        ready();
     }
 }
