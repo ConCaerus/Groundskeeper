@@ -25,7 +25,7 @@ public class TargetFinder : MonoBehaviour {
         }
         if(m.favoriteTarget == Monster.targetType.House || m.favoriteTarget == Monster.targetType.All) {
             if(m.infatuated)
-                return FindObjectOfType<HouseInstance>().transform.position;
+                return FindObjectOfType<HouseInstance>().getCenter();
             relevantCols += LayerMask.GetMask("House");
         }
 
@@ -33,7 +33,7 @@ public class TargetFinder : MonoBehaviour {
 
         //  if no collisions, have the monster move closer to the house
         if(cols.Length == 0)
-            return (m.favoriteTarget == Monster.targetType.People && GameObject.FindGameObjectWithTag("Player") != null) ? (Vector2)GameObject.FindGameObjectWithTag("Player").transform.position : (Vector2)FindObjectOfType<HouseInstance>().transform.position;
+            return (m.favoriteTarget == Monster.targetType.People && GameObject.FindGameObjectWithTag("Player") != null) ? (Vector2)GameObject.FindGameObjectWithTag("Player").transform.position : (Vector2)FindObjectOfType<HouseInstance>().getCenter();
 
         KdTree<Transform> rel = new KdTree<Transform>();
         bool seesScarecrow = false;
@@ -56,7 +56,9 @@ public class TargetFinder : MonoBehaviour {
         var closest = rel.FindClosest(monster.transform.position);
         if(closest.gameObject.tag == "Player" || closest.gameObject.tag == "Helper")
             m.followingTransform = closest.gameObject.transform;
-        return closest.transform.position;
+        if(closest.gameObject.GetComponent<HouseInstance>() == null)
+            return closest.transform.position;
+        return closest.GetComponent<HouseInstance>().getCenter();
     }
 
 

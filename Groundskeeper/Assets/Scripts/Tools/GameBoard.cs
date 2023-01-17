@@ -12,7 +12,7 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
 
-    public const float boardRadius = 100f;
+    const float boardRadius = 100f;
 
 
     private void Awake() {
@@ -87,7 +87,7 @@ public class GameBoard : MonoBehaviour {
             var hD = SaveData.getString(GameInfo.houseTag);
             var hData = JsonUtility.FromJson<ObjectSaveData>(hD);
 
-            var hObj = FindObjectOfType<BuyableLibrary>().getStructure(hData.name, true);
+            var hObj = FindObjectOfType<BuyableLibrary>().getHouseStructure();
             Instantiate(hObj, hData.pos, Quaternion.identity, holder.transform);
         }
 

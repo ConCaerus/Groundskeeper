@@ -118,6 +118,13 @@ public class BuyableLibrary : MonoBehaviour {
         }
         return null;
     }
+    public GameObject getHouseStructure() {
+        foreach(var i in uniqueBuyables) {
+            if (i.GetComponent<Buyable>().title == Buyable.buyableTitle.House)
+                return i.gameObject;
+        }
+        return null;
+    }
 
 
     public bool hasPlayerSeenBuyable(Buyable.buyableTitle title) {

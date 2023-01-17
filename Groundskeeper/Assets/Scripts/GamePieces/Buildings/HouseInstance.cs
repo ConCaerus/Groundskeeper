@@ -45,6 +45,10 @@ public class HouseInstance : Building {
         }
     }
 
+    public Vector2 getCenter() {
+        return transform.position;
+    }
+
     public void showDoorArrow() {
         arrow.SetActive(true);
         var or = arrow.transform.localScale;

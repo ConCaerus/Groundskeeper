@@ -94,6 +94,7 @@ public class PregameCanvas : MonoBehaviour {
 
     //  buttons
     public void ready() {
+        startButton.GetComponent<Button>().interactable = false;
         FindObjectOfType<GameBoard>().saveBoard();
         FindObjectOfType<GameUICanvas>().show();
         FindObjectOfType<MonsterSpawner>().startNewWave();

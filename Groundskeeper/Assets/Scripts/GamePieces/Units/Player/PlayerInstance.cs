@@ -80,12 +80,14 @@ public class PlayerInstance : Attacker {
 
         //  adjusts the player's light based on how far they are to the edge
         //      player is out of bounds, so turn off their light
-        if(Vector2.Distance(transform.position, Vector2.zero) >= 75f) {
+        if (FindObjectOfType<HouseInstance>() == null)
+            return;
+        if(Vector2.Distance(transform.position, FindObjectOfType<HouseInstance>().getCenter()) >= 75f) {
             DOTween.To(() => GetComponentInChildren<FunkyCode.Light2D>().size, x => GetComponentInChildren<FunkyCode.Light2D>().size = x, 0f, .25f);
         }
         //  player is in bounds, so tune their light based on how far they are from the edge
         else {
-            var distPerc = Vector2.Distance(transform.position, Vector2.zero) / 100f;   //  a little over the edge to give the player a little light at the edge
+            var distPerc = Vector2.Distance(transform.position, FindObjectOfType<HouseInstance>().getCenter()) / 100f;   //  a little over the edge to give the player a little light at the edge
             GetComponentInChildren<FunkyCode.Light2D>().size = initLightSize * (1 - distPerc);
         }
     }

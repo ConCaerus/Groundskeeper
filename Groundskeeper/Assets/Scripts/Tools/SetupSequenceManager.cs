@@ -10,8 +10,8 @@ public class SetupSequenceManager : MonoBehaviour {
     bool p = false;
 
     private void Awake() {
-        if(GameInfo.getNightCount() > 0)
-            enabled = false;
+        if (GameInfo.getNightCount() > 0)
+            return;
 
         StartCoroutine(houseSetup());
     }
@@ -20,7 +20,6 @@ public class SetupSequenceManager : MonoBehaviour {
         //  removes the house from the list of player's buyables
         GameInfo.lockAllBuyables(FindObjectOfType<BuyableLibrary>());
         FindObjectOfType<PregameCanvas>().setup();
-        FindObjectOfType<GameBoard>().saveBoard();
         FindObjectOfType<PlayerInstance>().setCanMove(false);
 
         StartCoroutine(weaponSetup());
@@ -51,11 +50,11 @@ public class SetupSequenceManager : MonoBehaviour {
         //  dialog from the devil that introduces the player to the world
         //  and tells them that they need to place their house
         FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(new List<string>() { "Welcome to the world", "Place your house" }), null);
-        FindObjectOfType<PlayerInstance>().setCanMove(true);
 
         yield return new WaitForSeconds(.1f);
 
         //  allows the player to place house
+        FindObjectOfType<PlayerInstance>().setCanMove(true);
         GameInfo.unlockBuyable(Buyable.buyableTitle.House);
         FindObjectOfType<PregameCanvas>().setup();
     }
@@ -90,5 +89,6 @@ public class SetupSequenceManager : MonoBehaviour {
         FindObjectOfType<PlayerWeaponInstance>().canMove = true;
         FindObjectOfType<PlayerInstance>().setCanMove(true);
         FindObjectOfType<GameTutorialCanvas>().show();
+        FindObjectOfType<GameBoard>().saveBoard();
     }
 }

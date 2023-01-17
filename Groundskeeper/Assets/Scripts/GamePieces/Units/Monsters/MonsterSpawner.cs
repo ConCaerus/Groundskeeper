@@ -114,14 +114,13 @@ public class MonsterSpawner : MonoBehaviour {
                 KdTree<MonsterInstance> leaders = new KdTree<MonsterInstance>();
                 for(int j = 0; j <= info.enemyNumbers[i] / info.dir.Length; j++) {    //  spawn the number of that type of monster
                     var temp = Instantiate(monsterPresets[i].gameObject, transform);
-
                     bool tooClose = true;
-                    Vector3 pos = j < numOfLeaders ? getPosAlongCircle(transform.position, rad, info.dir[l], (maxSpread / (numOfLeaders - i)) - (maxSpread / 2f)) : getRandomPosAlongCircle(transform.position, rad, info.dir[l]);
+                    Vector3 pos = j < numOfLeaders ? getPosAlongCircle(FindObjectOfType<HouseInstance>().getCenter(), rad, info.dir[l], (maxSpread / (numOfLeaders - i)) - (maxSpread / 2f)) : getRandomPosAlongCircle(FindObjectOfType<HouseInstance>().getCenter(), rad, info.dir[l]);
                     int layer = LayerMask.GetMask("Light");
                     while(tooClose) {
-                        pos = getRandomPosAlongCircle(transform.position, rad, info.dir[l]);
+                        pos = getRandomPosAlongCircle(FindObjectOfType<HouseInstance>().getCenter(), rad, info.dir[l]);
                         tooClose = false;
-                        RaycastHit2D hit = Physics2D.Raycast(pos, -pos, Vector2.Distance(pos, Vector2.zero), layer);
+                        RaycastHit2D hit = Physics2D.Raycast(pos, -pos, Vector2.Distance(pos, FindObjectOfType<HouseInstance>().getCenter()), layer);
 
                         if(hit.collider != null) {
                             //  immideitly hit
@@ -152,6 +151,7 @@ public class MonsterSpawner : MonoBehaviour {
                         }
                     }
 
+                    
                     temp.transform.position = pos;
                     if(j < numOfLeaders) {
                         temp.GetComponent<MonsterInstance>().setAsLeader();
@@ -167,7 +167,7 @@ public class MonsterSpawner : MonoBehaviour {
                     }
                     temp.GetComponent<MonsterInstance>().direction = info.dir[l];
                     temp.GetComponent<MonsterInstance>().relevantWave = GameInfo.wave;
-                    FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>()); 
+                    FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>());
                     yield return new WaitForSeconds(Random.Range(0f, .2f));
                 }
             }

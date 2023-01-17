@@ -5,7 +5,7 @@ using UnityEngine;
 public static class GameInfo {
     public static bool playing { get; set; } = true;
     public static int wave { get; set; } = 0;
-    public static int wavesPerNight() { return 5; }
+    public static int wavesPerNight() { return 1; }
 
     public static int monstersKilled { get; set; } = 0;
 
