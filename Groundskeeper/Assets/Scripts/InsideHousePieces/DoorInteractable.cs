@@ -12,7 +12,8 @@ public class DoorInteractable : Interactable {
         GameInfo.addNights(1);
         FindObjectOfType<TransitionCanvas>().loadScene("Game");
     }
-
     public override void deinteract() {
+    }
+    public override void anim(bool b) {
     }
 }

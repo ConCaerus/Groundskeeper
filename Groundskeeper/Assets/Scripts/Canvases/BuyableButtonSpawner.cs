@@ -23,9 +23,9 @@ public class BuyableButtonSpawner : MonoBehaviour {
         buttonCoroutines.Clear();
         prevGenre = index;
         FindObjectOfType<PlacementGrid>().placing = false;
-        List<GameObject> buyables = index == 0 ? FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Helper) :
-            index == 1 ? FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Defence) :
-            FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Structure);
+        List<GameObject> buyables = index == 0 ? FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Helper, true) :
+            index == 1 ? FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Defence, true) :
+            FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Structure, true);
 
         foreach(var i in buttons)
             Destroy(i.gameObject);

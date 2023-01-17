@@ -19,7 +19,7 @@ public class PlayerInstance : Attacker {
     float stamInc = 0.0f;
     InputMaster controls;
 
-    float initLightSize;
+    [HideInInspector] public float initLightSize;
 
 
     Vector2 spriteOriginal, shadowOriginal;   //  for showing and hiding
@@ -42,13 +42,15 @@ public class PlayerInstance : Attacker {
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
         GetComponentInChildren<HealthBar>().setParent(gameObject);
+        initLightSize = GetComponentInChildren<FunkyCode.Light2D>().size;
+        spriteOriginal = spriteObj.transform.localScale;
+        shadowOriginal = shadowObj.transform.localScale;
     }
 
     private void Start() {
-        initLightSize = GetComponentInChildren<FunkyCode.Light2D>().size;
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
-        spriteOriginal = spriteObj.transform.localScale;
-        shadowOriginal = shadowObj.transform.localScale;
+        if(FindObjectOfType<HouseInstance>() != null)
+            transform.position = FindObjectOfType<HouseInstance>().playerSpawnPos.transform.position;
     }
     private void FixedUpdate() {
         //  check if game is over

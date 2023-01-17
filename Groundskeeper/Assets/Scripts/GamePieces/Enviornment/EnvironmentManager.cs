@@ -6,7 +6,7 @@ using DG.Tweening;
 public class EnvironmentManager : MonoBehaviour {
     [SerializeField] GameObject holder;
     GameObject curHolder = null;
-    int envCountPerHolder = 100;
+    int envCountPerHolder = 50;
     int numToNextHolder;
 
     List<GameObject> holders = new List<GameObject>();
@@ -48,6 +48,9 @@ public class EnvironmentManager : MonoBehaviour {
             FindObjectOfType<GameBoard>().environment.Add(i);
     }
 
+    //  this function is broken
+    //  doesn't remove the hiden environment from GameBoard
+    //  somehow, the number of environments in the GameBoard goes up
     public void hideAllEnvAroundArea(Vector2 center, float rad) {
         KdTree<EnvironmentInstance> used = new KdTree<EnvironmentInstance>();
         var closest = FindObjectOfType<GameBoard>().environment.FindClosest(center);
@@ -58,8 +61,9 @@ public class EnvironmentManager : MonoBehaviour {
             closest = FindObjectOfType<GameBoard>().environment.FindClosest(center);
         }
 
+        /*
         foreach(var i in used)
-            FindObjectOfType<GameBoard>().environment.Add(i);
+            FindObjectOfType<GameBoard>().environment.Remove(i);*/
     }
 
     public void hitEnvironment(Vector2 pos) {
@@ -74,8 +78,10 @@ public class EnvironmentManager : MonoBehaviour {
     }
 
     void hide(GameObject obj) {
-        obj.transform.GetChild(0).transform.DOComplete();
-        obj.transform.GetChild(0).transform.DOScale(0.0f, .25f);
-        //obj.transform.GetChild(0).transform.DOLocalMoveY(-transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.y / 2.0f, .25f);
+        //obj.transform.GetChild(0).transform.DOComplete();
+        //obj.transform.GetChild(0).transform.DOScale(0.0f, .15f);
+        //obj.transform.GetChild(0).transform.DOLocalMoveY(0.0f, .15f);
+        Destroy(obj.gameObject);
+        obj.GetComponentInParent<CompositeCollider2D>().GenerateGeometry();
     }
 }

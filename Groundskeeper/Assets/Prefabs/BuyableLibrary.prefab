@@ -43,6 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d479e7f8c888536419f710bcc4b71207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uniqueBuyables:
+  - {fileID: 3769568573723222045, guid: 985189c614620154b9bfd685b5ac65b0, type: 3}
   earlyBuyables:
   - {fileID: 2846480179443317441, guid: fb6422a35de71734ea98a76edb6aa05a, type: 3}
   - {fileID: 5885474163630609340, guid: 4ce1bf4a512457d44b5a69edf38da4db, type: 3}

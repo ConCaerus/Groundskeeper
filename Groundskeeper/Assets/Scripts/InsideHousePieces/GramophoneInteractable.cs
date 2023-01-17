@@ -20,8 +20,9 @@ public class GramophoneInteractable : Interactable {
         GetComponent<AudioSource>().Stop();
         GetComponent<AudioSource>().PlayOneShot(song);
     }
-
     public override void deinteract() {
         DOTween.To(() => GetComponent<AudioSource>().volume, x => GetComponent<AudioSource>().volume = x, 0f, .15f);
+    }
+    public override void anim(bool b) {
     }
 }

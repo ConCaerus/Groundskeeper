@@ -61,13 +61,13 @@ public class BuyTreeCanvas : MonoBehaviour {
         var h = Instantiate(node.gameObject, mainCircles[index].transform);
         var t = (Buyable.buyType)(index + 1);
         h.GetComponent<BuyTreeNode>().mainType = t;
-        h.GetComponent<BuyTreeNode>().getSlider().setText(bl.getNumberOfUnlockedBuyables(t).ToString());
+        h.GetComponent<BuyTreeNode>().getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
         h.GetComponent<BuyTreeNode>().setTitle(t == Buyable.buyType.Helper ? "Helpers" : t == Buyable.buyType.Defence ? "Defences" : t == Buyable.buyType.Structure ? "Structures" : "?");
         h.GetComponent<BuyTreeNode>().setCost(getUpdatedCost(h.GetComponent<BuyTreeNode>()));
         h.GetComponent<BuyTreeNode>().setTier(-1, subMaxTier); //  hides the tierText
 
         setupSlider(h.GetComponent<BuyTreeNode>().getSlider(), false,
-            (float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1)) / bl.getTotalNumberOfBuyables(t),
+            (float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1), false) / bl.getTotalNumberOfBuyables(t),
             delegate {
                 //  checks money
                 if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(h.GetComponent<BuyTreeNode>().cost, soulsText, true)) {
@@ -77,14 +77,14 @@ public class BuyTreeCanvas : MonoBehaviour {
                         h.GetComponent<BuyTreeNode>().setCost(getUpdatedCost(h.GetComponent<BuyTreeNode>()));
 
                         //  flair
-                        h.GetComponent<BuyTreeNode>().getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed);
-                        h.GetComponent<BuyTreeNode>().getSlider().setText(bl.getNumberOfUnlockedBuyables(t).ToString());
+                        h.GetComponent<BuyTreeNode>().getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t, false) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed);
+                        h.GetComponent<BuyTreeNode>().getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
                         h.GetComponent<BuyTreeNode>().animateClick();
                         updateSoulsText();
 
                         //  unlock new sub circles
                         //  show the first sub circles
-                        if(bl.getNumberOfUnlockedBuyables(t) == 1) {
+                        if(bl.getNumberOfUnlockedBuyables(t, false) == 1) {
                             createSubCirclesForType(t);
                         }
                     }
@@ -95,15 +95,15 @@ public class BuyTreeCanvas : MonoBehaviour {
 
     void createSubCirclesForType(Buyable.buyType t) {
         //  helpers
-        if(t == Buyable.buyType.Helper && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper) > 0) {
+        if(t == Buyable.buyType.Helper && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper, false) > 0) {
             createSubNode(subCircles[0], subType.Damage);
             createSubNode(subCircles[0], subType.Health);
         }
         //  defences
-        if(t == Buyable.buyType.Defence && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence) > 0)
+        if(t == Buyable.buyType.Defence && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence, false) > 0)
             createSubNode(subCircles[1], subType.Damage);
         //  structures
-        if(t == Buyable.buyType.Structure && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure) > 0)
+        if(t == Buyable.buyType.Structure && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure, false) > 0)
             createSubNode(subCircles[2], subType.Health);
     }
     GameObject createSubNode(GameObject sub, subType s) {

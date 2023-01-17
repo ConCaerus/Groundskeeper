@@ -9,6 +9,8 @@ public class CameraMovement : MonoBehaviour {
     [SerializeField] bool canZoom = true;
     [SerializeField] Vector3 offsetFromPlayer = Vector2.zero;
 
+    [HideInInspector][SerializeField] public bool movingUp = true;
+
     Coroutine shakeCenterer = null;
 
     private void Start() {
@@ -20,7 +22,7 @@ public class CameraMovement : MonoBehaviour {
     //  Move to player
     private void LateUpdate() {
         var pos = GameObject.FindGameObjectWithTag("Player").transform.position;
-        var target = new Vector3(pos.x, pos.y, transform.position.z) + offsetFromPlayer;
+        var target = new Vector3(pos.x, pos.y, transform.position.z) + (movingUp ? offsetFromPlayer : -offsetFromPlayer);
 
         if(transform.position != target)
             transform.position = Vector3.Lerp(transform.position, target, speed * 100.0f * Time.deltaTime);

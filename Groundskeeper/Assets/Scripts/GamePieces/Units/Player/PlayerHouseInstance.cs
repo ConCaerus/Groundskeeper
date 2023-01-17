@@ -61,6 +61,10 @@ public class PlayerHouseInstance : Movement {
             else if(movingDir.x < 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = leftSprite;
         }
+
+        //  adjusts the camera
+        if(movingDir.y != 0f)
+            FindObjectOfType<CameraMovement>().movingUp = movingDir.y > 0f;
     }
     public override WalkAnimInfo getWalkInfo() {
         return new WalkAnimInfo(.2f, .7f, 25f, 5f);

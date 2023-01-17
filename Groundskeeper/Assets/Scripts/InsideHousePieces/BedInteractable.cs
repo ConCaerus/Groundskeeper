@@ -14,8 +14,9 @@ public class BedInteractable : Interactable {
         sleeping = true;
         FindObjectOfType<SleepingCanvas>().goToSleep();
     }
-
     public override void deinteract() {
+    }
+    public override void anim(bool b) {
     }
 
 

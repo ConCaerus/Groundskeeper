@@ -12,10 +12,10 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
 
-    public const float boardRadius = 250f;
+    public const float boardRadius = 100f;
 
 
-    private void Start() {
+    private void Awake() {
         if(GameInfo.getNightCount() == 0)
             GameInfo.clearBoard();
         loadBoard();
@@ -47,6 +47,11 @@ public class GameBoard : MonoBehaviour {
             pIndex++;
         }
 
+        //  specific cases of unique buyables
+        var hSave = new ObjectSaveData(FindObjectOfType<HouseInstance>().GetComponent<Buyable>());
+        var hData = JsonUtility.ToJson(hSave);
+        SaveData.setString(GameInfo.houseTag, hData);
+
         GameInfo.saveSouls();
         //      saves how many new shit got saved for the next time the shit gets cleared
         SaveData.setInt(GameInfo.lastSavedHelperCount, hIndex);
@@ -60,22 +65,30 @@ public class GameBoard : MonoBehaviour {
             var d = SaveData.getString(GameInfo.helperTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-            var obj = FindObjectOfType<BuyableLibrary>().getHelper(data.name);
+            var obj = FindObjectOfType<BuyableLibrary>().getHelper(data.name, false);
             Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
         }
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedDefenceCount); i++) {
             var d = SaveData.getString(GameInfo.defenceTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-            var obj = FindObjectOfType<BuyableLibrary>().getDefence(data.name);
+            var obj = FindObjectOfType<BuyableLibrary>().getDefence(data.name, false);
             FindObjectOfType<DefenceHolderSpawner>().spawnDefence(obj, data.pos);
         }
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedMiscCount); i++) {
             var d = SaveData.getString(GameInfo.miscTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-            var obj = FindObjectOfType<BuyableLibrary>().getStructure(data.name);
+            var obj = FindObjectOfType<BuyableLibrary>().getStructure(data.name, false);
             Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
+        }
+
+        if(GameInfo.getNightCount() > 0) {
+            var hD = SaveData.getString(GameInfo.houseTag);
+            var hData = JsonUtility.FromJson<ObjectSaveData>(hD);
+
+            var hObj = FindObjectOfType<BuyableLibrary>().getStructure(hData.name, true);
+            Instantiate(hObj, hData.pos, Quaternion.identity, holder.transform);
         }
 
         spawnEnvironment();
@@ -101,12 +114,12 @@ public class GameBoard : MonoBehaviour {
     }
 
     IEnumerator environmentSpawner(bool hasEnvs) {
-        float cutOffCount = 200;    //  after spawning this number of shit, start slowing the spawing shit.
+        float cutOffCount = 100;    //  after spawning this number of shit, start slowing the spawing shit.
 
         if(!hasEnvs) {
             int count = Random.Range((int)(boardRadius * 1.5f), (int)(boardRadius * 3.0f));
-
-            var hDiag = (FindObjectOfType<HouseInstance>().GetComponent<SpriteRenderer>().bounds.size.x / 2.0f) * Mathf.Sqrt(2);
+            
+            var hDiag = 6.83f * Mathf.Sqrt(2);  //  6.83 = FindObjectOfType<HouseInstance>().GetComponent<SpriteRenderer>().bounds.size.x / 2.0f
             List<Vector2> poses = new List<Vector2>();
 
             for(int i = 0; i < count; i++) {

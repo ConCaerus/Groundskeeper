@@ -8,15 +8,15 @@ public abstract class Interactable : MonoBehaviour {
     protected bool touching = false, interacting = false;
 
     [SerializeField] bool toggleMovement = true;
-    [SerializeField] float helpOffset = 1.0f;
+    [SerializeField] GameObject targetOffsetPosition;
+
 
     private void OnTriggerEnter2D(Collider2D col) {
         if(col.gameObject.tag == "Player") {
             touching = true;
             if(canInteract()) {
-                var pos = transform.position;
-                pos.y += helpOffset;
-                FindObjectOfType<InteractHelperCanvas>().show(pos);
+                FindObjectOfType<InteractHelperCanvas>().show(targetOffsetPosition.transform.position);
+                anim(true);
             }
         }
     }
@@ -25,6 +25,7 @@ public abstract class Interactable : MonoBehaviour {
         if(col.gameObject.tag == "Player") {
             touching = false;
             FindObjectOfType<InteractHelperCanvas>().hide();
+            anim(false);
         }
     }
 
@@ -73,7 +74,7 @@ public abstract class Interactable : MonoBehaviour {
     public abstract void interact();
     public abstract void deinteract();
     public abstract bool canInteract();
-
+    public abstract void anim(bool b);  //  b = true: player is starting the can interact animation. b = false: player is leaving
 
 
 

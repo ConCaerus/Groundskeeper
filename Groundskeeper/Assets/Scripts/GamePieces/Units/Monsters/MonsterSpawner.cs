@@ -8,7 +8,7 @@ public class MonsterSpawner : MonoBehaviour {
     float rad = 75f;
     float maxSpread = 80f;
 
-    float timeBtwWaves = 15f;
+    float maxTimeBtwWaves = 60f * 2f; // 2 mins
 
     [SerializeField] int nightsBetweenDirAddition = 3;  //  monsters can spawn from 1 additional direction after this number of nights
 
@@ -23,6 +23,7 @@ public class MonsterSpawner : MonoBehaviour {
     class waveInfo {
         public List<int> enemyNumbers;
         public direction[] dir;
+        public int diff;
 
         public waveInfo() {
             enemyNumbers = new List<int>();
@@ -51,7 +52,7 @@ public class MonsterSpawner : MonoBehaviour {
         FindObjectOfType<GameBoard>().saveBoard();
         FindObjectOfType<GameUICanvas>().addSoulsToBank();
         FindObjectOfType<HouseInstance>().showDoorArrow();
-        FindObjectOfType<WaveWarnerRose>().warn(new direction[] { (direction)30 }, timeBtwWaves); //  wave warner hides all dots
+        FindObjectOfType<WaveWarnerRose>().warn(new direction[] { (direction)30 }, 9999999f); //  wave warner hides all dots
         FindObjectOfType<HouseDoorInteractable>().isTheEnd = true;
         enabled = false;
     }
@@ -60,6 +61,7 @@ public class MonsterSpawner : MonoBehaviour {
     waveInfo calcWave() {
         waveInfo info = new waveInfo();
         var diff = calcWaveDiff();
+        info.diff = diff;
 
         while(diff > 0) {
             info.enemyNumbers[0]++;
@@ -99,7 +101,7 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     IEnumerator spawnMonsters(waveInfo info) {
-        FindObjectOfType<WaveWarnerRose>().warn(info.dir, timeBtwWaves);
+        FindObjectOfType<WaveWarnerRose>().warn(info.dir, maxTimeBtwWaves);
 
         for(int i = 0; i <= GameInfo.getLastSeenEnemyIndex(); i++) {
             monsterGroups[GameInfo.wave].Add(new List<List<MonsterInstance>>());

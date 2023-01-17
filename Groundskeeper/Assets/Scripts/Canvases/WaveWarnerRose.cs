@@ -41,9 +41,9 @@ public class WaveWarnerRose : MonoBehaviour {
         //  shows any lingering monsters' incoming direction
         foreach(var i in FindObjectsOfType<MonsterInstance>()) {
             int ind = (int)i.direction - 1;
-            if(seen[ind])
+            if(seen[ind] || i.health <= 0.0f)
                 continue;
-            dAnim[ind] = StartCoroutine(dotAnim(dots[ind], 1f));
+            dAnim[ind] = StartCoroutine(dotAnim(dots[ind], 1.25f));
             seen[ind] = true;
         }
 
@@ -52,7 +52,7 @@ public class WaveWarnerRose : MonoBehaviour {
             int ind = (int)i - 1;
             if(seen[ind])
                 continue;
-            dAnim[ind] = StartCoroutine(dotAnim(dots[ind], .5f));
+            dAnim[ind] = StartCoroutine(dotAnim(dots[ind], 1f));
             seen[ind] = true;
         }
 
@@ -61,7 +61,6 @@ public class WaveWarnerRose : MonoBehaviour {
 
 
     public void updateForDirection(MonsterSpawner.direction dir) {
-        Debug.Log("here");
         int ind = (int)dir - 1;
         if(dAnim[ind] == null)
             return;

@@ -8,6 +8,8 @@ public class HouseInstance : Building {
     [SerializeField] public float viewDist = 80f;
     [SerializeField] GameObject arrow;
     [SerializeField] GameObject bloodParticles;
+    [SerializeField] public CircleCollider2D radiusCol;
+    [SerializeField] public GameObject playerSpawnPos;
 
     List<MortalUnit> inTopUnits = new List<MortalUnit>();   //  fuckers that want the house to hide it's top
 
@@ -25,6 +27,10 @@ public class HouseInstance : Building {
         if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
             removeUnitFromInTopUnits(col.gameObject.GetComponent<MortalUnit>());
         }
+    }
+
+    private void Start() {
+        FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
     }
 
     public void removeUnitFromInTopUnits(MortalUnit unit) {

@@ -13,8 +13,9 @@ public class HouseDoorInteractable : Interactable {
     public override void deinteract() {
         //  nothing 
     }
-
     public override bool canInteract() {
         return isTheEnd;
+    }
+    public override void anim(bool b) {
     }
 }

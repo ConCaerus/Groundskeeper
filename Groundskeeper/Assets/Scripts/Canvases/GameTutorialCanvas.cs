@@ -8,13 +8,24 @@ public class GameTutorialCanvas : MonoBehaviour {
     [SerializeField] TextMeshProUGUI movementText, sprintingText, attackingText;
     bool[] has = new bool[3] { false, false, false };
 
+    bool shown = false;
 
     private void Start() {
         gameObject.SetActive(GameInfo.getNightCount() == 0);
+        movementText.color = Color.clear;
+        attackingText.color = Color.clear;
+        sprintingText.color = Color.clear;
+    }
+
+    public void show() {
+        movementText.color = Color.white;
+        attackingText.color = Color.white;
+        sprintingText.color = Color.white;
+        shown = true;
     }
 
     public void hasMoved() {
-        if(movementText.color.a < 1f)
+        if(movementText.color.a < 1f || !shown)
             return;
         movementText.DOColor(Color.clear, .5f);
         has[0] = true;
@@ -22,7 +33,7 @@ public class GameTutorialCanvas : MonoBehaviour {
         StartCoroutine(finish());
     }
     public void hasSprinted() {
-        if(sprintingText.color.a < 1f)
+        if(sprintingText.color.a < 1f || !shown)
             return;
         sprintingText.DOColor(Color.clear, .5f);
         has[1] = true;
@@ -30,7 +41,7 @@ public class GameTutorialCanvas : MonoBehaviour {
         StartCoroutine(finish());
     }
     public void hasAttacked() {
-        if(attackingText.color.a < 1f)
+        if(attackingText.color.a < 1f || !shown)
             return;
         attackingText.DOColor(Color.clear, .5f);
         has[2] = true;

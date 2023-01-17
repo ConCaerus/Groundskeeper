@@ -36,15 +36,6 @@ public class PlacementGrid : MonoBehaviour {
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
 
-            if(!currentObj.GetComponent<Buyable>().canBePlacedOutsideLight) {
-                var r = houseRadiusCollider.gameObject.transform.lossyScale.x * houseRadiusCollider.radius;
-                var d = Mathf.Sqrt(Mathf.Pow(p.x, 2) + Mathf.Pow(p.y, 2));
-                bool inBounds = d < r;
-
-                if(!inBounds)
-                    map.color = Color.red;
-            }
-
             //  checks if the icon is hovering over anything it shouldn't
             LayerMask layermask = LayerMask.GetMask("Player");
             layermask += LayerMask.GetMask("HouseFloor");
@@ -52,7 +43,6 @@ public class PlacementGrid : MonoBehaviour {
                 layermask += LayerMask.GetMask(i.ToString());
             }
             RaycastHit2D hit = Physics2D.Raycast(p, Vector3.forward, Mathf.Infinity, layermask);
-            Debug.DrawRay(p, Vector3.forward, Color.white, 1f);
             if(hit) {
                 map.color = Color.red;
             }
@@ -109,6 +99,14 @@ public class PlacementGrid : MonoBehaviour {
         }
 
         obj.GetComponent<Buyable>().animateBeingPlaced();
+
+        //  checks if the house was just placed. If so, stop placing
+        if(currentObj.GetComponent<Buyable>().title == Buyable.buyableTitle.House) {
+            currentObj = null;
+            placing = false;
+            map.color = Color.clear;
+            FindObjectOfType<SetupSequenceManager>().placedHouse();
+        }
     }
     public void remove() {
         if(map.color == Color.green)

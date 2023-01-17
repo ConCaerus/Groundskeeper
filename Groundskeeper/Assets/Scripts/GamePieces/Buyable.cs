@@ -7,7 +7,6 @@ using DG.Tweening;
 public class Buyable : MonoBehaviour {
     [SerializeField] public int cost;
     [SerializeField] public buyableTitle title;
-    [SerializeField] public bool canBePlacedOutsideLight = false;
 
     [SerializeField] public List<PlacementGrid.obstacleTag> placementObstacleLayers = new List<PlacementGrid.obstacleTag>();
     [SerializeField] public Tile tile;
@@ -25,12 +24,13 @@ public class Buyable : MonoBehaviour {
     }
     [System.Serializable]
     public enum buyableTitle {  //  not in order cause that would be a bitch to keep track of
-        None, Lumberjack, Spikes, Tar, HealingFountain, Scarecrow
+        None, Lumberjack, Spikes, Tar, HealingFountain, Scarecrow, House
     };
 
     private void Start() {
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(mainCollider, mainSprite);
-        Instantiate(placementCollider, transform.position, Quaternion.identity, transform);
+        if(placementCollider != null)
+            Instantiate(placementCollider, transform.position, Quaternion.identity, transform);
     }
 
     public void animateBeingPlaced() {

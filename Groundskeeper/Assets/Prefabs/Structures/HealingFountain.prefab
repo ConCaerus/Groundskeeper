@@ -150,7 +150,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cost: 25
   title: 4
-  canBePlacedOutsideLight: 0
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 83272f7901ca1df42ad6ec304b29dfef, type: 2}
   mainCollider: {fileID: 4456731478231792693}

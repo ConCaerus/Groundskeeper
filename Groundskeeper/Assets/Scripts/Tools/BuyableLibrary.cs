@@ -1,13 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BuyableLibrary : MonoBehaviour {
+    [SerializeField] GameObject[] uniqueBuyables;   //  you designed this to work with house buyable
     [SerializeField] GameObject[] earlyBuyables;
     [SerializeField] GameObject[] midBuyables;
     [SerializeField] GameObject[] lateBuyables;
+
+    //  does not include uniques
     public GameObject[][] buyables() {
         return new GameObject[][] { earlyBuyables, midBuyables, lateBuyables };
+    }
+
+    //  only used in GameInfo.lockAllBuyables
+    public GameObject[][] buyablesWithUniques() {
+        return new GameObject[][] { earlyBuyables, midBuyables, lateBuyables, uniqueBuyables };
     }
 
     public int getBuyableCost(Buyable.buyType t, unlockTier u) {
@@ -47,7 +56,7 @@ public class BuyableLibrary : MonoBehaviour {
     }
 
     public enum unlockTier {
-        All, Early, Mid, Late
+        All, Early, Mid, Late, Unique
     }
 
     string seenTag(Buyable.buyableTitle name) {
@@ -57,17 +66,17 @@ public class BuyableLibrary : MonoBehaviour {
 
     //  only returns the unlocked shit
     public GameObject getHelper(int index) {
-        return getUnlockedBuyablesOfType(Buyable.buyType.Helper)[index];
+        return getUnlockedBuyablesOfType(Buyable.buyType.Helper, false)[index];
     }
-    public GameObject getHelper(string name) {
-        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Helper)) {
+    public GameObject getHelper(string name, bool includeUniques) {
+        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Helper, includeUniques)) {
             if(i.GetComponent<Buyable>().title.ToString() == name)
                 return i.gameObject;
         }
         return null;
     }
-    public GameObject getHelper(Buyable.buyableTitle name) {
-        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Helper)) {
+    public GameObject getHelper(Buyable.buyableTitle name, bool includeUniques) {
+        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Helper, includeUniques)) {
             if(i.GetComponent<Buyable>().title == name)
                 return i.gameObject;
         }
@@ -75,17 +84,17 @@ public class BuyableLibrary : MonoBehaviour {
     }
 
     public GameObject getDefence(int index) {
-        return getUnlockedBuyablesOfType(Buyable.buyType.Defence)[index];
+        return getUnlockedBuyablesOfType(Buyable.buyType.Defence, false)[index];
     }
-    public GameObject getDefence(string name) {
-        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Defence)) {
+    public GameObject getDefence(string name, bool includeUniques) {
+        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Defence, includeUniques)) {
             if(i.GetComponent<Buyable>().title.ToString() == name)
                 return i.gameObject;
         }
         return null;
     }
-    public GameObject getDefence(Buyable.buyableTitle name) {
-        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Defence)) {
+    public GameObject getDefence(Buyable.buyableTitle name, bool includeUniques) {
+        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Defence, includeUniques)) {
             if(i.GetComponent<Buyable>().title == name)
                 return i.gameObject;
         }
@@ -93,17 +102,17 @@ public class BuyableLibrary : MonoBehaviour {
     }
 
     public GameObject getStructure(int index) {
-        return getUnlockedBuyablesOfType(Buyable.buyType.Structure)[index];
+        return getUnlockedBuyablesOfType(Buyable.buyType.Structure, false)[index];
     }
-    public GameObject getStructure(string name) {
-        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Structure)) {
+    public GameObject getStructure(string name, bool includeUniques) {
+        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Structure, includeUniques)) {
             if(i.GetComponent<Buyable>().title.ToString() == name)
                 return i.gameObject;
         }
         return null;
     }
-    public GameObject getStructure(Buyable.buyableTitle name) {
-        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Structure)) {
+    public GameObject getStructure(Buyable.buyableTitle name, bool includeUniques) {
+        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Structure, includeUniques)) {
             if(i.GetComponent<Buyable>().title == name)
                 return i.gameObject;
         }
@@ -119,7 +128,7 @@ public class BuyableLibrary : MonoBehaviour {
     }
 
 
-    public List<GameObject> getUnlockedBuyablesOfType(Buyable.buyType t) {
+    public List<GameObject> getUnlockedBuyablesOfType(Buyable.buyType t, bool includeUniques) {
         var temp = new List<GameObject>();
         int index = 0;
         for(int u = 0; u < 3; u++) {
@@ -127,6 +136,12 @@ public class BuyableLibrary : MonoBehaviour {
                 if(GameInfo.isBuyableUnlocked(buyables()[u][i].GetComponent<Buyable>().title) && buyables()[u][i].GetComponent<Buyable>().bType == t)
                     temp.Add(buyables()[u][i]);
                 index++;
+            }
+        }
+        if(includeUniques) {
+            foreach(var i in uniqueBuyables) {
+                if(i.GetComponent<Buyable>().bType == t && GameInfo.isBuyableUnlocked(i.GetComponent<Buyable>().title))
+                    temp.Add(i.gameObject);
             }
         }
         return temp;
@@ -159,34 +174,36 @@ public class BuyableLibrary : MonoBehaviour {
         }
         return count;
     }
-    public int getNumberOfUnlockedBuyables(Buyable.buyType t) {
-        return getUnlockedBuyablesOfType(t).Count;
+    public int getNumberOfUnlockedBuyables(Buyable.buyType t, bool includeUniques) {
+        if(!includeUniques)
+            return getUnlockedBuyablesOfType(t, includeUniques).Count;
+        int count = getUnlockedBuyablesOfType(t, includeUniques).Count;
+        foreach(var i in uniqueBuyables) {
+            if(i.GetComponent<Buyable>().bType == t && GameInfo.isBuyableUnlocked(i.GetComponent<Buyable>().title))
+                count++;
+        }
+        return count;
     }
     public int getTotalNumberOfBuyables(Buyable.buyType t) {
-        return getNumberOfUnlockedBuyables(t) + getNumberOfLockedBuyables(t);
+        return getNumberOfUnlockedBuyables(t, false) + getNumberOfLockedBuyables(t);
+    }
+    public bool hasUnlockedBuyables(bool includeUniques) {
+        bool h = getNumberOfUnlockedBuyables(Buyable.buyType.Helper, includeUniques) > 0;
+        bool s = getNumberOfUnlockedBuyables(Buyable.buyType.Structure, includeUniques) > 0;
+        bool d = getNumberOfUnlockedBuyables(Buyable.buyType.Defence, includeUniques) > 0;
+        return h || s || d;
     }
 
-    public void unlockBuyable(Buyable.buyableTitle name) {
-        for(int u = 0; u < 3; u++) {
-            for(int i = 0; i < buyables()[u].Length; i++) {
-                if(buyables()[u][i].GetComponent<Buyable>().title == name) {
-                    GameInfo.unlockBuyable(buyables()[u][i].GetComponent<Buyable>().title);
-                    //Debug.Log("unlocked: " + name.ToString());
-                    break;
-                }
-            }
-        }
-    }
     public bool unlockRandomBuyableOfType(Buyable.buyType t, unlockTier u) {
         if(getNumberOfLockedBuyables(t) == 0)
             return false;
-        unlockBuyable(getLockedBuyablesOfType(t, u)[Random.Range(0, getLockedBuyablesOfType(t, u).Count)].GetComponent<Buyable>().title);
+        GameInfo.unlockBuyable(getLockedBuyablesOfType(t, u)[Random.Range(0, getLockedBuyablesOfType(t, u).Count)].GetComponent<Buyable>().title);
         return true;
     }
     public void unlockAll() {
         for(int u = 0; u < 3; u++) {
             for(int i = 0; i < buyables()[u].Length; i++)
-                unlockBuyable(buyables()[u][i].GetComponent<Buyable>().title);
+                GameInfo.unlockBuyable(buyables()[u][i].GetComponent<Buyable>().title);
         }
     }
 

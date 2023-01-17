@@ -25,7 +25,7 @@ public class TargetFinder : MonoBehaviour {
         }
         if(m.favoriteTarget == Monster.targetType.House || m.favoriteTarget == Monster.targetType.All) {
             if(m.infatuated)
-                return Vector2.zero;
+                return FindObjectOfType<HouseInstance>().transform.position;
             relevantCols += LayerMask.GetMask("House");
         }
 
@@ -33,7 +33,7 @@ public class TargetFinder : MonoBehaviour {
 
         //  if no collisions, have the monster move closer to the house
         if(cols.Length == 0)
-            return (m.favoriteTarget == Monster.targetType.People && GameObject.FindGameObjectWithTag("Player") != null) ? (Vector2)GameObject.FindGameObjectWithTag("Player").transform.position : Vector2.zero;
+            return (m.favoriteTarget == Monster.targetType.People && GameObject.FindGameObjectWithTag("Player") != null) ? (Vector2)GameObject.FindGameObjectWithTag("Player").transform.position : (Vector2)FindObjectOfType<HouseInstance>().transform.position;
 
         KdTree<Transform> rel = new KdTree<Transform>();
         bool seesScarecrow = false;

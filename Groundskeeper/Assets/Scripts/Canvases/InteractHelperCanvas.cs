@@ -12,7 +12,7 @@ public class InteractHelperCanvas : MonoBehaviour {
     public void show(Vector2 pos) {
         transform.GetChild(0).position = pos;
         transform.GetChild(0).DOComplete();
-        transform.GetChild(0).DOScale(0.5f, .15f);
+        transform.GetChild(0).DOScale(0.25f, .15f);
     }
     public void hide() {
         transform.GetChild(0).DOComplete();

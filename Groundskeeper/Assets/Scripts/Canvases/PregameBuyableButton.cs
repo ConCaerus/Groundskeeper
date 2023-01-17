@@ -16,7 +16,7 @@ public class PregameBuyableButton : MonoBehaviour {
 
     public void manageNewDot() {
         bool hasNew = false;
-        foreach(var i in FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(getType())) {
+        foreach(var i in FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(getType(), true)) {
             if(FindObjectOfType<BuyableLibrary>().hasPlayerSeenBuyable(i.GetComponent<Buyable>().title)) {
                 hasNew = true;
                 break;

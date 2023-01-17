@@ -8,6 +8,7 @@ using TMPro;
 
 public class PregameCanvas : MonoBehaviour {
     [SerializeField] GameObject upper, lower, lowerGenericButtonHolder;
+    [SerializeField] public GameObject startButton;
     [SerializeField] public TextMeshProUGUI soulsText;  //  referenced in PlacementGrid place()
     [SerializeField] CircularSlider timer;
     float prepTime = 2 * 60; // 2 mins
@@ -16,12 +17,30 @@ public class PregameCanvas : MonoBehaviour {
 
 
     private void Start() {
+        setup();
+
+        if(GameInfo.getNightCount() > 0)
+            startTimer();
+    }
+
+    public void startTimer() {
+        timer.setValue(1.0f);
+        timer.doValue(0.0f, prepTime, delegate { ready(); });
+        timer.setColor(Color.white);
+        timer.doColor(Color.red, prepTime);
+    }
+    public void setup() {
         FindObjectOfType<GameUICanvas>().hide();
         transform.GetChild(0).gameObject.SetActive(true);
         soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
+        lower.SetActive(true);
+        foreach(var i in lowerGenericButtonHolder.GetComponentsInChildren<Button>()) {
+            i.gameObject.SetActive(true);
+        }
+
 
         //  player doesn't have anything unlocked, so remove the lower bar
-        if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper) == 0 && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence) == 0 && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure) == 0) {
+        if(!FindObjectOfType<BuyableLibrary>().hasUnlockedBuyables(true)) {
             lower.SetActive(false);
         }
         else {
@@ -29,27 +48,21 @@ public class PregameCanvas : MonoBehaviour {
             foreach(var i in lowerGenericButtonHolder.GetComponentsInChildren<Button>()) {
                 if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Helper) {
                     i.GetComponent<PregameBuyableButton>().manageNewDot();
-                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper) == 0)
+                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper, true) == 0)
                         i.gameObject.SetActive(false);
                 }
                 if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Defence) {
                     i.GetComponent<PregameBuyableButton>().manageNewDot();
-                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence) == 0)
+                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence, true) == 0)
                         i.gameObject.SetActive(false);
                 }
                 if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Structure) {
                     i.GetComponent<PregameBuyableButton>().manageNewDot();
-                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure) == 0)
+                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure, true) == 0)
                         i.gameObject.SetActive(false);
                 }
             }
         }
-
-        //  start the timer
-        timer.setValue(1.0f);
-        timer.doValue(0.0f, prepTime, delegate { ready(); });
-        timer.setColor(Color.white);
-        timer.doColor(Color.red, prepTime);
     }
 
     private void Update() {
@@ -70,7 +83,7 @@ public class PregameCanvas : MonoBehaviour {
     }
 
 
-    void hide() {
+    public void hide() {
         float t = 2f;
         float amt = 500f;
         if(lower != null)

@@ -30,6 +30,8 @@ public static class GameInfo {
     public static string miscTag = "miscTag";
     public static string lastSavedMiscCount = "LastSavedMiscCount";
 
+    public static string houseTag = "HouseTag";
+
     public static string envTag = "EnvTag";
     public static string envCount = "envCount";
 
@@ -152,7 +154,7 @@ public static class GameInfo {
 
     //  buyables
     public static void lockAllBuyables(BuyableLibrary bl) {
-        foreach(var i in bl.buyables()) {
+        foreach(var i in bl.buyablesWithUniques()) {
             foreach(var j in i)
                 SaveData.setInt(unlockedBuyableTag(j.GetComponent<Buyable>().title), 0);
         }
