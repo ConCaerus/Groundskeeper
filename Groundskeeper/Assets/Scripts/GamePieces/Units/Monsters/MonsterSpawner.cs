@@ -102,7 +102,6 @@ public class MonsterSpawner : MonoBehaviour {
 
     IEnumerator spawnMonsters(waveInfo info) {
         FindObjectOfType<WaveWarnerRose>().warn(info.dir, maxTimeBtwWaves);
-
         for(int i = 0; i <= GameInfo.getLastSeenEnemyIndex(); i++) {
             monsterGroups[GameInfo.wave].Add(new List<List<MonsterInstance>>());
         }
@@ -115,12 +114,12 @@ public class MonsterSpawner : MonoBehaviour {
                 for(int j = 0; j <= info.enemyNumbers[i] / info.dir.Length; j++) {    //  spawn the number of that type of monster
                     var temp = Instantiate(monsterPresets[i].gameObject, transform);
                     bool tooClose = true;
-                    Vector3 pos = j < numOfLeaders ? getPosAlongCircle(FindObjectOfType<HouseInstance>().getCenter(), rad, info.dir[l], (maxSpread / (numOfLeaders - i)) - (maxSpread / 2f)) : getRandomPosAlongCircle(FindObjectOfType<HouseInstance>().getCenter(), rad, info.dir[l]);
+                    Vector3 pos = j < numOfLeaders ? getPosAlongCircle(transform.position, rad, info.dir[l], (maxSpread / (numOfLeaders - i)) - (maxSpread / 2f)) : getRandomPosAlongCircle(transform.position, rad, info.dir[l]);
                     int layer = LayerMask.GetMask("Light");
                     while(tooClose) {
-                        pos = getRandomPosAlongCircle(FindObjectOfType<HouseInstance>().getCenter(), rad, info.dir[l]);
+                        pos = getRandomPosAlongCircle(transform.position, rad, info.dir[l]);
                         tooClose = false;
-                        RaycastHit2D hit = Physics2D.Raycast(pos, -pos, Vector2.Distance(pos, FindObjectOfType<HouseInstance>().getCenter()), layer);
+                        RaycastHit2D hit = Physics2D.Raycast(pos, -pos, Vector2.Distance(pos, transform.position), layer);
 
                         if(hit.collider != null) {
                             //  immideitly hit

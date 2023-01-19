@@ -31,6 +31,7 @@ public class HouseInstance : Building {
 
     private void Start() {
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
+        FindObjectOfType<MonsterSpawner>().transform.position = getCenter();
     }
 
     public void removeUnitFromInTopUnits(MortalUnit unit) {
