@@ -11,6 +11,7 @@ public class MonsterSpawner : MonoBehaviour {
     float maxTimeBtwWaves = 60f * 2f; // 2 mins
 
     [SerializeField] int nightsBetweenDirAddition = 3;  //  monsters can spawn from 1 additional direction after this number of nights
+    bool gameEnded = false;
 
     waveInfo curWave;
     //  Wave that the monsters belong to <Types of monsters <leaders of those types of monsters <followers of the leaders of those types of monsters>>
@@ -49,10 +50,12 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     public void endGame() {
+        gameEnded = true;
+        StopAllCoroutines();
         FindObjectOfType<GameBoard>().saveBoard();
         FindObjectOfType<GameUICanvas>().addSoulsToBank();
         FindObjectOfType<HouseInstance>().showDoorArrow();
-        FindObjectOfType<WaveWarnerRose>().warn(new direction[] { (direction)30 }, 9999999f); //  wave warner hides all dots
+        FindObjectOfType<WaveWarnerRose>().hide();
         FindObjectOfType<HouseDoorInteractable>().isTheEnd = true;
         enabled = false;
     }
@@ -87,6 +90,7 @@ public class MonsterSpawner : MonoBehaviour {
 
 
     public void startNewWave() {
+        if(gameEnded) return;
         //  check if a new enemy should be seen
         while(GameInfo.getLastSeenEnemyIndex() < monsterPresets.Count - 1 && monsterPresets[GameInfo.getLastSeenEnemyIndex() + 1].GetComponent<Monster>().earliestNight <= GameInfo.getNightCount()) {
             GameInfo.incLastSeenEnemy();

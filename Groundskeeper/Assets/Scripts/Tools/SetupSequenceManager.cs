@@ -69,10 +69,11 @@ public class SetupSequenceManager : MonoBehaviour {
         playerWeaponSr.sprite = weaponSprite;
         FindObjectOfType<PlayerWeaponInstance>().enabled = true;
         FindObjectOfType<PlayerWeaponInstance>().canMove = true;
+        FindObjectOfType<PlayerWeaponInstance>().canAttack = false;
         FindObjectOfType<PlayerInstance>().setCanMove(true);
         FindObjectOfType<PlayerWeaponInstance>().GetComponentInChildren<TrailRenderer>().enabled = true;
 
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(1.0f);
 
         FindObjectOfType<PlayerWeaponInstance>().canMove = false;
         FindObjectOfType<PlayerInstance>().setCanMove(false);
@@ -87,8 +88,10 @@ public class SetupSequenceManager : MonoBehaviour {
         FindObjectOfType<PregameCanvas>().startButton.SetActive(true);
         FindObjectOfType<PregameCanvas>().setup();
         FindObjectOfType<PlayerWeaponInstance>().canMove = true;
+        FindObjectOfType<PlayerWeaponInstance>().canAttack = true;
         FindObjectOfType<PlayerInstance>().setCanMove(true);
         FindObjectOfType<GameTutorialCanvas>().show();
         FindObjectOfType<GameBoard>().saveBoard();
+        enabled = false;
     }
 }

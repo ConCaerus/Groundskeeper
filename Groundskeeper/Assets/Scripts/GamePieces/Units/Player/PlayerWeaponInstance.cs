@@ -5,26 +5,29 @@ using DG.Tweening;
 
 public class PlayerWeaponInstance : WeaponInstance {
     [HideInInspector]
-    [SerializeField] public bool canAttack = true;
+    [SerializeField] public bool canAttack;
 
     Coroutine charger = null;
 
     public float chargeMod { get; private set; } = 1.0f;
 
     private void Awake() {
-        canAttack = true;
+        canAttack = GameInfo.getNightCount() > 0;
     }
 
     public override void movementLogic() {
-        if(canAttack && transform.lossyScale.x > 0f) {
+        if(canAttack && transform.lossyScale.x > 0f && !FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled) {
             //  player is attacking normally
             if(Input.GetMouseButton(0) && charger == null) {
                 charger = StartCoroutine(chargeTimer());
             }
             //  player released their attack, whether it's charged or not
             else if(!Input.GetMouseButton(0) && charger != null) {
-                if(FindObjectOfType<GameTutorialCanvas>() != null)
+                if(FindObjectOfType<GameTutorialCanvas>() != null) {
                     FindObjectOfType<GameTutorialCanvas>().hasAttacked();
+                    if(chargeMod > 1.01f)
+                        FindObjectOfType<GameTutorialCanvas>().hasChargedAttacked();
+                }
                 StopCoroutine(charger);
                 charger = null;
                 FindObjectOfType<PlayerUICanvas>().updateChargeSlider(0.0f, 1.0f);
@@ -36,7 +39,7 @@ public class PlayerWeaponInstance : WeaponInstance {
 
     IEnumerator chargeTimer() {
         float maxCharge = 2.0f;
-        float tickTime = .5f, origTickTime = .5f;
+        float tickTime = .35f, origTickTime = .35f;
         float ticksToComplete = 5;  //  zero doens't count, so it'll seem like it'll take this +1 ticks to complete
         float target = 0f;
         bool firstTime = true;

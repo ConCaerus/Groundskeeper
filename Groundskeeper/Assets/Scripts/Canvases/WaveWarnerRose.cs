@@ -18,6 +18,22 @@ public class WaveWarnerRose : MonoBehaviour {
         warning.transform.localScale = Vector3.zero;
     }
 
+    public void hide() {
+        foreach(var i in dAnim) {
+            if(i != null)
+                StopCoroutine(i);
+        }
+
+        float disTime = .15f;
+        foreach(var i in dots) {
+            i.transform.DOKill();
+            i.transform.DOScale(0f, disTime);
+        }
+
+        timer.setValue(1.0f);
+        timer.resetColor();
+    }
+
     public void warn(MonsterSpawner.direction[] dir, float timeTillNextWave) {
         foreach(var i in dAnim) {
             if(i != null)
@@ -28,6 +44,7 @@ public class WaveWarnerRose : MonoBehaviour {
 
         timer.setValue(1.0f);
         timer.doValue(0.0f, timeTillNextWave, delegate { FindObjectOfType<MonsterSpawner>().startNewWave(); });
+        timer.resetColor();
         timer.setColor(timerColors[0]);
         timer.doColor(timerColors[1], timeTillNextWave);
 
