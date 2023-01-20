@@ -71,7 +71,7 @@ public class PregameCanvas : MonoBehaviour {
         }
         soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
 
-        FindObjectOfType<PlayerWeaponInstance>().canAttack = !(mouseOverUI() || FindObjectOfType<PlacementGrid>().placing);
+        FindObjectOfType<PlayerWeaponInstance>().canAttackG = !(mouseOverUI() || FindObjectOfType<PlacementGrid>().placing);
     }
 
     public bool mouseOverUI() {
@@ -99,7 +99,7 @@ public class PregameCanvas : MonoBehaviour {
         FindObjectOfType<GameUICanvas>().show();
         FindObjectOfType<MonsterSpawner>().startNewWave();
         FindObjectOfType<PlacementGrid>().end();
-        FindObjectOfType<PlayerWeaponInstance>().canAttack = true;
+        FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
         FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
         hide();
     }

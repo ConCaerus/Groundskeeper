@@ -17,12 +17,8 @@ public class LumberjackInstance : Helper {
 
     [SerializeField] GameObject bloodParticles;
 
-    private void Awake() {
-        stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
-        startingPos = transform.position;
-    }
-
     private void Start() {
+        startingPos = transform.position;
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponents<Collider2D>()[0].isTrigger ? GetComponents<Collider2D>()[1] : GetComponents<Collider2D>()[0], spriteObj.GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
@@ -30,6 +26,7 @@ public class LumberjackInstance : Helper {
         FindObjectOfType<HelperAttackManager>().addHelper(this);
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
+        targetMoveInfo = transform.position;
 
         //  apply health buff
         maxHealth = (int)(maxHealth * GameInfo.getHelperHealthBuff());
@@ -39,14 +36,17 @@ public class LumberjackInstance : Helper {
     #region ---   MOVEMENT SHIT   ---
     public void updateMovement() {
         //  move the object
+        if(!hasTarget || followingTransform == null) {
+            target = startingPos;
+            hasTarget = false;
+            followingTransform = null;
+            inReach = false;
+        }
         if(followingTransform != null)
             target = followingTransform.position;
         if(!inReach)
             moveToPos(target, GetComponentInParent<Rigidbody2D>(), speed);
-        moveInfo = hasTarget && !inReach ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, Vector2.zero, slowSpeed * 100.0f * Time.fixedDeltaTime);
-    }
-    public void updateTarget() {
-        target = FindObjectOfType<TargetFinder>().getTargetForHelper(gameObject);
+        moveInfo = (hasTarget && !inReach) ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, startingPos, slowSpeed * 100.0f * Time.fixedDeltaTime);
     }
     public override bool restartWalkAnim() {
         return hasTarget && !inReach;

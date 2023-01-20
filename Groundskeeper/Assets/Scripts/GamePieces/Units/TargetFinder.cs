@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TargetFinder : MonoBehaviour {
+    /*
     //  max dist that an enemy will care about whether or not they are close to a thing
     //  if they are out of range from everything, they will walk towards the house
     float monsterDistToCare = 15.0f;
@@ -107,4 +108,5 @@ public class TargetFinder : MonoBehaviour {
             h.followingTransform = closest.gameObject.transform;
         return closest.transform.position;
     }
+    */
 }

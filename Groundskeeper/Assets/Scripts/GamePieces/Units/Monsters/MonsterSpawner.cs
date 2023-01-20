@@ -105,6 +105,7 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     IEnumerator spawnMonsters(waveInfo info) {
+        FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
         FindObjectOfType<WaveWarnerRose>().warn(info.dir, maxTimeBtwWaves);
         for(int i = 0; i <= GameInfo.getLastSeenEnemyIndex(); i++) {
             monsterGroups[GameInfo.wave].Add(new List<List<MonsterInstance>>());
@@ -170,6 +171,7 @@ public class MonsterSpawner : MonoBehaviour {
                     }
                     temp.GetComponent<MonsterInstance>().direction = info.dir[l];
                     temp.GetComponent<MonsterInstance>().relevantWave = GameInfo.wave;
+                    temp.GetComponent<MonsterInstance>().setup();
                     FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>());
                     yield return new WaitForSeconds(Random.Range(0f, .2f));
                 }
@@ -259,5 +261,17 @@ public class MonsterSpawner : MonoBehaviour {
             monsterPresets.Add(t);
             temp.Remove(t);
         }
+    }
+
+    public List<MonsterInstance> getAllFollowingMonstersForLeader(MonsterInstance leader) {
+        var temp = new List<MonsterInstance>();
+
+        foreach(var i in monsterGroups[leader.relevantWave][(int)leader.mType]) {
+            if(i[0] == leader) {
+                for(int x = 1; x < i.Count; x++)
+                    temp.Add(i[x]);
+            }
+        }
+        return temp;
     }
 }

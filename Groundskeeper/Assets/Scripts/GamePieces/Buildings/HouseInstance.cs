@@ -17,7 +17,7 @@ public class HouseInstance : Building {
         //  let the house be clear
         if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
             var c = GetComponent<SpriteRenderer>().color;
-            GetComponent<SpriteRenderer>().DOBlendableColor(new Color(c.r, c.g, c.b, 0.5f), .25f);
+            GetComponent<SpriteRenderer>().DOBlendableColor(new Color(c.r, c.g, c.b, 0.5f), .15f);
             inTopUnits.Add(col.gameObject.GetComponent<MortalUnit>());
         }
     }
@@ -42,7 +42,7 @@ public class HouseInstance : Building {
         }
         if(inTopUnits.Count == 0) {
             var c = GetComponent<SpriteRenderer>().color;
-            GetComponent<SpriteRenderer>().DOBlendableColor(new Color(c.r, c.g, c.b, 1f), .25f);
+            GetComponent<SpriteRenderer>().DOBlendableColor(new Color(c.r, c.g, c.b, 1f), .15f);
         }
     }
 

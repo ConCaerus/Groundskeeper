@@ -51,6 +51,7 @@ public class PlayerInstance : Attacker {
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         if(FindObjectOfType<HouseInstance>() != null)
             transform.position = FindObjectOfType<HouseInstance>().playerSpawnPos.transform.position;
+        FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 5f);
     }
     private void FixedUpdate() {
         //  check if game is over

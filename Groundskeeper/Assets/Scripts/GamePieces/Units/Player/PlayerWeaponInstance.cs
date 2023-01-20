@@ -2,21 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
 
 public class PlayerWeaponInstance : WeaponInstance {
-    [HideInInspector]
-    [SerializeField] public bool canAttack;
+    bool canAttack;
+    public bool canAttackG { 
+        get { return canAttack; } 
+        set {
+            canAttack = value || FindObjectsOfType<MonsterInstance>().Count() > 0;
+        } 
+    }
 
     Coroutine charger = null;
 
     public float chargeMod { get; private set; } = 1.0f;
 
     private void Awake() {
-        canAttack = GameInfo.getNightCount() > 0;
+        canAttackG = GameInfo.getNightCount() > 0;
     }
 
     public override void movementLogic() {
-        if(canAttack && transform.lossyScale.x > 0f && !FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled) {
+        if(canAttackG && transform.lossyScale.x > 0f && !FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled) {
             //  player is attacking normally
             if(Input.GetMouseButton(0) && charger == null) {
                 charger = StartCoroutine(chargeTimer());

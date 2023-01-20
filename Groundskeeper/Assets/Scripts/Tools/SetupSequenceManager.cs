@@ -10,8 +10,10 @@ public class SetupSequenceManager : MonoBehaviour {
     bool p = false;
 
     private void Awake() {
-        if (GameInfo.getNightCount() > 0)
+        if(GameInfo.getNightCount() > 0) {
+            enabled = false;
             return;
+        }
 
         StartCoroutine(houseSetup());
     }
@@ -69,7 +71,7 @@ public class SetupSequenceManager : MonoBehaviour {
         playerWeaponSr.sprite = weaponSprite;
         FindObjectOfType<PlayerWeaponInstance>().enabled = true;
         FindObjectOfType<PlayerWeaponInstance>().canMove = true;
-        FindObjectOfType<PlayerWeaponInstance>().canAttack = false;
+        FindObjectOfType<PlayerWeaponInstance>().canAttackG = false;
         FindObjectOfType<PlayerInstance>().setCanMove(true);
         FindObjectOfType<PlayerWeaponInstance>().GetComponentInChildren<TrailRenderer>().enabled = true;
 
@@ -88,7 +90,7 @@ public class SetupSequenceManager : MonoBehaviour {
         FindObjectOfType<PregameCanvas>().startButton.SetActive(true);
         FindObjectOfType<PregameCanvas>().setup();
         FindObjectOfType<PlayerWeaponInstance>().canMove = true;
-        FindObjectOfType<PlayerWeaponInstance>().canAttack = true;
+        FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
         FindObjectOfType<PlayerInstance>().setCanMove(true);
         FindObjectOfType<GameTutorialCanvas>().show();
         FindObjectOfType<GameBoard>().saveBoard();

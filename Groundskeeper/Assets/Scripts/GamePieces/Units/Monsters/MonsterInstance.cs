@@ -23,6 +23,7 @@ public class MonsterInstance : Monster {
 
     [HideInInspector] public int relevantWave;
     [HideInInspector] public MonsterSpawner.direction direction;
+    [SerializeField] GameObject sCol;
 
 
     private void OnCollisionStay2D(Collision2D col) {
@@ -40,10 +41,11 @@ public class MonsterInstance : Monster {
         }
     }
 
-    private void Start() {
+
+    public void setup() {
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
-        stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
-        FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
+        //stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
+        //FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
 
         //  randomize the look of the monster
         float sizeDiff = Random.Range(1.0f - .2f, 1.0f + .2f), minColor = .4f, maxColor = .9f;
@@ -54,12 +56,17 @@ public class MonsterInstance : Monster {
         spriteOriginal = spriteObj.transform.localScale;
         if(shadowObj != null)
             shadowOriginal = shadowObj.transform.localScale;
+
+        if(!leader)
+            sCol.SetActive(false);
+        moveTarget = FindObjectOfType<HouseInstance>().getCenter();
+        FindObjectOfType<UnitMovementUpdater>().addMonster(this);
     }
 
     #region ---   MOVEMENT SHIT   ---
 
     public void setAsLeader() {
-        FindObjectOfType<UnitMovementUpdater>().addMonster(this);
+        sCol.SetActive(true);
         leader = true;
     }
 
@@ -79,14 +86,6 @@ public class MonsterInstance : Monster {
                 moveTarget = followingTransform.position;
         }
         moveToPos(moveTarget, GetComponent<Rigidbody2D>(), speed - affectedMoveAmt);
-    }
-    public void updateTarget() {
-        if(!leader && closestLeader != null) {
-            followingTransform = closestLeader.followingTransform;
-            moveTarget = closestLeader.moveTarget;
-        }
-        else
-            moveTarget = FindObjectOfType<TargetFinder>().getTargetForMonster(gameObject);
     }
     public override bool restartWalkAnim() {
         return canMove;
