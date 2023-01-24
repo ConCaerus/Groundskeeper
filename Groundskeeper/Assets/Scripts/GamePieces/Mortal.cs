@@ -31,7 +31,7 @@ public abstract class Mortal : MonoBehaviour {
     public abstract Color getStartingColor();
 
     public void takeDamage(int dmg, float knockback, Vector2 origin, bool activateInvinc = true, bool stun = true) {
-        if(invincible)
+        if(invincible || dmg <= 0.0f)
             return;
         if(activateInvinc)
             StartCoroutine(invincTimer());

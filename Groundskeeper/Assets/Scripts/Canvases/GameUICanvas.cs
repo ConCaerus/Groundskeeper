@@ -14,10 +14,8 @@ public class GameUICanvas : MonoBehaviour {
     Coroutine houseHealthShower = null, soulTextCor = null;
 
     object p = null;
+    public bool ended = false;
 
-
-    private void Start() {
-    }
 
     public void show() {
         transform.GetChild(0).gameObject.SetActive(true);
@@ -43,8 +41,11 @@ public class GameUICanvas : MonoBehaviour {
         soulTextCor = StartCoroutine(soulTextShower(s));
     }
 
-    public void addSoulsToBank() {
-        GameInfo.addSouls(soulsRecieved, false);
+    public void endGame() {
+        ended = true;
+        waveCount.text = "Completed";
+        FindObjectOfType<WaveWarnerRose>().hide();
+        GameInfo.addSouls(soulsRecieved, true);
     }
 
     public void showHouseHealth() {
@@ -74,9 +75,13 @@ public class GameUICanvas : MonoBehaviour {
 
         if(p != null)
             DOTween.Kill(p);
+
         p = DOTween.To(() => soulsRecieved, x => soulsRecieved = x, s, .35f)
     .OnUpdate(() => {
-        soulsText.text = (GameInfo.getSouls() + soulsRecieved).ToString("0.0") + "s";
+        if(!ended)
+            soulsText.text = (GameInfo.getSouls() + soulsRecieved).ToString("0.0") + "s";
+        else
+            soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
     });
 
 

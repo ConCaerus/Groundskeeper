@@ -126,6 +126,7 @@ MonoBehaviour:
   maxHealth: 100
   unitHealth: 100
   hurtSound: {fileID: 0}
+  bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   dmgAmt: 0
   slowAmt: 0.5
@@ -147,10 +148,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cost: 3
   title: 3
-  canBePlacedOutsideLight: 0
   placementObstacleLayers: 0200000001000000
   tile: {fileID: 11400000, guid: c2251c18002d2da45919ac96220f92a0, type: 2}
   mainCollider: {fileID: 6783629131799915715}
   mainSprite: {fileID: 2846480179443317440}
   placementCollider: {fileID: 5332476629860305533, guid: aaa10add58a6aaa4cbb8f04007a16132, type: 3}
   bType: 2
+  description: Slows down monsters to a crawl

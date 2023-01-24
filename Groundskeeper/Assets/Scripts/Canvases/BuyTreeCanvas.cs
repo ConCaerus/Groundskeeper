@@ -23,6 +23,8 @@ public class BuyTreeCanvas : MonoBehaviour {
 
     [SerializeField] TextMeshProUGUI soulsText;
 
+    GameObject[] queuedBuyables = new GameObject[3];
+
     enum subType {
         Damage, Health, Speed
     }
@@ -35,6 +37,12 @@ public class BuyTreeCanvas : MonoBehaviour {
     }
 
     void createTree() {
+        //  queue up some random buyables to be saved
+        var bl = FindObjectOfType<BuyableLibrary>();
+        queuedBuyables[0] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Helper, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Helper));
+        queuedBuyables[1] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Defence, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Defence));
+        queuedBuyables[2] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Structure, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Structure));
+
         //  main shits
         for(int i = 0; i < 3; i++)
             createMainNode(i);
@@ -44,6 +52,7 @@ public class BuyTreeCanvas : MonoBehaviour {
         setupSlider(w.GetComponent<BuyTreeNode>().getSlider(), false, 1.0f);
         w.GetComponent<BuyTreeNode>().setTitle("Weapons");
         w.GetComponent<BuyTreeNode>().setTier(-1, subMaxTier);
+        w.GetComponent<BuyTreeNode>().info.info = "Weapon";
 
 
         //  side shits
@@ -65,14 +74,17 @@ public class BuyTreeCanvas : MonoBehaviour {
         h.GetComponent<BuyTreeNode>().setTitle(t == Buyable.buyType.Helper ? "Helpers" : t == Buyable.buyType.Defence ? "Defences" : t == Buyable.buyType.Structure ? "Structures" : "?");
         h.GetComponent<BuyTreeNode>().setCost(getUpdatedCost(h.GetComponent<BuyTreeNode>()));
         h.GetComponent<BuyTreeNode>().setTier(-1, subMaxTier); //  hides the tierText
+        var qb = queuedBuyables[index];
+        h.GetComponent<BuyTreeNode>().info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
 
         setupSlider(h.GetComponent<BuyTreeNode>().getSlider(), false,
             (float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1), false) / bl.getTotalNumberOfBuyables(t),
             delegate {
+                var c = bl.getBuyableUnlockCost(t, bl.getRelevantUnlockTierForBuyableType(t));
                 //  checks money
-                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(h.GetComponent<BuyTreeNode>().cost, soulsText, true)) {
+                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true)) {
                     //  checks if there are any more locked buyables of that type
-                    if(bl.unlockRandomBuyableOfType(t, bl.getRelevantUnlockTierForBuyableType(t))) {
+                    if(bl.unlockBuyable(qb)) {
                         //  transaction
                         h.GetComponent<BuyTreeNode>().setCost(getUpdatedCost(h.GetComponent<BuyTreeNode>()));
 
@@ -87,6 +99,12 @@ public class BuyTreeCanvas : MonoBehaviour {
                         if(bl.getNumberOfUnlockedBuyables(t, false) == 1) {
                             createSubCirclesForType(t);
                         }
+
+                        //  update buyables in queue
+                        queuedBuyables[index] = bl.getRandomUnlockableBuyableOfType(t, bl.getRelevantUnlockTierForBuyableType(t));
+                        qb = queuedBuyables[index];
+                        h.GetComponent<BuyTreeNode>().info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
+                        FindObjectOfType<InfoBox>().updateInfo(h.GetComponent<BuyTreeNode>().info.info);
                     }
                 }
             });
@@ -310,7 +328,7 @@ public class BuyTreeCanvas : MonoBehaviour {
         if(node.mainType == Buyable.buyType.None)
             return node.cost + 50;
 
-        return FindObjectOfType<BuyableLibrary>().getBuyableCost(node.mainType, FindObjectOfType<BuyableLibrary>().getRelevantUnlockTierForBuyableType(node.mainType));
+        return FindObjectOfType<BuyableLibrary>().getBuyableUnlockCost(node.mainType, FindObjectOfType<BuyableLibrary>().getRelevantUnlockTierForBuyableType(node.mainType));
     }
 
 

@@ -7,9 +7,6 @@ public class MouthInteractable : Interactable {
         return true;
     }
 
-    void manageMouth(bool b) {
-        //  opens the mouth when the player gets close
-    }
 
     public override void interact() {
         FindObjectOfType<BuyTreeCanvas>().show();

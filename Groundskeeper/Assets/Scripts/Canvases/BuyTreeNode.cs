@@ -7,6 +7,7 @@ using DG.Tweening;
 public class BuyTreeNode : MonoBehaviour {
     [SerializeField] CircularSlider slider;
     [SerializeField] TextMeshProUGUI title, costText, tierText;
+    [SerializeField] public InfoableImage info;
 
     public int cost { get; private set; }
     public int tier { get; private set; } = 0;

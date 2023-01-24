@@ -43,7 +43,7 @@ public abstract class Interactable : MonoBehaviour {
             tryInteract();
     }
 
-    protected void tryInteract() {
+    public void tryInteract() {
         if(canInteract() && touching) {
             interacting = true;
             interact();
@@ -57,7 +57,7 @@ public abstract class Interactable : MonoBehaviour {
         }
     }
 
-    protected void tryDeinteract() {
+    public void tryDeinteract() {
         if(canInteract()) {
             interacting = false;
             deinteract();

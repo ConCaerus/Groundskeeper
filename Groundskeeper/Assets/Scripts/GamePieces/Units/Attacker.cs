@@ -17,8 +17,10 @@ public abstract class Attacker : Movement {
         if(canAttack && target.gameObject.GetComponent<Mortal>() != null) {
             if(target == FindObjectOfType<HouseInstance>().gameObject)
                 FindObjectOfType<GameUICanvas>().showHouseHealth();
-            target.gameObject.GetComponent<Mortal>().takeDamage(getDamage(), getKnockback(), transform.position, true);
-            specialEffectOnAttack(target);
+            if(getDamage() > 0.0f) {
+                target.gameObject.GetComponent<Mortal>().takeDamage(getDamage(), getKnockback(), transform.position, true);
+                specialEffectOnAttack(target);
+            }
             if(cooldown)
                 startCooldown();
         }

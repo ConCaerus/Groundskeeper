@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toggleMovement: 1
-  targetOffsetPosition: {fileID: 0}
+  targetOffsetPosition: {fileID: 3769568573277731417}
   isTheEnd: 0
 --- !u!1 &3769568573139926079
 GameObject:
@@ -528,6 +528,7 @@ MonoBehaviour:
   mainSprite: {fileID: 3769568573723222046}
   placementCollider: {fileID: 0}
   bType: 3
+  description: No place like home
 --- !u!1 &9112811037843761855
 GameObject:
   m_ObjectHideFlags: 0

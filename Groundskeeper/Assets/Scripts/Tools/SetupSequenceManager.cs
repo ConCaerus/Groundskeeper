@@ -89,11 +89,12 @@ public class SetupSequenceManager : MonoBehaviour {
         yield return new WaitForSeconds(.25f);
         FindObjectOfType<PregameCanvas>().startButton.SetActive(true);
         FindObjectOfType<PregameCanvas>().setup();
+        FindObjectOfType<GameTutorialCanvas>().show();
+        FindObjectOfType<GameBoard>().saveBoard();
+        yield return new WaitForSeconds(1.0f);
         FindObjectOfType<PlayerWeaponInstance>().canMove = true;
         FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
         FindObjectOfType<PlayerInstance>().setCanMove(true);
-        FindObjectOfType<GameTutorialCanvas>().show();
-        FindObjectOfType<GameBoard>().saveBoard();
         enabled = false;
     }
 }

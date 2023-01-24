@@ -85,7 +85,7 @@ public class MonsterInstance : Monster {
             if(followingTransform != null)
                 moveTarget = followingTransform.position;
         }
-        moveToPos(moveTarget, GetComponent<Rigidbody2D>(), speed - affectedMoveAmt);
+        moveToPos(moveTarget, GetComponent<Rigidbody2D>(), Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
     }
     public override bool restartWalkAnim() {
         return canMove;
@@ -167,6 +167,7 @@ public class MonsterInstance : Monster {
         FindObjectOfType<HouseInstance>().removeUnitFromInTopUnits(this);
         GameInfo.monstersKilled++;
         FindObjectOfType<GameUICanvas>().incSouls(soulsGiven);
+        GameInfo.addSouls(soulsGiven, FindObjectOfType<GameUICanvas>().ended);
 
         //  fliar
         var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null);
