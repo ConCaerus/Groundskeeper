@@ -36,10 +36,7 @@ public class SightCollider : MonoBehaviour {
             if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper") {
                 var mi = unit.GetComponent<MonsterInstance>();
                 if(mi.favoriteTarget == Monster.targetType.People || mi.favoriteTarget == Monster.targetType.All) {
-                    if(mi.favoriteTarget == Monster.targetType.People)
-                        mi.followingTransform = FindObjectOfType<PlayerInstance>().gameObject.transform;
-                    else
-                        mi.followingTransform = FindObjectOfType<HouseInstance>().gameObject.transform;
+                    mi.followingTransform = FindObjectOfType<HouseInstance>().gameObject.transform;
                     StartCoroutine(resetCollider());
                 }
             }

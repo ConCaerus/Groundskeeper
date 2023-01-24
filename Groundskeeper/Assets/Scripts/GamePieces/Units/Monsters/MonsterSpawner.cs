@@ -8,17 +8,9 @@ public class MonsterSpawner : MonoBehaviour {
     float rad = 75f;
     float maxSpread = 80f;
 
-    float maxTimeBtwWaves() {
-        float reg = 60f * 2f;
-        //  adds one extra min for each extra direciton
-        for(int i = 0; i < 3; i++) {
-            if(nightsBetweenDirAddition * i < GameInfo.getNightCount())
-                reg += 60f;
-        }
-        return reg;
-    }
+    float maxTimeBtwWaves = 60f * 2f; // 2 mins
 
-    [SerializeField] int nightsBetweenDirAddition = 5;  //  monsters can spawn from 1 additional direction after this number of nights
+    [SerializeField] int nightsBetweenDirAddition = 3;  //  monsters can spawn from 1 additional direction after this number of nights
     bool gameEnded = false;
 
     waveInfo curWave;
@@ -29,7 +21,7 @@ public class MonsterSpawner : MonoBehaviour {
         All, North, East, South, West
     }
 
-    public class waveInfo {
+    class waveInfo {
         public List<int> enemyNumbers;
         public direction[] dir;
         public int diff;
@@ -61,7 +53,7 @@ public class MonsterSpawner : MonoBehaviour {
         gameEnded = true;
         StopAllCoroutines();
         FindObjectOfType<GameBoard>().saveBoard();
-        FindObjectOfType<GameUICanvas>().endGame();
+        FindObjectOfType<GameUICanvas>().addSoulsToBank();
         FindObjectOfType<HouseInstance>().showDoorArrow();
         FindObjectOfType<WaveWarnerRose>().hide();
         FindObjectOfType<HouseDoorInteractable>().isTheEnd = true;
@@ -69,7 +61,7 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
 
-    public waveInfo calcWave() {
+    waveInfo calcWave() {
         waveInfo info = new waveInfo();
         var diff = calcWaveDiff();
         info.diff = diff;
@@ -114,7 +106,7 @@ public class MonsterSpawner : MonoBehaviour {
 
     IEnumerator spawnMonsters(waveInfo info) {
         FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
-        FindObjectOfType<WaveWarnerRose>().warn(info.dir, maxTimeBtwWaves());
+        FindObjectOfType<WaveWarnerRose>().warn(info.dir, maxTimeBtwWaves);
         for(int i = 0; i <= GameInfo.getLastSeenEnemyIndex(); i++) {
             monsterGroups[GameInfo.wave].Add(new List<List<MonsterInstance>>());
         }

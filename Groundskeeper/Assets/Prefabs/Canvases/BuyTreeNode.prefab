@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1806199426}
   - component: {fileID: 1806199425}
   - component: {fileID: 1806199424}
-  - component: {fileID: 4989566328012080715}
   m_Layer: 5
   m_Name: button
   m_TagString: Untagged
@@ -133,19 +132,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4989566328012080715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1806199422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9dc252b16183114e8dcb9bea3ec6ec8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  info: Information
 --- !u!1 &278326420026625068
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,7 +492,6 @@ MonoBehaviour:
   title: {fileID: 1687518171328377137}
   costText: {fileID: 1219086282486704207}
   tierText: {fileID: 7605708894043907046}
-  info: {fileID: 4989566328012080715}
   mainType: 0
 --- !u!1 &7766012765160504132
 GameObject:

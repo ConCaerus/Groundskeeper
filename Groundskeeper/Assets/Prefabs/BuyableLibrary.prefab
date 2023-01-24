@@ -48,8 +48,8 @@ MonoBehaviour:
   earlyBuyables:
   - {fileID: 2846480179443317441, guid: fb6422a35de71734ea98a76edb6aa05a, type: 3}
   - {fileID: 5885474163630609340, guid: 4ce1bf4a512457d44b5a69edf38da4db, type: 3}
-  - {fileID: 4456731478231792695, guid: b57c829f2cd00ee4cab95424f6aebd41, type: 3}
-  - {fileID: 5885474163630609340, guid: f629fed127b0bee478afe00fae38624e, type: 3}
   midBuyables:
   - {fileID: 2846480179443317441, guid: 7925a3e0bf62d04408c05f72bcee6422, type: 3}
-  lateBuyables: []
+  - {fileID: 5885474163630609340, guid: f629fed127b0bee478afe00fae38624e, type: 3}
+  lateBuyables:
+  - {fileID: 4456731478231792695, guid: b57c829f2cd00ee4cab95424f6aebd41, type: 3}

@@ -108,7 +108,7 @@ public class WaveWarnerRose : MonoBehaviour {
 
     IEnumerator attentionGrabber() {
         transform.GetChild(0).DOScale(1.5f, .15f);
-        warning.transform.DOScale(.65f, .15f);
+        warning.transform.DOScale(.45f, .15f);
 
         yield return new WaitForSeconds(.15f);
 

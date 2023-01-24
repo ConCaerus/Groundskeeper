@@ -126,7 +126,6 @@ MonoBehaviour:
   maxHealth: 100
   unitHealth: 100
   hurtSound: {fileID: 0}
-  bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   dmgAmt: 1
   slowAmt: 0.3
@@ -148,10 +147,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cost: 7
   title: 2
+  canBePlacedOutsideLight: 0
   placementObstacleLayers: 0200000001000000
   tile: {fileID: 11400000, guid: 937b47b7d8729504ea240264a4a310b8, type: 2}
   mainCollider: {fileID: 6783629131799915715}
   mainSprite: {fileID: 2846480179443317440}
   placementCollider: {fileID: 5332476629860305533, guid: aaa10add58a6aaa4cbb8f04007a16132, type: 3}
   bType: 2
-  description: Very deadly to any monster that walks on it

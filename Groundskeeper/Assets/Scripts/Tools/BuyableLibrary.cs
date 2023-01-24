@@ -54,41 +54,6 @@ public class BuyableLibrary : MonoBehaviour {
         }
         return 0;
     }
-    public int getBuyableUnlockCost(Buyable.buyType t, unlockTier u) {
-        switch(u) {
-            case unlockTier.Early:
-                switch(t) {
-                    case Buyable.buyType.Helper:
-                        return 35;
-                    case Buyable.buyType.Defence:
-                        return 10;
-                    case Buyable.buyType.Structure:
-                        return 50;
-                }
-                return 0;
-            case unlockTier.Mid:
-                switch(t) {
-                    case Buyable.buyType.Helper:
-                        return 50;
-                    case Buyable.buyType.Defence:
-                        return 25;
-                    case Buyable.buyType.Structure:
-                        return 100;
-                }
-                return 0;
-            case unlockTier.Late:
-                switch(t) {
-                    case Buyable.buyType.Helper:
-                        return 100;
-                    case Buyable.buyType.Defence:
-                        return 35;
-                    case Buyable.buyType.Structure:
-                        return 200;
-                }
-                return 0;
-        }
-        return 0;
-    }
 
     public enum unlockTier {
         All, Early, Mid, Late, Unique
@@ -236,16 +201,11 @@ public class BuyableLibrary : MonoBehaviour {
         return h || s || d;
     }
 
-    public bool unlockBuyable(GameObject b) {
-        if(b == null || b.GetComponent<Buyable>() == null)
-            return false;
-        GameInfo.unlockBuyable(b.GetComponent<Buyable>().title);
-        return true;
-    }
-    public GameObject getRandomUnlockableBuyableOfType(Buyable.buyType t, unlockTier u) {
+    public bool unlockRandomBuyableOfType(Buyable.buyType t, unlockTier u) {
         if(getNumberOfLockedBuyables(t) == 0)
-            return null;
-        return getLockedBuyablesOfType(t, u)[Random.Range(0, getLockedBuyablesOfType(t, u).Count)];
+            return false;
+        GameInfo.unlockBuyable(getLockedBuyablesOfType(t, u)[Random.Range(0, getLockedBuyablesOfType(t, u).Count)].GetComponent<Buyable>().title);
+        return true;
     }
     public void unlockAll() {
         for(int u = 0; u < 3; u++) {

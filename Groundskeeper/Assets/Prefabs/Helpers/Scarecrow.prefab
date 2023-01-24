@@ -390,15 +390,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 25
+  cost: 50
   title: 5
+  canBePlacedOutsideLight: 0
   placementObstacleLayers: 0000000002000000
   tile: {fileID: 11400000, guid: 500c86a80a7354248b654d42789d49a4, type: 2}
   mainCollider: {fileID: 781272015645960741}
   mainSprite: {fileID: 5885474163079569800}
   placementCollider: {fileID: 5332476629860305533, guid: aaa10add58a6aaa4cbb8f04007a16132, type: 3}
   bType: 1
-  description: Very attractive to monsters
 --- !u!114 &9120468517171006270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,7 +414,6 @@ MonoBehaviour:
   maxHealth: 250
   unitHealth: 250
   hurtSound: {fileID: 0}
-  bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
   backSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}

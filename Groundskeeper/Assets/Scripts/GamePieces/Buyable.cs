@@ -17,7 +17,6 @@ public class Buyable : MonoBehaviour {
     [SerializeField] public GameObject placementCollider;
 
     [SerializeField] public buyType bType;
-    [SerializeField] public string description = "Description";
 
     [System.Serializable]
     public enum buyType {

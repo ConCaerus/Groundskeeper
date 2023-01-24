@@ -40,7 +40,7 @@ public class GameBoard : MonoBehaviour {
             SaveData.setString(GameInfo.defenceTag + dIndex.ToString(), data);
             dIndex++;
         }
-        foreach(var i in GameObject.FindGameObjectsWithTag("Structure")) {
+        foreach(var i in GameObject.FindGameObjectsWithTag("Passive")) {
             var save = new ObjectSaveData(i.GetComponent<Buyable>());
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.miscTag + pIndex.ToString(), data);
@@ -114,7 +114,7 @@ public class GameBoard : MonoBehaviour {
     }
 
     IEnumerator environmentSpawner(bool hasEnvs) {
-        float cutOffCount = 200;    //  after spawning this number of shit, start slowing the spawing shit.
+        float cutOffCount = 100;    //  after spawning this number of shit, start slowing the spawing shit.
 
         if(!hasEnvs) {
             int count = Random.Range((int)(boardRadius * 1.5f), (int)(boardRadius * 3.0f));
@@ -149,7 +149,7 @@ public class GameBoard : MonoBehaviour {
 
                 environment.Add(o.GetComponent<EnvironmentInstance>());
                 if(i > cutOffCount)
-                    yield return new WaitForEndOfFrame();
+                    yield return new WaitForSeconds(.01f);
             }
             SaveData.setInt(GameInfo.envCount, count);
         }
@@ -168,7 +168,7 @@ public class GameBoard : MonoBehaviour {
 
                 environment.Add(o.GetComponent<EnvironmentInstance>());
                 if(i > cutOffCount)
-                    yield return new WaitForEndOfFrame();
+                    yield return new WaitForSeconds(.01f);
             }
         }
     }

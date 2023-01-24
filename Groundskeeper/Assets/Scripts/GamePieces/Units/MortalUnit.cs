@@ -9,7 +9,6 @@ public abstract class MortalUnit : Mortal {
         //  take knockback
         if(rb != null) {
             var dir = -(origin - (Vector2)transform.position).normalized;
-            rb.velocity = Vector2.zero;
             rb.AddForce(dir * knockback * 5000f);
         }
 

@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4456731478231792693}
   - component: {fileID: 4456731478231792691}
   - component: {fileID: 4237534904317676787}
-  m_Layer: 14
+  m_Layer: 0
   m_Name: HealingFountain
-  m_TagString: Structure
+  m_TagString: Passive
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -156,7 +156,6 @@ MonoBehaviour:
   mainSprite: {fileID: 4456731478231792690}
   placementCollider: {fileID: 0}
   bType: 3
-  description: Fixs scratches and scars
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,7 +166,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1190786828602139548}
   - component: {fileID: 5630772386482857884}
-  m_Layer: 14
+  m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}

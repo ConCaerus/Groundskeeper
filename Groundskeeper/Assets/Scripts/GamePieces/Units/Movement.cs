@@ -19,7 +19,7 @@ public abstract class Movement : MortalUnit {
     public abstract void updateSprite(Vector2 movingDir);
 
     protected void moveWithDir(Vector2 info, Rigidbody2D rb, float speed) {
-        if(!canMove || (FindObjectOfType<SetupSequenceManager>() != null && FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled))
+        if(!canMove)
             return;
         var s = speed * 100.0f * (beingAttackedByMonster ? inhibitMod : 1.0f);
         rb.velocity = info * s * Time.fixedDeltaTime;
@@ -32,7 +32,7 @@ public abstract class Movement : MortalUnit {
     }
 
     protected void moveToPos(Vector2 pos, Rigidbody2D rb, float speed) {
-        if(!canMove || (FindObjectOfType<SetupSequenceManager>() != null && FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled))    //  unit cannot move
+        if(!canMove)    //  unit cannot move
             return;
         if(pos != (Vector2)rb.gameObject.transform.position) {
             if(anim == null)

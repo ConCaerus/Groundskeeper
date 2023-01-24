@@ -100,10 +100,8 @@ public class PregameCanvas : MonoBehaviour {
         FindObjectOfType<MonsterSpawner>().startNewWave();
         FindObjectOfType<PlacementGrid>().end();
         FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
-        if(gameMusic != null)
-            FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
+        FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
         hide();
-        FindObjectOfType<InfoBox>().gameObject.SetActive(false);
     }
 
     public void setPlacementObj(GameObject obj) {

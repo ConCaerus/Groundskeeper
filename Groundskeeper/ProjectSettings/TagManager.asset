@@ -11,14 +11,14 @@ TagManager:
   - Defence
   - Helper
   - Light
+  - Passive
   - Environment
   - Bystander
-  - Structure
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Info
+  - 
   - Water
   - UI
   - Player
@@ -29,7 +29,7 @@ TagManager:
   - Building
   - House
   - HouseFloor
-  - Structure
+  - Passive
   - Environment
   - 
   - 
