@@ -5,7 +5,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 using TMPro;
 
-public class BuyTreeCanvas : MonoBehaviour {
+public class BuyTreeCanvas : MenuCanvas {
     int subMaxTicks = 4, subMaxTier = 3;
     float sliderFillSpeed = .1f;
 
@@ -337,13 +337,14 @@ public class BuyTreeCanvas : MonoBehaviour {
     }
 
 
-    public void show() {
+    protected override void show() {
         transform.DOKill();
         transform.DOScale(1.0f, .15f);
     }
 
-    public void hide() {
+    protected override void close() {
         transform.DOKill();
         transform.DOScale(0.0f, .25f);
+        FindObjectOfType<MouthInteractable>().tryDeinteract();
     }
 }

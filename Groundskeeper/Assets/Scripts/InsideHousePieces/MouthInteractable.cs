@@ -9,10 +9,10 @@ public class MouthInteractable : Interactable {
 
 
     public override void interact() {
-        FindObjectOfType<BuyTreeCanvas>().show();
+        FindObjectOfType<BuyTreeCanvas>().tryShow();
     }
     public override void deinteract() {
-        FindObjectOfType<BuyTreeCanvas>().hide();
+        FindObjectOfType<BuyTreeCanvas>().tryClose();
     }
     public override void anim(bool b) {
         GetComponent<Animator>().SetBool("isOpen", b);

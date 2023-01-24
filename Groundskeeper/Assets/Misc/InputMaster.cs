@@ -248,6 +248,67 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Dialog"",
+            ""id"": ""cc966e07-402e-4aa2-8ee1-216462880998"",
+            ""actions"": [
+                {
+                    ""name"": ""Advance"",
+                    ""type"": ""Button"",
+                    ""id"": ""14716953-375b-4867-8c57-e7015d8ef2f2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6d006065-3130-40af-a7c7-82e60a2a42db"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Advance"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d433d3fa-657b-4fd4-b13d-b9b9dbfb6187"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Advance"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a7b3869-6347-46bf-a569-0cf1c41c8402"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Advance"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e385b69-b4d5-47fd-a676-a07616589daa"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Advance"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -289,6 +350,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         // Pause
         m_Pause = asset.FindActionMap("Pause", throwIfNotFound: true);
         m_Pause_Toggle = m_Pause.FindAction("Toggle", throwIfNotFound: true);
+        // Dialog
+        m_Dialog = asset.FindActionMap("Dialog", throwIfNotFound: true);
+        m_Dialog_Advance = m_Dialog.FindAction("Advance", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -434,6 +498,39 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         }
     }
     public PauseActions @Pause => new PauseActions(this);
+
+    // Dialog
+    private readonly InputActionMap m_Dialog;
+    private IDialogActions m_DialogActionsCallbackInterface;
+    private readonly InputAction m_Dialog_Advance;
+    public struct DialogActions
+    {
+        private @InputMaster m_Wrapper;
+        public DialogActions(@InputMaster wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Advance => m_Wrapper.m_Dialog_Advance;
+        public InputActionMap Get() { return m_Wrapper.m_Dialog; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DialogActions set) { return set.Get(); }
+        public void SetCallbacks(IDialogActions instance)
+        {
+            if (m_Wrapper.m_DialogActionsCallbackInterface != null)
+            {
+                @Advance.started -= m_Wrapper.m_DialogActionsCallbackInterface.OnAdvance;
+                @Advance.performed -= m_Wrapper.m_DialogActionsCallbackInterface.OnAdvance;
+                @Advance.canceled -= m_Wrapper.m_DialogActionsCallbackInterface.OnAdvance;
+            }
+            m_Wrapper.m_DialogActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Advance.started += instance.OnAdvance;
+                @Advance.performed += instance.OnAdvance;
+                @Advance.canceled += instance.OnAdvance;
+            }
+        }
+    }
+    public DialogActions @Dialog => new DialogActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -462,5 +559,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
     public interface IPauseActions
     {
         void OnToggle(InputAction.CallbackContext context);
+    }
+    public interface IDialogActions
+    {
+        void OnAdvance(InputAction.CallbackContext context);
     }
 }

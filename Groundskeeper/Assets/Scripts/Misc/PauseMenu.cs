@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PauseMenu : MonoBehaviour {
+public class PauseMenu : MenuCanvas {
     InputMaster controls;
+    [SerializeField] GameObject background;
 
     private void Awake() {
         controls = new InputMaster();
@@ -15,17 +16,20 @@ public class PauseMenu : MonoBehaviour {
     public void togglePause() {
         if(FindObjectOfType<OptionsCanvas>() != null)
             return;
-        var background = transform.GetChild(0).gameObject;
-        if(!background.activeInHierarchy) {
-            background.SetActive(true);
-            Time.timeScale = 0.0f;
-        }
-        else {
-            background.SetActive(false);
-            Time.timeScale = 1.0f;
-        }
+        if(!background.activeInHierarchy)
+            tryShow();
+        else
+            tryClose();
     }
 
+    protected override void show() {
+        background.SetActive(true);
+        Time.timeScale = 0.0f;
+    }
+    protected override void close() {
+        background.SetActive(false);
+        Time.timeScale = 1.0f;
+    }
 
     public void resume() {
         togglePause();

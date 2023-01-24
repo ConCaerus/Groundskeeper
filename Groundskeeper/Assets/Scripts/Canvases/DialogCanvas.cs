@@ -17,18 +17,28 @@ public class DialogCanvas : MonoBehaviour {
 
     public delegate void func();
     func f = null;
+    InputMaster controls;
 
 
     private void Start() {
         DOTween.Init();
+        controls = new InputMaster();
+        controls.Enable();
+        controls.Dialog.Advance.performed += ctx => advance();
         hardHide();
         otherText.gameObject.SetActive(false);
     }
 
-    private void Update() {
-        if(!skip && Input.anyKeyDown && anim != null)
+
+    private void OnDisable() {
+        controls.Disable();
+    }
+
+
+    void advance() {
+        if(!skip && anim != null)
             skip = true;
-        if(Input.anyKeyDown && anim == null && showingText) {
+        if(anim == null && showingText) {
             currentTexts.dialogs.RemoveAt(0);
             if(currentTexts.dialogs.Count <= 0) {
                 hide();
@@ -37,7 +47,6 @@ public class DialogCanvas : MonoBehaviour {
             }
             else
                 showText(currentTexts.dialogs[0]);
-
         }
     }
 
