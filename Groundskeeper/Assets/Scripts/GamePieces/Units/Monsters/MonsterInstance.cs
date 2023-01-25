@@ -59,7 +59,10 @@ public class MonsterInstance : Monster {
 
         if(!leader)
             sCol.SetActive(false);
-        moveTarget = FindObjectOfType<HouseInstance>().getCenter();
+        if(favoriteTarget == targetType.People)
+            followingTransform = FindObjectOfType<PlayerInstance>().transform;
+        else
+            moveTarget = FindObjectOfType<HouseInstance>().getCenter();
         FindObjectOfType<UnitMovementUpdater>().addMonster(this);
     }
 
