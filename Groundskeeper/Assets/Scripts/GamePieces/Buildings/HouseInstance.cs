@@ -13,41 +13,9 @@ public class HouseInstance : Building {
     [SerializeField] List<GameObject> corners = new List<GameObject>();
     KdTree<Transform> cs = new KdTree<Transform>();
 
-    List<MortalUnit> inTopUnits = new List<MortalUnit>();   //  fuckers that want the house to hide it's top
-
-    private void OnTriggerEnter2D(Collider2D col) {
-        //  let the house be clear
-        if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
-            var c = GetComponent<SpriteRenderer>().color;
-            GetComponent<SpriteRenderer>().DOBlendableColor(new Color(c.r, c.g, c.b, 0.5f), .15f);
-            inTopUnits.Add(col.gameObject.GetComponent<MortalUnit>());
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D col) {
-        //  let the house not be clear anymore
-        if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
-            removeUnitFromInTopUnits(col.gameObject.GetComponent<MortalUnit>());
-        }
-    }
-
     private void Start() {
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
         FindObjectOfType<MonsterSpawner>().transform.position = getCenter();
-        foreach(var i in corners)
-            cs.Add(i.transform);
-    }
-
-    public void removeUnitFromInTopUnits(MortalUnit unit) {
-        inTopUnits.Remove(unit);
-        for(int i = inTopUnits.Count - 1; i >= 0; i--) {
-            if(inTopUnits[i] == null || inTopUnits[i].health <= 0f)
-                inTopUnits.RemoveAt(i);
-        }
-        if(inTopUnits.Count == 0) {
-            var c = GetComponent<SpriteRenderer>().color;
-            GetComponent<SpriteRenderer>().DOBlendableColor(new Color(c.r, c.g, c.b, 1f), .15f);
-        }
     }
 
     public Vector2 getCenter() {
@@ -70,6 +38,27 @@ public class HouseInstance : Building {
         arrow.transform.DOLocalMoveY(arrow.transform.localPosition.y + m, t);
         yield return new WaitForSeconds(t);
         StartCoroutine(doorArrowAnim());
+    }
+
+    public Vector2 getNextPointOnPath(Vector2 pos, Vector2 target) {
+        var dir = target - pos;
+        int lm = LayerMask.GetMask("House");
+        RaycastHit2D hit = Physics2D.Raycast(pos, dir, Vector2.Distance(pos, target), lm);
+        if(cs.Count == 0) {
+            foreach(var i in corners)
+                cs.Add(i.transform);
+        }
+
+        //  path is obstructed
+        if(hit.collider != null) {
+            //  get the midpoint between the two points and find the closest corner to that point
+            var x = (pos.x + target.x) / 2.0f;
+            var y = (pos.y + target.y) / 2.0f;
+            return cs.FindClosest(new Vector3(x, y)).position;
+        }
+
+        //  nothing in the way
+        return target;
     }
 
     public override GameObject getBloodParticles() {

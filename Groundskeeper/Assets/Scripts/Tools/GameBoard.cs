@@ -30,6 +30,8 @@ public class GameBoard : MonoBehaviour {
         //      saves new shit
         foreach(var i in GameObject.FindGameObjectsWithTag("Helper")) {
             var save = new ObjectSaveData(i.GetComponent<Buyable>());
+            if(i.GetComponent<LumberjackInstance>() != null)
+                save = new ObjectSaveData(i.GetComponent<LumberjackInstance>());
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.helperTag + hIndex.ToString(), data);
             hIndex++;
@@ -187,6 +189,11 @@ public class ObjectSaveData {
     public ObjectSaveData(Buyable b) {
         name = b.title.ToString();
         pos = b.transform.position;
+    }
+
+    public ObjectSaveData(LumberjackInstance l) {
+        name = l.GetComponent<Buyable>().title.ToString();
+        pos = l.startingPos;
     }
 
     public ObjectSaveData(string n, Vector2 p) {

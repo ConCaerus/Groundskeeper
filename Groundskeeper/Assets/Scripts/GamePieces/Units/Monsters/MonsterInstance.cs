@@ -30,6 +30,8 @@ public class MonsterInstance : Monster {
         if(canAttack) {
             if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Building" || col.gameObject.tag == "House") {
                 attack(col.gameObject, true);
+                if(col.gameObject.tag == "Helper" && col.gameObject.GetComponent<LumberjackInstance>() != null)
+                    col.gameObject.GetComponent<LumberjackInstance>().inReach = true;
                 return;
             }
         }
@@ -87,6 +89,8 @@ public class MonsterInstance : Monster {
         else {
             if(followingTransform != null)
                 moveTarget = followingTransform.position;
+            else if(followingTransform == null) 
+                moveTarget = favoriteTarget == targetType.People ? (Vector2)FindObjectOfType<PlayerInstance>().transform.position : FindObjectOfType<HouseInstance>().getCenter();
         }
         moveToPos(moveTarget, GetComponent<Rigidbody2D>(), Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
     }
@@ -167,7 +171,7 @@ public class MonsterInstance : Monster {
         }
 
         //  boring stuff
-        FindObjectOfType<HouseInstance>().removeUnitFromInTopUnits(this);
+        //FindObjectOfType<HouseUpper>().removeUnitFromInTopUnits(this);
         GameInfo.monstersKilled++;
         FindObjectOfType<GameUICanvas>().incSouls(soulsGiven);
         GameInfo.addSouls(soulsGiven, FindObjectOfType<GameUICanvas>().ended);

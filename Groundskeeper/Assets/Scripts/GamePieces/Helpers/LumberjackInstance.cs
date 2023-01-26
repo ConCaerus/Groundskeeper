@@ -43,18 +43,16 @@ public class LumberjackInstance : Helper {
             inReach = false;
         }
         if(followingTransform != null) {
-            if(isTargetObstructed(target))
-                target = startingPos;
-            else
-                target = followingTransform.position;
+            target = followingTransform.position;
         }
+        target = FindObjectOfType<HouseInstance>().getNextPointOnPath(transform.position, target);
         if(!inReach)
             moveToPos(target, GetComponentInParent<Rigidbody2D>(), speed);
         moveInfo = (hasTarget && !inReach) ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, startingPos, slowSpeed * 100.0f * Time.fixedDeltaTime);
     }
     bool isTargetObstructed(Vector2 t) {
         var dir = t - (Vector2)transform.position;
-        int lMask = LayerMask.GetMask("HouseFloor");
+        int lMask = LayerMask.GetMask("House");
         RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 13f, lMask);
         return hit.collider != null;
     }
