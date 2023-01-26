@@ -42,11 +42,21 @@ public class LumberjackInstance : Helper {
             followingTransform = null;
             inReach = false;
         }
-        if(followingTransform != null)
-            target = followingTransform.position;
+        if(followingTransform != null) {
+            if(isTargetObstructed(target))
+                target = startingPos;
+            else
+                target = followingTransform.position;
+        }
         if(!inReach)
             moveToPos(target, GetComponentInParent<Rigidbody2D>(), speed);
         moveInfo = (hasTarget && !inReach) ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, startingPos, slowSpeed * 100.0f * Time.fixedDeltaTime);
+    }
+    bool isTargetObstructed(Vector2 t) {
+        var dir = t - (Vector2)transform.position;
+        int lMask = LayerMask.GetMask("HouseFloor");
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 13f, lMask);
+        return hit.collider != null;
     }
     public override bool restartWalkAnim() {
         return hasTarget && !inReach;

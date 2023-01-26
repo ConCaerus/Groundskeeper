@@ -31,6 +31,7 @@ public class LumberjackInreachCollider : MonoBehaviour {
     IEnumerator resetCollider() {
         GetComponent<Collider2D>().enabled = false;
         yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
         GetComponent<Collider2D>().enabled = true;
     }
 }

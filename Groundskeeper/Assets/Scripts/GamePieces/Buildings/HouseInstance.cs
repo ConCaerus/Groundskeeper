@@ -10,6 +10,8 @@ public class HouseInstance : Building {
     [SerializeField] GameObject bloodParticles;
     [SerializeField] public CircleCollider2D radiusCol;
     [SerializeField] public GameObject playerSpawnPos;
+    [SerializeField] List<GameObject> corners = new List<GameObject>();
+    KdTree<Transform> cs = new KdTree<Transform>();
 
     List<MortalUnit> inTopUnits = new List<MortalUnit>();   //  fuckers that want the house to hide it's top
 
@@ -32,6 +34,8 @@ public class HouseInstance : Building {
     private void Start() {
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
         FindObjectOfType<MonsterSpawner>().transform.position = getCenter();
+        foreach(var i in corners)
+            cs.Add(i.transform);
     }
 
     public void removeUnitFromInTopUnits(MortalUnit unit) {
