@@ -35,26 +35,25 @@ public class LumberjackInstance : Helper {
 
     #region ---   MOVEMENT SHIT   ---
     public void updateMovement() {
-        //  move the object
+        //  doesn't need to move anywhere specific
         if(!hasTarget || followingTransform == null) {
             target = startingPos;
             hasTarget = false;
             followingTransform = null;
             inReach = false;
+            //  already at starting pos
+            if(Vector2.Distance(transform.position, startingPos) < .01f)
+                return;
         }
         if(followingTransform != null) {
             target = followingTransform.position;
         }
-        target = FindObjectOfType<HouseInstance>().getNextPointOnPath(transform.position, target);
+        //  corrects if needs correcting
+        if(Vector2.Distance(transform.position, startingPos) > .01f)
+            target = FindObjectOfType<HouseInstance>().getNextPointOnPath(transform.position, target);
         if(!inReach)
             moveToPos(target, GetComponentInParent<Rigidbody2D>(), speed);
         moveInfo = (hasTarget && !inReach) ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, startingPos, slowSpeed * 100.0f * Time.fixedDeltaTime);
-    }
-    bool isTargetObstructed(Vector2 t) {
-        var dir = t - (Vector2)transform.position;
-        int lMask = LayerMask.GetMask("House");
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 13f, lMask);
-        return hit.collider != null;
     }
     public override bool restartWalkAnim() {
         return hasTarget && !inReach;

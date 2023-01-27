@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UIElements;
 
 public class MonsterInstance : Monster {
     Vector2 moveTarget;
@@ -29,10 +30,13 @@ public class MonsterInstance : Monster {
     private void OnCollisionStay2D(Collision2D col) {
         if(canAttack) {
             if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Building" || col.gameObject.tag == "House") {
-                attack(col.gameObject, true);
+                //  can't attack house if favorite target is only people
+                if(!(col.gameObject.tag == "House" && favoriteTarget == targetType.People))
+                    attack(col.gameObject, true);
+
+                //  if attacks a lumberjack, tells them that they can attack back
                 if(col.gameObject.tag == "Helper" && col.gameObject.GetComponent<LumberjackInstance>() != null)
                     col.gameObject.GetComponent<LumberjackInstance>().inReach = true;
-                return;
             }
         }
     }
@@ -89,7 +93,7 @@ public class MonsterInstance : Monster {
         else {
             if(followingTransform != null)
                 moveTarget = followingTransform.position;
-            else if(followingTransform == null) 
+            else if(followingTransform == null)
                 moveTarget = favoriteTarget == targetType.People ? (Vector2)FindObjectOfType<PlayerInstance>().transform.position : FindObjectOfType<HouseInstance>().getCenter();
         }
         moveToPos(moveTarget, GetComponent<Rigidbody2D>(), Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
