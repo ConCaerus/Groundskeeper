@@ -17,7 +17,7 @@ public class HouseUpper : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D col) {
         //  let the house be clear
-        if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
+        if(!populated && (col.gameObject.tag == "Player" || col.gameObject.tag == "Monster")) {
             populated = true;
             var c = sr.color;
             sr.DOBlendableColor(new Color(c.r, c.g, c.b, 0.5f), .15f);
@@ -33,14 +33,14 @@ public class HouseUpper : MonoBehaviour {
 
     private void OnTriggerExit2D(Collider2D col) {
         //  let the house not be clear anymore
-        if(col.gameObject.tag == "Player" || col.gameObject.tag == "Monster") {
+        if(populated && (col.gameObject.tag == "Player" || col.gameObject.tag == "Monster")) {
             populated = false;
             //removeUnitFromInTopUnits(col.gameObject.GetComponent<MortalUnit>());
             StartCoroutine(checker());
         }
     }
 
-    public void removeUnitFromInTopUnits(MortalUnit unit) {
+    void removeUnitFromInTopUnits(MortalUnit unit) {
         inTopUnits.Remove(unit);
         for(int i = inTopUnits.Count - 1; i >= 0; i--) {
             if(inTopUnits[i] == null || inTopUnits[i].health <= 0f)
