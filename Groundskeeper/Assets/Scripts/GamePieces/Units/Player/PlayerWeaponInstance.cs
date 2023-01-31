@@ -37,7 +37,8 @@ public class PlayerWeaponInstance : WeaponInstance {
                 StopCoroutine(charger);
                 charger = null;
                 FindObjectOfType<PlayerUICanvas>().updateChargeSlider(0.0f, 1.0f);
-                attack();
+                attack(chargeMod);
+                chargeMod = 1.0f;
             }
         }
         lookAtMouse();

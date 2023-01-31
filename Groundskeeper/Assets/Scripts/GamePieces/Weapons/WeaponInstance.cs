@@ -95,19 +95,19 @@ public abstract class WeaponInstance : MonoBehaviour {
 
 
 
-    public void attack() {
+    public void attack(float mod = 0.0f) {
         if(anim != null)
             return;
         if(reference.swingSound != null)
             FindObjectOfType<AudioManager>().playSound(reference.swingSound, transform.position);
-        anim = StartCoroutine(attackAnim());
+        anim = StartCoroutine(attackAnim(mod));
     }
 
     public void chargeWindBack() {
 
     }
 
-    IEnumerator attackAnim() {
+    IEnumerator attackAnim(float mod) {
         canMove = false;
         trail.emitting = true;
         float windTime = .05f, swingTime = .15f;
@@ -122,6 +122,17 @@ public abstract class WeaponInstance : MonoBehaviour {
 
         //  swing
         transform.parent.DOLocalRotate(new Vector3(0.0f, 0.0f, -swingRadius), swingTime, RotateMode.LocalAxisAdd);
+        if(mod > 0.0f) {
+            //  lunge the player towards the fucker
+            float lungeMod = 3.5f * mod;
+            var origin = (Vector2)FindObjectOfType<PlayerInstance>().transform.position;
+            var target = GameInfo.mousePos();
+            var px = target.x - origin.x;
+            var py = target.y - origin.y;
+            var theta = Mathf.Atan2(py, px);
+            var t = new Vector2(lungeMod * Mathf.Cos(theta), lungeMod * Mathf.Sin(theta));
+            FindObjectOfType<PlayerInstance>().transform.DOMove(t + origin, .15f);
+        }
         yield return new WaitForSeconds(swingTime);
 
         //  attack is done
