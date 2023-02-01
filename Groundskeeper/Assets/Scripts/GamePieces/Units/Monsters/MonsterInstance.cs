@@ -94,7 +94,7 @@ public class MonsterInstance : Monster {
             if(followingTransform != null)
                 moveTarget = followingTransform.position;
             else if(followingTransform == null)
-                moveTarget = favoriteTarget == targetType.People ? (Vector2)FindObjectOfType<PlayerInstance>().transform.position : FindObjectOfType<HouseInstance>().getCenter();
+                moveTarget = favoriteTarget == targetType.People ? (Vector2)FindObjectOfType<PlayerInstance>().transform.position : FindObjectOfType<HouseInstance>().getCenter(); //   TODO fucking fix
         }
         moveToPos(moveTarget, GetComponent<Rigidbody2D>(), Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
     }
