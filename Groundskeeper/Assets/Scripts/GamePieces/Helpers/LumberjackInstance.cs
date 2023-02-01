@@ -16,9 +16,11 @@ public class LumberjackInstance : Helper {
     [HideInInspector] public Vector2 startingPos;
 
     [SerializeField] GameObject bloodParticles;
+    HouseInstance hi;
 
     private void Start() {
         startingPos = transform.position;
+        hi = FindObjectOfType<HouseInstance>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponents<Collider2D>()[0].isTrigger ? GetComponents<Collider2D>()[1] : GetComponents<Collider2D>()[0], spriteObj.GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
@@ -50,7 +52,7 @@ public class LumberjackInstance : Helper {
         }
         //  corrects if needs correcting
         if(Vector2.Distance(transform.position, startingPos) > .01f)
-            target = FindObjectOfType<HouseInstance>().getNextPointOnPath(transform.position, target);
+            target = hi.getNextPointOnPath(transform.position, target);
         if(!inReach)
             moveToPos(target, GetComponentInParent<Rigidbody2D>(), speed);
         moveInfo = (hasTarget && !inReach) ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, startingPos, slowSpeed * 100.0f * Time.fixedDeltaTime);

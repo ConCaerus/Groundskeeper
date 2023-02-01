@@ -14,11 +14,13 @@ public class PlayerWeaponInstance : WeaponInstance {
     }
 
     Coroutine charger = null;
+    PlayerInstance pi;
 
     public float chargeMod { get; private set; } = 1.0f;
 
     private void Awake() {
         canAttackG = GameInfo.getNightCount() > 0;
+        pi = FindObjectOfType<PlayerInstance>();
     }
 
     public override void movementLogic() {
@@ -58,7 +60,7 @@ public class PlayerWeaponInstance : WeaponInstance {
 
 
 
-            var s = FindObjectOfType<PlayerInstance>().isSprinting();
+            var s = pi.isSprinting();
             //  the player is sprinting
             if(s) {
                 tickTime = .25f;
@@ -66,7 +68,7 @@ public class PlayerWeaponInstance : WeaponInstance {
 
             yield return new WaitForSeconds(tickTime * .85f);  //  tick time
 
-            if(FindObjectOfType<PlayerInstance>().isSprinting()) {
+            if(pi.isSprinting()) {
                 i--;
                 if(i < 0)
                     i = 0;
@@ -80,7 +82,7 @@ public class PlayerWeaponInstance : WeaponInstance {
                 //  initial wait time that only exists for before ticks are counted
                 if(firstTime) {
                     yield return new WaitForSeconds(.75f - tickTime);   //  - ticktime because ticktime gets waited for at the end
-                    s = FindObjectOfType<PlayerInstance>().isSprinting();
+                    s = pi.isSprinting();
                     firstTime = false;
                 }
             }
@@ -99,11 +101,13 @@ public class PlayerWeaponInstance : WeaponInstance {
             else if(!s)
                 yield return new WaitForSeconds(tickTime * .15f);
 
+            var puc = FindObjectOfType<PlayerUICanvas>();
+
             DOTween.To(() => chargeMod, x => chargeMod = x, target, .1f).OnUpdate(() => {
                 if(charger != null)
-                    FindObjectOfType<PlayerUICanvas>().updateChargeSlider(chargeMod - 1f, maxCharge - 1f);
+                    puc.updateChargeSlider(chargeMod - 1f, maxCharge - 1f);
                 else
-                    FindObjectOfType<PlayerUICanvas>().updateChargeSlider(0f, maxCharge);
+                    puc.updateChargeSlider(0f, maxCharge);
             });
 
             if(s)

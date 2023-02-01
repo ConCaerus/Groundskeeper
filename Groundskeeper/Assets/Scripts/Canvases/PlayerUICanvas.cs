@@ -10,6 +10,7 @@ public class PlayerUICanvas : MonoBehaviour {
     [SerializeField] GameObject stamSlider, chargeSlider;
 
     Coroutine stamDis = null, charDis = null;
+    Transform pt;
 
     public void updateStamSlider(float val, float maxVal) {
         //  player is in the darkess O.O
@@ -60,16 +61,17 @@ public class PlayerUICanvas : MonoBehaviour {
     }
 
     private void Start() {
-        stamSlider.GetComponent<RectTransform>().transform.position = (Vector2)FindObjectOfType<PlayerInstance>().transform.position + stamOffset;
-        chargeSlider.GetComponent<RectTransform>().transform.position = (Vector2)FindObjectOfType<PlayerInstance>().transform.position + chargeOffset;
+        pt = FindObjectOfType<PlayerInstance>().transform;
+        stamSlider.GetComponent<RectTransform>().transform.position = (Vector2)pt.position + stamOffset;
+        chargeSlider.GetComponent<RectTransform>().transform.position = (Vector2)pt.position + chargeOffset;
     }
 
     private void LateUpdate() {
         if(FindObjectOfType<PlayerInstance>() == null)
             return;
 
-        var stamTarget = (Vector2)FindObjectOfType<PlayerInstance>().transform.position + stamOffset;
-        var charTarget = (Vector2)FindObjectOfType<PlayerInstance>().transform.position + chargeOffset;
+        var stamTarget = (Vector2)pt.position + stamOffset;
+        var charTarget = (Vector2)pt.position + chargeOffset;
         stamSlider.GetComponent<RectTransform>().transform.position = Vector2.Lerp(stamSlider.GetComponent<RectTransform>().transform.position, stamTarget, sliderMoveSpeed * Time.deltaTime);
         chargeSlider.GetComponent<RectTransform>().transform.position = Vector2.Lerp(chargeSlider.GetComponent<RectTransform>().transform.position, charTarget, sliderMoveSpeed * Time.deltaTime);
     }

@@ -26,6 +26,10 @@ public class MonsterInstance : Monster {
     [HideInInspector] public MonsterSpawner.direction direction;
     [SerializeField] GameObject sCol;
 
+    //  storage
+    Transform pt;
+    Vector2 houseCenter;
+
 
     private void OnCollisionStay2D(Collision2D col) {
         if(canAttack) {
@@ -52,6 +56,8 @@ public class MonsterInstance : Monster {
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         //stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         //FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
+        pt = FindObjectOfType<PlayerInstance>().transform;
+        houseCenter = FindObjectOfType<HouseInstance>().getCenter();
 
         //  randomize the look of the monster
         float sizeDiff = Random.Range(1.0f - .2f, 1.0f + .2f), minColor = .4f, maxColor = .9f;
@@ -66,9 +72,9 @@ public class MonsterInstance : Monster {
         if(!leader)
             sCol.SetActive(false);
         if(favoriteTarget == targetType.People)
-            followingTransform = FindObjectOfType<PlayerInstance>().transform;
+            followingTransform = pt.transform;
         else
-            moveTarget = FindObjectOfType<HouseInstance>().getCenter();
+            moveTarget = houseCenter;
         FindObjectOfType<UnitMovementUpdater>().addMonster(this);
     }
 
@@ -94,7 +100,7 @@ public class MonsterInstance : Monster {
             if(followingTransform != null)
                 moveTarget = followingTransform.position;
             else if(followingTransform == null)
-                moveTarget = favoriteTarget == targetType.People ? (Vector2)FindObjectOfType<PlayerInstance>().transform.position : FindObjectOfType<HouseInstance>().getCenter(); //   TODO fucking fix
+                moveTarget = favoriteTarget == targetType.People ? (Vector2)pt.position : houseCenter;
         }
         moveToPos(moveTarget, GetComponent<Rigidbody2D>(), Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
     }
@@ -158,18 +164,19 @@ public class MonsterInstance : Monster {
         //  removes the monster from the game board monsters
         FindObjectOfType<GameBoard>().monsters.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
 
+        var ms = FindObjectOfType<MonsterSpawner>();
         //  passes on leader ship if is leader and there are still monsters from this wave
-        if(leader && FindObjectOfType<MonsterSpawner>().stillHasMonstersFromWave(relevantWave))
-            FindObjectOfType<MonsterSpawner>().passOnLeadership(this, relevantWave);
+        if(leader && ms.stillHasMonstersFromWave(relevantWave))
+            ms.passOnLeadership(this, relevantWave);
         //  either not a leader, or there are no more monsters from this wave. Either way, remove it from the monsterSpawner list
         else
-            FindObjectOfType<MonsterSpawner>().removeMonsterFromGroup(this, relevantWave);
+            ms.removeMonsterFromGroup(this, relevantWave);
         //  start a new wave if this was the last monster of the wave
-        if(!FindObjectOfType<MonsterSpawner>().stillHasMonstersFromWave(relevantWave)) {
+        if(!ms.stillHasMonstersFromWave(relevantWave)) {
             if(relevantWave == GameInfo.wavesPerNight() - 1)    //  this is the last monster of the night
-                FindObjectOfType<MonsterSpawner>().endGame();
+                ms.endGame();
             else if(relevantWave == GameInfo.wave)              //  this monster is the last monster of the current wave
-                FindObjectOfType<MonsterSpawner>().startNewWave();  //  this updates the rose also
+                ms.startNewWave();  //  this updates the rose also
             else                                                //  this monster isn't important, so update the rose
                 FindObjectOfType<WaveWarnerRose>().updateForDirection(direction);
         }

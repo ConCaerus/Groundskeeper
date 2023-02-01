@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DefenceInstance : Defence {
     [SerializeField] GameObject bloodParticles;
+    TickDamager td;
 
     public void dealDamage(GameObject obj) {
         if(obj == null)
@@ -13,13 +14,14 @@ public class DefenceInstance : Defence {
 
         //  removes the obj from the ticking pool if the unit is going to die this time
         if(obj.GetComponent<Mortal>().health <= realDmg)
-            FindObjectOfType<TickDamager>().removeTick(obj);
+            td.removeTick(obj);
 
         obj.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, false);
     }
 
     private void Start() {
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(transform.position.y, GetComponent<SpriteRenderer>());
+        td = FindObjectOfType<TickDamager>();
     }
 
     public override void customHitLogic(float knockback, Vector2 origin, bool stun) {

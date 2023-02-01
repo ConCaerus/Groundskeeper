@@ -12,17 +12,17 @@ public class CameraMovement : MonoBehaviour {
     [HideInInspector][SerializeField] public bool movingUp = true;
 
     Coroutine shakeCenterer = null;
+    Transform pt;
 
     private void Start() {
-        var pos = GameObject.FindGameObjectWithTag("Player").transform.position;
-        var target = new Vector3(pos.x, pos.y, transform.position.z) + offsetFromPlayer;
+        pt = GameObject.FindGameObjectWithTag("Player").transform;
+        var target = new Vector3(pt.position.x, pt.position.y, transform.position.z) + offsetFromPlayer;
         transform.position = target;
     }
 
     //  Move to player
     private void LateUpdate() {
-        var pos = GameObject.FindGameObjectWithTag("Player").transform.position;
-        var target = new Vector3(pos.x, pos.y, transform.position.z) + (movingUp ? offsetFromPlayer : -offsetFromPlayer);
+        var target = new Vector3(pt.position.x, pt.position.y, transform.position.z) + (movingUp ? offsetFromPlayer : -offsetFromPlayer);
 
         if(transform.position != target)
             transform.position = Vector3.Lerp(transform.position, target, speed * 100.0f * Time.deltaTime);

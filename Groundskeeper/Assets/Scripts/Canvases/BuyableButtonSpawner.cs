@@ -14,6 +14,11 @@ public class BuyableButtonSpawner : MonoBehaviour {
     List<Coroutine> buttonCoroutines = new List<Coroutine>();
 
     int prevGenre = -1;
+    BuyableLibrary bl;
+
+    private void Awake() {
+        bl = FindObjectOfType<BuyableLibrary>();
+    }
 
     public void switchGenre(int index) {
         if(prevGenre == index)
@@ -23,9 +28,9 @@ public class BuyableButtonSpawner : MonoBehaviour {
         buttonCoroutines.Clear();
         prevGenre = index;
         FindObjectOfType<PlacementGrid>().placing = false;
-        List<GameObject> buyables = index == 0 ? FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Helper, true) :
-            index == 1 ? FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Defence, true) :
-            FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(Buyable.buyType.Structure, true);
+        List<GameObject> buyables = index == 0 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Helper, true) :
+            index == 1 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Defence, true) :
+            bl.getUnlockedBuyablesOfType(Buyable.buyType.Structure, true);
 
         foreach(var i in buttons)
             Destroy(i.gameObject);
@@ -36,7 +41,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
             obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().title.ToString();
             obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().cost.ToString("0.0") + "s";
             obj.GetComponent<InfoableImage>().info = i.GetComponent<Buyable>().title.ToString() + ":\n" + i.GetComponent<Buyable>().description;
-            if(FindObjectOfType<BuyableLibrary>().hasPlayerSeenBuyable(i.GetComponent<Buyable>().title))
+            if(bl.hasPlayerSeenBuyable(i.GetComponent<Buyable>().title))
                 StartCoroutine(setupDot(obj.transform, obj.transform.GetChild(2).transform, i.GetComponent<Buyable>()));
             else
                 obj.transform.GetChild(2).gameObject.SetActive(false);
@@ -64,7 +69,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
         dot.GetComponentInParent<Button>().onClick.AddListener(delegate {
             if(b != null) {
                 dot.gameObject.SetActive(false);
-                FindObjectOfType<BuyableLibrary>().playerSawBuyable(b.title);
+                bl.playerSawBuyable(b.title);
             }
             if(dot.GetComponentInParent<PregameBuyableButton>() == null) {
                 foreach(var i in FindObjectsOfType<PregameBuyableButton>()) {

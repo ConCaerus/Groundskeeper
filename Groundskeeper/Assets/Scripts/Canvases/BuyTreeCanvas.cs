@@ -24,6 +24,7 @@ public class BuyTreeCanvas : MenuCanvas {
     [SerializeField] TextMeshProUGUI soulsText;
 
     GameObject[] queuedBuyables = new GameObject[3];
+    BuyableLibrary bl;
 
     enum subType {
         Damage, Health, Speed
@@ -31,6 +32,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
 
     private void Start() {
+        bl = FindObjectOfType<BuyableLibrary>();
         transform.localScale = Vector3.zero;
         createTree();
         updateSoulsText();
@@ -38,7 +40,6 @@ public class BuyTreeCanvas : MenuCanvas {
 
     void createTree() {
         //  queue up some random buyables to be saved
-        var bl = FindObjectOfType<BuyableLibrary>();
         queuedBuyables[0] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Helper, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Helper));
         queuedBuyables[1] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Defence, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Defence));
         queuedBuyables[2] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Structure, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Structure));
@@ -66,7 +67,6 @@ public class BuyTreeCanvas : MenuCanvas {
 
     //  not used to create the weapon node
     GameObject createMainNode(int index) {
-        var bl = FindObjectOfType<BuyableLibrary>();
         var h = Instantiate(node.gameObject, mainCircles[index].transform);
         var t = (Buyable.buyType)(index + 1);
         h.GetComponent<BuyTreeNode>().mainType = t;
@@ -113,15 +113,15 @@ public class BuyTreeCanvas : MenuCanvas {
 
     void createSubCirclesForType(Buyable.buyType t) {
         //  helpers
-        if(t == Buyable.buyType.Helper && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper, false) > 0) {
+        if(t == Buyable.buyType.Helper && bl.getNumberOfUnlockedBuyables(Buyable.buyType.Helper, false) > 0) {
             createSubNode(subCircles[0], subType.Damage);
             createSubNode(subCircles[0], subType.Health);
         }
         //  defences
-        if(t == Buyable.buyType.Defence && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence, false) > 0)
+        if(t == Buyable.buyType.Defence && bl.getNumberOfUnlockedBuyables(Buyable.buyType.Defence, false) > 0)
             createSubNode(subCircles[1], subType.Damage);
         //  structures
-        if(t == Buyable.buyType.Structure && FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Structure, false) > 0)
+        if(t == Buyable.buyType.Structure && bl.getNumberOfUnlockedBuyables(Buyable.buyType.Structure, false) > 0)
             createSubNode(subCircles[2], subType.Health);
     }
     GameObject createSubNode(GameObject sub, subType s) {
