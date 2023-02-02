@@ -11,23 +11,47 @@ public class PlayerUICanvas : MonoBehaviour {
 
     Coroutine stamDis = null, charDis = null;
     Transform pt;
+    RectTransform ssrt, csrt;
+    CircularSlider sscs, cscs;
+    PlayerInstance pi;
+
+    private void Start() {
+        pt = FindObjectOfType<PlayerInstance>().transform;
+        stamSlider.GetComponent<RectTransform>().transform.position = (Vector2)pt.position + stamOffset;
+        chargeSlider.GetComponent<RectTransform>().transform.position = (Vector2)pt.position + chargeOffset;
+        ssrt = stamSlider.GetComponent<RectTransform>();
+        csrt = chargeSlider.GetComponent<RectTransform>();
+        sscs = stamSlider.GetComponent<CircularSlider>();
+        cscs = chargeSlider.GetComponent<CircularSlider>();
+        pi = FindObjectOfType<PlayerInstance>();
+    }
+
+    private void LateUpdate() {
+        if(pi == null)
+            return;
+
+        var stamTarget = (Vector2)pt.position + stamOffset;
+        var charTarget = (Vector2)pt.position + chargeOffset;
+        ssrt.transform.position = Vector2.Lerp(ssrt.transform.position, stamTarget, sliderMoveSpeed * Time.deltaTime);
+        csrt.transform.position = Vector2.Lerp(csrt.transform.position, charTarget, sliderMoveSpeed * Time.deltaTime);
+    }
 
     public void updateStamSlider(float val, float maxVal) {
         //  player is in the darkess O.O
-        if(FindObjectOfType<PlayerInstance>().gameObject.transform.GetChild(0).transform.lossyScale.x < 1.0f) {
-            stamSlider.GetComponent<RectTransform>().DOKill();
-            stamSlider.GetComponent<RectTransform>().DOScale(0f, .075f);
+        if(pi.gameObject.transform.GetChild(0).transform.lossyScale.x < 1.0f) {
+            ssrt.DOKill();
+            ssrt.DOScale(0f, .075f);
             stamDis = null;
             return;
         }
         if(val < maxVal) {
-            stamSlider.GetComponent<RectTransform>().DOKill();
-            stamSlider.GetComponent<RectTransform>().DOScale(.01f, .15f);
-            stamSlider.GetComponent<CircularSlider>().setValue(val / maxVal);
+            ssrt.DOKill();
+            ssrt.DOScale(.01f, .15f);
+            sscs.setValue(val / maxVal);
         }
         if(val == maxVal && stamDis == null) {
             stamDis = StartCoroutine(stamWaitToDisappear());
-            stamSlider.GetComponent<CircularSlider>().setValue(maxVal);
+            sscs.setValue(maxVal);
         }
         else if(val < maxVal && stamDis != null) {
             StopCoroutine(stamDis);
@@ -37,22 +61,22 @@ public class PlayerUICanvas : MonoBehaviour {
 
     public void updateChargeSlider(float val, float maxVal) {
         //  player is in the darkess O.O
-        if(FindObjectOfType<PlayerInstance>().gameObject.transform.GetChild(0).transform.lossyScale.x < 1.0f) {
-            chargeSlider.GetComponent<RectTransform>().DOKill();
-            chargeSlider.GetComponent<RectTransform>().DOScale(0f, .075f);
+        if(pi.gameObject.transform.GetChild(0).transform.lossyScale.x < 1.0f) {
+            csrt.DOKill();
+            csrt.DOScale(0f, .075f);
             charDis = null;
             return;
         }
 
         if(val > 0f) {
-            chargeSlider.GetComponent<RectTransform>().DOKill();
-            chargeSlider.GetComponent<RectTransform>().DOScale(.01f, .15f);
-            chargeSlider.GetComponent<CircularSlider>().setValue(val / maxVal);
-            chargeSlider.GetComponent<CircularSlider>().setValue(val / maxVal);
+            csrt.DOKill();
+            csrt.DOScale(.01f, .15f);
+            cscs.setValue(val / maxVal);
+            cscs.setValue(val / maxVal);
             if(val == maxVal)
-                chargeSlider.GetComponent<CircularSlider>().doColor(Color.white, .15f);
+                cscs.doColor(Color.white, .15f);
             else
-                chargeSlider.GetComponent<CircularSlider>().resetColor();
+                cscs.resetColor();
         }
         if(charDis != null)
             StopCoroutine(charDis);
@@ -60,38 +84,22 @@ public class PlayerUICanvas : MonoBehaviour {
             charDis = StartCoroutine(charWaitToDisappear());
     }
 
-    private void Start() {
-        pt = FindObjectOfType<PlayerInstance>().transform;
-        stamSlider.GetComponent<RectTransform>().transform.position = (Vector2)pt.position + stamOffset;
-        chargeSlider.GetComponent<RectTransform>().transform.position = (Vector2)pt.position + chargeOffset;
-    }
-
-    private void LateUpdate() {
-        if(FindObjectOfType<PlayerInstance>() == null)
-            return;
-
-        var stamTarget = (Vector2)pt.position + stamOffset;
-        var charTarget = (Vector2)pt.position + chargeOffset;
-        stamSlider.GetComponent<RectTransform>().transform.position = Vector2.Lerp(stamSlider.GetComponent<RectTransform>().transform.position, stamTarget, sliderMoveSpeed * Time.deltaTime);
-        chargeSlider.GetComponent<RectTransform>().transform.position = Vector2.Lerp(chargeSlider.GetComponent<RectTransform>().transform.position, charTarget, sliderMoveSpeed * Time.deltaTime);
-    }
-
     IEnumerator stamWaitToDisappear() {
         yield return new WaitForSeconds(.5f);
-        stamSlider.GetComponent<RectTransform>().DOKill();
-        stamSlider.GetComponent<RectTransform>().DOScale(0f, .25f);
+        ssrt.DOKill();
+        ssrt.DOScale(0f, .25f);
         stamDis = null;
     }
 
     IEnumerator charWaitToDisappear() {
-        float i = chargeSlider.GetComponent<CircularSlider>().value;
+        float i = cscs.value;
         DOTween.To(() => i, x => i = x, 0f, .2f).OnUpdate(() => {
-            chargeSlider.GetComponent<CircularSlider>().setValue(i / 1.0f);
+            cscs.setValue(i / 1.0f);
         });
 
         yield return new WaitForSeconds(.25f);
-        chargeSlider.GetComponent<RectTransform>().DOKill();
-        chargeSlider.GetComponent<RectTransform>().DOScale(0f, .25f);
+        csrt.DOKill();
+        csrt.DOScale(0f, .25f);
         charDis = null;
     }
 }

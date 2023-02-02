@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LumberjackWeaponInstance : WeaponInstance {
+    LumberjackInstance lji;
+
+    private void Awake() {
+        lji = user.GetComponent<LumberjackInstance>();
+    }
+
     public override void movementLogic() {
-        if(user.GetComponent<LumberjackInstance>().hasTarget)
-            lookAtPos(user.GetComponent<LumberjackInstance>().target);
+        if(lji.hasTarget)
+            lookAtPos(lji.target);
         else
             lookAtPos((Vector2)user.gameObject.transform.position + Vector2.right);
     }

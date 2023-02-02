@@ -18,6 +18,8 @@ public abstract class WeaponInstance : MonoBehaviour {
     Coroutine anim = null;
 
     Transform pt;
+    LayerSorter ls;
+    SpriteRenderer sr;
 
 
     public Weapon reference { get; private set; }
@@ -41,6 +43,8 @@ public abstract class WeaponInstance : MonoBehaviour {
     }
 
     void Start() {
+        ls = FindObjectOfType<LayerSorter>();
+        sr = GetComponent<SpriteRenderer>();
         updateReference(GameInfo.getPlayerWeaponIndex());
         GetComponent<Collider2D>().enabled = false;
         trail.emitting = false;
@@ -54,7 +58,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         //  makes it so the player can attack both physical and spiritual monsters
         if(user.tag == "Player")
             reference.targetType = GameInfo.MonsterType.Both;
-        GetComponent<SpriteRenderer>().sprite = reference.sprite;
+        sr.sprite = reference.sprite;
         trail.gameObject.transform.localPosition = reference.trailPos;
     }
 
@@ -75,7 +79,7 @@ public abstract class WeaponInstance : MonoBehaviour {
             rotObj.transform.localPosition = Vector3.zero;
             rotObj.transform.rotation = Quaternion.Lerp(rotObj.transform.rotation, Quaternion.AngleAxis(angle + 45, Vector3.forward), speed * Time.deltaTime);
 
-            FindObjectOfType<LayerSorter>().requestNewSortingLayer(transform.position.y, GetComponent<SpriteRenderer>());
+            ls.requestNewSortingLayer(transform.position.y, sr);
             rotObj.transform.GetChild(0).localRotation = mousePos.x > user.transform.position.x ? Quaternion.Euler(0.0f, 0.0f, 0.0f) : Quaternion.Euler(180.0f, 0.0f, 90.0f);
         }
     }
@@ -89,7 +93,7 @@ public abstract class WeaponInstance : MonoBehaviour {
             rotObj.transform.localPosition = Vector3.zero;
             rotObj.transform.rotation = Quaternion.Lerp(rotObj.transform.rotation, Quaternion.AngleAxis(angle + 45, Vector3.forward), speed * Time.deltaTime);
 
-            FindObjectOfType<LayerSorter>().requestNewSortingLayer(transform.position.y, GetComponent<SpriteRenderer>());
+            ls.requestNewSortingLayer(transform.position.y, sr);
             rotObj.transform.GetChild(0).localRotation = pos.x > user.transform.position.x ? Quaternion.Euler(0.0f, 0.0f, 0.0f) : Quaternion.Euler(180.0f, 0.0f, 90.0f);
         }
     }

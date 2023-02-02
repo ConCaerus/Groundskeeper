@@ -27,8 +27,15 @@ public class PlayerInstance : Attacker {
     Vector2 moveInfo;
     Vector2 targetMoveInfo;
     Rigidbody2D rb;
+    PlayerWeaponInstance pwi;
+    HouseInstance hi;
 
     [SerializeField] GameObject bloodParticles;
+
+
+    FunkyCode.Light2D pLight;
+    public Vector2 hCenter;
+    GameTutorialCanvas gtc;
 
     private void OnCollisionStay2D(Collision2D col) {
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
@@ -39,10 +46,15 @@ public class PlayerInstance : Attacker {
         controls = new InputMaster();
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();
+        movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
+        pLight = GetComponentInChildren<FunkyCode.Light2D>();
+        gtc = FindObjectOfType<GameTutorialCanvas>();
+        pwi = GetComponentInChildren<PlayerWeaponInstance>();
+        hi = FindObjectOfType<HouseInstance>();
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
         GetComponentInChildren<HealthBar>().setParent(gameObject);
-        initLightSize = GetComponentInChildren<FunkyCode.Light2D>().size;
+        initLightSize = pLight.size;
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
     }
@@ -57,7 +69,7 @@ public class PlayerInstance : Attacker {
         //  check if game is over
         if(!GameInfo.playing) {
             controls.Disable();
-            GetComponentInChildren<PlayerWeaponInstance>().enabled = false;
+            pwi.enabled = false;
             enabled = false;
             return;
         }
@@ -67,11 +79,11 @@ public class PlayerInstance : Attacker {
         stamina = Mathf.Clamp(stamina - (controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? 1 : -.5f - stamInc), 0f, 100f);
         stamInc += controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? -stamInc : .01f;
 
-        if(FindObjectOfType<GameTutorialCanvas>() != null) {
+        if(gtc != null) {
             if(isSprinting())
-                FindObjectOfType<GameTutorialCanvas>().hasSprinted();
+                gtc.hasSprinted();
             if(Mathf.Abs(moveInfo.x) > 0f || Mathf.Abs(moveInfo.y) > 0f)
-                FindObjectOfType<GameTutorialCanvas>().hasMoved();
+                gtc.hasMoved();
         }
 
         //  if player is not moving, decrement the movementInfo
@@ -81,15 +93,15 @@ public class PlayerInstance : Attacker {
 
         //  adjusts the player's light based on how far they are to the edge
         //      player is out of bounds, so turn off their light
-        if (FindObjectOfType<HouseInstance>() == null)
+        if(hi == null)
             return;
-        if(Vector2.Distance(transform.position, FindObjectOfType<HouseInstance>().getCenter()) >= 75f) {
-            DOTween.To(() => GetComponentInChildren<FunkyCode.Light2D>().size, x => GetComponentInChildren<FunkyCode.Light2D>().size = x, 0f, .25f);
+        if(Vector2.Distance(transform.position, hCenter) >= 75f) {
+            DOTween.To(() => pLight.size, x => pLight.size = x, 0f, .25f);
         }
         //  player is in bounds, so tune their light based on how far they are from the edge
         else {
-            var distPerc = Vector2.Distance(transform.position, FindObjectOfType<HouseInstance>().getCenter()) / 100f;   //  a little over the edge to give the player a little light at the edge
-            GetComponentInChildren<FunkyCode.Light2D>().size = initLightSize * (1 - distPerc);
+            var distPerc = Vector2.Distance(transform.position, hCenter) / 100f;   //  a little over the edge to give the player a little light at the edge
+            pLight.size = initLightSize * (1 - distPerc);
         }
     }
     void movementChange(Vector2 dir) {
@@ -106,7 +118,7 @@ public class PlayerInstance : Attacker {
     }
     public override void updateSprite(Vector2 movingDir) {
         //  not moving
-        if(movingDir == Vector2.zero) 
+        if(movingDir == Vector2.zero)
             return;
 
         //  moving more along the y axis, set to a y axis sprite
@@ -142,13 +154,13 @@ public class PlayerInstance : Attacker {
 
     #region ---   ATTACKER SHIT   ---
     public override float getAttackCoolDown() {
-        return GetComponentInChildren<PlayerWeaponInstance>().reference.cooldown / GameInfo.getPWeaponSpeedBuff();
+        return pwi.reference.cooldown / GameInfo.getPWeaponSpeedBuff();
     }
     public override int getDamage() {
-        return (int)(GetComponentInChildren<PlayerWeaponInstance>().reference.damage * GameInfo.getPWeaponDamageBuff() * GetComponentInChildren<PlayerWeaponInstance>().chargeMod);
+        return (int)(pwi.reference.damage * GameInfo.getPWeaponDamageBuff() * pwi.chargeMod);
     }
     public override float getKnockback() {
-        return GetComponentInChildren<PlayerWeaponInstance>().reference.knockback;
+        return pwi.reference.knockback;
     }
     public override void specialEffectOnAttack(GameObject defender) {
         stopInhibitingMovement();

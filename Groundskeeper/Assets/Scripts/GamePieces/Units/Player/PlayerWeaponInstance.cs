@@ -9,36 +9,44 @@ public class PlayerWeaponInstance : WeaponInstance {
     public bool canAttackG { 
         get { return canAttack; } 
         set {
-            canAttack = value || FindObjectsOfType<MonsterInstance>().Count() > 0;
+            canAttack = value || gb.monsters.Count > 0;
         } 
     }
 
     Coroutine charger = null;
     PlayerInstance pi;
+    GameTutorialCanvas gtc;
+    PlayerUICanvas puc;
+    SetupSequenceManager ssm;
+    GameBoard gb;
 
     public float chargeMod { get; private set; } = 1.0f;
 
     private void Awake() {
-        canAttackG = GameInfo.getNightCount() > 0;
         pi = FindObjectOfType<PlayerInstance>();
+        gtc = FindObjectOfType<GameTutorialCanvas>();
+        puc = FindObjectOfType<PlayerUICanvas>();
+        ssm = FindObjectOfType<SetupSequenceManager>();
+        gb = FindObjectOfType<GameBoard>();
+        canAttackG = GameInfo.getNightCount() > 0;
     }
 
     public override void movementLogic() {
-        if(canAttackG && transform.lossyScale.x > 0f && !FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled) {
+        if(canAttackG && transform.lossyScale.x > 0f && !ssm.isActiveAndEnabled) {
             //  player is attacking normally
             if(Input.GetMouseButton(0) && charger == null) {
                 charger = StartCoroutine(chargeTimer());
             }
             //  player released their attack, whether it's charged or not
             else if(!Input.GetMouseButton(0) && charger != null) {
-                if(FindObjectOfType<GameTutorialCanvas>() != null) {
-                    FindObjectOfType<GameTutorialCanvas>().hasAttacked();
+                if(gtc != null) {
+                    gtc.hasAttacked();
                     if(chargeMod > 1.01f)
-                        FindObjectOfType<GameTutorialCanvas>().hasChargedAttacked();
+                        gtc.hasChargedAttacked();
                 }
                 StopCoroutine(charger);
                 charger = null;
-                FindObjectOfType<PlayerUICanvas>().updateChargeSlider(0.0f, 1.0f);
+                puc.updateChargeSlider(0.0f, 1.0f);
                 attack(chargeMod);
                 chargeMod = 1.0f;
             }
@@ -100,8 +108,6 @@ public class PlayerWeaponInstance : WeaponInstance {
             }
             else if(!s)
                 yield return new WaitForSeconds(tickTime * .15f);
-
-            var puc = FindObjectOfType<PlayerUICanvas>();
 
             DOTween.To(() => chargeMod, x => chargeMod = x, target, .1f).OnUpdate(() => {
                 if(charger != null)

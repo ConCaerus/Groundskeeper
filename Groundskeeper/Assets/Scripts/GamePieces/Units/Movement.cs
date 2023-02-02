@@ -15,11 +15,28 @@ public abstract class Movement : MortalUnit {
     float inhibitMod = .35f;
     [SerializeField] ParticleSystem movementParticles = null;   //  should already be an object parented to the mover's feet
 
+    //  storage
+    SetupSequenceManager ssm;
+    LayerSorter ls;
+    SpriteRenderer sr;
+    Collider2D srCol;
+
     //  abstract because monsters change their sprites differently to everyone else
     public abstract void updateSprite(Vector2 movingDir);
+    protected void movementInit(SetupSequenceManager s, LayerSorter l) {
+        ssm = s;
+        ls = l;
+        sr = spriteObj.GetComponent<SpriteRenderer>();
+        foreach(var i in GetComponents<Collider2D>()) {
+            if(!i.isTrigger) {
+                srCol = i;
+                break;
+            }
+        }
+    }
 
     protected void moveWithDir(Vector2 info, Rigidbody2D rb, float speed) {
-        if(!canMove || (FindObjectOfType<SetupSequenceManager>() != null && FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled))
+        if(!canMove || (ssm != null && ssm.isActiveAndEnabled))
             return;
         var s = speed * 100.0f * (beingAttackedByMonster ? inhibitMod : 1.0f);
         rb.velocity = info * s * Time.fixedDeltaTime;
@@ -32,7 +49,7 @@ public abstract class Movement : MortalUnit {
     }
 
     protected void moveToPos(Vector2 pos, Rigidbody2D rb, float speed) {
-        if(!canMove || (FindObjectOfType<SetupSequenceManager>() != null && FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled))    //  unit cannot move
+        if(!canMove || (ssm != null && ssm.isActiveAndEnabled))    //  unit cannot move
             return;
         if(pos != (Vector2)rb.gameObject.transform.position) {
             if(anim == null)
@@ -65,13 +82,8 @@ public abstract class Movement : MortalUnit {
         else
             spriteObj.transform.DOPunchRotation(new Vector3(0.0f, 0.0f, Random.Range(-getWalkInfo().maxRot, -getWalkInfo().minRot)), getWalkInfo().time);
 
-        if(FindObjectOfType<LayerSorter>() != null) {
-            foreach(var i in GetComponents<Collider2D>()) {
-                if(!i.isTrigger) {
-                    FindObjectOfType<LayerSorter>().requestNewSortingLayer(i, spriteObj.GetComponent<SpriteRenderer>());
-                    break;
-                }
-            }
+        if(ls != null) {
+            ls.requestNewSortingLayer(srCol, sr);
         }
 
         if(shadowObj != null) {
@@ -109,13 +121,13 @@ public abstract class Movement : MortalUnit {
         if(!shown)
             return;
         shown = false;
-        spriteObj.GetComponent<SpriteRenderer>().enabled = false;
+        sr.enabled = false;
         shadowObj.GetComponent<SpriteRenderer>().enabled = false;
         /*
         transform.GetChild(0).DOComplete();
         transform.GetChild(0).DOScale(0.0f, .25f);
         */
-        GetComponent<Collider2D>().isTrigger = true;
+        srCol.isTrigger = true;
         if(healthBar != null)
             healthBar.hideBar();
     }
@@ -123,13 +135,13 @@ public abstract class Movement : MortalUnit {
         if(shown)
             return;
         shown = true;
-        spriteObj.GetComponent<SpriteRenderer>().enabled = true;
+        sr.enabled = true;
         shadowObj.GetComponent<SpriteRenderer>().enabled = true;
         /*
         transform.GetChild(0).DOComplete();
         transform.GetChild(0).DOScale(1.0f, .15f);
         */
-        GetComponent<Collider2D>().isTrigger = false;
+        srCol.isTrigger = false;
         if(healthBar != null)
             healthBar.showBar();
     }

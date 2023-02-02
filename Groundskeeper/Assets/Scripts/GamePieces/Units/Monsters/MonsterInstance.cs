@@ -29,6 +29,8 @@ public class MonsterInstance : Monster {
     //  storage
     Transform pt;
     Vector2 houseCenter;
+    Rigidbody2D rb;
+    SpriteRenderer sr;
 
 
     private void OnCollisionStay2D(Collision2D col) {
@@ -53,17 +55,20 @@ public class MonsterInstance : Monster {
 
 
     public void setup() {
+        movementInit(null, FindObjectOfType<LayerSorter>());
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         //stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         //FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         pt = FindObjectOfType<PlayerInstance>().transform;
         houseCenter = FindObjectOfType<HouseInstance>().getCenter();
+        rb = GetComponent<Rigidbody2D>();
+        sr = spriteObj.GetComponent<SpriteRenderer>();
 
         //  randomize the look of the monster
         float sizeDiff = Random.Range(1.0f - .2f, 1.0f + .2f), minColor = .4f, maxColor = .9f;
         transform.localScale = new Vector3(sizeDiff, sizeDiff);
-        normColor = new Color(Random.Range(minColor, maxColor), Random.Range(minColor, maxColor), Random.Range(minColor, maxColor), spriteObj.GetComponent<SpriteRenderer>().color.a);
-        spriteObj.GetComponent<SpriteRenderer>().color = normColor;
+        normColor = new Color(Random.Range(minColor, maxColor), Random.Range(minColor, maxColor), Random.Range(minColor, maxColor), sr.color.a);
+        sr.color = normColor;
 
         spriteOriginal = spriteObj.transform.localScale;
         if(shadowObj != null)
@@ -102,7 +107,7 @@ public class MonsterInstance : Monster {
             else if(followingTransform == null)
                 moveTarget = favoriteTarget == targetType.People ? (Vector2)pt.position : houseCenter;
         }
-        moveToPos(moveTarget, GetComponent<Rigidbody2D>(), Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
+        moveToPos(moveTarget, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
     }
     public override bool restartWalkAnim() {
         return canMove;
@@ -113,13 +118,13 @@ public class MonsterInstance : Monster {
     public override void updateSprite(Vector2 movingDir) {
         Vector2 offset = moveTarget - (Vector2)transform.position;
         if(offset == Vector2.zero) {
-            spriteObj.GetComponent<SpriteRenderer>().sprite = forwardSprite;
+            sr.sprite = forwardSprite;
             return;
         }
         else if(Mathf.Abs(offset.x) > Mathf.Abs(offset.y))
-            spriteObj.GetComponent<SpriteRenderer>().sprite = offset.x > 0.0f ? rightSprite : leftSprite;
+            sr.sprite = offset.x > 0.0f ? rightSprite : leftSprite;
         else
-            spriteObj.GetComponent<SpriteRenderer>().sprite = offset.y > 0.0f ? backSprite : forwardSprite;
+            sr.sprite = offset.y > 0.0f ? backSprite : forwardSprite;
     }
 
 
