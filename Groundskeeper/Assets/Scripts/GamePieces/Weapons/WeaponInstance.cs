@@ -42,7 +42,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         }
     }
 
-    void Start() {
+    void Awake() {
         ls = FindObjectOfType<LayerSorter>();
         sr = GetComponent<SpriteRenderer>();
         updateReference(GameInfo.getPlayerWeaponIndex());

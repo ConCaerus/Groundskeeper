@@ -12,7 +12,7 @@ public class Buyable : MonoBehaviour {
     [SerializeField] public Tile tile;
 
     [SerializeField] Collider2D mainCollider;
-    [SerializeField] SpriteRenderer mainSprite;
+    [SerializeField] public SpriteRenderer mainSprite;
 
     [SerializeField] public GameObject placementCollider;
 

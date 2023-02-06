@@ -77,6 +77,8 @@ public class BuyTreeCanvas : MenuCanvas {
         var qb = queuedBuyables[index];
         h.GetComponent<BuyTreeNode>().info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
 
+
+        //  LOGIC FOR ACTUALLY UNLOCKING THINGS
         setupSlider(h.GetComponent<BuyTreeNode>().getSlider(), false,
             (float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1), false) / bl.getTotalNumberOfBuyables(t),
             delegate {
@@ -101,6 +103,7 @@ public class BuyTreeCanvas : MenuCanvas {
                         }
 
                         //  update buyables in queue
+                        FindObjectOfType<UnlockCanvas>().showForBuyable(qb.GetComponent<Buyable>());
                         queuedBuyables[index] = bl.getRandomUnlockableBuyableOfType(t, bl.getRelevantUnlockTierForBuyableType(t));
                         qb = queuedBuyables[index];
                         h.GetComponent<BuyTreeNode>().info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();

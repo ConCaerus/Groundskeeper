@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 public class PlayerWeaponInstance : WeaponInstance {
     bool canAttack;
-    public bool canAttackG { 
-        get { return canAttack; } 
+    public bool canAttackG {
+        get { return canAttack; }
         set {
-            canAttack = value || gb.monsters.Count > 0;
-        } 
+            canAttack = value;
+        }
     }
 
     Coroutine charger = null;
@@ -19,26 +20,39 @@ public class PlayerWeaponInstance : WeaponInstance {
     PlayerUICanvas puc;
     SetupSequenceManager ssm;
     GameBoard gb;
+    InputMaster controls;
 
     public float chargeMod { get; private set; } = 1.0f;
 
-    private void Awake() {
+    private void Start() {
         pi = FindObjectOfType<PlayerInstance>();
         gtc = FindObjectOfType<GameTutorialCanvas>();
         puc = FindObjectOfType<PlayerUICanvas>();
         ssm = FindObjectOfType<SetupSequenceManager>();
         gb = FindObjectOfType<GameBoard>();
         canAttackG = GameInfo.getNightCount() > 0;
+        controls = new InputMaster();
+        controls.Enable();
+        controls.Player.Attack.performed += attackPerformed;
+        controls.Player.Attack.canceled += attackEnded;
     }
 
     public override void movementLogic() {
+        lookAtMouse();
+    }
+
+    void attackPerformed(InputAction.CallbackContext c) {
         if(canAttackG && transform.lossyScale.x > 0f && !ssm.isActiveAndEnabled) {
             //  player is attacking normally
-            if(Input.GetMouseButton(0) && charger == null) {
-                charger = StartCoroutine(chargeTimer());
-            }
-            //  player released their attack, whether it's charged or not
-            else if(!Input.GetMouseButton(0) && charger != null) {
+            if(charger != null)
+                StopCoroutine(charger);
+            charger = StartCoroutine(chargeTimer());
+        }
+    }
+
+    void attackEnded(InputAction.CallbackContext c) {
+        if(canAttackG && transform.lossyScale.x > 0f && !ssm.isActiveAndEnabled) {
+            if(charger != null) {
                 if(gtc != null) {
                     gtc.hasAttacked();
                     if(chargeMod > 1.01f)
@@ -51,7 +65,6 @@ public class PlayerWeaponInstance : WeaponInstance {
                 chargeMod = 1.0f;
             }
         }
-        lookAtMouse();
     }
 
     IEnumerator chargeTimer() {
@@ -121,5 +134,9 @@ public class PlayerWeaponInstance : WeaponInstance {
 
             tickTime = origTickTime;
         }
+    }
+
+    private void OnDisable() {
+        controls.Disable();
     }
 }
