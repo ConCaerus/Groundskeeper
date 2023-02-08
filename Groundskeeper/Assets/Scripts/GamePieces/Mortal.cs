@@ -44,8 +44,11 @@ public abstract class Mortal : MonoBehaviour {
                 bloodParticle = Instantiate(getBloodParticles().gameObject, transform.position, Quaternion.identity, null);
             bloodParticle.transform.position = transform.position;
         }
-        if(bloodStain != null)
-            Instantiate(bloodStain.gameObject, transform.position, Quaternion.identity, null);
+        if(bloodStain != null) {
+            var bs = Instantiate(bloodStain.gameObject, transform.position, Quaternion.identity, null);
+            bs.GetComponent<SpriteRenderer>().DOColor(Color.clear, 30f);
+            Destroy(bs.gameObject, 10.1f);
+        }
 
         health -= dmg;
         //  check for death

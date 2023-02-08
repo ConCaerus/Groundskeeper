@@ -18,7 +18,7 @@ public abstract class Movement : MortalUnit {
     //  storage
     SetupSequenceManager ssm;
     LayerSorter ls;
-    SpriteRenderer sr;
+    protected SpriteRenderer sr;
     Collider2D srCol;
 
     //  abstract because monsters change their sprites differently to everyone else

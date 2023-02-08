@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using FunkyCode;
 
 public class PlayerInstance : Attacker {
     [SerializeField] float walkSpeed = 8.0f, runSpeed = 18.0f, accSpeed = .1f, slowSpeed = 18.0f;
@@ -33,7 +34,7 @@ public class PlayerInstance : Attacker {
     [SerializeField] GameObject bloodParticles;
 
 
-    FunkyCode.Light2D pLight;
+    [SerializeField] UnityEngine.Experimental.Rendering.Universal.Light2D pLight;
     public Vector2 hCenter;
     GameTutorialCanvas gtc;
 
@@ -47,14 +48,14 @@ public class PlayerInstance : Attacker {
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();
         movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
-        pLight = GetComponentInChildren<FunkyCode.Light2D>();
         gtc = FindObjectOfType<GameTutorialCanvas>();
         pwi = GetComponentInChildren<PlayerWeaponInstance>();
         hi = FindObjectOfType<HouseInstance>();
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
         GetComponentInChildren<HealthBar>().setParent(gameObject);
-        initLightSize = pLight.size;
+        Debug.Log(pLight.pointLightOuterRadius);
+        initLightSize = pLight.pointLightOuterRadius;
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
     }
@@ -96,12 +97,12 @@ public class PlayerInstance : Attacker {
         if(hi == null)
             return;
         if(Vector2.Distance(transform.position, hCenter) >= 75f) {
-            DOTween.To(() => pLight.size, x => pLight.size = x, 0f, .25f);
+            DOTween.To(() => pLight.pointLightOuterRadius, x => pLight.pointLightOuterRadius = x, 0f, .25f);
         }
         //  player is in bounds, so tune their light based on how far they are from the edge
         else {
             var distPerc = Vector2.Distance(transform.position, hCenter) / 100f;   //  a little over the edge to give the player a little light at the edge
-            pLight.size = initLightSize * (1 - distPerc);
+            pLight.pointLightOuterRadius = initLightSize * (1 - distPerc);
         }
     }
     void movementChange(Vector2 dir) {

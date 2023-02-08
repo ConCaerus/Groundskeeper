@@ -30,7 +30,6 @@ public class MonsterInstance : Monster {
     Transform pt;
     Vector2 houseCenter;
     Rigidbody2D rb;
-    SpriteRenderer sr;
 
 
     private void OnCollisionStay2D(Collision2D col) {
@@ -196,7 +195,6 @@ public class MonsterInstance : Monster {
         var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null);
         s.GetComponent<ParticleSystem>().emission.SetBurst(0, new ParticleSystem.Burst(.5f, soulsGiven * 4.0f));
         s.GetComponent<ParticleSystem>().Play();
-        Destroy(s, s.GetComponent<ParticleSystem>().main.duration);
         transform.DOScale(0f, .25f);
 
         //  cleanup
