@@ -70,9 +70,10 @@ public class PlacementGrid : MonoBehaviour {
         map.SetTile(pos, currentObj.GetComponent<Buyable>().tile);
     }
     public void end() {
+        map.color = Color.clear;
+        currentObj = null;
         map.enabled = false;
         placing = false;
-        currentObj = null;
     }
     public void place() {
         //  can't place in this spot

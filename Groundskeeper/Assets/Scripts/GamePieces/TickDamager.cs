@@ -10,19 +10,21 @@ public class TickDamager : MonoBehaviour {
         public float timeBtwTicks;
         public int determinedTickCount; // set to -1 for no determined tick count
         public Coroutine ticker = null;
-        public int touchingCount = 1;
+        public Buyable.buyableTitle effect;
 
-        public TickInfo(GameObject m, action ac, float btwTime, int endAfterCount = -1) {
+        public TickInfo(GameObject m, action ac, float btwTime, Buyable.buyableTitle t, int endAfterCount = -1) {
             obj = m;
             tickAction = ac;
             timeBtwTicks = btwTime;
             determinedTickCount = endAfterCount;
+            effect = t;
         }
 
-        public void updateInfo(action ac, float btwTime, int endAfterCount = -1) {
+        public void updateInfo(action ac, float btwTime, Buyable.buyableTitle t, int endAfterCount = -1) {
             tickAction = ac;
             timeBtwTicks = btwTime;
             determinedTickCount = endAfterCount;
+            effect = t;
         }
     }
 
@@ -32,15 +34,16 @@ public class TickDamager : MonoBehaviour {
         int index = getTickIndex(m);
         //  create a tick for a new object
         if(index == -1) {
-            var t = new TickInfo(m, def.dealDamage, def.btwHitTime, def.tickCount);
+            var t = new TickInfo(m, def.dealDamage, def.btwHitTime, def.GetComponent<Buyable>().title, def.tickCount);
             ticks.Add(t);
             StartCoroutine(tick(ticks[ticks.Count - 1]));
         }
 
         //  increment the touching count of the already ticking object
         else {
-            ticks[index].updateInfo(def.dealDamage, def.btwHitTime, def.tickCount);
-            ticks[index].touchingCount++;
+            if(ticks[index].effect == def.GetComponent<Buyable>().title)
+                return;
+            ticks[index].updateInfo(def.dealDamage, def.btwHitTime, def.GetComponent<Buyable>().title, def.tickCount);
         }
 
         m.GetComponent<MonsterInstance>().affectedMoveAmt = def.slowAmt;
@@ -51,11 +54,8 @@ public class TickDamager : MonoBehaviour {
         if(index == -1)
             return;
         else {
-            ticks[index].touchingCount--;
-            if(ticks[index].touchingCount == 0) {
-                ticks.RemoveAt(index);
-                m.GetComponent<MonsterInstance>().affectedMoveAmt = 0f;
-            }
+            ticks.RemoveAt(index);
+            m.GetComponent<MonsterInstance>().affectedMoveAmt = 0f;
         }
     }
     public void removeTick(int index) {
@@ -64,10 +64,14 @@ public class TickDamager : MonoBehaviour {
 
     public int getTickIndex(GameObject m) {
         for(int i = 0; i < ticks.Count; i++) {
-            if(ticks[i].obj == m)
+            if(ticks[i].obj.GetInstanceID() == m.GetInstanceID())
                 return i;
         }
         return -1;
+    }
+    public TickInfo getTickInfo(GameObject m) {
+        int ind = getTickIndex(m);
+        return ind == -1 ? null : ticks[ind];
     }
 
     public IEnumerator tick(TickInfo info) {

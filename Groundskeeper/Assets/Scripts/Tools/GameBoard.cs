@@ -13,6 +13,7 @@ public class GameBoard : MonoBehaviour {
 
 
     const float boardRadius = 100f;
+    Coroutine saver = null;
 
 
     private void Awake() {
@@ -23,44 +24,9 @@ public class GameBoard : MonoBehaviour {
 
     //  NOTE: BOARD RESETS AUTOMATICALLY ON NIGHT 0
     public void saveBoard() {
-        int hIndex = 0, dIndex = 0, pIndex = 0;
-        //      clears all of the shit before saving new shit
-        GameInfo.clearBoard();
-
-        //      saves new shit
-        foreach(var i in GameObject.FindGameObjectsWithTag("Helper")) {
-            var save = new ObjectSaveData(i.GetComponent<Buyable>());
-            if(i.GetComponent<LumberjackInstance>() != null)
-                save = new ObjectSaveData(i.GetComponent<LumberjackInstance>());
-            var data = JsonUtility.ToJson(save);
-            SaveData.setString(GameInfo.helperTag + hIndex.ToString(), data);
-            hIndex++;
-        }
-        foreach(var i in GameObject.FindGameObjectsWithTag("Defence")) {
-            var save = new ObjectSaveData(i.GetComponent<Buyable>());
-            var data = JsonUtility.ToJson(save);
-            SaveData.setString(GameInfo.defenceTag + dIndex.ToString(), data);
-            dIndex++;
-        }
-        foreach(var i in GameObject.FindGameObjectsWithTag("Structure")) {
-            var save = new ObjectSaveData(i.GetComponent<Buyable>());
-            var data = JsonUtility.ToJson(save);
-            SaveData.setString(GameInfo.miscTag + pIndex.ToString(), data);
-            pIndex++;
-        }
-
-        //  specific cases of unique buyables
-        var hSave = new ObjectSaveData(FindObjectOfType<HouseInstance>().GetComponent<Buyable>());
-        var hData = JsonUtility.ToJson(hSave);
-        SaveData.setString(GameInfo.houseTag, hData);
-
-        GameInfo.saveSouls();
-        //      saves how many new shit got saved for the next time the shit gets cleared
-        SaveData.setInt(GameInfo.lastSavedHelperCount, hIndex);
-        SaveData.setInt(GameInfo.lastSavedDefenceCount, dIndex);
-        SaveData.setInt(GameInfo.lastSavedMiscCount, pIndex);
-
-        saveEnvironment();
+        if(saver != null)
+        return;
+        saver = StartCoroutine(saveWaiter());
     }
     public void loadBoard() {
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedHelperCount); i++) {
@@ -96,7 +62,56 @@ public class GameBoard : MonoBehaviour {
         spawnEnvironment();
     }
 
-    public void saveEnvironment() {
+    public void spawnEnvironment() {
+        StartCoroutine(environmentSpawner(SaveData.getInt(GameInfo.envCount) != 0));
+        FindObjectOfType<EnvironmentManager>().finishSpawning();
+    }
+
+    IEnumerator saveWaiter() {
+        int hIndex = 0, dIndex = 0, pIndex = 0, thingsPerFrame = 5;
+        //      clears all of the shit before saving new shit
+        GameInfo.clearBoard();
+
+        //      saves new shit
+        foreach(var i in GameObject.FindGameObjectsWithTag("Helper")) {
+            var save = new ObjectSaveData(i.GetComponent<Buyable>());
+            if(i.GetComponent<LumberjackInstance>() != null)
+                save = new ObjectSaveData(i.GetComponent<LumberjackInstance>());
+            var data = JsonUtility.ToJson(save);
+            SaveData.setString(GameInfo.helperTag + hIndex.ToString(), data);
+            hIndex++;
+            if(hIndex % thingsPerFrame == 0)
+            yield return new WaitForEndOfFrame();
+        }
+        foreach(var i in GameObject.FindGameObjectsWithTag("Defence")) {
+            var save = new ObjectSaveData(i.GetComponent<Buyable>());
+            var data = JsonUtility.ToJson(save);
+            SaveData.setString(GameInfo.defenceTag + dIndex.ToString(), data);
+            dIndex++;
+            if(dIndex % thingsPerFrame == 0)
+            yield return new WaitForEndOfFrame();
+        }
+        foreach(var i in GameObject.FindGameObjectsWithTag("Structure")) {
+            var save = new ObjectSaveData(i.GetComponent<Buyable>());
+            var data = JsonUtility.ToJson(save);
+            SaveData.setString(GameInfo.miscTag + pIndex.ToString(), data);
+            pIndex++;
+            if(pIndex % thingsPerFrame == 0)
+            yield return new WaitForEndOfFrame();
+        }
+
+        //  specific cases of unique buyables
+        var hSave = new ObjectSaveData(FindObjectOfType<HouseInstance>().GetComponent<Buyable>());
+        var hData = JsonUtility.ToJson(hSave);
+        SaveData.setString(GameInfo.houseTag, hData);
+
+        GameInfo.saveSouls();
+        //      saves how many new shit got saved for the next time the shit gets cleared
+        SaveData.setInt(GameInfo.lastSavedHelperCount, hIndex);
+        SaveData.setInt(GameInfo.lastSavedDefenceCount, dIndex);
+        SaveData.setInt(GameInfo.lastSavedMiscCount, pIndex);
+
+        //     SAVES THE ENVIRONMENT
         //  clears the save data
         for(int i = 0; i < SaveData.getInt(GameInfo.envCount); i++)
             SaveData.deleteKey(GameInfo.envTag + i.ToString());
@@ -106,13 +121,11 @@ public class GameBoard : MonoBehaviour {
             var save = new ObjectSaveData(environment[i]);
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.envTag + i.ToString(), data);
+            if(i % thingsPerFrame == 0)
+            yield return new WaitForEndOfFrame();
         }
         SaveData.setInt(GameInfo.envCount, environment.Count);
-    }
-
-    public void spawnEnvironment() {
-        StartCoroutine(environmentSpawner(SaveData.getInt(GameInfo.envCount) != 0));
-        FindObjectOfType<EnvironmentManager>().finishSpawning();
+        saver = null;
     }
 
     IEnumerator environmentSpawner(bool hasEnvs) {
@@ -173,6 +186,10 @@ public class GameBoard : MonoBehaviour {
                     yield return new WaitForEndOfFrame();
             }
         }
+    }
+
+    public bool saving() {
+        return saver != null;
     }
 }
 

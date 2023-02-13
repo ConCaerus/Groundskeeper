@@ -20,6 +20,7 @@ public class BuyTreeCanvas : MenuCanvas {
     //  ordered: Helper, Defences, Structure, Weapon
     [SerializeField] GameObject[] mainCircles;
     [SerializeField] GameObject[] subCircles;
+    [SerializeField] GameObject holder;
 
     [SerializeField] TextMeshProUGUI soulsText;
 
@@ -32,6 +33,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
 
     private void Start() {
+        holder.SetActive(true);
         bl = FindObjectOfType<BuyableLibrary>();
         transform.localScale = Vector3.zero;
         createTree();

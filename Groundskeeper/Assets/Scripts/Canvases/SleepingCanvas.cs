@@ -11,6 +11,7 @@ public class SleepingCanvas : MonoBehaviour {
     [SerializeField] string sleepText;
 
     private void Start() {
+        background.SetActive(true);
         background.transform.localScale = Vector3.zero;
     }
 

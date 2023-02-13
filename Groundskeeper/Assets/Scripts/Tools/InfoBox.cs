@@ -16,13 +16,16 @@ public class InfoBox : MonoBehaviour {
     GameObject currentObj = null;
     bool shown = false;
 
+    UITest uit;
+
     private void Start() {
+        uit = FindObjectOfType<UITest>();
         hide();
     }
 
     private void FixedUpdate() {
         //  checks for new relevant image
-        var obj = FindObjectOfType<UITest>().getMousedOverObject();
+        var obj = uit.getMousedOverObject();
         if(obj == null || obj.GetComponent<InfoableImage>() == null) {
             if(shown)
                 hide();

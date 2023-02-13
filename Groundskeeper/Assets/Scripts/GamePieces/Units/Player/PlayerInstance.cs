@@ -34,7 +34,7 @@ public class PlayerInstance : Attacker {
     [SerializeField] GameObject bloodParticles;
 
 
-    [SerializeField] UnityEngine.Experimental.Rendering.Universal.Light2D pLight;
+    FunkyCode.Light2D pLight;
     public Vector2 hCenter;
     GameTutorialCanvas gtc;
 
@@ -44,6 +44,7 @@ public class PlayerInstance : Attacker {
 
     #region ---   MOVEMENT SHIT   ---
     private void Awake() {
+        Application.targetFrameRate = 60;
         controls = new InputMaster();
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();
@@ -51,11 +52,11 @@ public class PlayerInstance : Attacker {
         gtc = FindObjectOfType<GameTutorialCanvas>();
         pwi = GetComponentInChildren<PlayerWeaponInstance>();
         hi = FindObjectOfType<HouseInstance>();
+        pLight = GetComponentInChildren<Light2D>();
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
         GetComponentInChildren<HealthBar>().setParent(gameObject);
-        Debug.Log(pLight.pointLightOuterRadius);
-        initLightSize = pLight.pointLightOuterRadius;
+        initLightSize = pLight.size;
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
     }
@@ -97,12 +98,12 @@ public class PlayerInstance : Attacker {
         if(hi == null)
             return;
         if(Vector2.Distance(transform.position, hCenter) >= 75f) {
-            DOTween.To(() => pLight.pointLightOuterRadius, x => pLight.pointLightOuterRadius = x, 0f, .25f);
+            DOTween.To(() => pLight.size, x => pLight.size = x, 0f, .25f);
         }
         //  player is in bounds, so tune their light based on how far they are from the edge
         else {
             var distPerc = Vector2.Distance(transform.position, hCenter) / 100f;   //  a little over the edge to give the player a little light at the edge
-            pLight.pointLightOuterRadius = initLightSize * (1 - distPerc);
+            pLight.size = initLightSize * (1 - distPerc);
         }
     }
     void movementChange(Vector2 dir) {

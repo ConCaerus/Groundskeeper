@@ -5,6 +5,13 @@ using UnityEngine;
 public class HouseDoorInteractable : Interactable {
 
     public bool isTheEnd = false;
+    GameBoard gb;
+
+
+    private void Start() {
+        gb = FindObjectOfType<GameBoard>();
+    }
+
 
     public override void interact() {
         FindObjectOfType<TransitionCanvas>().loadScene("House");
@@ -14,7 +21,7 @@ public class HouseDoorInteractable : Interactable {
         //  nothing 
     }
     public override bool canInteract() {
-        return isTheEnd;
+        return isTheEnd && !gb.saving();
     }
     public override void anim(bool b) {
     }

@@ -11,12 +11,17 @@ public class PregameCanvas : MonoBehaviour {
     [SerializeField] public GameObject startButton;
     [SerializeField] public TextMeshProUGUI soulsText;  //  referenced in PlacementGrid place()
     [SerializeField] CircularSlider timer;
-    float prepTime = 2 * 60; // 2 mins
+    float prepTime = 2*60f; // 2 mins
 
     [SerializeField] AudioClip gameMusic;
 
+    PlacementGrid pg;
+    PlayerWeaponInstance pwi;
+
 
     private void Start() {
+        pg = FindObjectOfType<PlacementGrid>();
+        pwi = FindObjectOfType<PlayerWeaponInstance>();
         setup();
 
         if(GameInfo.getNightCount() > 0)
@@ -67,11 +72,11 @@ public class PregameCanvas : MonoBehaviour {
 
     private void Update() {
         if(EventSystem.current.IsPointerOverGameObject()) {
-            FindObjectOfType<PlacementGrid>().clear();
+            pg.clear();
         }
         soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
 
-        FindObjectOfType<PlayerWeaponInstance>().canAttackG = !(mouseOverUI() || FindObjectOfType<PlacementGrid>().placing);
+        pwi.canAttackG = !(mouseOverUI() || pg.placing);
     }
 
     public bool mouseOverUI() {
@@ -98,8 +103,8 @@ public class PregameCanvas : MonoBehaviour {
         FindObjectOfType<GameBoard>().saveBoard();
         FindObjectOfType<GameUICanvas>().show();
         FindObjectOfType<MonsterSpawner>().startNewWave();
-        FindObjectOfType<PlacementGrid>().end();
-        FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
+        pg.end();
+        pwi.canAttackG = true;
         if(gameMusic != null)
             FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
         hide();
@@ -107,6 +112,6 @@ public class PregameCanvas : MonoBehaviour {
     }
 
     public void setPlacementObj(GameObject obj) {
-        FindObjectOfType<PlacementGrid>().changePlacing(obj, obj.gameObject == FindObjectOfType<PlacementGrid>().currentObj);
+        pg.changePlacing(obj, obj.gameObject == pg.currentObj);
     }
 }

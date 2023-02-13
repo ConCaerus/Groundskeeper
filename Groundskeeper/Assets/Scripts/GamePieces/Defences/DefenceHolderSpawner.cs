@@ -27,6 +27,7 @@ public class DefenceHolderSpawner : MonoBehaviour {
             var h = holders[usedNames.IndexOf(defence.GetComponent<Buyable>().title.ToString())];
             var obj = Instantiate(defence, h.transform);
             obj.transform.position = pos;
+            h.GetComponent<CompositeCollider2D>().GenerateGeometry();
 
             return obj;
         }
