@@ -131,7 +131,7 @@ MonoBehaviour:
   dmgAmt: 0
   slowAmt: 0.5
   btwHitTime: 0
-  tickCount: 0
+  tickCount: -1
   target: 1
   bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
 --- !u!114 &4812259985906576421

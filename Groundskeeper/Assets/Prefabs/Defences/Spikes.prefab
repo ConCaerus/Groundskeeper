@@ -128,7 +128,7 @@ MonoBehaviour:
   hurtSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
-  dmgAmt: 1
+  dmgAmt: 4
   slowAmt: 0.3
   btwHitTime: 1
   tickCount: -1

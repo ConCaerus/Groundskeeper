@@ -349,7 +349,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
     protected override void close() {
         transform.DOKill();
-        transform.DOScale(0.0f, .25f);
+        transform.localScale = Vector3.zero;
         FindObjectOfType<MouthInteractable>().tryDeinteract();
     }
 }

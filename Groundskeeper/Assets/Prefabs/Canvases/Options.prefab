@@ -3182,6 +3182,7 @@ MonoBehaviour:
   sfxVolSlider: {fileID: 4361316973694448286}
   screenModeText: {fileID: 465315632}
   vsyncToggle: {fileID: 1308459514480628007}
+  background: {fileID: 4361316973985893877}
 --- !u!1 &4361316974814054253
 GameObject:
   m_ObjectHideFlags: 0
@@ -3995,9 +3996,49 @@ PrefabInstance:
       value: BackButton
       objectReference: {fileID: 0}
     - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 4361316974653698123}
+      objectReference: {fileID: 7586541427880944903}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: tryClose
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: tryShow
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MenuCanvas, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: MenuCanvas, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7661338056225688765, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8184164468236941819, guid: f86b16eaf624c104d9ad4ae6963d29cc, type: 3}
       propertyPath: m_Pivot.x
       value: 0

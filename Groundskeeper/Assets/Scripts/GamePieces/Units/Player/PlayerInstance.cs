@@ -44,7 +44,7 @@ public class PlayerInstance : Attacker {
 
     #region ---   MOVEMENT SHIT   ---
     private void Awake() {
-        Application.targetFrameRate = 60;
+        //Application.targetFrameRate = 60;
         controls = new InputMaster();
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();

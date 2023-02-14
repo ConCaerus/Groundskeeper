@@ -14,8 +14,11 @@ public class PauseMenu : MenuCanvas {
 
 
     public void togglePause() {
-        if(FindObjectOfType<OptionsCanvas>() != null)
-            return;
+        foreach(var i in FindObjectsOfType<MenuCanvas>()) {
+            if(i != this && i.isOpen()) {
+                i.tryClose();
+            }
+        }
         if(!background.activeInHierarchy)
             tryShow();
         else

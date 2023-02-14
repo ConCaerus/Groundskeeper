@@ -41,8 +41,6 @@ public class TickDamager : MonoBehaviour {
 
         //  increment the touching count of the already ticking object
         else {
-            if(ticks[index].effect == def.GetComponent<Buyable>().title)
-                return;
             ticks[index].updateInfo(def.dealDamage, def.btwHitTime, def.GetComponent<Buyable>().title, def.tickCount);
         }
 
@@ -85,7 +83,7 @@ public class TickDamager : MonoBehaviour {
 
         yield return new WaitForSeconds(info.timeBtwTicks);
 
-        if(info.obj != null)
+        if(info.obj != null && ticks.Contains(info))
             info.ticker = StartCoroutine(tick(info));
         else 
             ticks.Remove(info);

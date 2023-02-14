@@ -30,6 +30,8 @@ public abstract class MenuCanvas : MonoBehaviour {
     }
 
 
+    //  don't fucking make these public
+    //  use the try functions above if you want to do shit
     protected abstract void show();
     protected abstract void close();
 

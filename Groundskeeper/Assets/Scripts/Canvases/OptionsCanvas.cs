@@ -4,15 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class OptionsCanvas : MonoBehaviour {
+public class OptionsCanvas : MenuCanvas {
     [SerializeField] Slider masterVolSlider, musicVolSlider, sfxVolSlider;
     [SerializeField] TextMeshProUGUI screenModeText;
     [SerializeField] Toggle vsyncToggle;
+    [SerializeField] GameObject background;
     FullScreenMode curMode;
 
 
     private void Start() {
         setup();
+        background.SetActive(false);
     }
 
     public void setup() {
@@ -45,6 +47,15 @@ public class OptionsCanvas : MonoBehaviour {
     public void resetOptions() {
         GameInfo.resetVolumeOptions();
         setup();
+    }
+
+    protected override void show() {
+        Time.timeScale = 0.0f;
+        background.SetActive(true);
+    }
+    protected override void close() {
+        Time.timeScale = 1.0f;
+        background.SetActive(false);
     }
 
     //buttons

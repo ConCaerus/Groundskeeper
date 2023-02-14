@@ -30,6 +30,11 @@ public class MonsterInstance : Monster {
     Transform pt;
     Vector2 houseCenter;
     Rigidbody2D rb;
+    GameBoard gb;
+    WaveWarnerRose wwr;
+    GameUICanvas guc;
+    MonsterSpawner ms;
+    Collider2D c;
 
 
     private void OnCollisionStay2D(Collision2D col) {
@@ -62,6 +67,11 @@ public class MonsterInstance : Monster {
         houseCenter = FindObjectOfType<HouseInstance>().getCenter();
         rb = GetComponent<Rigidbody2D>();
         sr = spriteObj.GetComponent<SpriteRenderer>();
+        gb = FindObjectOfType<GameBoard>();
+        wwr = FindObjectOfType<WaveWarnerRose>();
+        guc = FindObjectOfType<GameUICanvas>();
+        ms = FindObjectOfType<MonsterSpawner>();
+        c = GetComponent<Collider2D>();
 
         //  randomize the look of the monster
         float sizeDiff = Random.Range(1.0f - .2f, 1.0f + .2f), minColor = .4f, maxColor = .9f;
@@ -165,10 +175,10 @@ public class MonsterInstance : Monster {
         return normColor;
     }
     public override void die() {
+        c.enabled = false;
         //  removes the monster from the game board monsters
-        FindObjectOfType<GameBoard>().monsters.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
+        gb.monsters.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
 
-        var ms = FindObjectOfType<MonsterSpawner>();
         //  passes on leader ship if is leader and there are still monsters from this wave
         if(leader && ms.stillHasMonstersFromWave(relevantWave))
             ms.passOnLeadership(this, relevantWave);
@@ -182,19 +192,19 @@ public class MonsterInstance : Monster {
             else if(relevantWave == GameInfo.wave)              //  this monster is the last monster of the current wave
                 ms.startNewWave();  //  this updates the rose also
             else                                                //  this monster isn't important, so update the rose
-                FindObjectOfType<WaveWarnerRose>().updateForDirection(direction);
+                wwr.updateForDirection(direction);
         }
 
         //  boring stuff
         //FindObjectOfType<HouseUpper>().removeUnitFromInTopUnits(this);
         GameInfo.monstersKilled++;
-        FindObjectOfType<GameUICanvas>().incSouls(soulsGiven);
-        GameInfo.addSouls(soulsGiven, FindObjectOfType<GameUICanvas>().ended);
+        guc.incSouls(soulsGiven);
+        GameInfo.addSouls(soulsGiven, guc.ended);
 
         //  fliar
-        var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null);
-        s.GetComponent<ParticleSystem>().emission.SetBurst(0, new ParticleSystem.Burst(.5f, soulsGiven * 4.0f));
-        s.GetComponent<ParticleSystem>().Play();
+        var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null).GetComponent<ParticleSystem>();
+        s.emission.SetBurst(0, new ParticleSystem.Burst(.5f, soulsGiven * 4.0f));
+        s.Play();
         transform.DOScale(0f, .25f);
 
         //  cleanup
