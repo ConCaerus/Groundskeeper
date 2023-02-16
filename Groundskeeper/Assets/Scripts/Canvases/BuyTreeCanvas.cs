@@ -70,18 +70,19 @@ public class BuyTreeCanvas : MenuCanvas {
     //  not used to create the weapon node
     GameObject createMainNode(int index) {
         var h = Instantiate(node.gameObject, mainCircles[index].transform);
+        var hbtn = h.GetComponent<BuyTreeNode>();
         var t = (Buyable.buyType)(index + 1);
-        h.GetComponent<BuyTreeNode>().mainType = t;
-        h.GetComponent<BuyTreeNode>().getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
-        h.GetComponent<BuyTreeNode>().setTitle(t == Buyable.buyType.Helper ? "Helpers" : t == Buyable.buyType.Defence ? "Defences" : t == Buyable.buyType.Structure ? "Structures" : "?");
-        h.GetComponent<BuyTreeNode>().setCost(getUpdatedCost(h.GetComponent<BuyTreeNode>()));
-        h.GetComponent<BuyTreeNode>().setTier(-1, subMaxTier); //  hides the tierText
+        hbtn.mainType = t;
+        hbtn.getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
+        hbtn.setTitle(t == Buyable.buyType.Helper ? "Helpers" : t == Buyable.buyType.Defence ? "Defences" : t == Buyable.buyType.Structure ? "Structures" : "?");
+        hbtn.setCost(getUpdatedCost(hbtn));
+        hbtn.setTier(-1, subMaxTier); //  hides the tierText
         var qb = queuedBuyables[index];
-        h.GetComponent<BuyTreeNode>().info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
+        hbtn.info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
 
 
         //  LOGIC FOR ACTUALLY UNLOCKING THINGS
-        setupSlider(h.GetComponent<BuyTreeNode>().getSlider(), false,
+        setupSlider(hbtn.getSlider(), false,
             (float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1), false) / bl.getTotalNumberOfBuyables(t),
             delegate {
                 var c = bl.getBuyableUnlockCost(t, bl.getRelevantUnlockTierForBuyableType(t));
@@ -90,12 +91,12 @@ public class BuyTreeCanvas : MenuCanvas {
                     //  checks if there are any more locked buyables of that type
                     if(bl.unlockBuyable(qb)) {
                         //  transaction
-                        h.GetComponent<BuyTreeNode>().setCost(getUpdatedCost(h.GetComponent<BuyTreeNode>()));
+                        hbtn.setCost(getUpdatedCost(hbtn));
 
                         //  flair
-                        h.GetComponent<BuyTreeNode>().getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t, false) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed);
-                        h.GetComponent<BuyTreeNode>().getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
-                        h.GetComponent<BuyTreeNode>().animateClick();
+                        hbtn.getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t, false) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed);
+                        hbtn.getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
+                        hbtn.animateClick();
                         updateSoulsText();
 
                         //  unlock new sub circles
@@ -108,11 +109,13 @@ public class BuyTreeCanvas : MenuCanvas {
                         FindObjectOfType<UnlockCanvas>().showForBuyable(qb.GetComponent<Buyable>());
                         queuedBuyables[index] = bl.getRandomUnlockableBuyableOfType(t, bl.getRelevantUnlockTierForBuyableType(t));
                         qb = queuedBuyables[index];
-                        h.GetComponent<BuyTreeNode>().info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
-                        FindObjectOfType<InfoBox>().updateInfo(h.GetComponent<BuyTreeNode>().info.info);
+                        hbtn.info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
+                        FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
                     }
                 }
             });
+        if(index == 0)
+            h.GetComponentInChildren<Button>().Select();
         return h;
     }
 

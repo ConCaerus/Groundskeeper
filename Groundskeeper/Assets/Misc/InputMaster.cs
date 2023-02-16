@@ -305,6 +305,15 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HardSkip"",
+                    ""type"": ""Button"",
+                    ""id"": ""9eb9ed38-3a13-4b35-92ca-728ac3125fb1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -362,6 +371,28 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""action"": ""Advance"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""363f3bf8-cbe9-4de6-9f6b-d511f510970d"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""HardSkip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""99855fe4-e6fd-48d7-aa17-b52726999325"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""HardSkip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -408,6 +439,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         // Dialog
         m_Dialog = asset.FindActionMap("Dialog", throwIfNotFound: true);
         m_Dialog_Advance = m_Dialog.FindAction("Advance", throwIfNotFound: true);
+        m_Dialog_HardSkip = m_Dialog.FindAction("HardSkip", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -558,11 +590,13 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Dialog;
     private IDialogActions m_DialogActionsCallbackInterface;
     private readonly InputAction m_Dialog_Advance;
+    private readonly InputAction m_Dialog_HardSkip;
     public struct DialogActions
     {
         private @InputMaster m_Wrapper;
         public DialogActions(@InputMaster wrapper) { m_Wrapper = wrapper; }
         public InputAction @Advance => m_Wrapper.m_Dialog_Advance;
+        public InputAction @HardSkip => m_Wrapper.m_Dialog_HardSkip;
         public InputActionMap Get() { return m_Wrapper.m_Dialog; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -575,6 +609,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 @Advance.started -= m_Wrapper.m_DialogActionsCallbackInterface.OnAdvance;
                 @Advance.performed -= m_Wrapper.m_DialogActionsCallbackInterface.OnAdvance;
                 @Advance.canceled -= m_Wrapper.m_DialogActionsCallbackInterface.OnAdvance;
+                @HardSkip.started -= m_Wrapper.m_DialogActionsCallbackInterface.OnHardSkip;
+                @HardSkip.performed -= m_Wrapper.m_DialogActionsCallbackInterface.OnHardSkip;
+                @HardSkip.canceled -= m_Wrapper.m_DialogActionsCallbackInterface.OnHardSkip;
             }
             m_Wrapper.m_DialogActionsCallbackInterface = instance;
             if (instance != null)
@@ -582,6 +619,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 @Advance.started += instance.OnAdvance;
                 @Advance.performed += instance.OnAdvance;
                 @Advance.canceled += instance.OnAdvance;
+                @HardSkip.started += instance.OnHardSkip;
+                @HardSkip.performed += instance.OnHardSkip;
+                @HardSkip.canceled += instance.OnHardSkip;
             }
         }
     }
@@ -618,5 +658,6 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
     public interface IDialogActions
     {
         void OnAdvance(InputAction.CallbackContext context);
+        void OnHardSkip(InputAction.CallbackContext context);
     }
 }

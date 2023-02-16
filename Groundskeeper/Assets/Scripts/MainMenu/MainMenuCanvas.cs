@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenuCanvas : MonoBehaviour {
     [SerializeField] GameObject menu, save, key;
+    [SerializeField] Button playButton;
 
     private void Start() {
         key.SetActive(true);
@@ -15,6 +17,7 @@ public class MainMenuCanvas : MonoBehaviour {
         if(key.activeInHierarchy && Input.anyKey) {
             key.SetActive(false);
             menu.SetActive(true);
+            playButton.Select();
         }
     }
 

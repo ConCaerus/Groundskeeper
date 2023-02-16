@@ -10,27 +10,38 @@ public class CircularSlider : MonoBehaviour {
     [SerializeField] TextMeshProUGUI text;
     Color startColor;
 
+    Coroutine funcWaiter = null;
+
+    Image fillImg;
+
     public delegate void func();
 
     public float value { get; private set; } = 0.0f;
 
-    private void Start() {
-        fill.GetComponent<Image>().fillAmount = value;
-        startColor = fill.GetComponent<Image>().color;
+    private void Awake() {
+        fillImg = fill.GetComponent<Image>();
+        fillImg.fillAmount = value;
+        startColor = fillImg.color;
     }
 
     public void setValue(float f) {
         value = Mathf.Clamp(f, 0.0f, 1.0f);
-        fill.GetComponent<Image>().fillAmount = value;
+        fillImg.fillAmount = value;
     }
     public void doValue(float f, float dur, func runOnDone = null) {
-        var tempValue = value;
-        value = Mathf.Clamp(f, 0.0f, 1.0f); //  sets the real value to the desired value
-        StartCoroutine(runWhenDone(runOnDone, dur));
+        if(funcWaiter != null)
+            StopCoroutine(funcWaiter);
+        funcWaiter = StartCoroutine(runWhenDone(runOnDone, dur, f, value));
+        /*
         //  uses a temp variable to animate the slider
-        DOTween.To(() => tempValue, x => tempValue = x, f, dur).OnUpdate(() => {
+        var i = DOTween.To(() => tempValue, x => tempValue = x, f, dur).OnUpdate(() => {
             fill.GetComponent<Image>().fillAmount = tempValue;
         });
+        */
+    }
+    public void doValueKill() {
+        if(funcWaiter != null)
+            StopCoroutine(funcWaiter);
     }
 
     public void setText(string t) {
@@ -38,20 +49,30 @@ public class CircularSlider : MonoBehaviour {
     }
 
     public void setColor(Color c) {
-        fill.GetComponent<Image>().color = c;
+        fillImg.color = c;
     }
     public void doColor(Color c, float dur) {
-        fill.GetComponent<Image>().DOColor(c, dur);
+        fillImg.DOColor(c, dur);
     }
     public void resetColor() {
-        fill.GetComponent<Image>().DOKill();
+        fillImg.DOKill();
         setColor(startColor);
     }
 
-    IEnumerator runWhenDone(func f, float dur) {
-        if(f == null)
-            yield break;
+    IEnumerator runWhenDone(func f, float dur, float endVal, float startVal) {
+        float elapsedTime = 0.0f;
+        float incTime = 0.01f;
+
+        while(elapsedTime < dur) {
+            yield return new WaitForSeconds(incTime);
+            elapsedTime += incTime;
+            value = ((elapsedTime / dur) * (startVal == 0.0f ? 1.0f : (endVal - startVal))) + startVal;
+            fillImg.fillAmount = value;
+        }
+
         yield return new WaitForSeconds(dur);
-        f();
+        if(f != null)
+            f();
+        funcWaiter = null;
     }
 }

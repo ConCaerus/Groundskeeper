@@ -283,6 +283,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "HardSkip",
+                    "type": "Button",
+                    "id": "9eb9ed38-3a13-4b35-92ca-728ac3125fb1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -338,6 +347,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Advance",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "363f3bf8-cbe9-4de6-9f6b-d511f510970d",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "HardSkip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99855fe4-e6fd-48d7-aa17-b52726999325",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "HardSkip",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

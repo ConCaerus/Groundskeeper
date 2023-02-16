@@ -18,6 +18,8 @@ public class DialogCanvas : MonoBehaviour {
     public delegate void func();
     func f = null;
     InputMaster controls;
+    [SerializeField] CircularSlider hardSkipSlider;
+    Coroutine hardSkiper = null;
 
 
     private void Start() {
@@ -25,8 +27,22 @@ public class DialogCanvas : MonoBehaviour {
         controls = new InputMaster();
         controls.Enable();
         controls.Dialog.Advance.performed += ctx => advance();
+        controls.Dialog.HardSkip.performed += ctx => {
+            if(hardSkiper != null) {
+                StopCoroutine(hardSkiper);
+                hardSkipSlider.setValue(0.0f);
+            }
+            hardSkiper = StartCoroutine(hardSkip());
+        };
+        controls.Dialog.HardSkip.canceled += ctx => {
+            if(hardSkiper != null)
+                StopCoroutine(hardSkiper);
+            hardSkipSlider.doValueKill();
+            //hardSkipSlider.setValue(0.0f);
+        };
         hardHide();
         otherText.gameObject.SetActive(false);
+        hardSkipSlider.setValue(0.0f);
     }
 
 
@@ -48,6 +64,17 @@ public class DialogCanvas : MonoBehaviour {
             else
                 showText(currentTexts.dialogs[0]);
         }
+    }
+
+    IEnumerator hardSkip() {
+        yield return new WaitForSeconds(.5f);
+
+        hardSkipSlider.doValue(1.0f, 1.0f, delegate {
+            hide();
+            if(f != null)
+                f();
+        });
+        hardSkiper = null;
     }
 
 
