@@ -12,7 +12,7 @@ public class TransitionCanvas : MonoBehaviour {
 
 
     private void Awake() {
-        QualitySettings.vSyncCount = GameInfo.getVsync() ? 1 : 0; // don't do shit to this
+        QualitySettings.vSyncCount = GameInfo.getGameOptions().vSync ? 1 : 0; // don't do shit to this
         background.SetActive(true);
         GameInfo.init();
         DOTween.Init();

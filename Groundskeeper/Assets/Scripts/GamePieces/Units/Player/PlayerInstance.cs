@@ -29,12 +29,12 @@ public class PlayerInstance : Attacker {
     Vector2 targetMoveInfo;
     Rigidbody2D rb;
     PlayerWeaponInstance pwi;
-    HouseInstance hi;
+    [HideInInspector] public HouseInstance hi;
 
     [SerializeField] GameObject bloodParticles;
 
 
-    FunkyCode.Light2D pLight;
+    [SerializeField] Light2D pLight;
     public Vector2 hCenter;
     GameTutorialCanvas gtc;
 
@@ -51,8 +51,6 @@ public class PlayerInstance : Attacker {
         movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
         gtc = FindObjectOfType<GameTutorialCanvas>();
         pwi = GetComponentInChildren<PlayerWeaponInstance>();
-        hi = FindObjectOfType<HouseInstance>();
-        pLight = GetComponentInChildren<Light2D>();
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
         GetComponentInChildren<HealthBar>().setParent(gameObject);
@@ -66,6 +64,7 @@ public class PlayerInstance : Attacker {
         if(FindObjectOfType<HouseInstance>() != null)
             transform.position = FindObjectOfType<HouseInstance>().playerSpawnPos.transform.position;
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 5f);
+        StartCoroutine(passiveHealthRegen());
     }
     private void FixedUpdate() {
         //  check if game is over
@@ -187,6 +186,13 @@ public class PlayerInstance : Attacker {
         FindObjectOfType<GameOverCanvas>().show();
         Destroy(gameObject);
         Destroy(healthBar.gameObject);
+    }
+    IEnumerator passiveHealthRegen() {
+        while(health > 0.0f) {
+            if(health < maxHealth)
+                health++;
+            yield return new WaitForSeconds(.35f);
+        }
     }
     #endregion
 }

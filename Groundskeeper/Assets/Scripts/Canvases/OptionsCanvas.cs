@@ -6,10 +6,11 @@ using TMPro;
 
 public class OptionsCanvas : MenuCanvas {
     [SerializeField] Slider masterVolSlider, musicVolSlider, sfxVolSlider;
-    [SerializeField] TextMeshProUGUI screenModeText;
+    [SerializeField] TextMeshProUGUI screenModeText, targetFPSText;
     [SerializeField] Toggle vsyncToggle;
     [SerializeField] GameObject background;
-    FullScreenMode curMode;
+    FullScreenMode curScreenMode;
+    GameOptions.TargetFrameRate tFPS;
 
 
     private void Start() {
@@ -18,34 +19,38 @@ public class OptionsCanvas : MenuCanvas {
     }
 
     public void setup() {
+        var o = GameInfo.getGameOptions();
         //  sound
-        var temp = GameInfo.getVolumeOptions();
-        masterVolSlider.value = temp[0];
-        musicVolSlider.value = temp[1];
-        sfxVolSlider.value = temp[2];
+        masterVolSlider.value = o.masterVol;
+        musicVolSlider.value = o.musicVol;
+        sfxVolSlider.value = o.sfxVol;
 
         //  video
-        QualitySettings.vSyncCount = GameInfo.getVsync() ? 1 : 0;
-        curMode = GameInfo.getScreenMode();
-        screenModeText.text = curMode == FullScreenMode.ExclusiveFullScreen ? "Fullscreen" : curMode == FullScreenMode.FullScreenWindow ? "Windowed Fullscreen" :
-            curMode == FullScreenMode.MaximizedWindow ? "Borderless Window" : "Windowed";
+        QualitySettings.vSyncCount = o.vSync ? 1 : 0;
+        curScreenMode = o.screenMode;
+        screenModeText.text = curScreenMode == FullScreenMode.ExclusiveFullScreen ? "Fullscreen" : curScreenMode == FullScreenMode.FullScreenWindow ? "Windowed Fullscreen" :
+            curScreenMode == FullScreenMode.MaximizedWindow ? "Borderless Window" : "Windowed";
+        tFPS = o.targetFPS;
+        targetFPSText.text = tFPS == GameOptions.TargetFrameRate.Unlimited ? "Unlimited" : tFPS == GameOptions.TargetFrameRate.Thirty ? "30" :
+            tFPS == GameOptions.TargetFrameRate.Sixty ? "60" : "120";
         vsyncToggle.isOn = QualitySettings.vSyncCount == 1;
     }
 
     public void applyChanges() {
-        //  sound
-        GameInfo.setVolumeOptions(masterVolSlider.value, musicVolSlider.value, sfxVolSlider.value);
+        //  Apply settings
         if(FindObjectOfType<AudioManager>() != null)
             FindObjectOfType<AudioManager>().updateVolume();
-
+        Screen.fullScreenMode = curScreenMode;
         QualitySettings.vSyncCount = vsyncToggle.isOn ? 1 : 0;
-        GameInfo.setVsync(vsyncToggle.isOn);
-        GameInfo.setScreenMode(curMode);
-        Screen.fullScreenMode = curMode;
+        Application.targetFrameRate = getDesiredTargetFrameRate();
+
+        //  Save settings
+        var o = new GameOptions(masterVolSlider.value, musicVolSlider.value, sfxVolSlider.value, curScreenMode, vsyncToggle.isOn, tFPS);
+        GameInfo.saveGameOptions(o);
     }
 
     public void resetOptions() {
-        GameInfo.resetVolumeOptions();
+        GameInfo.resetGameOptions();
         setup();
     }
 
@@ -58,16 +63,44 @@ public class OptionsCanvas : MenuCanvas {
         background.SetActive(false);
     }
 
+    GameOptions.TargetFrameRate getCurrentTargetFrameRate() {
+        switch(Application.targetFrameRate) {
+            case 30: return GameOptions.TargetFrameRate.Thirty;
+            case 60: return GameOptions.TargetFrameRate.Sixty;
+            case 120: return GameOptions.TargetFrameRate.OneTwenty;
+            default: return GameOptions.TargetFrameRate.Unlimited;
+        }
+    }
+    int getDesiredTargetFrameRate() {
+        switch(tFPS) {
+            case GameOptions.TargetFrameRate.Thirty: return 30;
+            case GameOptions.TargetFrameRate.Sixty: return 60;
+            case GameOptions.TargetFrameRate.OneTwenty: return 120;
+            default: return -1;
+        }
+    }
+
     //buttons
     public void changeScreenMode(bool right) {
-        int cur = (int)curMode;
+        int cur = (int)curScreenMode;
         cur = right ? cur + 1 : cur - 1;
         if(cur < 0)
             cur = 3;
         else if(cur > 3)
             cur = 0;
-        curMode = (FullScreenMode)cur;
-        screenModeText.text = curMode == FullScreenMode.ExclusiveFullScreen ? "Fullscreen" : curMode == FullScreenMode.FullScreenWindow ? "Windowed Fullscreen" :
-            curMode == FullScreenMode.MaximizedWindow ? "Borderless Window" : "Windowed";
+        curScreenMode = (FullScreenMode)cur;
+        screenModeText.text = curScreenMode == FullScreenMode.ExclusiveFullScreen ? "Fullscreen" : curScreenMode == FullScreenMode.FullScreenWindow ? "Windowed Fullscreen" :
+            curScreenMode == FullScreenMode.MaximizedWindow ? "Borderless Window" : "Windowed";
+    }
+    public void changeTargetFPS(bool right) {
+        int cur = (int)tFPS;
+        cur = right ? cur + 1 : cur - 1;
+        if(cur < 0)
+            cur = 3;
+        else if(cur > 3)
+            cur = 0;
+        tFPS = (GameOptions.TargetFrameRate)cur;
+        targetFPSText.text = tFPS == GameOptions.TargetFrameRate.Unlimited ? "Unlimited" : tFPS == GameOptions.TargetFrameRate.Thirty ? "30" :
+            tFPS == GameOptions.TargetFrameRate.Sixty ? "60" : "120";
     }
 }

@@ -21,8 +21,9 @@ public class AudioManager : MonoBehaviour {
     }
 
     public void updateVolume() {
-        musicPlayer.volume = 1.0f * (GameInfo.getVolumeOptions()[0] * GameInfo.getVolumeOptions()[1]);
-        effectPlayer.volume = 1.0f * (GameInfo.getVolumeOptions()[0] * GameInfo.getVolumeOptions()[2]);
+        var o = GameInfo.getGameOptions();
+        musicPlayer.volume = 1.0f * (o.masterVol * o.musicVol);
+        effectPlayer.volume = 1.0f * (o.masterVol * o.sfxVol);
     }
 
     public void playSound(AudioClip clip, Vector2 pos, bool randomize = true) {

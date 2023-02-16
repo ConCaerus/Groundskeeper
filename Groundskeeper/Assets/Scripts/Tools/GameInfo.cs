@@ -58,6 +58,7 @@ public static class GameInfo {
     static string sfxVolumeTag = "SFXVolumeTag";
     static string screenModeTag = "ScreenMode";
     static string vsyncTag = "VsyncTag";
+    static string gameOptionsTag = "GameOptions";
 
 
     public enum MonsterType {
@@ -223,6 +224,30 @@ public static class GameInfo {
         return SaveData.getFloat(pWeaponSpeedBuffTag) == 0f ? 1f : SaveData.getFloat(pWeaponSpeedBuffTag);
     }
 
+    public static void saveGameOptions(GameOptions go) {
+        SaveData.setString(gameOptionsTag, JsonUtility.ToJson(go));
+    }
+    public static GameOptions getGameOptions() {
+        var data = SaveData.getString(gameOptionsTag);
+        if(!string.IsNullOrEmpty(data))
+            return JsonUtility.FromJson<GameOptions>(data);
+
+        //  doesn't have saved options, so create, save, and return default ones
+        var o = new GameOptions(1.0f, 1.0f, 1.0f, FullScreenMode.ExclusiveFullScreen, true, GameOptions.TargetFrameRate.Unlimited);
+        saveGameOptions(o);
+        return o;
+    }
+
+    //  Resets all volume sliders to 1
+    //  keeps old screen mode
+    //  turns on vSync and sets targetFrameRate to Unlimited
+    public static void resetGameOptions() {
+        var p = getGameOptions();
+        var o = new GameOptions(1.0f, 1.0f, 1.0f, p.screenMode, true, GameOptions.TargetFrameRate.Unlimited);
+        saveGameOptions(o);
+    }
+
+    /*
     public static void setVolumeOptions(float master, float music, float sfx) {
         SaveData.setFloat(masterVolumeTag, master);
         SaveData.setFloat(musicVolumeTag, music);
@@ -254,5 +279,27 @@ public static class GameInfo {
     //  gets set in awake function of transition canvas
     public static bool getVsync() {
         return SaveData.getInt(vsyncTag) == 1;
+    }
+    */
+}
+
+[System.Serializable]
+public class GameOptions {
+    public enum TargetFrameRate {
+        Unlimited, Thirty, Sixty, OneTwenty
+    }
+
+    public float masterVol, musicVol, sfxVol;
+    public FullScreenMode screenMode;
+    public bool vSync;
+    public TargetFrameRate targetFPS;
+
+    public GameOptions(float masterVol, float musicVol, float sfxVol, FullScreenMode screenMode, bool vSync, TargetFrameRate targetFPS) {
+        this.masterVol = masterVol;
+        this.musicVol = musicVol;
+        this.sfxVol = sfxVol;
+        this.screenMode = screenMode;
+        this.vSync = vSync;
+        this.targetFPS = targetFPS;
     }
 }
