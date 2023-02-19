@@ -34,9 +34,19 @@ public class PresetLibrary : MonoBehaviour {
     public GameObject getRandomEnvironment() {
         return getEnvironment(Random.Range(0, environment.Length));
     }
+    public int getEnvironmentCount() {
+        return environment.Length;
+    }
 
     public Weapon getWeapon(int index) {
         return weapons[index];
+    }
+    public Weapon getWeapon(Weapon.weaponName title) {
+        foreach(var i in weapons) {
+            if(i.title == title)
+                return i;
+        }
+        return null;
     }
 
 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2388498088591135750}
   - component: {fileID: 6234180349794591678}
   - component: {fileID: 8206533731004993246}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SightCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -37,7 +37,16 @@ public class TransitionCanvas : MonoBehaviour {
     }
 
     IEnumerator loadedSceneWaiter() {
+        var gb = FindObjectOfType<GameBoard>();
         yield return new WaitForEndOfFrame();
+        if(gb != null) {
+            while(!gb.loaded)
+                yield return new WaitForSeconds(.1f);
+        }
+        if(FindObjectOfType<PlayerInstance>() != null)
+            FindObjectOfType<PlayerInstance>().setCanMove(true);
+        else if(FindObjectOfType<PlayerHouseInstance>() != null)
+            FindObjectOfType<PlayerHouseInstance>().setCanMove(true);
         background.SetActive(false);
     }
 }

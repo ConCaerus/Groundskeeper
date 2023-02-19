@@ -1,5 +1,52 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &937893488118890633
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3297324849497701553}
+  - component: {fileID: 2756239964343534381}
+  m_Layer: 7
+  m_Name: canBeShotFromCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3297324849497701553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937893488118890633}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.79, z: 0}
+  m_LocalScale: {x: 2.1651258, y: 2.1651258, z: 2.1651258}
+  m_Children: []
+  m_Father: {fileID: 6160396455165810014}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &2756239964343534381
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937893488118890633}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!1 &1316555804556604003
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,6 +78,7 @@ Transform:
   - {fileID: 7661736947752663991}
   - {fileID: 1495093131641619273}
   - {fileID: 1919190569152886157}
+  - {fileID: 3297324849497701553}
   m_Father: {fileID: 1477919414227495094}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -224,7 +272,7 @@ MonoBehaviour:
   shadowObj: {fileID: 0}
   movementParticles: {fileID: 6949006053084930653}
   mType: 1
-  speed: 1
+  speed: 0.8
   attackDamage: 1
   damageToDefences: 1
   diff: 2

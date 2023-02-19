@@ -45,6 +45,7 @@ public class ScarecrowInstance : Helper {
 
 
     private void Start() {
+        mortalInit();
         spriteObj.GetComponent<SpriteRenderer>().sprite = sprite;
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);

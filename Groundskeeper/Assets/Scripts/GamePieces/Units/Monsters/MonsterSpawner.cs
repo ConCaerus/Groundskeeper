@@ -119,7 +119,7 @@ public class MonsterSpawner : MonoBehaviour {
             monsterGroups[GameInfo.wave].Add(new List<List<MonsterInstance>>());
         }
 
-        float minDistToLight = 25f;
+        float minDistToLight = 50f; //  CHANGE THIS TO CHANGE HOW FAR MONSTERS SPAWN FROM HOUSE
         int numOfLeaders = 5;
         for(int l = 0; l < info.dir.Length; l++) {  //  loop through the number of directions the monsters can spawn from
             for(int i = 0; i < info.enemyNumbers.Count; i++) {  //  loop through the types of monsters

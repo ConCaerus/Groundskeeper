@@ -15,4 +15,7 @@ public class LumberjackWeaponInstance : WeaponInstance {
         else
             lookAtPos((Vector2)user.gameObject.transform.position + Vector2.right);
     }
+
+    public override void shootMonster() {
+    }
 }

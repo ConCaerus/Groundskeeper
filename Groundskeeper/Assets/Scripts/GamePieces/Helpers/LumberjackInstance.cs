@@ -16,9 +16,9 @@ public class LumberjackInstance : Helper {
     [HideInInspector] public Vector2 startingPos;
 
     [SerializeField] GameObject bloodParticles;
-    HouseInstance hi;
 
     private void Start() {
+        mortalInit();
         startingPos = transform.position;
         hi = FindObjectOfType<HouseInstance>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));

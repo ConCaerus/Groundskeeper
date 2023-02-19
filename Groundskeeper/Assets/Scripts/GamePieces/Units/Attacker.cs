@@ -16,7 +16,7 @@ public abstract class Attacker : Movement {
     public void attack(GameObject target, bool cooldown) {
         if(canAttack && target.gameObject.GetComponent<Mortal>() != null) {
             if(target == FindObjectOfType<HouseInstance>().gameObject)
-                FindObjectOfType<GameUICanvas>().showHouseHealth();
+                guc.showHouseHealth();
             if(getDamage() > 0.0f) {
                 target.gameObject.GetComponent<Mortal>().takeDamage(getDamage(), getKnockback(), transform.position, true);
                 specialEffectOnAttack(target);
@@ -37,5 +37,9 @@ public abstract class Attacker : Movement {
         yield return new WaitForSeconds(getAttackCoolDown());
         canAttack = true;
         cooldown = null;
+    }
+
+    public bool getCanAttack() {
+        return canAttack;
     }
 }

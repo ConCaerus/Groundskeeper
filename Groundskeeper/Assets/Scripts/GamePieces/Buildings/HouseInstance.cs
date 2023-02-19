@@ -17,7 +17,8 @@ public class HouseInstance : Building {
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
         FindObjectOfType<MonsterSpawner>().transform.position = getCenter();
         FindObjectOfType<PlayerInstance>().hCenter = getCenter();
-        FindObjectOfType<PlayerInstance>().hi = this;
+        foreach(var i in FindObjectsOfType<Mortal>())
+            i.hi = this;
     }
 
     public Vector2 getCenter() {

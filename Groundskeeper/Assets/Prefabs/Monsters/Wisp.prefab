@@ -244,7 +244,7 @@ MonoBehaviour:
   shadowObj: {fileID: 1477919413712165063}
   movementParticles: {fileID: 0}
   mType: 2
-  speed: 0.8
+  speed: 1
   attackDamage: 4
   damageToDefences: 1
   diff: 2
@@ -323,9 +323,57 @@ Transform:
   - {fileID: 1477919413712165062}
   - {fileID: 7661736947752663991}
   - {fileID: 3756373119319310470}
+  - {fileID: 5014518411413329381}
   m_Father: {fileID: 1477919414227495094}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8292175571125490902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5014518411413329381}
+  - component: {fileID: 4161889993068990191}
+  m_Layer: 7
+  m_Name: canBeShotFromCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5014518411413329381
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8292175571125490902}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.351, z: 0}
+  m_LocalScale: {x: 2.1651258, y: 2.1651258, z: 2.1651258}
+  m_Children: []
+  m_Father: {fileID: 1629511494666269725}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &4161889993068990191
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8292175571125490902}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!1001 &1514607127920252032
 PrefabInstance:
   m_ObjectHideFlags: 0

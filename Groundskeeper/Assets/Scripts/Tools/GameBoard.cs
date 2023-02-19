@@ -15,6 +15,9 @@ public class GameBoard : MonoBehaviour {
     const float boardRadius = 100f;
     Coroutine saver = null;
 
+    //  gets set to true in the EnvironmentManager script after all of the colliders have been set up
+    [HideInInspector] public bool loaded = false;
+
 
     private void Awake() {
         if(GameInfo.getNightCount() == 0)
@@ -29,25 +32,27 @@ public class GameBoard : MonoBehaviour {
         saver = StartCoroutine(saveWaiter());
     }
     public void loadBoard() {
+        var bl = FindObjectOfType<BuyableLibrary>();
+        var dhs = FindObjectOfType<DefenceHolderSpawner>();
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedHelperCount); i++) {
             var d = SaveData.getString(GameInfo.helperTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-            var obj = FindObjectOfType<BuyableLibrary>().getHelper(data.name, false);
+            var obj = bl.getHelper(data.name, false);
             Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
         }
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedDefenceCount); i++) {
             var d = SaveData.getString(GameInfo.defenceTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-            var obj = FindObjectOfType<BuyableLibrary>().getDefence(data.name, false);
-            FindObjectOfType<DefenceHolderSpawner>().spawnDefence(obj, data.pos);
+            var obj = bl.getDefence(data.name, false);
+            dhs.spawnDefence(obj, data.pos);
         }
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedMiscCount); i++) {
             var d = SaveData.getString(GameInfo.miscTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-            var obj = FindObjectOfType<BuyableLibrary>().getStructure(data.name, false);
+            var obj = bl.getStructure(data.name, false);
             Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
         }
 
@@ -55,7 +60,7 @@ public class GameBoard : MonoBehaviour {
             var hD = SaveData.getString(GameInfo.houseTag);
             var hData = JsonUtility.FromJson<ObjectSaveData>(hD);
 
-            var hObj = FindObjectOfType<BuyableLibrary>().getHouseStructure();
+            var hObj = bl.getHouseStructure();
             Instantiate(hObj, hData.pos, Quaternion.identity, holder.transform);
         }
 
@@ -64,7 +69,6 @@ public class GameBoard : MonoBehaviour {
 
     public void spawnEnvironment() {
         StartCoroutine(environmentSpawner(SaveData.getInt(GameInfo.envCount) != 0));
-        FindObjectOfType<EnvironmentManager>().finishSpawning();
     }
 
     IEnumerator saveWaiter() {
@@ -130,9 +134,14 @@ public class GameBoard : MonoBehaviour {
 
     IEnumerator environmentSpawner(bool hasEnvs) {
         float cutOffCount = 200;    //  after spawning this number of shit, start slowing the spawing shit.
+        var em = FindObjectOfType<EnvironmentManager>();
+        var ls = FindObjectOfType<LayerSorter>();
+        var pl = FindObjectOfType<PresetLibrary>();
+        Vector2 center = FindObjectOfType<HouseInstance>() != null ? FindObjectOfType<HouseInstance>().getCenter() : (Vector2)FindObjectOfType<PlayerInstance>().transform.position;
 
         if(!hasEnvs) {
             int count = Random.Range((int)(boardRadius * 1.5f), (int)(boardRadius * 3.0f));
+            cutOffCount = count + 1;    //  NULLIFIES THE PURPOSE OF THIS FUCKING THING
             
             var hDiag = 6.83f * Mathf.Sqrt(2);  //  6.83 = FindObjectOfType<HouseInstance>().GetComponent<SpriteRenderer>().bounds.size.x / 2.0f
             List<Vector2> poses = new List<Vector2>();
@@ -152,19 +161,33 @@ public class GameBoard : MonoBehaviour {
             }
 
             //  sort the list by how close it is to (0, 0)
-            poses.Sort((a, b) => Vector2.Distance(a, Vector2.zero).CompareTo(Vector2.Distance(b, Vector2.zero)));
+            //poses.Sort((a, b) => Vector2.Distance(a, center).CompareTo(Vector2.Distance(b, center)));
+
+            //  randomizes the poses
+            int n = poses.Count;
+            while(n > 1) {
+                n--;
+                int k = Random.Range(0, n);
+                var value = poses[k];
+                poses[k] = poses[n];
+                poses[n] = value;
+            }
 
             //  store the list
-            for(int i = 0; i < count; i++) {
-                var o = FindObjectOfType<EnvironmentManager>().spawnEnv(FindObjectOfType<PresetLibrary>().getRandomEnvironment(), poses[i]);
+            //  sort the environment based on what type they are
+            var presetEnvCount = pl.getEnvironmentCount();
+            for(int e = 0; e < presetEnvCount; e++) {
+                for(int i = 0; i < count / presetEnvCount; i++) {
+                    var o = em.spawnEnv(pl.getEnvironment(e), poses[i + (count / presetEnvCount) * e]);
+                    var oei = o.GetComponent<EnvironmentInstance>();
+                    var save = new ObjectSaveData(oei);
+                    var data = JsonUtility.ToJson(save);
+                    SaveData.setString(GameInfo.envTag + (i + (count / presetEnvCount) * e).ToString(), data);
 
-                var save = new ObjectSaveData(o.GetComponent<EnvironmentInstance>());
-                var data = JsonUtility.ToJson(save);
-                SaveData.setString(GameInfo.envTag + i.ToString(), data);
-
-                environment.Add(o.GetComponent<EnvironmentInstance>());
-                if(i > cutOffCount)
-                    yield return new WaitForEndOfFrame();
+                    environment.Add(oei);
+                    if(i > cutOffCount)
+                        yield return new WaitForEndOfFrame();
+                }
             }
             SaveData.setInt(GameInfo.envCount, count);
         }
@@ -174,18 +197,21 @@ public class GameBoard : MonoBehaviour {
                 var d = SaveData.getString(GameInfo.envTag + i.ToString());
                 var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-                var o = FindObjectOfType<EnvironmentManager>().spawnEnv(FindObjectOfType<PresetLibrary>().getEnvironment(data.name), data.pos);
+                var o = em.spawnEnv(pl.getEnvironment(data.name), data.pos);
 
                 if(o.GetComponent<Collider2D>() != null)
-                    FindObjectOfType<LayerSorter>().requestNewSortingLayer(o.GetComponent<Collider2D>(), o.transform.GetChild(0).GetComponent<SpriteRenderer>());
+                    ls.requestNewSortingLayer(o.GetComponent<Collider2D>(), o.transform.GetChild(0).GetComponent<SpriteRenderer>());
                 else
-                    FindObjectOfType<LayerSorter>().requestNewSortingLayer(o.transform.position.y, o.transform.GetChild(0).GetComponent<SpriteRenderer>());
+                    ls.requestNewSortingLayer(o.transform.position.y, o.transform.GetChild(0).GetComponent<SpriteRenderer>());
 
                 environment.Add(o.GetComponent<EnvironmentInstance>());
                 if(i > cutOffCount)
                     yield return new WaitForEndOfFrame();
             }
         }
+
+        FindObjectOfType<EnvironmentManager>().finishSpawning();
+        loaded = true;
     }
 
     public bool saving() {

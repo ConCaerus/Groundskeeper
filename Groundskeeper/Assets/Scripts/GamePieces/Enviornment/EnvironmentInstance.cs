@@ -6,6 +6,11 @@ using DG.Tweening;
 public class EnvironmentInstance : MonoBehaviour {
     public string title;
     [SerializeField] int hits = 3;
+    [SerializeField] public triggerInteractionType tit;
+
+    public enum triggerInteractionType {
+        notTrigger, slowDown, none
+    }
 
     public void takeHit() {
         hits--;

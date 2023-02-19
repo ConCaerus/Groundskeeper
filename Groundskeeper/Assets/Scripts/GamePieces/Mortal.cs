@@ -24,6 +24,18 @@ public abstract class Mortal : MonoBehaviour {
 
     public HealthBar healthBar = null;
 
+    //  storage
+    protected GameUICanvas guc;
+    [HideInInspector] public HouseInstance hi;
+    protected GameTutorialCanvas gtc;
+
+    public void mortalInit() {
+        guc = FindObjectOfType<GameUICanvas>();
+        if(FindObjectOfType<HouseInstance>() != null)
+            hi = FindObjectOfType<HouseInstance>();
+        gtc = FindObjectOfType<GameTutorialCanvas>();
+    }
+
     public abstract void die();
 
     public abstract void customHitLogic(float knockback, Vector2 origin, bool stun = true);

@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Bush
   hits: 3
+  tit: 1
 --- !u!60 &4089223966208132796
 PolygonCollider2D:
   m_ObjectHideFlags: 0

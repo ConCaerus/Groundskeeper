@@ -7,6 +7,8 @@ using DG.Tweening;
 public class DialogCanvas : MonoBehaviour {
     [SerializeField] TextMeshProUGUI text, otherText;
     [SerializeField] GameObject box, hidePos;
+    [SerializeField] GameObject lEye, rEye;
+    [SerializeField] List<eyeExpressionPos> eyePoses;
     float secondsBtwLetters = 0.01f;
     bool skip = false;
     bool showingText = false;
@@ -20,6 +22,11 @@ public class DialogCanvas : MonoBehaviour {
     InputMaster controls;
     [SerializeField] CircularSlider hardSkipSlider;
     Coroutine hardSkiper = null;
+
+    [System.Serializable]
+    struct eyeExpressionPos {
+        public Vector2 lPos, rPos;
+    }
 
 
     private void Start() {
@@ -38,7 +45,7 @@ public class DialogCanvas : MonoBehaviour {
             if(hardSkiper != null)
                 StopCoroutine(hardSkiper);
             hardSkipSlider.doValueKill();
-            //hardSkipSlider.setValue(0.0f);
+            hardSkipSlider.setValue(0.0f);
         };
         hardHide();
         otherText.gameObject.SetActive(false);
@@ -56,20 +63,21 @@ public class DialogCanvas : MonoBehaviour {
             skip = true;
         if(anim == null && showingText) {
             currentTexts.dialogs.RemoveAt(0);
+            currentTexts.expressions.RemoveAt(0);
             if(currentTexts.dialogs.Count <= 0) {
                 hide();
                 if(f != null)
                     f();
             }
             else
-                showText(currentTexts.dialogs[0]);
+                showText(currentTexts.dialogs[0], currentTexts.expressions[0]);
         }
     }
 
     IEnumerator hardSkip() {
         yield return new WaitForSeconds(.5f);
 
-        hardSkipSlider.doValue(1.0f, 1.0f, delegate {
+        hardSkipSlider.doValue(1.0f, .5f, delegate {
             hide();
             if(f != null)
                 f();
@@ -78,17 +86,23 @@ public class DialogCanvas : MonoBehaviour {
     }
 
 
-    public void showText(string s) {
+    public void showText(string s, DialogText.facialExpression e) {
         otherText.gameObject.SetActive(false);
         if(anim != null)
             StopCoroutine(anim);
         text.text = "";
         show();
         anim = StartCoroutine(textAnimator(s));
+
+        //  eye stuff
+        rEye.transform.DOKill();
+        lEye.transform.DOKill();
+        rEye.transform.DOLocalMove(eyePoses[(int)e].rPos, .15f);
+        lEye.transform.DOLocalMove(eyePoses[(int)e].lPos, .15f);
     }
     public void loadDialogText(DialogText t, func runOnDone) {
         currentTexts = t;
-        showText(currentTexts.dialogs[0]);
+        showText(currentTexts.dialogs[0], currentTexts.expressions[0]);
         f = runOnDone;
     }
 
@@ -144,9 +158,15 @@ public class DialogCanvas : MonoBehaviour {
 }
 
 public class DialogText {
-    public List<string> dialogs = new List<string>();
+    public enum facialExpression {
+        normal, dismissive, thinking, happy
+    }
 
-    public DialogText(List<string> s) {
+    public List<string> dialogs = new List<string>();
+    public List<facialExpression> expressions = new List<facialExpression>();
+
+    public DialogText(List<string> s, List<facialExpression> e) {
         dialogs = s;
+        expressions = e;
     }
 }

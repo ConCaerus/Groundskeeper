@@ -1,75 +1,52 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
-using System.Linq;
-using UnityEngine.InputSystem;
 
-public class PlayerWeaponInstance : WeaponInstance {
-    bool canAttack;
-    public bool canAttackG {
-        get { return canAttack; }
-        set {
-            canAttack = value;
-        }
-    }
-
+public class PlayerAxeInstance : PlayerWeaponVariant {
     Coroutine charger = null;
+
+
     PlayerInstance pi;
     GameTutorialCanvas gtc;
     PlayerUICanvas puc;
-    SetupSequenceManager ssm;
-    GameBoard gb;
-    InputMaster controls;
 
-    public float chargeMod { get; private set; } = 1.0f;
-
-    private void Start() {
+    public override void setup() {
         pi = FindObjectOfType<PlayerInstance>();
         gtc = FindObjectOfType<GameTutorialCanvas>();
         puc = FindObjectOfType<PlayerUICanvas>();
-        ssm = FindObjectOfType<SetupSequenceManager>();
-        gb = FindObjectOfType<GameBoard>();
-        canAttackG = GameInfo.getNightCount() > 0;
-        controls = new InputMaster();
-        controls.Enable();
-        controls.Player.Attack.performed += attackPerformed;
-        controls.Player.Attack.canceled += attackEnded;
     }
 
-    public override void movementLogic() {
-        lookAtMouse();
+    public override void performOnAttack() {
+        //  player is attacking normally
+        if(charger != null)
+            StopCoroutine(charger);
+        charger = StartCoroutine(chargeTimer());
     }
 
-    void attackPerformed(InputAction.CallbackContext c) {
-        if(canAttackG && transform.lossyScale.x > 0f && !ssm.isActiveAndEnabled) {
-            //  player is attacking normally
-            if(charger != null)
-                StopCoroutine(charger);
-            charger = StartCoroutine(chargeTimer());
-        }
-    }
-
-    void attackEnded(InputAction.CallbackContext c) {
-        if(canAttackG && transform.lossyScale.x > 0f && !ssm.isActiveAndEnabled) {
-            if(charger != null) {
-                if(gtc != null) {
-                    gtc.hasAttacked();
-                    if(chargeMod > 1.01f)
-                        gtc.hasChargedAttacked();
-                }
-                StopCoroutine(charger);
-                charger = null;
-                puc.updateChargeSlider(0.0f, 1.0f);
-                attack(chargeMod);
-                chargeMod = 1.0f;
+    public override void performOnAttackEnd() {
+        if(charger != null) {
+            if(gtc != null) {
+                gtc.hasAttacked();
+                if(pi.weaponAttackMod > 1.01f)
+                    gtc.hasChargedAttacked();
             }
+            StopCoroutine(charger);
+            charger = null;
+            puc.updateChargeSlider(0.0f, 1.0f);
+            attack(GameInfo.mousePos(), pi.weaponAttackMod);
+            pi.weaponAttackMod = 1.0f;
         }
     }
+
+    public override void shootMonster() {
+    }
+
 
     IEnumerator chargeTimer() {
         float maxCharge = 2.0f;
-        float tickTime = .35f, origTickTime = .35f;
+        float tickTime = .3f, origTickTime = .3f;
         float ticksToComplete = 5;  //  zero doens't count, so it'll seem like it'll take this +1 ticks to complete
         float target = 0f;
         bool firstTime = true;
@@ -98,11 +75,11 @@ public class PlayerWeaponInstance : WeaponInstance {
 
             //  charge is empty
             if(i == 0) {
-                chargeMod = 1.0f;
+                pi.weaponAttackMod = 1.0f;
                 target = 1.01f;
                 //  initial wait time that only exists for before ticks are counted
                 if(firstTime) {
-                    yield return new WaitForSeconds(.75f - tickTime);   //  - ticktime because ticktime gets waited for at the end
+                    //yield return new WaitForSeconds(tickTime);   //  - ticktime because ticktime gets waited for at the end
                     s = pi.isSprinting();
                     firstTime = false;
                 }
@@ -122,9 +99,9 @@ public class PlayerWeaponInstance : WeaponInstance {
             else if(!s)
                 yield return new WaitForSeconds(tickTime * .15f);
 
-            DOTween.To(() => chargeMod, x => chargeMod = x, target, .1f).OnUpdate(() => {
+            DOTween.To(() => pi.weaponAttackMod, x => pi.weaponAttackMod = x, target, .1f).OnUpdate(() => {
                 if(charger != null)
-                    puc.updateChargeSlider(chargeMod - 1f, maxCharge - 1f);
+                    puc.updateChargeSlider(pi.weaponAttackMod - 1f, maxCharge - 1f);
                 else
                     puc.updateChargeSlider(0f, maxCharge);
             });
@@ -134,9 +111,5 @@ public class PlayerWeaponInstance : WeaponInstance {
 
             tickTime = origTickTime;
         }
-    }
-
-    private void OnDisable() {
-        controls.Disable();
     }
 }

@@ -61,6 +61,15 @@ public abstract class Movement : MortalUnit {
         updateSprite(pos - (Vector2)transform.position);
     }
 
+    public void lookAtPos(Vector2 target) {
+        var x = Mathf.Abs(transform.position.x - target.x);
+        var y = Mathf.Abs(transform.position.y - target.y);
+        if(x > y)
+            sr.sprite = target.x < transform.position.x ? leftSprite : rightSprite;
+        else
+            sr.sprite = target.y < transform.position.y ? forwardSprite : backSprite;
+    }
+
 
     public abstract WalkAnimInfo getWalkInfo();
 

@@ -32,7 +32,7 @@ public class HelperAttackManager : MonoBehaviour {
             yield return new WaitForSeconds(Mathf.Clamp((d - inReachDist) / 12.0f, .05f, 2.0f));  //  wait to check if in reach again based on the distance to the nearest fucker
         */
         if(hel.inReach) {
-            hel.GetComponentInChildren<LumberjackWeaponInstance>().attack();   //  attack the fucker
+            hel.GetComponentInChildren<LumberjackWeaponInstance>().attack(Vector2.zero);   //  attack the fucker
             yield return new WaitForSeconds(hel.getAttackCoolDown());  //  already set to inReach, wait to check if not inreach
         }
 

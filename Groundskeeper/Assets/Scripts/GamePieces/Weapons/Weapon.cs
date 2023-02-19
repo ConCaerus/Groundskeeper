@@ -4,12 +4,20 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "Weapon", menuName = "Weapon", order = 1)]
 public class Weapon : ScriptableObject {
-    public string title;
+    public enum attackType {
+        Swing, Shoot
+    }
+
+    public enum weaponName {
+        None, Axe, Pistol, Shotgun
+    }
+
+    public weaponName title;
     public int damage;
     public float knockback;
     public float cooldown;
-
-    public GameInfo.MonsterType targetType;
+    public attackType aType;
+    public float range; //  only should be relevant for guns
 
     public Vector2 trailPos;
 

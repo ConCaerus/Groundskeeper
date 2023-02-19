@@ -51,7 +51,10 @@ public class SetupSequenceManager : MonoBehaviour {
 
         //  dialog from the devil that introduces the player to the world
         //  and tells them that they need to place their house
-        FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(new List<string>() { "Welcome to the world", "Place your house" }), null);
+        FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(
+            new List<string>() { "Welcome to the world", "Place your house" },
+            new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.normal}), 
+            null);
 
         yield return new WaitForSeconds(.1f);
 
@@ -62,7 +65,10 @@ public class SetupSequenceManager : MonoBehaviour {
     }
 
     IEnumerator weaponSetup() {
-        FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(new List<string>() { "Mediocre placement", "Anyways... ", "Here, take this axe" }), delegate {
+        FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(
+            new List<string>() { "Mediocre placement", "Anyways... ", "Here, take this axe" },
+            new List<DialogText.facialExpression>() { DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal}),
+            delegate {
             p = true;
         });
         yield return new WaitForSeconds(.1f);
@@ -70,17 +76,20 @@ public class SetupSequenceManager : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         playerWeaponSr.sprite = weaponSprite;
         FindObjectOfType<PlayerWeaponInstance>().enabled = true;
-        FindObjectOfType<PlayerWeaponInstance>().canMove = true;
+        FindObjectOfType<PlayerWeaponInstance>().variant.canMove = true;
         FindObjectOfType<PlayerWeaponInstance>().canAttackG = false;
         FindObjectOfType<PlayerInstance>().setCanMove(true);
         FindObjectOfType<PlayerWeaponInstance>().GetComponentInChildren<TrailRenderer>().enabled = true;
 
         yield return new WaitForSeconds(1.0f);
 
-        FindObjectOfType<PlayerWeaponInstance>().canMove = false;
+        FindObjectOfType<PlayerWeaponInstance>().variant.canMove = false;
         FindObjectOfType<PlayerInstance>().setCanMove(false);
 
-        FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(new List<string>() { "Great! You're ready for the game", "I guess...", "...", "Press this button when you're ready to start" }), delegate {
+        FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(
+            new List<string>() { "Great! You're ready for the game", "I guess...", "...", "Press this button when you're ready to start" }, 
+            new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.thinking, DialogText.facialExpression.normal}),
+            delegate {
             StartCoroutine(endSetup());
         });
     }
@@ -92,7 +101,7 @@ public class SetupSequenceManager : MonoBehaviour {
         FindObjectOfType<GameTutorialCanvas>().show();
         FindObjectOfType<GameBoard>().saveBoard();
         yield return new WaitForSeconds(1.0f);
-        FindObjectOfType<PlayerWeaponInstance>().canMove = true;
+        FindObjectOfType<PlayerWeaponInstance>().variant.canMove = true;
         FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
         FindObjectOfType<PlayerInstance>().setCanMove(true);
         enabled = false;

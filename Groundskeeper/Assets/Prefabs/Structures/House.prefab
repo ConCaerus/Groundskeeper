@@ -585,7 +585,7 @@ MonoBehaviour:
   viewDist: 80
   arrow: {fileID: 3769568573139926079}
   bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
-  radiusCol: {fileID: 2285667947242001593}
+  radiusCol: {fileID: 0}
   playerSpawnPos: {fileID: 9112811037843761855}
   corners:
   - {fileID: 8800257875681513821}
@@ -850,15 +850,12 @@ PrefabInstance:
       propertyPath: fInfo.flickerVariation
       value: 0.1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8065376804309299367, guid: 7a7596e3282e3cb4cb257a44db164f72, type: 3}
+    - {fileID: 1449165269, guid: 7a7596e3282e3cb4cb257a44db164f72, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7a7596e3282e3cb4cb257a44db164f72, type: 3}
 --- !u!4 &364475672333703298 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1924921957632134638, guid: 7a7596e3282e3cb4cb257a44db164f72, type: 3}
-  m_PrefabInstance: {fileID: 2285667945864205676}
-  m_PrefabAsset: {fileID: 0}
---- !u!58 &2285667947242001593 stripped
-CircleCollider2D:
-  m_CorrespondingSourceObject: {fileID: 1449165269, guid: 7a7596e3282e3cb4cb257a44db164f72, type: 3}
   m_PrefabInstance: {fileID: 2285667945864205676}
   m_PrefabAsset: {fileID: 0}

@@ -32,7 +32,6 @@ public class MonsterInstance : Monster {
     Rigidbody2D rb;
     GameBoard gb;
     WaveWarnerRose wwr;
-    GameUICanvas guc;
     MonsterSpawner ms;
     Collider2D c;
 
@@ -59,6 +58,7 @@ public class MonsterInstance : Monster {
 
 
     public void setup() {
+        mortalInit();
         movementInit(null, FindObjectOfType<LayerSorter>());
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         //stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
@@ -69,7 +69,6 @@ public class MonsterInstance : Monster {
         sr = spriteObj.GetComponent<SpriteRenderer>();
         gb = FindObjectOfType<GameBoard>();
         wwr = FindObjectOfType<WaveWarnerRose>();
-        guc = FindObjectOfType<GameUICanvas>();
         ms = FindObjectOfType<MonsterSpawner>();
         c = GetComponent<Collider2D>();
 

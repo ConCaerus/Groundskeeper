@@ -6,6 +6,7 @@ using FunkyCode;
 
 public class PlayerInstance : Attacker {
     [SerializeField] float walkSpeed = 8.0f, runSpeed = 18.0f, accSpeed = .1f, slowSpeed = 18.0f;
+    [HideInInspector] public bool slowed = false;
     float unitStamina = 100f;
     public float stamina {
         get {
@@ -20,6 +21,8 @@ public class PlayerInstance : Attacker {
     float stamInc = 0.0f;
     InputMaster controls;
 
+    [HideInInspector] public float weaponAttackMod = 1.0f; //  this should only be changed by playerWeaponInstance scripts (please)
+
     [HideInInspector] public float initLightSize;
 
 
@@ -29,14 +32,12 @@ public class PlayerInstance : Attacker {
     Vector2 targetMoveInfo;
     Rigidbody2D rb;
     PlayerWeaponInstance pwi;
-    [HideInInspector] public HouseInstance hi;
 
     [SerializeField] GameObject bloodParticles;
 
 
     [SerializeField] Light2D pLight;
     public Vector2 hCenter;
-    GameTutorialCanvas gtc;
 
     private void OnCollisionStay2D(Collision2D col) {
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
@@ -44,12 +45,12 @@ public class PlayerInstance : Attacker {
 
     #region ---   MOVEMENT SHIT   ---
     private void Awake() {
+        mortalInit();
         //Application.targetFrameRate = 60;
         controls = new InputMaster();
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();
         movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
-        gtc = FindObjectOfType<GameTutorialCanvas>();
         pwi = GetComponentInChildren<PlayerWeaponInstance>();
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
@@ -60,6 +61,7 @@ public class PlayerInstance : Attacker {
     }
 
     private void Start() {
+        canMove = false;
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         if(FindObjectOfType<HouseInstance>() != null)
             transform.position = FindObjectOfType<HouseInstance>().playerSpawnPos.transform.position;
@@ -76,7 +78,7 @@ public class PlayerInstance : Attacker {
         }
 
         //  move the object
-        moveWithDir(moveInfo, rb, isSprinting() ? runSpeed : walkSpeed);
+        moveWithDir(moveInfo, rb, (isSprinting() ? runSpeed : walkSpeed) * (slowed ? .5f : 1.0f));
         stamina = Mathf.Clamp(stamina - (controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? 1 : -.5f - stamInc), 0f, 100f);
         stamInc += controls.Player.Sprint.IsPressed() && controls.Player.Move.inProgress ? -stamInc : .01f;
 
@@ -155,13 +157,13 @@ public class PlayerInstance : Attacker {
 
     #region ---   ATTACKER SHIT   ---
     public override float getAttackCoolDown() {
-        return pwi.reference.cooldown / GameInfo.getPWeaponSpeedBuff();
+        return pwi.getWeapon().cooldown / GameInfo.getPWeaponSpeedBuff();
     }
     public override int getDamage() {
-        return (int)(pwi.reference.damage * GameInfo.getPWeaponDamageBuff() * pwi.chargeMod);
+        return (int)(pwi.getWeapon().damage * GameInfo.getPWeaponDamageBuff() * weaponAttackMod);
     }
     public override float getKnockback() {
-        return pwi.reference.knockback;
+        return pwi.getWeapon().knockback;
     }
     public override void specialEffectOnAttack(GameObject defender) {
         stopInhibitingMovement();

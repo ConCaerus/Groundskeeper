@@ -23,7 +23,11 @@ public class HouseTutorialCanvas : MonoBehaviour {
         FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(new List<string>() {
             "You lived?", "I mean, you lived!", "Congratulations!", "...", "Anyways...", "You need to strengthen your defences", "This cabin is outfitted with a soul eater",
             "Give it some of the souls you've collected and it will reward you with...", "with things...", "It's hard to explain. You'll figure it out I'm sure"
-        }), delegate { StartCoroutine(mouthTutEnd()); });
+        }, new List<DialogText.facialExpression>() {
+            DialogText.facialExpression.thinking, DialogText.facialExpression.normal, DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.dismissive,
+            DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.normal
+        }),
+        delegate { StartCoroutine(mouthTutEnd()); });
     }
 
     IEnumerator mouthTutEnd() {
