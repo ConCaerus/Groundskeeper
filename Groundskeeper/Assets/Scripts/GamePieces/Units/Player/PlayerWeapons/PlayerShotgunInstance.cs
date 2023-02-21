@@ -1,14 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 
 public class PlayerShotgunInstance : PlayerWeaponVariant {
     GameTutorialCanvas gtc;
 
-    int numOfShots = 10;
-    float spreadAmt = 45f;
+    int numOfShots = 11; //  keep this number odd because fuck you
+    float spreadAmt = 15f * Mathf.Deg2Rad;
 
 
     public override void setup() {
@@ -48,12 +47,15 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
 
     public override void shootMonster() {
         LayerMask monsterLayer = LayerMask.GetMask("Monster");
-        var oriDir = GameInfo.mousePos() - (Vector2)transform.position;
-        var curSpread = transform.rotation.z + spreadAmt;
+        var curSpread = 0.0f;
+
 
         for(int i = 0; i < numOfShots; i++) {
-            var p = rotate_point(transform.position.x, transform.position.y, curSpread, oriDir);
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, p, reference.range, monsterLayer);
+            var p = rotate_point(transform.position.x, transform.position.y, curSpread, GameInfo.mousePos());
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, p - (Vector2)transform.position, reference.range, monsterLayer);
+            Debug.DrawRay(transform.position, p - (Vector2)transform.position, Color.white);
+            curSpread += (i + 1) * (spreadAmt * 2.0f) / numOfShots * (i % 2 == 0 ? -1f : 1f);
+
             if(hit.collider != null) {
                 var o = hit.collider.gameObject.GetComponentInParent<MonsterInstance>().gameObject;
                 a.attack(o.gameObject, true);   //  also starts the cooldown
@@ -62,8 +64,6 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
                 }
                 o.GetComponentInChildren<SlashEffect>().slash(user.transform.position, rotObj.transform.GetChild(0).localRotation.x != 0f);
             }
-            Debug.DrawRay(transform.position, p);
-            curSpread += (spreadAmt * 2.0f) / numOfShots;
         }
     }
 }

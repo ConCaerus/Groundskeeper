@@ -23,8 +23,11 @@ public class PlayerPistolInstance : PlayerWeaponVariant {
     public override void performOnAttackEnd() {
     }
 
+    //  currently shoots from the position of the gun sprite
+    //  might want to change it to the player's position later idk
     public override void shootMonster() {
         LayerMask monsterLayer = LayerMask.GetMask("Monster");
+
         RaycastHit2D hit = Physics2D.Raycast(transform.position, GameInfo.mousePos() - (Vector2)transform.position, reference.range, monsterLayer);
         if(hit.collider != null) {
             var o = hit.collider.gameObject.GetComponentInParent<MonsterInstance>().gameObject;
@@ -34,5 +37,6 @@ public class PlayerPistolInstance : PlayerWeaponVariant {
             }
             o.GetComponentInChildren<SlashEffect>().slash(user.transform.position, rotObj.transform.GetChild(0).localRotation.x != 0f);
         }
+        Debug.DrawRay(transform.position, GameInfo.mousePos() - (Vector2)transform.position);
     }
 }
