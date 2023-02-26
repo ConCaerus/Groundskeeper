@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerPistolInstance : PlayerWeaponVariant {
+public class PlayerRifleInstance : PlayerWeaponVariant {
     GameTutorialCanvas gtc;
 
     public override void setup() {

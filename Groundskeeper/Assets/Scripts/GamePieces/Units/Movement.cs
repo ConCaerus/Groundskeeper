@@ -8,7 +8,7 @@ public abstract class Movement : MortalUnit {
     protected Coroutine anim = null;
     [SerializeField] public GameObject spriteObj, shadowObj;
     Coroutine moveWaiter = null;
-    protected bool canMove = true;
+    public bool canMove = true;
     bool shown = true;
     bool beingAttackedByMonster = false;
     Coroutine beingAttackedWaiter = null;

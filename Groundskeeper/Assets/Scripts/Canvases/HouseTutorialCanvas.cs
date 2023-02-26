@@ -19,12 +19,11 @@ public class HouseTutorialCanvas : MonoBehaviour {
     IEnumerator mouthTut() {
         FindObjectOfType<PlayerHouseInstance>().setCanMove(false);
         yield return new WaitForSeconds(1.0f);
-
         FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(new List<string>() {
-            "You lived?", "I mean, you lived!", "Congratulations!", "...", "Anyways...", "You need to strengthen your defences", "This cabin is outfitted with a soul eater",
-            "Give it some of the souls you've collected and it will reward you with...", "with things...", "It's hard to explain. You'll figure it out I'm sure"
+            "You lived?", "I mean, <color=\"yellow\">you lived!", "<color=\"yellow\">Congratulations!", "...", "Anyways...", "You need to strengthen your defences", "This cabin is outfitted with a <color=\"red\">soul eater",
+            "Give it some of the <color=\"red\">souls<color=\"white\"> you've collected and it will reward you with...", "with things...", "It's hard to explain. You'll figure it out I'm sure"
         }, new List<DialogText.facialExpression>() {
-            DialogText.facialExpression.thinking, DialogText.facialExpression.normal, DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.dismissive,
+            DialogText.facialExpression.thinking, DialogText.facialExpression.normal, DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.thinking,
             DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.normal
         }),
         delegate { StartCoroutine(mouthTutEnd()); });
@@ -40,5 +39,6 @@ public class HouseTutorialCanvas : MonoBehaviour {
         yield return new WaitForSeconds(.75f);
         FindObjectOfType<PlayerHouseInstance>().setCanMove(true);
         FindObjectOfType<CameraMovement>().enabled = true;
+        enabled = false;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class LumberjackWeaponInstance : WeaponInstance {
     LumberjackInstance lji;
 
-    private void Start() {
+    private void Awake() {
         lji = user.GetComponent<LumberjackInstance>();
     }
 

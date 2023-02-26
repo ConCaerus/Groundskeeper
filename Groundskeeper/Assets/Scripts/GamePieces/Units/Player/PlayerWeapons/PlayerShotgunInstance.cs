@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,13 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
             if(pi.weaponAttackMod > 1.01f)
                 gtc.hasChargedAttacked();
         }
+        //  flair
+        var obj = Instantiate(gunFireParticles.gameObject, transform.parent.parent);
+        obj.transform.position = gunFireParticlesPos.transform.position;
+        gunLight.size = 20f;
+        DOTween.To(() => gunLight.size, x => gunLight.size = x, 0.0f, .15f);
+
+        //  logic
         attack(GameInfo.mousePos(), pi.weaponAttackMod);
         pi.weaponAttackMod = 1.0f;
     }
@@ -58,7 +66,7 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
 
             if(hit.collider != null) {
                 var o = hit.collider.gameObject.GetComponentInParent<MonsterInstance>().gameObject;
-                a.attack(o.gameObject, true);   //  also starts the cooldown
+                a.attack(o.gameObject, false);
                 if(pi != null) {
                     cm.shake(pi.getDamage());
                 }

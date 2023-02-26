@@ -28,7 +28,7 @@ public class GameBoard : MonoBehaviour {
     //  NOTE: BOARD RESETS AUTOMATICALLY ON NIGHT 0
     public void saveBoard() {
         if(saver != null)
-        return;
+            return;
         saver = StartCoroutine(saveWaiter());
     }
     public void loadBoard() {
@@ -72,7 +72,7 @@ public class GameBoard : MonoBehaviour {
     }
 
     IEnumerator saveWaiter() {
-        int hIndex = 0, dIndex = 0, pIndex = 0, thingsPerFrame = 5;
+        int hIndex = 0, dIndex = 0, pIndex = 0, thingsPerFrame = 1;
         //      clears all of the shit before saving new shit
         GameInfo.clearBoard();
 
@@ -85,7 +85,7 @@ public class GameBoard : MonoBehaviour {
             SaveData.setString(GameInfo.helperTag + hIndex.ToString(), data);
             hIndex++;
             if(hIndex % thingsPerFrame == 0)
-            yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
         }
         foreach(var i in GameObject.FindGameObjectsWithTag("Defence")) {
             var save = new ObjectSaveData(i.GetComponent<Buyable>());
@@ -93,7 +93,7 @@ public class GameBoard : MonoBehaviour {
             SaveData.setString(GameInfo.defenceTag + dIndex.ToString(), data);
             dIndex++;
             if(dIndex % thingsPerFrame == 0)
-            yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
         }
         foreach(var i in GameObject.FindGameObjectsWithTag("Structure")) {
             var save = new ObjectSaveData(i.GetComponent<Buyable>());
@@ -101,7 +101,7 @@ public class GameBoard : MonoBehaviour {
             SaveData.setString(GameInfo.miscTag + pIndex.ToString(), data);
             pIndex++;
             if(pIndex % thingsPerFrame == 0)
-            yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
         }
 
         //  specific cases of unique buyables
@@ -126,7 +126,7 @@ public class GameBoard : MonoBehaviour {
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.envTag + i.ToString(), data);
             if(i % thingsPerFrame == 0)
-            yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
         }
         SaveData.setInt(GameInfo.envCount, environment.Count);
         saver = null;
@@ -142,7 +142,7 @@ public class GameBoard : MonoBehaviour {
         if(!hasEnvs) {
             int count = Random.Range((int)(boardRadius * 1.5f), (int)(boardRadius * 3.0f));
             cutOffCount = count + 1;    //  NULLIFIES THE PURPOSE OF THIS FUCKING THING
-            
+
             var hDiag = 6.83f * Mathf.Sqrt(2);  //  6.83 = FindObjectOfType<HouseInstance>().GetComponent<SpriteRenderer>().bounds.size.x / 2.0f
             List<Vector2> poses = new List<Vector2>();
 

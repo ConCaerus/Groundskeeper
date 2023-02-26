@@ -114,7 +114,7 @@ MonoBehaviour:
     invertX: 0
     invertY: 0
     depth: 1
-    spriteRenderer: {fileID: 2886774611030385497}
+    spriteRenderer: {fileID: 0}
   mainShape:
     shadowType: 1
     maskType: 1

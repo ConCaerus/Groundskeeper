@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   title: 3
-  damage: 40
+  damage: 20
   knockback: 3
-  cooldown: 0.15
+  cooldown: 0.5
   aType: 1
   range: 10
   trailPos: {x: 1.33, y: -0.13}
-  sprite: {fileID: 21300000, guid: b66f11b6c6734f44b9482ccd047232d9, type: 3}
+  sprite: {fileID: 21300000, guid: 3fba12f55e1b59a45bab756408fe2690, type: 3}
   swingSound: {fileID: 0}

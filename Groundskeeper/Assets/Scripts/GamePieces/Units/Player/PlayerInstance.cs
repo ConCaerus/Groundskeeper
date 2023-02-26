@@ -67,6 +67,10 @@ public class PlayerInstance : Attacker {
             transform.position = FindObjectOfType<HouseInstance>().playerSpawnPos.transform.position;
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 5f);
         StartCoroutine(passiveHealthRegen());
+        if(pLight.isActiveAndEnabled)
+            StartCoroutine(moveLightWithPlayer());
+        if(GameInfo.getNightCount() == 0)
+            pLight.gameObject.SetActive(true);
     }
     private void FixedUpdate() {
         //  check if game is over
@@ -96,8 +100,10 @@ public class PlayerInstance : Attacker {
 
         //  adjusts the player's light based on how far they are to the edge
         //      player is out of bounds, so turn off their light
-        if(hi == null)
+        if(hi == null || !pLight.isActiveAndEnabled)
             return;
+        else if(hi != null && pLight.isActiveAndEnabled)
+            pLight.gameObject.SetActive(false);
         if(Vector2.Distance(transform.position, hCenter) >= 75f) {
             DOTween.To(() => pLight.size, x => pLight.size = x, 0f, .25f);
         }
@@ -151,6 +157,13 @@ public class PlayerInstance : Attacker {
     }
     public bool isSprinting() {
         return controls.Player.Sprint.IsPressed() && stamina > 0f;
+    }
+
+    IEnumerator moveLightWithPlayer() {
+        while(true) {
+            pLight.transform.position = transform.position;
+            yield return new WaitForSeconds(0f);
+        }
     }
     #endregion
 

@@ -48,6 +48,13 @@ public class PresetLibrary : MonoBehaviour {
         }
         return null;
     }
+    public int getWeaponIndex(Weapon.weaponName title) {
+        for(int i = 0; i < weapons.Length; i++) {
+            if(title == weapons[i].title)
+                return i;
+        }
+        return -1;
+    }
 
 
     public Weapon[] getWeapons() {

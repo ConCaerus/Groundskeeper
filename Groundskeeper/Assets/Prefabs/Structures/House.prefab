@@ -580,6 +580,7 @@ MonoBehaviour:
   hurtSound: {fileID: 8300000, guid: 02b609c48662ae545a7e9eba6c3d9f8e, type: 3}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
+  hi: {fileID: 0}
   title: 
   sprite: {fileID: 21300000, guid: 5fa5c4144b6de4042a3730a163f3d1fb, type: 3}
   viewDist: 80
@@ -841,6 +842,10 @@ PrefabInstance:
     - target: {fileID: 1924921957632134639, guid: 7a7596e3282e3cb4cb257a44db164f72, type: 3}
       propertyPath: m_Name
       value: LightObj
+      objectReference: {fileID: 0}
+    - target: {fileID: 7186160387622467782, guid: 7a7596e3282e3cb4cb257a44db164f72, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7186160387622467782, guid: 7a7596e3282e3cb4cb257a44db164f72, type: 3}
       propertyPath: fInfo.hardShadow

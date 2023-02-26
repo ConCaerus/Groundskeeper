@@ -43,10 +43,10 @@ public class TransitionCanvas : MonoBehaviour {
             while(!gb.loaded)
                 yield return new WaitForSeconds(.1f);
         }
-        if(FindObjectOfType<PlayerInstance>() != null)
-            FindObjectOfType<PlayerInstance>().setCanMove(true);
-        else if(FindObjectOfType<PlayerHouseInstance>() != null)
-            FindObjectOfType<PlayerHouseInstance>().setCanMove(true);
+            if(FindObjectOfType<PlayerInstance>() != null)
+                FindObjectOfType<PlayerInstance>().setCanMove(GameInfo.getNightCount() > 0);
+            else if(FindObjectOfType<PlayerHouseInstance>() != null)
+                FindObjectOfType<PlayerHouseInstance>().setCanMove(GameInfo.getNightCount() > 0);
         background.SetActive(false);
     }
 }

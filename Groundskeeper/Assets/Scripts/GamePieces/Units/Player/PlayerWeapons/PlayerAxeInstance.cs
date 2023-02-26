@@ -8,12 +8,11 @@ public class PlayerAxeInstance : PlayerWeaponVariant {
     Coroutine charger = null;
 
 
-    PlayerInstance pi;
     GameTutorialCanvas gtc;
     PlayerUICanvas puc;
+    Collider2D col;
 
     public override void setup() {
-        pi = FindObjectOfType<PlayerInstance>();
         gtc = FindObjectOfType<GameTutorialCanvas>();
         puc = FindObjectOfType<PlayerUICanvas>();
     }
@@ -23,6 +22,7 @@ public class PlayerAxeInstance : PlayerWeaponVariant {
         if(charger != null)
             StopCoroutine(charger);
         charger = StartCoroutine(chargeTimer());
+        wAnimator.SetTrigger("windup");
     }
 
     public override void performOnAttackEnd() {
@@ -42,7 +42,6 @@ public class PlayerAxeInstance : PlayerWeaponVariant {
 
     public override void shootMonster() {
     }
-
 
     IEnumerator chargeTimer() {
         float maxCharge = 2.0f;

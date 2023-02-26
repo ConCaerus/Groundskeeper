@@ -631,6 +631,7 @@ MonoBehaviour:
     rPos: {x: 40.4, y: 429.6}
   - lPos: {x: -30, y: 464}
     rPos: {x: 45, y: 464}
+  faceObj: {fileID: 2395144703169560543}
   hardSkipSlider: {fileID: 8971344016834062110}
 --- !u!1 &6636587074901171159
 GameObject:

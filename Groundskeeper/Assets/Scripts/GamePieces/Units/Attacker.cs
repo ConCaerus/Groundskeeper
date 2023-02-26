@@ -14,7 +14,7 @@ public abstract class Attacker : Movement {
     //  NOTE: function getBloodParticles moved over to Mortal class
 
     public void attack(GameObject target, bool cooldown) {
-        if(canAttack && target.gameObject.GetComponent<Mortal>() != null) {
+        if(target.gameObject.GetComponent<Mortal>() != null) {
             if(target == FindObjectOfType<HouseInstance>().gameObject)
                 guc.showHouseHealth();
             if(getDamage() > 0.0f) {

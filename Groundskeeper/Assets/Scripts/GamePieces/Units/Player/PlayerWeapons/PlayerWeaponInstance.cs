@@ -26,20 +26,42 @@ public class PlayerWeaponInstance : WeaponInstance {
         controls.Enable();
         controls.Player.Attack.performed += attackPerformed;
         controls.Player.Attack.canceled += attackEnded;
-        if(variant == null)
-            variant = GetComponent<PlayerWeaponVariant>();
+
 
         //  sets up the variant
+        Weapon we = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerWeaponIndex());
+        switch(we.title) {
+            case Weapon.weaponName.Axe:
+                variant = GetComponent<PlayerAxeInstance>();
+                break;
+            case Weapon.weaponName.Shotgun:
+                variant = GetComponent<PlayerShotgunInstance>();
+                break;
+            case Weapon.weaponName.Rifle:
+                variant = GetComponent<PlayerRifleInstance>();
+                break;
+            default:
+                Debug.LogError("PlayerWeaponInstance could not find a relevant variant script");
+                break;
+        }
+        foreach(var i in GetComponents<PlayerWeaponVariant>()) {
+            if(i != variant)
+                i.enabled = false;
+        }
+
+        wAnimator.enabled = true;
         variant.setEqualTo(this);
         variant.setup();
-        Weapon we = null;
-        if(variant.GetComponent<PlayerAxeInstance>() != null)
-            we = FindObjectOfType<PresetLibrary>().getWeapon(Weapon.weaponName.Axe);
-        else if(variant.GetComponent<PlayerPistolInstance>() != null)
-            we = FindObjectOfType<PresetLibrary>().getWeapon(Weapon.weaponName.Pistol);
-        else if(variant.GetComponent<PlayerShotgunInstance>() != null)
-            we = FindObjectOfType<PresetLibrary>().getWeapon(Weapon.weaponName.Shotgun);
         variant.updateReference(we);
+
+        if(we.aType != Weapon.attackType.Shoot)
+            gunLight.gameObject.SetActive(false);
+        else
+            gunLight.size = 0f;
+
+        if(GameInfo.getNightCount() == 0)
+            GetComponent<SpriteRenderer>().sprite = null;
+
         used = false;
     }
 
@@ -52,8 +74,15 @@ public class PlayerWeaponInstance : WeaponInstance {
     }
 
     void attackPerformed(InputAction.CallbackContext c) {
-        if(canAttackG && transform.lossyScale.x > 0f && !ssm.isActiveAndEnabled) {
+        if(ssm.isActiveAndEnabled)
+            return;
+        if(canAttackG && transform.lossyScale.x > 0f && a.getCanAttack()) {
             variant.performOnAttack();
+        }
+        else {
+            sr.DOKill();
+            sr.color = Color.red;
+            sr.DOColor(Color.white, .35f);
         }
     }
 

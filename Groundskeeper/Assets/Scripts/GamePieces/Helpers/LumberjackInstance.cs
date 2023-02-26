@@ -44,14 +44,14 @@ public class LumberjackInstance : Helper {
             followingTransform = null;
             inReach = false;
             //  already at starting pos
-            if(Vector2.Distance(transform.position, startingPos) < .01f)
+            if(Vector2.Distance(transform.position, startingPos) < .001f)
                 return;
         }
         if(followingTransform != null) {
             target = followingTransform.position;
         }
         //  corrects if needs correcting
-        if(Vector2.Distance(transform.position, startingPos) > .01f)
+        if(Vector2.Distance(transform.position, startingPos) > .001f)
             target = hi.getNextPointOnPath(transform.position, target);
         if(!inReach)
             moveToPos(target, GetComponentInParent<Rigidbody2D>(), speed);

@@ -9,6 +9,7 @@ public class DialogCanvas : MonoBehaviour {
     [SerializeField] GameObject box, hidePos;
     [SerializeField] GameObject lEye, rEye;
     [SerializeField] List<eyeExpressionPos> eyePoses;
+    [SerializeField] GameObject faceObj;
     float secondsBtwLetters = 0.01f;
     bool skip = false;
     bool showingText = false;
@@ -59,6 +60,10 @@ public class DialogCanvas : MonoBehaviour {
 
 
     void advance() {
+        if(!showingText)
+            return;
+        faceObj.transform.DOComplete();
+        faceObj.transform.DOPunchPosition(new Vector3(0.0f, 10.0f), .25f);
         if(!skip && anim != null)
             skip = true;
         if(anim == null && showingText) {
@@ -111,6 +116,7 @@ public class DialogCanvas : MonoBehaviour {
         yield return new WaitForFixedUpdate();
         skip = false;
         showingText = true;
+        bool inTextMod = false;
         foreach(var i in s) {
             if(skip) {
                 text.text = s;
@@ -120,9 +126,17 @@ public class DialogCanvas : MonoBehaviour {
                 text.text = text.text + i;
                 continue;
             }
+
+            //  skip over text modifiers like color changers
+            if(i == '<')
+                inTextMod = true;
+
             text.text = text.text + i;
             //  play sound
-            yield return new WaitForSeconds(secondsBtwLetters);
+            if(!inTextMod)
+                yield return new WaitForSeconds(secondsBtwLetters);
+            else if(inTextMod && i == '>')
+                inTextMod = false;
         }
 
         anim = null;
