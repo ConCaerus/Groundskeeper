@@ -36,6 +36,8 @@ public class DialogCanvas : MonoBehaviour {
         controls.Enable();
         controls.Dialog.Advance.performed += ctx => advance();
         controls.Dialog.HardSkip.performed += ctx => {
+            if(!showingText)
+                return;
             if(hardSkiper != null) {
                 StopCoroutine(hardSkiper);
                 hardSkipSlider.setValue(0.0f);

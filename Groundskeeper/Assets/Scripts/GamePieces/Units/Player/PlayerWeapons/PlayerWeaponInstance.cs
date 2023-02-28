@@ -29,15 +29,15 @@ public class PlayerWeaponInstance : WeaponInstance {
 
 
         //  sets up the variant
-        Weapon we = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerWeaponIndex());
+        Weapon we = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerWeaponTitle(FindObjectOfType<PresetLibrary>()));
         switch(we.title) {
-            case Weapon.weaponName.Axe:
+            case Weapon.weaponTitle.Axe:
                 variant = GetComponent<PlayerAxeInstance>();
                 break;
-            case Weapon.weaponName.Shotgun:
+            case Weapon.weaponTitle.Shotgun:
                 variant = GetComponent<PlayerShotgunInstance>();
                 break;
-            case Weapon.weaponName.Rifle:
+            case Weapon.weaponTitle.Rifle:
                 variant = GetComponent<PlayerRifleInstance>();
                 break;
             default:
@@ -102,7 +102,7 @@ public class PlayerWeaponInstance : WeaponInstance {
 }
 
 public abstract class PlayerWeaponVariant : WeaponInstance {
-    [SerializeField] Weapon.weaponName title;
+    [SerializeField] Weapon.weaponTitle title;
 
     public abstract void setup();
 

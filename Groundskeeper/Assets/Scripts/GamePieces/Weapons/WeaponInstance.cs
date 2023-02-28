@@ -74,12 +74,12 @@ public abstract class WeaponInstance : MonoBehaviour {
         //  sets reference
         //  helper shit
         if(GetComponentInParent<LumberjackInstance>() != null)
-            reference = FindObjectOfType<PresetLibrary>().getWeapon(Weapon.weaponName.Axe);
+            reference = FindObjectOfType<PresetLibrary>().getWeapon(Weapon.weaponTitle.Axe);
         else
             isPlayerWeapon = true;
     }
 
-    public void updateReference(Weapon.weaponName title) {
+    public void updateReference(Weapon.weaponTitle title) {
         updateReference(FindObjectOfType<PresetLibrary>().getWeapon(title));
     }
     public void updateReference(Weapon we) {

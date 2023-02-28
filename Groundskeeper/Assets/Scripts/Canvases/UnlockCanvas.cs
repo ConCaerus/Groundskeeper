@@ -12,7 +12,12 @@ public class UnlockCanvas : MonoBehaviour {
     Coroutine hiderWaiter = null;
     float moveBy;
 
-    List<Buyable> queue = new List<Buyable>();
+    List<unlockInfo> queue = new List<unlockInfo>();
+
+    struct unlockInfo {
+        public string title;
+        public Sprite sprite;
+    }
 
     private void Start() {
         DOTween.Init();
@@ -22,13 +27,46 @@ public class UnlockCanvas : MonoBehaviour {
 
     public void showForBuyable(Buyable b) {
         if(hiderWaiter != null) {
-            queue.Add(b);
+            var info = new unlockInfo();
+            info.title = b.title.ToString();
+            info.sprite = b.mainSprite.sprite;
+            queue.Add(info);
             return;
         }
         background.gameObject.SetActive(true);
 
         text.text = b.title.ToString() + " Unlocked";
         icon.sprite = b.mainSprite.sprite;
+        icon.SetNativeSize();
+
+        hiderWaiter = StartCoroutine(hider());
+    }
+    public void showForWeapon(Weapon w) {
+        if(hiderWaiter != null) {
+            var info = new unlockInfo();
+            info.title = w.title.ToString();
+            info.sprite = w.sprite;
+            queue.Add(info);
+            return;
+        }
+        background.gameObject.SetActive(true);
+
+        text.text = w.title.ToString() + " Unlocked";
+        icon.sprite = w.sprite;
+        icon.SetNativeSize();
+
+        hiderWaiter = StartCoroutine(hider());
+    }
+
+    void showForInfo(unlockInfo info) {
+        if(hiderWaiter != null) {
+            queue.Add(info);
+            return;
+        }
+        background.gameObject.SetActive(true);
+
+        text.text = info.title.ToString() + " Unlocked";
+        icon.sprite = info.sprite;
         icon.SetNativeSize();
 
         hiderWaiter = StartCoroutine(hider());
@@ -45,7 +83,7 @@ public class UnlockCanvas : MonoBehaviour {
         if(queue.Count > 0) {
             var b = queue[0];
             queue.RemoveAt(0);
-            showForBuyable(b);
+            showForInfo(b);
         }
     }
 }

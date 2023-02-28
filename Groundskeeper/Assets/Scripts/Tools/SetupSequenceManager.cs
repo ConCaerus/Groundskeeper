@@ -81,7 +81,7 @@ public class SetupSequenceManager : MonoBehaviour {
         yield return new WaitForSeconds(.1f);
         while(!p)
             yield return new WaitForEndOfFrame();
-        playerWeaponSr.sprite = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerWeaponIndex()).sprite;
+        playerWeaponSr.sprite = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerWeaponTitle(FindObjectOfType<PresetLibrary>())).sprite;
         pwi.enabled = true;
         pwi.variant.canMove = true;
         pwi.canAttackG = false;

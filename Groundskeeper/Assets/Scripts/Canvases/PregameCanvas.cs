@@ -110,8 +110,4 @@ public class PregameCanvas : MonoBehaviour {
         hide();
         FindObjectOfType<InfoBox>().gameObject.SetActive(false);
     }
-
-    public void setPlacementObj(GameObject obj) {
-        pg.changePlacing(obj, obj.gameObject == pg.currentObj);
-    }
 }

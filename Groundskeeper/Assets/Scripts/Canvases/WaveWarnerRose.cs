@@ -24,6 +24,8 @@ public class WaveWarnerRose : MonoBehaviour {
                 StopCoroutine(i);
         }
 
+        timer.doValueKill();
+
         float disTime = .15f;
         foreach(var i in dots) {
             i.transform.DOKill();

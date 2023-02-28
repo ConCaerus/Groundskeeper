@@ -163,7 +163,7 @@ public class BuyableLibrary : MonoBehaviour {
 
 
     public bool hasPlayerSeenBuyable(Buyable.buyableTitle title) {
-        return SaveData.getInt(seenTag(title)) == 0;
+        return SaveData.getInt(seenTag(title)) != 0;
     }
     public void playerSawBuyable(Buyable.buyableTitle title) {
         SaveData.setInt(seenTag(title), 1);

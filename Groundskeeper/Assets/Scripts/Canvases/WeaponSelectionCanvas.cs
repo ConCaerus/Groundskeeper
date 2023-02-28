@@ -17,7 +17,7 @@ public class WeaponSelectionCanvas : MenuCanvas {
 
     protected override void show() {
         transform.position = playerUITarget.transform.position;
-        weaponSprite.sprite = pl.getWeapon(GameInfo.getPlayerWeaponIndex()).sprite;
+        weaponSprite.sprite = pl.getWeapon(GameInfo.getPlayerWeaponTitle(pl)).sprite;
         //weaponSprite.SetNativeSize();
         background.SetActive(true);
     }
@@ -30,15 +30,18 @@ public class WeaponSelectionCanvas : MenuCanvas {
     //  buttons
     public void changeWeapon(bool right) {
         //  changes the index of the player's current weapon
-        int ind = GameInfo.getPlayerWeaponIndex();
+        var t = GameInfo.getPlayerWeaponTitle(pl);
+        int ind = pl.getUnlockedWeaponIndex(t);
+        //Debug.Log(t + " " + ind + " " + right + " " + pl.getUnlockedWeapons().Count);
         ind += right ? 1 : -1;
         if(ind < 0)
-            ind = pl.getWeapons().Length - 1;
-        else if(ind >= pl.getWeapons().Length)
+            ind = pl.getUnlockedWeapons().Count - 1;
+        else if(ind >= pl.getUnlockedWeapons().Count)
             ind = 0;
-        GameInfo.setPlayerWeaponIndex(ind);
+
+        GameInfo.setPlayerWeapon(pl.getUnlockedWeapons()[ind].title);
 
         //  displays the new weapon sprite
-        weaponSprite.sprite = pl.getWeapon(ind).sprite;
+        weaponSprite.sprite = pl.getUnlockedWeapons()[ind].sprite;
     }
 }

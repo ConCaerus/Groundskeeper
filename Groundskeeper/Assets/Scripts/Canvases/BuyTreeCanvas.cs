@@ -25,7 +25,9 @@ public class BuyTreeCanvas : MenuCanvas {
     [SerializeField] TextMeshProUGUI soulsText;
 
     GameObject[] queuedBuyables = new GameObject[3];
+    Weapon queuedWeapon;
     BuyableLibrary bl;
+    PresetLibrary pl;
 
     enum subType {
         Damage, Health, Speed
@@ -35,6 +37,7 @@ public class BuyTreeCanvas : MenuCanvas {
     private void Start() {
         holder.SetActive(true);
         bl = FindObjectOfType<BuyableLibrary>();
+        pl = FindObjectOfType<PresetLibrary>();
         transform.localScale = Vector3.zero;
         createTree();
         updateSoulsText();
@@ -45,28 +48,78 @@ public class BuyTreeCanvas : MenuCanvas {
         queuedBuyables[0] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Helper, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Helper));
         queuedBuyables[1] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Defence, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Defence));
         queuedBuyables[2] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Structure, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Structure));
+        queuedWeapon = pl.getRandomLockedWeapon();
 
         //  main shits
         for(int i = 0; i < 3; i++)
             createMainNode(i);
 
         //  weapon
+        /*
         var w = Instantiate(node.gameObject, mainCircles[3].transform);
         setupSlider(w.GetComponent<BuyTreeNode>().getSlider(), false, 1.0f);
         w.GetComponent<BuyTreeNode>().setTitle("Weapons");
         w.GetComponent<BuyTreeNode>().setTier(-1, subMaxTier);
         w.GetComponent<BuyTreeNode>().info.info = "Weapon";
+        */
 
 
         //  side shits
-        //  weapons
         createSubCirclesForType(Buyable.buyType.Helper);
         createSubCirclesForType(Buyable.buyType.Defence);
         createSubCirclesForType(Buyable.buyType.Structure);
+
+        //  weapon
+        createWeaponNode();
         createSubNode(subCircles[3], subType.Damage);
         createSubNode(subCircles[3], subType.Speed);
     }
 
+    GameObject createWeaponNode() {
+        int index = 3;
+        var h = Instantiate(node.gameObject, mainCircles[index].transform);
+        var hbtn = h.GetComponent<BuyTreeNode>();
+        hbtn.getSlider().setText(pl.getUnlockedWeapons().Count.ToString());
+        hbtn.setTitle("Weapon");
+        var c = 200;    //  cost of the fucker
+        hbtn.setCost(c);
+        hbtn.setTier(-1, subMaxTier); //  hides the tierText
+        var qw = queuedWeapon;
+        hbtn.info.info = (qw == null) ? "Completed" : qw.title.ToString();
+
+
+        //  LOGIC FOR ACTUALLY UNLOCKING THINGS
+        setupSlider(hbtn.getSlider(), false,
+            (float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length,
+            delegate {
+                //  checks money
+                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true)) {
+                    //  checks if there are any more locked buyables of that type
+                    if(qw != null && pl.unlockWeapon(qw.title)) {
+                        //  transaction
+                        hbtn.setCost(c);
+
+                        //  flair
+                        hbtn.getSlider().doValue((float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length, sliderFillSpeed);
+                        hbtn.getSlider().setText(pl.getUnlockedWeapons().Count.ToString());
+                        hbtn.animateClick();
+                        updateSoulsText();
+
+                        //  update buyables in queue
+                        FindObjectOfType<UnlockCanvas>().showForWeapon(qw);
+                        queuedWeapon = pl.getRandomLockedWeapon();
+                        qw = queuedWeapon;
+                        hbtn.info.info = (qw == null) ? "Completed" : qw.title.ToString();
+                        FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
+                    }
+                }
+            });
+        if(index == 0)
+            h.GetComponentInChildren<Button>().Select();
+        hbtn.getSlider().doValueKill();
+        hbtn.getSlider().setValue((float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length);
+        return h;
+    }
     //  not used to create the weapon node
     GameObject createMainNode(int index) {
         var h = Instantiate(node.gameObject, mainCircles[index].transform);
@@ -116,6 +169,8 @@ public class BuyTreeCanvas : MenuCanvas {
             });
         if(index == 0)
             h.GetComponentInChildren<Button>().Select();
+        hbtn.getSlider().doValueKill();
+        hbtn.getSlider().setValue((float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1), false) / bl.getTotalNumberOfBuyables(t));
         return h;
     }
 
@@ -348,6 +403,7 @@ public class BuyTreeCanvas : MenuCanvas {
     protected override void show() {
         transform.DOKill();
         transform.DOScale(1.0f, .15f);
+        createTree();
     }
 
     protected override void close() {

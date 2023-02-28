@@ -17,7 +17,7 @@ public static class GameInfo {
 
     //  player shit
 
-    static string pWeaponIndex = "PlayerWeaponInex";
+    static string pWeaponTag = "PlayerWeaponInex";
 
     //  Game Board shit
 
@@ -46,7 +46,10 @@ public static class GameInfo {
     static string pWeaponSpeedBuffTag = "PlayerWeaponSpeedBuff";
 
     //  unlocked shit
-
+    public static string weaponCount = "numOfWeapons";
+    public static string unlockedWeaponTag(Weapon.weaponTitle title) {
+        return "UnlockedWeapon: " + title;
+    }
     public static string buyableCount = "numOfBuyables";
     public static string unlockedBuyableTag(Buyable.buyableTitle title) {
         return "UnlockedBuyable: " + title;
@@ -81,9 +84,6 @@ public static class GameInfo {
         resetNights();
         resetLastSeenEnemy();
         clearBoard();
-        Inventory.clear();
-        Inventory.addWeapon(0);
-        setPlayerWeaponIndex(0);
     }
     public static void clearBoard() {
         //      clears all of the shit before saving new shit
@@ -146,11 +146,30 @@ public static class GameInfo {
     }
 
     //  player weapon index
-    public static int getPlayerWeaponIndex() {
-        return SaveData.getInt(pWeaponIndex);
+    public static Weapon.weaponTitle getPlayerWeaponTitle(PresetLibrary pl) {
+        if(pl.getEquivalentWeaponTitle(SaveData.getString(pWeaponTag)) != Weapon.weaponTitle.None) {
+            return pl.getEquivalentWeaponTitle(SaveData.getString(pWeaponTag));
+        }
+
+        //  the game hasn't set the player's weapon yet, so set it to the first unlocked weapon in the PresetLibrary
+        setPlayerWeapon(pl.getUnlockedWeapons()[0].title);
+        return pl.getUnlockedWeapons()[0].title;
     }
-    public static void setPlayerWeaponIndex(int ind) {
-        SaveData.setInt(pWeaponIndex, ind);
+    public static void setPlayerWeapon(Weapon.weaponTitle title) {
+        SaveData.setString(pWeaponTag, title.ToString());
+    }
+
+    //  player's weapons
+    public static void lockAllWeapons(PresetLibrary pl) {
+        //  locks all weapons except the default one (indexed at zero in the PresetLibrary's weapons array)
+        for(int i = 1; i < pl.getWeapons().Length; i++) 
+            SaveData.setInt(unlockedWeaponTag(pl.getWeapon(i).title), 0);
+    }
+    public static void unlockWeapon(Weapon.weaponTitle title) {
+        SaveData.setInt(unlockedWeaponTag(title), 1);
+    }
+    public static bool isWeaponUnlocked(Weapon.weaponTitle title) {
+        return SaveData.getInt(unlockedWeaponTag(title)) == 1;
     }
 
     //  buyables

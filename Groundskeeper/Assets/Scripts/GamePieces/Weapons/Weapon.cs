@@ -8,11 +8,11 @@ public class Weapon : ScriptableObject {
         Swing, Shoot
     }
 
-    public enum weaponName {
+    public enum weaponTitle {
         None, Axe, Rifle, Shotgun
     }
 
-    public weaponName title;
+    public weaponTitle title;
     public int damage;
     public float knockback;
     public float cooldown;

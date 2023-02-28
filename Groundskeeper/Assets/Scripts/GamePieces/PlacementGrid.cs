@@ -12,6 +12,10 @@ public class PlacementGrid : MonoBehaviour {
     [HideInInspector] public GameObject currentObj = null;
     [SerializeField] CircleCollider2D houseRadiusCollider;
 
+    BuyableLibrary bl;
+    PregameCanvas pc;
+    SoulTransactionHandler cth;
+
     [System.Serializable]
     public struct thing {
         public Tile tile;
@@ -27,6 +31,9 @@ public class PlacementGrid : MonoBehaviour {
     private void Awake() {
         map = GetComponent<Tilemap>();
         map.ClearAllTiles();
+        bl = FindObjectOfType<BuyableLibrary>();
+        pc = FindObjectOfType<PregameCanvas>();
+        cth = FindObjectOfType<SoulTransactionHandler>();
     }
 
     private void Update() {
@@ -47,10 +54,10 @@ public class PlacementGrid : MonoBehaviour {
                 map.color = Color.red;
             }
 
-            if(Input.GetMouseButton(0) && !FindObjectOfType<PregameCanvas>().mouseOverUI() && map.color == Color.green) {
+            if(Input.GetMouseButton(0) && !pc.mouseOverUI() && map.color == Color.green) {
                 place();
             }
-            else if(Input.GetMouseButton(1) && !FindObjectOfType<PregameCanvas>().mouseOverUI()) {
+            else if(Input.GetMouseButton(1) && !pc.mouseOverUI()) {
                 remove();
             }
         }
@@ -83,8 +90,14 @@ public class PlacementGrid : MonoBehaviour {
         //  extracts the info from the thing stuct
         GameObject obj = null;
         //  checks if the player can afford to place
-        if(!FindObjectOfType<SoulTransactionHandler>().tryTransaction(currentObj.GetComponent<Buyable>().cost, FindObjectOfType<PregameCanvas>().soulsText, false))
+        var title = currentObj.GetComponent<Buyable>().title;
+        bool costIsZero = !bl.hasPlayerSeenBuyable(title) && currentObj.GetComponent<Buyable>().bType != Buyable.buyType.Structure;
+        if(!cth.tryTransaction(costIsZero ? 0f : currentObj.GetComponent<Buyable>().cost, pc.soulsText, false))
             return;
+        if(costIsZero) {
+            bl.playerSawBuyable(title);
+            FindObjectOfType<BuyableButtonSpawner>().updateBuyableButtons();
+        }
         var pos = map.CellToWorld(map.WorldToCell(GameInfo.mousePos())) + new Vector3(map.cellSize.x / 2f, map.cellSize.y / 2f);
         if(currentObj.GetComponent<DefenceInstance>() == null) {
             obj = Instantiate(currentObj.gameObject, holder.transform);
@@ -130,7 +143,7 @@ public class PlacementGrid : MonoBehaviour {
         }
         else return;
 
-        FindObjectOfType<SoulTransactionHandler>().tryTransaction(-c, FindObjectOfType<PregameCanvas>().soulsText, false);
+        cth.tryTransaction(-c, pc.soulsText, false);
         map.color = Color.green;
     }
 

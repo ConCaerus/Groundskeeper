@@ -45,18 +45,20 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Unlock Everything"))
+        if(GUILayout.Button("Unlock Everything")) {
             FindObjectOfType<BuyableLibrary>().unlockAll();
+            FindObjectOfType<PresetLibrary>().unlockAllWeapons();
+        }
         GUILayout.EndHorizontal();
 
         GUILayout.Label("Weapon");
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Give Axe"))
-            GameInfo.setPlayerWeaponIndex(FindObjectOfType<PresetLibrary>().getWeaponIndex(Weapon.weaponName.Axe));
+            GameInfo.setPlayerWeapon(Weapon.weaponTitle.Axe);
         if(GUILayout.Button("Give Shotgun"))
-            GameInfo.setPlayerWeaponIndex(FindObjectOfType<PresetLibrary>().getWeaponIndex(Weapon.weaponName.Shotgun));
+            GameInfo.setPlayerWeapon(Weapon.weaponTitle.Shotgun);
         if(GUILayout.Button("Give Rifle"))
-            GameInfo.setPlayerWeaponIndex(FindObjectOfType<PresetLibrary>().getWeaponIndex(Weapon.weaponName.Rifle));
+            GameInfo.setPlayerWeapon(Weapon.weaponTitle.Rifle);
         GUILayout.EndHorizontal();
     }
 }

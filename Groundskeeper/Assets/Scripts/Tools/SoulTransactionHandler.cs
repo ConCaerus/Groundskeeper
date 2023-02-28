@@ -68,20 +68,23 @@ public class SoulTransactionHandler : MonoBehaviour {
         //  checks if already has a costText group for the soulsText
 
         //  flair
-        var spentText = Instantiate(soulsText.gameObject, soulsText.transform.position, Quaternion.identity, soulsText.transform).GetComponent<TextMeshProUGUI>();
-        for(int c = 0; c < spentText.transform.childCount; c++)
-            Destroy(spentText.transform.GetChild(c).gameObject);
-        Destroy(spentText.gameObject, richTime * 2f);
-        spentText.color = cost >= 0f ? Color.red : Color.green;
-        spentText.text = (aftSouls - prevSouls).ToString("0.0");
-        spentText.GetComponent<RectTransform>().DOLocalMoveY(-50f, richTime * 2f);
-        spentText.GetComponent<RectTransform>().DOScale(.5f, richTime * 2f);
-        spentText.DOColor(Color.clear, richTime * 2f);
+        if(cost != 0f) {
+            var spentText = Instantiate(soulsText.gameObject, soulsText.transform.position, Quaternion.identity, soulsText.transform).GetComponent<TextMeshProUGUI>();
+            for(int c = 0; c < spentText.transform.childCount; c++)
+                Destroy(spentText.transform.GetChild(c).gameObject);
+            Destroy(spentText.gameObject, richTime * 2f);
+            spentText.color = cost >= 0f ? Color.red : Color.green;
+            spentText.text = (aftSouls - prevSouls).ToString("0.0");
+            spentText.GetComponent<RectTransform>().DOLocalMoveY(-50f, richTime * 2f);
+            spentText.GetComponent<RectTransform>().DOScale(.5f, richTime * 2f);
+            spentText.DOColor(Color.clear, richTime * 2f);
 
 
-        DOTween.To(() => prevSouls, x => prevSouls = x, aftSouls, richTime).OnUpdate(() => {
-            soulsText.text = prevSouls.ToString("0.0") + "s";
-        });
+
+            DOTween.To(() => prevSouls, x => prevSouls = x, aftSouls, richTime).OnUpdate(() => {
+                soulsText.text = prevSouls.ToString("0.0") + "s";
+            });
+        }
 
         return true;
     }
