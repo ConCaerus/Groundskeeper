@@ -19,17 +19,16 @@ public abstract class WeaponInstance : MonoBehaviour {
 
     [HideInInspector] public Transform pt;
     protected PlayerInstance pi;
-    LayerSorter ls;
+    protected LayerSorter ls;
     protected SpriteRenderer sr;
     protected Attacker a;
     Collider2D c;
     EnvironmentManager em;
     protected CameraMovement cm;
     AudioManager am;
-    [SerializeField] public ParticleSystem gunFireParticles;
+    [SerializeField] public Animator wAnimator;
     [SerializeField] public GameObject gunFireParticlesPos;
     [SerializeField] public FunkyCode.Light2D gunLight;
-    [SerializeField] public Animator wAnimator;
 
     bool isPlayerWeapon = false;
 
@@ -143,7 +142,6 @@ public abstract class WeaponInstance : MonoBehaviour {
         em = FindObjectOfType<EnvironmentManager>();
         cm = FindObjectOfType<CameraMovement>();
         am = FindObjectOfType<AudioManager>();
-        gunFireParticles = other.gunFireParticles;
         gunFireParticlesPos = other.gunFireParticlesPos;
         wAnimator = other.wAnimator;
         gunLight = other.gunLight;

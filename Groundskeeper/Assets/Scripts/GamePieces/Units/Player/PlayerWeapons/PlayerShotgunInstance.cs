@@ -6,13 +6,19 @@ using UnityEngine;
 
 public class PlayerShotgunInstance : PlayerWeaponVariant {
     GameTutorialCanvas gtc;
+    [SerializeField] public ParticleSystem gunFireParticles;
 
     int numOfShots = 11; //  keep this number odd because fuck you
-    float spreadAmt = 15f * Mathf.Deg2Rad;
+    float spreadAmt = 45f * Mathf.Deg2Rad;
 
 
     public override void setup() {
         gtc = FindObjectOfType<GameTutorialCanvas>();
+        //  destroys all gunfire particles that aren't being used
+        foreach(var i in gunFireParticles.transform.parent.GetComponentsInChildren<ParticleSystem>()) {
+            if(i != gunFireParticles)
+                Destroy(i.gameObject);
+        }
     }
 
     public override void performOnAttack() {
@@ -22,8 +28,7 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
                 gtc.hasChargedAttacked();
         }
         //  flair
-        var obj = Instantiate(gunFireParticles.gameObject, transform.parent.parent);
-        obj.transform.position = gunFireParticlesPos.transform.position;
+        gunFireParticles.Play();
         gunLight.size = 20f;
         DOTween.To(() => gunLight.size, x => gunLight.size = x, 0.0f, .15f);
 

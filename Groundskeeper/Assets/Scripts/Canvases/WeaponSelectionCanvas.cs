@@ -5,25 +5,23 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 public class WeaponSelectionCanvas : MenuCanvas {
-    [SerializeField] GameObject playerUITarget;
-    [SerializeField] GameObject background;
-    [SerializeField] Image weaponSprite;
+    [SerializeField] GameObject holder;
+
+    WeaponSelectionInteractable wsi;
     PresetLibrary pl;
 
     private void Start() {
+        wsi = FindObjectOfType<WeaponSelectionInteractable>();
         pl = FindObjectOfType<PresetLibrary>();
-        background.SetActive(false);
+        holder.SetActive(false);
     }
 
     protected override void show() {
-        transform.position = playerUITarget.transform.position;
-        weaponSprite.sprite = pl.getWeapon(GameInfo.getPlayerWeaponTitle(pl)).sprite;
-        //weaponSprite.SetNativeSize();
-        background.SetActive(true);
+        holder.SetActive(true);
     }
 
     protected override void close() {
-        background.SetActive(false);
+        holder.SetActive(false);
     }
 
 
@@ -42,6 +40,6 @@ public class WeaponSelectionCanvas : MenuCanvas {
         GameInfo.setPlayerWeapon(pl.getUnlockedWeapons()[ind].title);
 
         //  displays the new weapon sprite
-        weaponSprite.sprite = pl.getUnlockedWeapons()[ind].sprite;
+        wsi.getWeaponSprite().sprite = pl.getUnlockedWeapons()[ind].sprite;
     }
 }

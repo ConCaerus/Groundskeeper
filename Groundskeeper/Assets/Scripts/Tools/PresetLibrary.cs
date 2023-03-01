@@ -114,7 +114,7 @@ public class PresetLibrary : MonoBehaviour {
         switch(title.ToLower()) {
             case "axe": return Weapon.weaponTitle.Axe;
             case "shotgun": return Weapon.weaponTitle.Shotgun;
-            case "rifle": return Weapon.weaponTitle.Shotgun;
+            case "rifle": return Weapon.weaponTitle.Rifle;
             default: return Weapon.weaponTitle.None;
         }
     }

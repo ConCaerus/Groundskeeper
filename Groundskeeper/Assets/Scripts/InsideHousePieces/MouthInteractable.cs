@@ -16,5 +16,9 @@ public class MouthInteractable : Interactable {
     }
     public override void anim(bool b) {
         GetComponent<Animator>().SetBool("isOpen", b);
+        if(b)
+            FindObjectOfType<WeaponSelectionCanvas>().tryShow();
+        else
+            FindObjectOfType<WeaponSelectionCanvas>().tryClose();
     }
 }
