@@ -9,19 +9,23 @@ public class PregameBuyableButton : MonoBehaviour {
     [SerializeField] TextMeshProUGUI text;
     [SerializeField] GameObject newDot;
 
+    BuyableLibrary bl;
+
 
     private void Awake() {
         newDot.SetActive(false);
+        bl = FindObjectOfType<BuyableLibrary>();
     }
 
     public void manageNewDot() {
         bool hasNew = false;
-        foreach(var i in FindObjectOfType<BuyableLibrary>().getUnlockedBuyablesOfType(getType(), true)) {
-            if(FindObjectOfType<BuyableLibrary>().hasPlayerSeenBuyable(i.GetComponent<Buyable>().title)) {
+        foreach(var i in bl.getUnlockedBuyablesOfType(getType(), true)) {
+            if(!bl.hasPlayerSeenBuyable(i.GetComponent<Buyable>().title)) {
                 hasNew = true;
                 break;
             }
         }
+
         
         if(hasNew && !newDot.activeInHierarchy)
             StartCoroutine(FindObjectOfType<BuyableButtonSpawner>().setupDot(transform, newDot.transform, null));

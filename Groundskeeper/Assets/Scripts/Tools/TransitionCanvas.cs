@@ -36,6 +36,7 @@ public class TransitionCanvas : MonoBehaviour {
 
         //  waits for the board to finish saving if it is saving
         if(FindObjectOfType<GameBoard>() != null) {
+            yield return new WaitForEndOfFrame();
             var gb = FindObjectOfType<GameBoard>();
             gb.fastSave = true;
             while(gb.saving())

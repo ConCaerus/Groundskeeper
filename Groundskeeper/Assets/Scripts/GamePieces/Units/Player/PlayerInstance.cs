@@ -35,23 +35,23 @@ public class PlayerInstance : Attacker {
 
     [SerializeField] GameObject bloodParticles;
 
-
     [SerializeField] Light2D pLight;
     public Vector2 hCenter;
+    Collider2D c;
 
     private void OnCollisionStay2D(Collision2D col) {
-        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
+        ls.requestNewSortingLayer(c, sr);
     }
 
-    #region ---   MOVEMENT SHIT   ---
+
     private void Awake() {
         mortalInit();
-        //Application.targetFrameRate = 60;
         controls = new InputMaster();
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();
         movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
         pwi = GetComponentInChildren<PlayerWeaponInstance>();
+        c = GetComponent<Collider2D>();
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
         GetComponentInChildren<HealthBar>().setParent(gameObject);
@@ -63,15 +63,17 @@ public class PlayerInstance : Attacker {
     private void Start() {
         canMove = false;
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
-        if(FindObjectOfType<HouseInstance>() != null)
+        if(FindObjectOfType<HouseInstance>() != null) {
             transform.position = FindObjectOfType<HouseInstance>().playerSpawnPos.transform.position;
+        }
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 5f);
         StartCoroutine(passiveHealthRegen());
         if(pLight.isActiveAndEnabled)
             StartCoroutine(moveLightWithPlayer());
-        if(GameInfo.getNightCount() == 0)
-            pLight.gameObject.SetActive(true);
     }
+
+
+    #region ---   MOVEMENT SHIT   ---
     private void FixedUpdate() {
         //  check if game is over
         if(!GameInfo.playing) {
@@ -102,8 +104,6 @@ public class PlayerInstance : Attacker {
         //      player is out of bounds, so turn off their light
         if(hi == null || !pLight.isActiveAndEnabled)
             return;
-        else if(hi != null && pLight.isActiveAndEnabled)
-            pLight.gameObject.SetActive(false);
         if(Vector2.Distance(transform.position, hCenter) >= 75f) {
             DOTween.To(() => pLight.size, x => pLight.size = x, 0f, .25f);
         }

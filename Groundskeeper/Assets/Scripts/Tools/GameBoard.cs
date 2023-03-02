@@ -196,6 +196,8 @@ public class GameBoard : MonoBehaviour {
             //  just spawns the shit
             for(int i = 0; i < SaveData.getInt(GameInfo.envCount); i++) {
                 var d = SaveData.getString(GameInfo.envTag + i.ToString());
+                if(string.IsNullOrEmpty(d))
+                    continue;
                 var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
                 var o = em.spawnEnv(pl.getEnvironment(data.name), data.pos);

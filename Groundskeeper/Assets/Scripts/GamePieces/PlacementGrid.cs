@@ -96,9 +96,11 @@ public class PlacementGrid : MonoBehaviour {
         bool costIsZero = !bl.hasPlayerSeenBuyable(title) && currentObj.GetComponent<Buyable>().bType != Buyable.buyType.Structure;
         if(!cth.tryTransaction(costIsZero ? 0f : currentObj.GetComponent<Buyable>().cost, pc.soulsText, false))
             return;
-        if(costIsZero) {
+        if(!bl.hasPlayerSeenBuyable(title)) {
             bl.playerSawBuyable(title);
             FindObjectOfType<BuyableButtonSpawner>().updateBuyableButtons();
+            foreach(var i in FindObjectsOfType<PregameBuyableButton>())
+                i.manageNewDot();
         }
         var pos = map.CellToWorld(map.WorldToCell(GameInfo.mousePos())) + new Vector3(map.cellSize.x / 2f, map.cellSize.y / 2f);
         if(currentObj.GetComponent<DefenceInstance>() == null) {

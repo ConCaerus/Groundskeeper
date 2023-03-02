@@ -14,11 +14,11 @@ public class HouseInstance : Building {
     KdTree<Transform> cs = new KdTree<Transform>();
 
     private void Start() {
-        //FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
-        //FindObjectOfType<MonsterSpawner>().transform.position = getCenter();
-        //FindObjectOfType<PlayerInstance>().hCenter = getCenter();
-        //foreach(var i in FindObjectsOfType<Mortal>())
-            //i.hi = this;
+        FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
+        FindObjectOfType<MonsterSpawner>().transform.position = getCenter();
+        FindObjectOfType<PlayerInstance>().hCenter = getCenter();
+        foreach(var i in FindObjectsOfType<Mortal>())
+            i.hi = this;
     }
 
     public Vector2 getCenter() {

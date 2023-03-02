@@ -16,8 +16,8 @@ public abstract class Movement : MortalUnit {
     [SerializeField] ParticleSystem movementParticles = null;   //  should already be an object parented to the mover's feet
 
     //  storage
-    SetupSequenceManager ssm;
-    LayerSorter ls;
+    protected SetupSequenceManager ssm;
+    protected LayerSorter ls;
     protected SpriteRenderer sr;
     Collider2D srCol;
 
