@@ -17,6 +17,7 @@ public class GameBoard : MonoBehaviour {
 
     //  gets set to true in the EnvironmentManager script after all of the colliders have been set up
     [HideInInspector] public bool loaded = false;
+    [HideInInspector] public bool fastSave = false;
 
 
     private void Awake() {
@@ -84,7 +85,7 @@ public class GameBoard : MonoBehaviour {
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.helperTag + hIndex.ToString(), data);
             hIndex++;
-            if(hIndex % thingsPerFrame == 0)
+            if(!fastSave && hIndex % thingsPerFrame == 0)
                 yield return new WaitForEndOfFrame();
         }
         foreach(var i in GameObject.FindGameObjectsWithTag("Defence")) {
@@ -92,7 +93,7 @@ public class GameBoard : MonoBehaviour {
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.defenceTag + dIndex.ToString(), data);
             dIndex++;
-            if(dIndex % thingsPerFrame == 0)
+            if(!fastSave && dIndex % thingsPerFrame == 0)
                 yield return new WaitForEndOfFrame();
         }
         foreach(var i in GameObject.FindGameObjectsWithTag("Structure")) {
@@ -100,7 +101,7 @@ public class GameBoard : MonoBehaviour {
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.miscTag + pIndex.ToString(), data);
             pIndex++;
-            if(pIndex % thingsPerFrame == 0)
+            if(!fastSave && pIndex % thingsPerFrame == 0)
                 yield return new WaitForEndOfFrame();
         }
 
@@ -125,7 +126,7 @@ public class GameBoard : MonoBehaviour {
             var save = new ObjectSaveData(environment[i]);
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.envTag + i.ToString(), data);
-            if(i % thingsPerFrame == 0)
+            if(!fastSave && i % thingsPerFrame == 0)
                 yield return new WaitForEndOfFrame();
         }
         SaveData.setInt(GameInfo.envCount, environment.Count);

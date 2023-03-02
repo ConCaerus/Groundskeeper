@@ -15,7 +15,8 @@ public abstract class Interactable : MonoBehaviour {
         if(col.gameObject.tag == "Player") {
             touching = true;
             if(canInteract()) {
-                FindObjectOfType<InteractHelperCanvas>().show(targetOffsetPosition.transform.position);
+                if(targetOffsetPosition != null)
+                    FindObjectOfType<InteractHelperCanvas>().show(targetOffsetPosition.transform.position);
                 anim(true);
             }
         }
@@ -47,7 +48,7 @@ public abstract class Interactable : MonoBehaviour {
         if(canInteract() && touching) {
             interacting = true;
             interact();
-            if(toggleMovement) {
+            if(toggleMovement && targetOffsetPosition != null) {
                 if(FindObjectOfType<PlayerInstance>() != null)
                     FindObjectOfType<PlayerInstance>().setCanMove(false);
                 if(FindObjectOfType<PlayerHouseInstance>() != null)
@@ -61,7 +62,7 @@ public abstract class Interactable : MonoBehaviour {
         if(canInteract()) {
             interacting = false;
             deinteract();
-            if(toggleMovement) {
+            if(toggleMovement && targetOffsetPosition != null) {
                 if(FindObjectOfType<PlayerInstance>() != null)
                     FindObjectOfType<PlayerInstance>().setCanMove(true);
                 if(FindObjectOfType<PlayerHouseInstance>() != null)

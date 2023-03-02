@@ -12,6 +12,7 @@ public class WeaponSelectionInteractable : Interactable {
 
     private void Start() {
         pl = FindObjectOfType<PresetLibrary>();
+        weaponSprite.sprite = pl.getWeapon(GameInfo.getPlayerWeaponTitle(pl)).sprite;
     }
 
     public override void interact() {
@@ -23,8 +24,11 @@ public class WeaponSelectionInteractable : Interactable {
     }
 
     public override void anim(bool b) {
-        weaponSprite.sprite = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerWeaponTitle(FindObjectOfType<PresetLibrary>())).sprite;
         GetComponent<Animator>().SetBool("showing", b);
+        if(b)
+            FindObjectOfType<WeaponSelectionCanvas>().tryShow();
+        else
+            FindObjectOfType<WeaponSelectionCanvas>().tryClose();
     }
 
     public SpriteRenderer getWeaponSprite() {

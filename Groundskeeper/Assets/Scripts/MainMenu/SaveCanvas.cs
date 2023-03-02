@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class SaveCanvas : MonoBehaviour {
     [SerializeField] GameObject[] slots;
@@ -33,15 +34,20 @@ public class SaveCanvas : MonoBehaviour {
     }
     public void setNameAndLoadGame(string name) {
         nameText.text = name;
+        SaveData.deleteCurrentSave();
         SaveData.setSaveName(name);
-        GameInfo.resetSave();
+        GameInfo.resetSave(FindObjectOfType<BuyableLibrary>(), FindObjectOfType<PresetLibrary>());
         FindObjectOfType<TransitionCanvas>().loadScene("Game");
     }
 
     public void loadGame(int i) {
         SaveData.setCurrentSaveIndex(i);
         //  create a new save
-        if(SaveData.hasSaveDataForSlot(i)) {
+        if(!SaveData.hasSaveDataForSlot(i)) {
+            //  unselected the current button so that when the play hits enter, they don't press it again
+            GameObject myEventSystem = GameObject.Find("EventSystem");
+            myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
+            //  name shit
             nameText.transform.parent.gameObject.SetActive(true);
             FindObjectOfType<TextInputReader>().startReading(16, "No Name", updateNameText, setNameAndLoadGame);
         }

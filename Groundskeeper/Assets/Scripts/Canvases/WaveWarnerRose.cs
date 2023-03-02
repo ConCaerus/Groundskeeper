@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Rendering.Universal;
 
 public class WaveWarnerRose : MonoBehaviour {
     [SerializeField] GameObject[] dots; //  0 - north, 1 - east, 2 - south, 3 - west
@@ -45,7 +46,8 @@ public class WaveWarnerRose : MonoBehaviour {
         bool[] seen = { false, false, false, false };
 
         timer.setValue(1.0f);
-        timer.doValue(0.0f, timeTillNextWave, delegate { FindObjectOfType<MonsterSpawner>().startNewWave(); });
+        timer.doValue(0.0f, timeTillNextWave, true, delegate { FindObjectOfType<MonsterSpawner>().startNewWave(); });
+
         timer.resetColor();
         timer.setColor(timerColors[0]);
         timer.doColor(timerColors[1], timeTillNextWave);

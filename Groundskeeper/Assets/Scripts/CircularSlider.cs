@@ -8,6 +8,7 @@ using DG.Tweening;
 public class CircularSlider : MonoBehaviour {
     [SerializeField] GameObject fill;
     [SerializeField] TextMeshProUGUI text;
+    [SerializeField] Transform tweenObj;
     Color startColor;
 
     Coroutine funcWaiter = null;
@@ -28,18 +29,30 @@ public class CircularSlider : MonoBehaviour {
         value = Mathf.Clamp(f, 0.0f, 1.0f);
         fillImg.fillAmount = value;
     }
-    public void doValue(float f, float dur, func runOnDone = null) {
+    public void doValue(float f, float dur, bool instantMoveValue, func runOnDone = null) {
         if(funcWaiter != null)
             StopCoroutine(funcWaiter);
         funcWaiter = StartCoroutine(runWhenDone(runOnDone, dur, f, value));
-        /*
-        //  uses a temp variable to animate the slider
-        var i = DOTween.To(() => tempValue, x => tempValue = x, f, dur).OnUpdate(() => {
-            fill.GetComponent<Image>().fillAmount = tempValue;
-        });
-        */
+        tweenObj.DOKill();
+        tweenObj.localPosition = new Vector3(value, 0.0f);
+
+        //  sets value right away and uses a temp varialbe to animate the slider
+        if(instantMoveValue) {
+            value = Mathf.Clamp(f, 0.0f, 1.0f);
+            tweenObj.DOLocalMoveX(f, dur).OnUpdate(() => {
+                fill.GetComponent<Image>().fillAmount = tweenObj.localPosition.x;
+            });
+        }
+        else {
+            tweenObj.DOLocalMoveX(f, dur).OnUpdate(() => {
+                value = tweenObj.localPosition.x;
+                fill.GetComponent<Image>().fillAmount = value;
+            });
+        }
     }
     public void doValueKill() {
+        tweenObj.DOKill(); 
+        fill.GetComponent<Image>().fillAmount = value;
         if(funcWaiter != null)
             StopCoroutine(funcWaiter);
     }
@@ -60,6 +73,7 @@ public class CircularSlider : MonoBehaviour {
     }
 
     IEnumerator runWhenDone(func f, float dur, float endVal, float startVal) {
+        /*
         float elapsedTime = 0.0f;
         float incTime = 0.01f;
 
@@ -69,6 +83,7 @@ public class CircularSlider : MonoBehaviour {
             value = ((elapsedTime / dur) * (startVal == 0.0f ? 1.0f : (endVal - startVal))) + startVal;
             fillImg.fillAmount = value;
         }
+        */
 
         yield return new WaitForSeconds(dur);
         if(f != null)

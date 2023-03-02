@@ -12,7 +12,7 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
     float spreadAmt = 45f * Mathf.Deg2Rad;
 
 
-    public override void setup() {
+    public override void variantSetup() {
         gtc = FindObjectOfType<GameTutorialCanvas>();
         //  destroys all gunfire particles that aren't being used
         foreach(var i in gunFireParticles.transform.parent.GetComponentsInChildren<ParticleSystem>()) {
@@ -23,7 +23,6 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
 
     public override void performOnAttack() {
         if(gtc != null) {
-            gtc.hasAttacked();
             if(pi.weaponAttackMod > 1.01f)
                 gtc.hasChargedAttacked();
         }

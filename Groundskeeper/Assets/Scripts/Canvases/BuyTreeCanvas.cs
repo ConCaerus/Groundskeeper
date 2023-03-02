@@ -100,7 +100,7 @@ public class BuyTreeCanvas : MenuCanvas {
                         hbtn.setCost(c);
 
                         //  flair
-                        hbtn.getSlider().doValue((float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length, sliderFillSpeed);
+                        hbtn.getSlider().doValue((float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length, sliderFillSpeed, true);
                         hbtn.getSlider().setText(pl.getUnlockedWeapons().Count.ToString());
                         hbtn.animateClick();
                         updateSoulsText();
@@ -147,7 +147,7 @@ public class BuyTreeCanvas : MenuCanvas {
                         hbtn.setCost(getUpdatedCost(hbtn));
 
                         //  flair
-                        hbtn.getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t, false) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed);
+                        hbtn.getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t, false) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed, true);
                         hbtn.getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
                         hbtn.animateClick();
                         updateSoulsText();
@@ -260,7 +260,7 @@ public class BuyTreeCanvas : MenuCanvas {
                     float not = 0.0f;
                     for(int i = 0; i < node.tier; i++)
                         not += helperDamageInc[i] * subMaxTicks;
-                    node.getSlider().doValue((GameInfo.getHelperDamageBuff() - 1f - not) / (helperDamageInc[node.tier] * subMaxTicks), sliderFillSpeed);
+                    node.getSlider().doValue((GameInfo.getHelperDamageBuff() - 1f - not) / (helperDamageInc[node.tier] * subMaxTicks), sliderFillSpeed, true);
                 }
                 else if(s == subType.Health) {
                     //  set the tier of the node
@@ -276,7 +276,7 @@ public class BuyTreeCanvas : MenuCanvas {
                     float not = 0.0f;
                     for(int i = 0; i < node.tier; i++)
                         not += helperHealthInc[i] * subMaxTicks;
-                    node.getSlider().doValue((GameInfo.getHelperHealthBuff() - 1f - not) / (helperHealthInc[node.tier] * subMaxTicks), sliderFillSpeed);
+                    node.getSlider().doValue((GameInfo.getHelperHealthBuff() - 1f - not) / (helperHealthInc[node.tier] * subMaxTicks), sliderFillSpeed, true);
                 }
 
                 node.setCost(200);
@@ -297,7 +297,7 @@ public class BuyTreeCanvas : MenuCanvas {
                     float not = 0.0f;
                     for(int i = 0; i < node.tier; i++)
                         not += defenceDamageInc[i] * subMaxTicks;
-                    node.getSlider().doValue((GameInfo.getDefenceDamageBuff() - 1f - not) / (defenceDamageInc[node.tier] * subMaxTicks), sliderFillSpeed);
+                    node.getSlider().doValue((GameInfo.getDefenceDamageBuff() - 1f - not) / (defenceDamageInc[node.tier] * subMaxTicks), sliderFillSpeed, true);
                 }
 
                 node.setCost(75);
@@ -318,7 +318,7 @@ public class BuyTreeCanvas : MenuCanvas {
                     float not = 0.0f;
                     for(int i = 0; i < node.tier; i++)
                         not += structureHealthInc[i] * subMaxTicks;
-                    node.getSlider().doValue((GameInfo.getStructureHealthBuff() - 1f - not) / (structureHealthInc[node.tier] * subMaxTicks), sliderFillSpeed);
+                    node.getSlider().doValue((GameInfo.getStructureHealthBuff() - 1f - not) / (structureHealthInc[node.tier] * subMaxTicks), sliderFillSpeed, true);
                 }
 
                 node.setCost(200);
@@ -339,7 +339,7 @@ public class BuyTreeCanvas : MenuCanvas {
                     float not = 0.0f;
                     for(int i = 0; i < node.tier; i++)
                         not += weaponDamageInc[i] * subMaxTicks;
-                    node.getSlider().doValue((GameInfo.getPWeaponDamageBuff() - 1f - not) / (weaponDamageInc[node.tier] * subMaxTicks), sliderFillSpeed);
+                    node.getSlider().doValue((GameInfo.getPWeaponDamageBuff() - 1f - not) / (weaponDamageInc[node.tier] * subMaxTicks), sliderFillSpeed, true);
                 }
                 else if(s == subType.Speed) {
                     //  set the tier of the node
@@ -355,7 +355,7 @@ public class BuyTreeCanvas : MenuCanvas {
                     float not = 0.0f;
                     for(int i = 0; i < node.tier; i++)
                         not += weaponSpeedInc[i] * subMaxTicks;
-                    node.getSlider().doValue((GameInfo.getPWeaponSpeedBuff() - 1f - not) / (weaponSpeedInc[node.tier] * subMaxTicks), sliderFillSpeed);
+                    node.getSlider().doValue((GameInfo.getPWeaponSpeedBuff() - 1f - not) / (weaponSpeedInc[node.tier] * subMaxTicks), sliderFillSpeed, true);
                 }
 
                 node.setCost(150);
@@ -366,7 +366,7 @@ public class BuyTreeCanvas : MenuCanvas {
         if(node.getSlider().value > .97f) {
             node.setTier(node.tier + 1, subMaxTier);
             if(node.canIncrease(subMaxTier)) {
-                node.getSlider().doValue(0f, sliderFillSpeed);
+                node.getSlider().doValue(0f, sliderFillSpeed, true);
             }
             //  player has maxed out this node
             else
@@ -377,7 +377,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
     void setupSlider(CircularSlider c, bool sub, float startingVal, UnityEngine.Events.UnityAction clickEvent = null) {
         c.setValue(0.0f);
-        c.doValue(startingVal, sliderFillSpeed);
+        c.doValue(startingVal, sliderFillSpeed, true);
         var co = Random.ColorHSV() + new Color(.2f, .2f, .2f);
         co = new Color(co.r, co.g, co.b, 1.0f);
         c.setColor(co);
@@ -403,7 +403,7 @@ public class BuyTreeCanvas : MenuCanvas {
     protected override void show() {
         transform.DOKill();
         transform.DOScale(1.0f, .15f);
-        createTree();
+        //createTree();
     }
 
     protected override void close() {

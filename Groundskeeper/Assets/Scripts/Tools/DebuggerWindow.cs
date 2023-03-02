@@ -24,13 +24,16 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Save Board"))
-            FindObjectOfType<GameBoard>().saveBoard();
-        if(GUILayout.Button("Clear Board Save"))
-            GameInfo.clearBoard();
+        if(GUILayout.Button("Wipe")) {
+            SaveData.wipe();
+        }
+        if(GUILayout.Button("Clear All Saves")) {
+            for(int i = 0; i < 3; i++)
+                SaveData.deleteSave(i);
+        }
         if(GUILayout.Button("Clear Save")) {
             SaveData.deleteCurrentSave();
-            GameInfo.resetSave();
+            GameInfo.resetSave(FindObjectOfType<BuyableLibrary>(), FindObjectOfType<PresetLibrary>());
         }
         GUILayout.EndHorizontal();
 

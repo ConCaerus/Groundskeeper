@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class PresetLibrary : MonoBehaviour {
     [SerializeField] GameObject[] monsters;
-    [SerializeField] Weapon[] weapons;  //  first weapon in this array is the default player weapon
+    [SerializeField] Weapon[] weapons;
     [SerializeField] GameObject[] environment;
-
-    private void Awake() {
-        //  unlocks the first weapon for the player
-        if(getUnlockedWeapons().Count == 0) {
-            unlockWeapon(weapons[0].title);
-        }
-    }
 
     public GameObject getMonster(int index) {
         return monsters[index];
@@ -93,6 +86,12 @@ public class PresetLibrary : MonoBehaviour {
         foreach(var i in weapons) {
             if(GameInfo.isWeaponUnlocked(i.title))
                 temp.Add(i);
+        }
+
+        //  checks if no weapons are unlocked, if so, unlock the first one
+        if(temp.Count == 0) {
+            if(unlockWeapon(weapons[0].title))
+                return getUnlockedWeapons();
         }
         return temp;
     }

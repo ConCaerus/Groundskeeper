@@ -8,7 +8,7 @@ public class PlayerRifleInstance : PlayerWeaponVariant {
     GameTutorialCanvas gtc;
     [SerializeField] public ParticleSystem gunFireParticles;
 
-    public override void setup() {
+    public override void variantSetup() {
         gtc = FindObjectOfType<GameTutorialCanvas>();
         //  destroys all gunfire particles that aren't being used
         foreach(var i in gunFireParticles.transform.parent.GetComponentsInChildren<ParticleSystem>()) {

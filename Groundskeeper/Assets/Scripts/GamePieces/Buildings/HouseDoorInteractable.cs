@@ -21,7 +21,7 @@ public class HouseDoorInteractable : Interactable {
         //  nothing 
     }
     public override bool canInteract() {
-        return isTheEnd && !gb.saving();
+        return isTheEnd;
     }
     public override void anim(bool b) {
     }

@@ -16,6 +16,7 @@ public class LumberjackInstance : Helper {
     [HideInInspector] public Vector2 startingPos;
 
     [SerializeField] GameObject bloodParticles;
+    [SerializeField] Animator weaponAnim;
 
     private void Start() {
         mortalInit();

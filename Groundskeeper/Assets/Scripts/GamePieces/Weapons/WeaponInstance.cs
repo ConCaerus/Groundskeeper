@@ -60,11 +60,9 @@ public abstract class WeaponInstance : MonoBehaviour {
         pi = FindObjectOfType<PlayerInstance>();
         ls = FindObjectOfType<LayerSorter>();
         sr = GetComponent<SpriteRenderer>();
-        GetComponent<Collider2D>().enabled = false;
-        trail.emitting = false;
-        transform.localPosition = offsetFromUser;
         pt = FindObjectOfType<PlayerInstance>().transform;
-        a = user.GetComponent<Attacker>();
+        if(user != null)
+            a = user.GetComponent<Attacker>();
         c = GetComponent<Collider2D>();
         em = FindObjectOfType<EnvironmentManager>();
         cm = FindObjectOfType<CameraMovement>();
@@ -76,6 +74,10 @@ public abstract class WeaponInstance : MonoBehaviour {
             reference = FindObjectOfType<PresetLibrary>().getWeapon(Weapon.weaponTitle.Axe);
         else
             isPlayerWeapon = true;
+
+        GetComponent<Collider2D>().enabled = false;
+        trail.emitting = false;
+        transform.localPosition = offsetFromUser;
     }
 
     public void updateReference(Weapon.weaponTitle title) {
@@ -88,8 +90,8 @@ public abstract class WeaponInstance : MonoBehaviour {
     }
 
     private void Update() {
-        if(anim == null && used && isPlayerWeapon)
-            lookAtMouse();
+        if(anim == null && used)
+            movementLogic();
     }
 
     public abstract void movementLogic();   //  needed for lumberjack instances
@@ -180,14 +182,16 @@ public abstract class WeaponInstance : MonoBehaviour {
         shootMonster();
 
         //  push the player back from recoil
-        float lungeMod = 1.5f * mod;
-        var origin = (Vector2)pt.position;
-        var target = GameInfo.mousePos();
-        var px = target.x - origin.x;
-        var py = target.y - origin.y;
-        var theta = Mathf.Atan2(py, px);
-        var t = new Vector2(lungeMod * Mathf.Cos(theta), lungeMod * Mathf.Sin(theta));
-        pt.DOMove(origin - t, .15f);
+        if(isPlayerWeapon) {
+            float lungeMod = 1.5f * mod;
+            var origin = (Vector2)pt.position;
+            var target = GameInfo.mousePos();
+            var px = target.x - origin.x;
+            var py = target.y - origin.y;
+            var theta = Mathf.Atan2(py, px);
+            var t = new Vector2(lungeMod * Mathf.Cos(theta), lungeMod * Mathf.Sin(theta));
+            pt.DOMove(origin - t, .15f);
+        }
 
         yield return new WaitForSeconds(.25f);
 
@@ -222,19 +226,21 @@ public abstract class WeaponInstance : MonoBehaviour {
         a.startCooldown();
         if(attackingPos != Vector2.zero)
             user.GetComponent<Movement>().lookAtPos(attackingPos);
-        wAnimator.SetTrigger("swing");
+        wAnimator.SetTrigger(isPlayerWeapon ? "swing" : "instantSwing");
 
         float ableToHitMonsterTime = .25f;
 
         //  lunge the player towards the fucker
-        float lungeMod = 1.5f * mod;
-        var origin = (Vector2)pt.position;
-        var target = GameInfo.mousePos();
-        var px = target.x - origin.x;
-        var py = target.y - origin.y;
-        var theta = Mathf.Atan2(py, px);
-        var t = new Vector2(lungeMod * Mathf.Cos(theta), lungeMod * Mathf.Sin(theta));
-        pt.DOMove(t + origin, .15f);
+        if(isPlayerWeapon) {
+            float lungeMod = 1.5f * mod;
+            var origin = (Vector2)pt.position;
+            var target = GameInfo.mousePos();
+            var px = target.x - origin.x;
+            var py = target.y - origin.y;
+            var theta = Mathf.Atan2(py, px);
+            var t = new Vector2(lungeMod * Mathf.Cos(theta), lungeMod * Mathf.Sin(theta));
+            pt.DOMove(t + origin, .15f);
+        }
 
         c.enabled = true;
         yield return new WaitForSeconds(ableToHitMonsterTime);

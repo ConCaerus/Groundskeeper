@@ -10,11 +10,12 @@ public class PlacementGrid : MonoBehaviour {
     [SerializeField][HideInInspector] public bool placing = false;
 
     [HideInInspector] public GameObject currentObj = null;
-    [SerializeField] CircleCollider2D houseRadiusCollider;
 
     BuyableLibrary bl;
     PregameCanvas pc;
     SoulTransactionHandler cth;
+
+    SetupSequenceManager ssm;
 
     [System.Serializable]
     public struct thing {
@@ -34,6 +35,7 @@ public class PlacementGrid : MonoBehaviour {
         bl = FindObjectOfType<BuyableLibrary>();
         pc = FindObjectOfType<PregameCanvas>();
         cth = FindObjectOfType<SoulTransactionHandler>();
+        ssm = FindObjectOfType<SetupSequenceManager>();
     }
 
     private void Update() {
@@ -119,7 +121,7 @@ public class PlacementGrid : MonoBehaviour {
             currentObj = null;
             placing = false;
             map.color = Color.clear;
-            FindObjectOfType<SetupSequenceManager>().placedHouse();
+            ssm.placedHouse();
         }
     }
     public void remove() {

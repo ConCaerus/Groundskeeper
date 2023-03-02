@@ -162,6 +162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5885474162955841611}
+  - component: {fileID: 6571409838577942773}
   m_Layer: 0
   m_Name: WeaponRotObj
   m_TagString: Untagged
@@ -184,6 +185,25 @@ Transform:
   m_Father: {fileID: 4020595392461985259}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &6571409838577942773
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5885474162955841608}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 279a59d0f7c672b4cb281da8ff9ce2a9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5885474162982990705
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,12 +655,14 @@ MonoBehaviour:
   hurtSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
+  hi: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: f0c3013faa6a93d4db6bc88e5e7e02ac, type: 3}
   backSprite: {fileID: 21300000, guid: 70cdb683bbef23244bbe16ea5adcf8b6, type: 3}
   leftSprite: {fileID: 21300000, guid: add69aa6b34dbaa4cb74f2b93ab57041, type: 3}
   rightSprite: {fileID: 21300000, guid: 3a924ecb4d7490144ba80c140bb6c99e, type: 3}
   spriteObj: {fileID: 5885474163079569782}
   shadowObj: {fileID: 5885474163258482202}
+  canMove: 1
   movementParticles: {fileID: 6843156628040084235}
   speed: 0.8
   helpAmount: 1
@@ -651,6 +673,7 @@ MonoBehaviour:
   inReach: 0
   startingPos: {x: 0, y: 0}
   bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
+  weaponAnim: {fileID: 0}
 --- !u!50 &6186354697606408479
 Rigidbody2D:
   serializedVersion: 4
@@ -795,7 +818,12 @@ MonoBehaviour:
   user: {fileID: 5885474163630609340}
   target: 2
   trail: {fileID: 5885474163226917281}
+  pt: {fileID: 0}
+  wAnimator: {fileID: 6571409838577942773}
+  gunFireParticlesPos: {fileID: 0}
+  gunLight: {fileID: 0}
   canMove: 1
+  used: 1
 --- !u!58 &1866524963220972915
 CircleCollider2D:
   m_ObjectHideFlags: 0

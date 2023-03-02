@@ -12,7 +12,7 @@ public class PlayerAxeInstance : PlayerWeaponVariant {
     PlayerUICanvas puc;
     Collider2D col;
 
-    public override void setup() {
+    public override void variantSetup() {
         gtc = FindObjectOfType<GameTutorialCanvas>();
         puc = FindObjectOfType<PlayerUICanvas>();
     }

@@ -42,4 +42,8 @@ public abstract class Attacker : Movement {
     public bool getCanAttack() {
         return canAttack;
     }
+
+    public void setCanAttack(bool b) {
+        canAttack = b;
+    }
 }

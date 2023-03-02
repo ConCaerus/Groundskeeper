@@ -78,8 +78,10 @@ public static class GameInfo {
         monstersKilled = 0;
         souls = getSouls(true);
     }
-    public static void resetSave() {
+    public static void resetSave(BuyableLibrary bl, PresetLibrary pl) {
         souls = 100;
+        lockAllBuyables(bl);
+        lockAllWeaponsExceptStarting(pl);
         saveSouls();
         resetNights();
         resetLastSeenEnemy();
@@ -160,10 +162,14 @@ public static class GameInfo {
     }
 
     //  player's weapons
-    public static void lockAllWeapons(PresetLibrary pl) {
-        //  locks all weapons except the default one (indexed at zero in the PresetLibrary's weapons array)
-        for(int i = 1; i < pl.getWeapons().Length; i++) 
-            SaveData.setInt(unlockedWeaponTag(pl.getWeapon(i).title), 0);
+    //  scary function that does scary things
+    static void lockAllWeaponsExceptStarting(PresetLibrary pl) {
+        //  locks everything
+        foreach(var i in pl.getWeapons())
+            SaveData.setInt(unlockedWeaponTag(i.title), 0);
+
+        //  except default
+        unlockWeapon(Weapon.weaponTitle.Axe);
     }
     public static void unlockWeapon(Weapon.weaponTitle title) {
         SaveData.setInt(unlockedWeaponTag(title), 1);

@@ -77,6 +77,12 @@ public static class SaveData {
         PlayerPrefs.Save();
     }
 
+    //  clears all player prefs
+    public static void wipe() {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+    }
+
     static void deleteAllTagsInCurrentSave() {
         var th = getTagCollector();
 
@@ -171,7 +177,7 @@ public static class SaveData {
     }
 
     public static bool hasSaveDataForSlot(int i) {
-        return getSaveName(i) == string.Empty;
+        return getSaveName(i) != string.Empty;
     }
 }
 

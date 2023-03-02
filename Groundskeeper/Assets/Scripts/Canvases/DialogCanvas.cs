@@ -84,7 +84,7 @@ public class DialogCanvas : MonoBehaviour {
     IEnumerator hardSkip() {
         yield return new WaitForSeconds(.5f);
 
-        hardSkipSlider.doValue(1.0f, .5f, delegate {
+        hardSkipSlider.doValue(1.0f, .5f, true, delegate {
             hide();
             if(f != null)
                 f();

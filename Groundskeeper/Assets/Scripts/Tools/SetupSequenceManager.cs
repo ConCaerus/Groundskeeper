@@ -31,7 +31,6 @@ public class SetupSequenceManager : MonoBehaviour {
         GameInfo.lockAllBuyables(FindObjectOfType<BuyableLibrary>());
         pc.setup();
         pi.setCanMove(false);
-
         StartCoroutine(weaponSetup());
     }
 
@@ -59,7 +58,7 @@ public class SetupSequenceManager : MonoBehaviour {
         //  dialog from the devil that introduces the player to the world
         //  and tells them that they need to place their house
         dc.loadDialogText(new DialogText(
-            new List<string>() { "<color=\"green\">Welcome to the world", "Place your <color=\"yellow\">house" },
+            new List<string>() { "Welcome to the world", "Place your <color=\"yellow\">house" },
             new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.normal}), 
             null);
 

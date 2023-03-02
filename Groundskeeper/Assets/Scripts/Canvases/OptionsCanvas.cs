@@ -37,9 +37,6 @@ public class OptionsCanvas : MenuCanvas {
     }
 
     public void applyChanges() {
-        //  Apply settings
-        if(FindObjectOfType<AudioManager>() != null)
-            FindObjectOfType<AudioManager>().updateVolume();
         Screen.fullScreenMode = curScreenMode;
         QualitySettings.vSyncCount = vsyncToggle.isOn ? 1 : 0;
         Application.targetFrameRate = getDesiredTargetFrameRate();
@@ -47,6 +44,9 @@ public class OptionsCanvas : MenuCanvas {
         //  Save settings
         var o = new GameOptions(masterVolSlider.value, musicVolSlider.value, sfxVolSlider.value, curScreenMode, vsyncToggle.isOn, tFPS);
         GameInfo.saveGameOptions(o);
+        //  Apply settings
+        if(FindObjectOfType<AudioManager>() != null)
+            FindObjectOfType<AudioManager>().updateVolume();
     }
 
     public void resetOptions() {

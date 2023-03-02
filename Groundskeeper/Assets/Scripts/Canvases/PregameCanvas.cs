@@ -5,12 +5,14 @@ using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using DG.Tweening;
 
 public class PregameCanvas : MonoBehaviour {
     [SerializeField] GameObject upper, lower, lowerGenericButtonHolder;
     [SerializeField] public GameObject startButton;
     [SerializeField] public TextMeshProUGUI soulsText;  //  referenced in PlacementGrid place()
     [SerializeField] CircularSlider timer;
+    [SerializeField] GameObject helpText;
     float prepTime = 2*60f; // 2 mins
 
     [SerializeField] AudioClip gameMusic;
@@ -26,11 +28,14 @@ public class PregameCanvas : MonoBehaviour {
 
         if(GameInfo.getNightCount() > 0)
             startTimer();
+        else
+            helpText.SetActive(false);
     }
 
     public void startTimer() {
         timer.setValue(1.0f);
-        timer.doValue(0.0f, prepTime, delegate { ready(); });
+        timer.doValue(0.0f, prepTime, true, delegate { ready(); });
+
         timer.setColor(Color.white);
         timer.doColor(Color.red, prepTime);
     }
@@ -105,6 +110,7 @@ public class PregameCanvas : MonoBehaviour {
         FindObjectOfType<MonsterSpawner>().startNewWave();
         pg.end();
         pwi.canAttackG = true;
+        FindObjectOfType<PlayerInstance>().setCanAttack(true);
         if(gameMusic != null)
             FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
         hide();

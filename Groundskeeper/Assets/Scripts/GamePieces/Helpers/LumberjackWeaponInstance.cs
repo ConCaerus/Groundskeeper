@@ -10,7 +10,7 @@ public class LumberjackWeaponInstance : WeaponInstance {
     }
 
     public override void movementLogic() {
-        if(lji.hasTarget)
+        if(lji.hasTarget) 
             lookAtPos(lji.target);
         else
             lookAtPos((Vector2)user.gameObject.transform.position + Vector2.right);

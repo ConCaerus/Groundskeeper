@@ -25,6 +25,7 @@ public class TransitionCanvas : MonoBehaviour {
     public void loadScene(string name) {
         if(loader != null)
             return;
+
         Time.timeScale = 1f;
         TimeInfo.saveTime();
         loader = StartCoroutine(loadSceneWaiter(name));
@@ -32,6 +33,14 @@ public class TransitionCanvas : MonoBehaviour {
 
     IEnumerator loadSceneWaiter(string name) {
         background.SetActive(true);
+
+        //  waits for the board to finish saving if it is saving
+        if(FindObjectOfType<GameBoard>() != null) {
+            var gb = FindObjectOfType<GameBoard>();
+            gb.fastSave = true;
+            while(gb.saving())
+                yield return new WaitForEndOfFrame();
+        }
         yield return new WaitForSeconds(showTime);
         SceneManager.LoadScene(name);
     }

@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using System.Linq;
 using UnityEngine.InputSystem;
+using System;
 
 public class PlayerWeaponInstance : WeaponInstance {
     bool canAttack;
@@ -15,17 +16,18 @@ public class PlayerWeaponInstance : WeaponInstance {
     }
 
     [HideInInspector] public PlayerWeaponVariant variant;
-
     SetupSequenceManager ssm;
     InputMaster controls;
+    GameTutorialCanvas gtc;
 
-    private void Awake() {
+    void Awake() {
         ssm = FindObjectOfType<SetupSequenceManager>();
         canAttackG = GameInfo.getNightCount() > 0;
         controls = new InputMaster();
         controls.Enable();
         controls.Player.Attack.performed += attackPerformed;
         controls.Player.Attack.canceled += attackEnded;
+        gtc = FindObjectOfType<GameTutorialCanvas>();
 
 
         //  sets up the variant
@@ -51,13 +53,15 @@ public class PlayerWeaponInstance : WeaponInstance {
 
         wAnimator.enabled = true;
         variant.setEqualTo(this);
-        variant.setup();
+        variant.variantSetup();
         variant.updateReference(we);
 
         if(we.aType != Weapon.attackType.Shoot)
             gunLight.gameObject.SetActive(false);
-        else
+        else {
             gunLight.size = 0f;
+            gtc.hasChargedAttacked();
+        }
 
         if(GameInfo.getNightCount() == 0)
             GetComponent<SpriteRenderer>().sprite = null;
@@ -77,6 +81,8 @@ public class PlayerWeaponInstance : WeaponInstance {
         if(ssm.isActiveAndEnabled)
             return;
         if(canAttackG && transform.lossyScale.x > 0f && a.getCanAttack()) {
+            if(gtc != null)
+                gtc.hasAttacked();
             variant.performOnAttack();
         }
         else {
@@ -104,7 +110,7 @@ public class PlayerWeaponInstance : WeaponInstance {
 public abstract class PlayerWeaponVariant : WeaponInstance {
     [SerializeField] Weapon.weaponTitle title;
 
-    public abstract void setup();
+    public abstract void variantSetup();
 
     public abstract void performOnAttack();
 
