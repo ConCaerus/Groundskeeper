@@ -12,7 +12,7 @@ public class WeaponSelectionInteractable : Interactable {
 
     private void Start() {
         pl = FindObjectOfType<PresetLibrary>();
-        weaponSprite.sprite = pl.getWeapon(GameInfo.getPlayerWeaponTitle(pl)).sprite;
+        weaponSprite.sprite = pl.getWeapon(GameInfo.getPlayerStats().getWeaponTitle(pl)).sprite;
     }
 
     public override void interact() {

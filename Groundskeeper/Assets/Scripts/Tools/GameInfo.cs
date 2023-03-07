@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +27,7 @@ public static class GameInfo {
     static string lastSeenEnemyTag = "LastSeenEnemyTag";
 
     //  player / house shit
+    static string playerStatsTag = "PlayerStatsTag";
     static string pWeaponTag = "PlayerWeaponInex";
 
     //  Game Board shit
@@ -37,8 +39,6 @@ public static class GameInfo {
 
     public static string miscTag = "miscTag";
     public static string lastSavedMiscCount = "LastSavedMiscCount";
-
-    public static string houseTag = "HouseTag";
 
     public static string envTag = "EnvTag";
     public static string envCount = "envCount";
@@ -59,17 +59,14 @@ public static class GameInfo {
         return "TierForSubNode: " + s.ToString() + " of: " + m.ToString();
     }
     //  buffs
-    static string helperDamageBuffTag = "HelperDamageBuff";
-    static string helperHealthBuffTag = "HelperHealthBuff";
+    static string helperStatsTag = "HelperStatsTag";
+    static string defenceStatsTag = "DamageStatsTag";
+    static string structureStatsTag = "StructureStatsTag";
     static string defenceDamageBuffTag = "DefenceDamageBuff";
     static string structureHealthBuffTag = "StructureHealthBuff";
-    static string pWeaponDamageBuffTag = "PlayerWeaponDamageBuff";
-    static string pWeaponSpeedBuffTag = "PlayerWeaponSpeedBuff";
 
     //  house buffs
-    static string houseHealthTag = "HouseHealthTag";
-    static string houseMaxHealthTag = "HouseMaxHealthTag";
-    static string houseLightRadTag = "HouseLightRadiusTag";
+    static string houseStatsTag = "HouseStatsTag";
 
     //  unlocked shit
     public static string weaponCount = "numOfWeapons";
@@ -109,8 +106,7 @@ public static class GameInfo {
         clearBoard();
 
         //  resets the house
-        setHouseMaxHealth(1000);
-        setHouseLightRad(30f);
+        setHouseStats(new HouseStats(1000, 1000, 30f));
     }
     public static void clearBoard() {
         //      clears all of the shit before saving new shit
@@ -172,20 +168,6 @@ public static class GameInfo {
         return SaveData.getInt(lastSeenEnemyTag);
     }
 
-    //  player weapon index
-    public static Weapon.weaponTitle getPlayerWeaponTitle(PresetLibrary pl) {
-        if(pl.getEquivalentWeaponTitle(SaveData.getString(pWeaponTag)) != Weapon.weaponTitle.None) {
-            return pl.getEquivalentWeaponTitle(SaveData.getString(pWeaponTag));
-        }
-
-        //  the game hasn't set the player's weapon yet, so set it to the first unlocked weapon in the PresetLibrary
-        setPlayerWeapon(pl.getUnlockedWeapons()[0].title);
-        return pl.getUnlockedWeapons()[0].title;
-    }
-    public static void setPlayerWeapon(Weapon.weaponTitle title) {
-        SaveData.setString(pWeaponTag, title.ToString());
-    }
-
     //  player's weapons
     //  scary function that does scary things
     static void lockAllWeaponsExceptStarting(PresetLibrary pl) {
@@ -232,23 +214,15 @@ public static class GameInfo {
     }
     //          BUFFS
     //  helper buffs
-    public static void setHelperDamageBuff(float buff) {
-        SaveData.setFloat(helperDamageBuffTag, buff);
+    public static void setHelperStats(HelperStats stats) {
+        var data = JsonUtility.ToJson(stats);
+        SaveData.setString(helperStatsTag, data);
     }
-    public static void incHelperDamageBuff(float buff) {
-        setHelperDamageBuff(buff + getHelperDamageBuff());
-    }
-    public static float getHelperDamageBuff() {
-        return SaveData.getFloat(helperDamageBuffTag) == 0f ? 1f : SaveData.getFloat(helperDamageBuffTag);
-    }
-    public static void setHelperHealthBuff(float buff) {
-        SaveData.setFloat(helperHealthBuffTag, buff);
-    }
-    public static void incHelperHealthBuff(float buff) {
-        setHelperHealthBuff(buff + getHelperHealthBuff());
-    }
-    public static float getHelperHealthBuff() {
-        return SaveData.getFloat(helperHealthBuffTag) == 0f ? 1f : SaveData.getFloat(helperHealthBuffTag);
+    public static HelperStats getHelperStats() {
+        var data = SaveData.getString(helperStatsTag);
+        if(string.IsNullOrEmpty(data))
+            return new HelperStats(1.0f, 1.0f);
+        return JsonUtility.FromJson<HelperStats>(data);
     }
     //  defence buffs
     public static void setDefenceDamageBuff(float buff) {
@@ -271,43 +245,27 @@ public static class GameInfo {
         return SaveData.getFloat(structureHealthBuffTag) == 0f ? 1f : SaveData.getFloat(structureHealthBuffTag);
     }
     //  player buffs
-    public static void setPWeaponDamageBuff(float buff) {
-        SaveData.setFloat(pWeaponDamageBuffTag, buff);
+    public static void setPlayerStats(PlayerStats stats) {
+        var data = JsonUtility.ToJson(stats);
+        SaveData.setString(playerStatsTag, data);
     }
-    public static void incPWeaponDamageBuff(float buff) {
-        SaveData.setFloat(pWeaponDamageBuffTag, buff + getPWeaponDamageBuff());
-    }
-    public static float getPWeaponDamageBuff() {
-        return SaveData.getFloat(pWeaponDamageBuffTag) == 0f ? 1f : SaveData.getFloat(pWeaponDamageBuffTag);
-    }
-    public static void setPWeaponSpeedBuff(float buff) {
-        SaveData.setFloat(pWeaponSpeedBuffTag, buff);
-    }
-    public static void incPWeaponSpeedBuff(float buff) {
-        SaveData.setFloat(pWeaponSpeedBuffTag, buff + getPWeaponSpeedBuff());
-    }
-    public static float getPWeaponSpeedBuff() {
-        return SaveData.getFloat(pWeaponSpeedBuffTag) == 0f ? 1f : SaveData.getFloat(pWeaponSpeedBuffTag);
+    public static PlayerStats getPlayerStats() {
+        var data = SaveData.getString(playerStatsTag);
+        if(string.IsNullOrEmpty(data)) 
+            return new PlayerStats(Weapon.weaponTitle.Axe, 1.0f, 1.0f);
+        return JsonUtility.FromJson<PlayerStats>(data);
     }
 
     //  house buffs
-    public static void setHouseHealth(int h) {
-        SaveData.setInt(houseHealthTag, h);
+    public static void setHouseStats(HouseStats stats) {
+        var data = JsonUtility.ToJson(stats);
+        SaveData.setString(houseStatsTag, data);
     }
-    public static int getHouseHealth() {
-        return SaveData.getInt(houseHealthTag);
-    }
-    public static void setHouseMaxHealth(int h) {
-        SaveData.setInt(houseMaxHealthTag, h);
-    }
-    public static int getHouseMaxHealth() {
-        return SaveData.getInt(houseMaxHealthTag);
-    }
-    public static void setHouseLightRad(float r) {
-        SaveData.setFloat(houseLightRadTag, r);
-    }
-    public static float getHouseLightRad() {
-        return SaveData.getFloat(houseLightRadTag);
+    public static HouseStats getHouseStats() {
+        var data = SaveData.getString(houseStatsTag);
+        if(string.IsNullOrEmpty(data))
+            return new HouseStats(1000, 1000, 30f);
+        return JsonUtility.FromJson<HouseStats>(data);
     }
 
     public static void saveGameOptions(GameOptions go) {
@@ -332,41 +290,6 @@ public static class GameInfo {
         var o = new GameOptions(1.0f, 1.0f, 1.0f, p.screenMode, true, GameOptions.TargetFrameRate.Unlimited);
         saveGameOptions(o);
     }
-
-    /*
-    public static void setVolumeOptions(float master, float music, float sfx) {
-        SaveData.setFloat(masterVolumeTag, master);
-        SaveData.setFloat(musicVolumeTag, music);
-        SaveData.setFloat(sfxVolumeTag, sfx);
-    }
-    public static void resetVolumeOptions() {
-        SaveData.deleteKey(masterVolumeTag);
-        SaveData.deleteKey(musicVolumeTag);
-        SaveData.deleteKey(sfxVolumeTag);
-    }
-    //  Master, Music, SFX
-    public static float[] getVolumeOptions() {
-        return new float[3] {
-            SaveData.getFloat(masterVolumeTag, 1.0f),
-            SaveData.getFloat(musicVolumeTag, 1.0f),
-            SaveData.getFloat(sfxVolumeTag, 1.0f)
-        };
-    }
-
-    public static void setScreenMode(FullScreenMode mode) {
-        SaveData.setInt(screenModeTag, (int)mode);
-    }
-    public static FullScreenMode getScreenMode() {
-        return (FullScreenMode)SaveData.getInt(screenModeTag);
-    }
-    public static void setVsync(bool b) {
-        SaveData.setInt(vsyncTag, b ? 1 : 0);
-    }
-    //  gets set in awake function of transition canvas
-    public static bool getVsync() {
-        return SaveData.getInt(vsyncTag) == 1;
-    }
-    */
 }
 
 [System.Serializable]
@@ -387,5 +310,45 @@ public class GameOptions {
         this.screenMode = screenMode;
         this.vSync = vSync;
         this.targetFPS = targetFPS;
+    }
+}
+
+[System.Serializable]
+public class PlayerStats {
+    public string playerWeaponTitle;
+    public float playerWeaponDamageBuff;
+    public float playerWeaponSpeedBuff;
+
+    public PlayerStats(Weapon.weaponTitle w, float wDmgBuff, float wSpdBuff) {
+        playerWeaponTitle = w.ToString();
+        playerWeaponDamageBuff = wDmgBuff;
+        playerWeaponSpeedBuff = wSpdBuff;
+    }
+    public Weapon.weaponTitle getWeaponTitle(PresetLibrary pl) {
+        return pl.getEquivalentWeaponTitle(playerWeaponTitle);
+    }
+}
+
+[System.Serializable]
+public class HelperStats {
+    public float helperWeaponDamageBuff;
+    public float helperWeaponHealthBuff;
+
+    public HelperStats(float wDmgBuff, float hBuff) {
+        helperWeaponDamageBuff = wDmgBuff;
+        helperWeaponHealthBuff = hBuff;
+    }
+}
+
+[System.Serializable]
+public class HouseStats {
+    public int houseHealth;
+    public int houseMaxHealth;
+    public float houseLightRad;
+
+    public HouseStats(int h, int maxH, float lightRad) {
+        houseHealth = h;
+        houseMaxHealth = maxH;
+        houseLightRad = lightRad;
     }
 }

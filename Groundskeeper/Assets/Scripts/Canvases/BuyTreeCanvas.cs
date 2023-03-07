@@ -254,13 +254,18 @@ public class BuyTreeCanvas : MenuCanvas {
     }
 
     void subLogic(int index, subType s, int tier) {
+        //  gets all relevant stats that might change during this function
+        var hStats = GameInfo.getHouseStats();
+        var pStats = GameInfo.getPlayerStats();
+        var helpStats = GameInfo.getHelperStats();
+
         switch(index) {
             //  helpers
             case 0:
-                if(s == subType.Damage) 
-                    GameInfo.incHelperDamageBuff(helperDamageInc[tier]);
+                if(s == subType.Damage)
+                    helpStats.helperWeaponDamageBuff += helperDamageInc[tier];
                 else if(s == subType.Health)
-                    GameInfo.incHelperHealthBuff(helperHealthInc[tier]);
+                    helpStats.helperWeaponHealthBuff += helperHealthInc[tier];
                 break;
             //  defences
             case 1:
@@ -275,18 +280,23 @@ public class BuyTreeCanvas : MenuCanvas {
             //  weapons
             case 3:
                 if(s == subType.Damage)
-                    GameInfo.incPWeaponDamageBuff(weaponDamageInc[tier]);
+                    pStats.playerWeaponDamageBuff += weaponDamageInc[tier];
                 else if(s == subType.Speed)
-                    GameInfo.incPWeaponSpeedBuff(weaponSpeedInc[tier]);
+                    pStats.playerWeaponSpeedBuff += weaponSpeedInc[tier];
                 break;
             //  house
             case 4:
                 if(s == subType.Light)
-                    GameInfo.setHouseLightRad(GameInfo.getHouseLightRad() + 10f);
+                    hStats.houseLightRad += 10f;
                 else if(s == subType.Repair)
-                    GameInfo.setHouseHealth(GameInfo.getHouseHealth() + 25);
+                    hStats.houseHealth += 25;
                 break;
         }
+
+        //  saves all changes made to stats
+        GameInfo.setHouseStats(hStats);
+        GameInfo.setPlayerStats(pStats);
+        GameInfo.setHelperStats(helpStats);
     }
 
 

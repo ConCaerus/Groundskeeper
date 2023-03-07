@@ -31,7 +31,7 @@ public class PlayerWeaponInstance : WeaponInstance {
 
 
         //  sets up the variant
-        Weapon we = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerWeaponTitle(FindObjectOfType<PresetLibrary>()));
+        Weapon we = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerStats().getWeaponTitle(FindObjectOfType<PresetLibrary>()));
         switch(we.title) {
             case Weapon.weaponTitle.Axe:
                 variant = GetComponent<PlayerAxeInstance>();

@@ -56,12 +56,18 @@ public class DebuggerWindow : EditorWindow {
 
         GUILayout.Label("Weapon");
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("Give Axe"))
-            GameInfo.setPlayerWeapon(Weapon.weaponTitle.Axe);
-        if(GUILayout.Button("Give Shotgun"))
-            GameInfo.setPlayerWeapon(Weapon.weaponTitle.Shotgun);
-        if(GUILayout.Button("Give Rifle"))
-            GameInfo.setPlayerWeapon(Weapon.weaponTitle.Rifle);
+        if(GUILayout.Button("Give Axe")) {
+            var stats = GameInfo.getPlayerStats();
+            GameInfo.setPlayerStats(new PlayerStats(Weapon.weaponTitle.Axe, stats.playerWeaponDamageBuff, stats.playerWeaponSpeedBuff));
+        }
+        if(GUILayout.Button("Give Shotgun")) {
+            var stats = GameInfo.getPlayerStats();
+            GameInfo.setPlayerStats(new PlayerStats(Weapon.weaponTitle.Shotgun, stats.playerWeaponDamageBuff, stats.playerWeaponSpeedBuff));
+        }
+        if(GUILayout.Button("Give Rifle")) {
+            var stats = GameInfo.getPlayerStats();
+            GameInfo.setPlayerStats(new PlayerStats(Weapon.weaponTitle.Rifle, stats.playerWeaponDamageBuff, stats.playerWeaponSpeedBuff));
+        }
         GUILayout.EndHorizontal();
     }
 }

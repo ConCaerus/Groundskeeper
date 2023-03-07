@@ -14,6 +14,7 @@ public class GameBoard : MonoBehaviour {
 
     const float boardRadius = 100f;
     Coroutine saver = null;
+    const string houseTag = "HouseTag";
 
     //  gets set to true in the EnvironmentManager script after all of the colliders have been set up
     [HideInInspector] public bool loaded = false;
@@ -58,7 +59,7 @@ public class GameBoard : MonoBehaviour {
         }
 
         if(GameInfo.getNightCount() > 0) {
-            var hD = SaveData.getString(GameInfo.houseTag);
+            var hD = SaveData.getString(houseTag);
             var hData = JsonUtility.FromJson<ObjectSaveData>(hD);
 
             var hObj = bl.getHouseStructure();
@@ -108,7 +109,7 @@ public class GameBoard : MonoBehaviour {
         //  specific cases of unique buyables
         var hSave = new ObjectSaveData(FindObjectOfType<HouseInstance>().GetComponent<Buyable>());
         var hData = JsonUtility.ToJson(hSave);
-        SaveData.setString(GameInfo.houseTag, hData);
+        SaveData.setString(houseTag, hData);
 
         GameInfo.saveSouls();
         //      saves how many new shit got saved for the next time the shit gets cleared
@@ -132,7 +133,7 @@ public class GameBoard : MonoBehaviour {
         SaveData.setInt(GameInfo.envCount, environment.Count);
 
         //  other stuff
-        FindObjectOfType<HouseInstance>().saveHealth();
+        FindObjectOfType<HouseInstance>().saveCurrentHouseStats();
         saver = null;
     }
 

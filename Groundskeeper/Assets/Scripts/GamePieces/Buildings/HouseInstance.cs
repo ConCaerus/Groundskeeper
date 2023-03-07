@@ -24,15 +24,13 @@ public class HouseInstance : Building {
             i.hi = this;
 
         //  sets up the house based on the saves in GameInfo
+        var stats = GameInfo.getHouseStats();
         //  health
-        maxHealth = GameInfo.getHouseMaxHealth();
-        if(GameInfo.getNightCount() == 0) {
-            GameInfo.setHouseHealth(maxHealth);
-        }
-        health = (int)Mathf.Clamp(GameInfo.getHouseHealth() + healthRepairedEachNight, 0.0f, maxHealth);
+        maxHealth = stats.houseMaxHealth;
+        health = (int)Mathf.Clamp(stats.houseHealth + healthRepairedEachNight, 0.0f, maxHealth);
 
         //  Light
-        hLight.size = GameInfo.getHouseLightRad();
+        hLight.size = stats.houseLightRad;
     }
 
     public Vector2 getCenter() {
@@ -78,8 +76,8 @@ public class HouseInstance : Building {
         return target;
     }
 
-    public void saveHealth() {
-        GameInfo.setHouseHealth(health);
+    public void saveCurrentHouseStats() {
+        GameInfo.setHouseStats(new HouseStats(health, maxHealth, hLight.size));
     }
 
     public override GameObject getBloodParticles() {

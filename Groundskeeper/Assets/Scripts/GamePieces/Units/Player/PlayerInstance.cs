@@ -38,6 +38,7 @@ public class PlayerInstance : Attacker {
     [SerializeField] Light2D pLight;
     public Vector2 hCenter;
     Collider2D c;
+    PlayerStats pStats;
 
     private void OnCollisionStay2D(Collision2D col) {
         ls.requestNewSortingLayer(c, sr);
@@ -52,6 +53,7 @@ public class PlayerInstance : Attacker {
         movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
         pwi = GetComponentInChildren<PlayerWeaponInstance>();
         c = GetComponent<Collider2D>();
+        pStats = GameInfo.getPlayerStats();
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
         GetComponentInChildren<HealthBar>().setParent(gameObject);
@@ -174,10 +176,10 @@ public class PlayerInstance : Attacker {
 
     #region ---   ATTACKER SHIT   ---
     public override float getAttackCoolDown() {
-        return pwi.getWeapon().cooldown / GameInfo.getPWeaponSpeedBuff();
+        return pwi.getWeapon().cooldown / pStats.playerWeaponSpeedBuff;
     }
     public override int getDamage() {
-        return (int)(pwi.getWeapon().damage * GameInfo.getPWeaponDamageBuff() * weaponAttackMod);
+        return (int)(pwi.getWeapon().damage * pStats.playerWeaponDamageBuff * weaponAttackMod);
     }
     public override float getKnockback() {
         return pwi.getWeapon().knockback;

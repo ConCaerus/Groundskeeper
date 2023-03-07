@@ -9,11 +9,13 @@ public class WeaponSelectionCanvas : MenuCanvas {
 
     WeaponSelectionInteractable wsi;
     PresetLibrary pl;
+    PlayerStats pStats;
 
     private void Start() {
         wsi = FindObjectOfType<WeaponSelectionInteractable>();
         pl = FindObjectOfType<PresetLibrary>();
         holder.SetActive(false);
+        pStats = GameInfo.getPlayerStats();
     }
 
     protected override void show() {
@@ -28,7 +30,7 @@ public class WeaponSelectionCanvas : MenuCanvas {
     //  buttons
     public void changeWeapon(bool right) {
         //  changes the index of the player's current weapon
-        var t = GameInfo.getPlayerWeaponTitle(pl);
+        var t = pStats.getWeaponTitle(pl);
         int ind = pl.getUnlockedWeaponIndex(t);
         //Debug.Log(t + " " + ind + " " + right + " " + pl.getUnlockedWeapons().Count);
         ind += right ? 1 : -1;
@@ -37,7 +39,9 @@ public class WeaponSelectionCanvas : MenuCanvas {
         else if(ind >= pl.getUnlockedWeapons().Count)
             ind = 0;
 
-        GameInfo.setPlayerWeapon(pl.getUnlockedWeapons()[ind].title);
+        //  saves
+        pStats.playerWeaponTitle = pl.getUnlockedWeapons()[ind].title.ToString();
+        GameInfo.setPlayerStats(pStats);
 
         //  displays the new weapon sprite
         wsi.getWeaponSprite().sprite = pl.getUnlockedWeapons()[ind].sprite;

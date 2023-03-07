@@ -17,6 +17,7 @@ public class LumberjackInstance : Helper {
 
     [SerializeField] GameObject bloodParticles;
     [SerializeField] Animator weaponAnim;
+    HelperStats hStats;
 
     private void Start() {
         mortalInit();
@@ -30,9 +31,10 @@ public class LumberjackInstance : Helper {
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
         targetMoveInfo = transform.position;
+        hStats = GameInfo.getHelperStats();
 
         //  apply health buff
-        maxHealth = (int)(maxHealth * GameInfo.getHelperHealthBuff());
+        maxHealth = (int)(maxHealth * hStats.helperWeaponHealthBuff);
         health = maxHealth;
     }
 
@@ -102,7 +104,7 @@ public class LumberjackInstance : Helper {
     }
     public override int getDamage() {
         int baseDmg = GetComponentInChildren<LumberjackWeaponInstance>().reference.damage;
-        float boostyWoosty = GameInfo.getHelperDamageBuff();
+        float boostyWoosty = hStats.helperWeaponDamageBuff;
         return (int)(baseDmg * boostyWoosty);
     }
     public override float getKnockback() {
