@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour {
@@ -7,6 +8,8 @@ public class MonsterSpawner : MonoBehaviour {
 
     float rad = 75f;
     float maxSpread = 80f;
+
+    PresetLibrary pl;
 
     float maxTimeBtwWaves() {
         float reg = 60f * 2f;
@@ -24,6 +27,14 @@ public class MonsterSpawner : MonoBehaviour {
     waveInfo curWave;
     //  Wave that the monsters belong to <Types of monsters <leaders of those types of monsters <followers of the leaders of those types of monsters>>
     List<List<List<List<MonsterInstance>>>> monsterGroups = new List<List<List<List<MonsterInstance>>>>();
+
+    public enum frequency {
+        Frequent, Average, Scarce
+    }
+
+    public enum position {
+        First, Middle, Last
+    }
 
     public enum direction {
         All, North, East, South, West
@@ -49,12 +60,18 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     private void Awake() {
-        for(int i = 0; i < GameInfo.wavesPerNight(); i++)
+        pl = FindObjectOfType<PresetLibrary>();
+
+        //  adds the lists for each wave of the night
+        for(int i = 0; i < GameInfo.wavesPerNight() + 1; i++)
             monsterGroups.Add(new List<List<List<MonsterInstance>>>());
 
+        //  adds all of the seen enemies to the monster preset
         monsterPresets.Clear();
-        for(int i = 0; i < FindObjectOfType<PresetLibrary>().getMonsterCount(); i++)
-            monsterPresets.Add(FindObjectOfType<PresetLibrary>().getMonster(i));
+        for(int i = 0; i < GameInfo.getLastSeenEnemyIndex() + 1; i++)
+            monsterPresets.Add(pl.getMonster(i));
+        //  orders the list based on the positions the monsters spawn in
+        monsterPresets = monsterPresets.OrderBy(o => o.GetComponent<Monster>().posInWave).ToList();
     }
 
     public void endGame() {
@@ -74,10 +91,29 @@ public class MonsterSpawner : MonoBehaviour {
         var diff = calcWaveDiff();
         info.diff = diff;
 
-        while(diff > 0) {
-            info.enemyNumbers[0]++;
-            diff -= monsterPresets[0].GetComponent<Monster>().diff;
+        //  gets a list of all the possible monsters that could appear in the wave
+        List<GameObject> pool = new List<GameObject>();
+        int addNum = 0;
+        foreach(var i in monsterPresets) {
+            //  adds more instances of the monster type based on their set frequency in waves
+            switch(i.GetComponent<Monster>().freqInWave) {
+                case frequency.Frequent: addNum = 3; break;
+                case frequency.Average: addNum = 2; break;
+                case frequency.Scarce: addNum = 1; break;
+            }
+            for(int j = 0; j < addNum; j++) {
+                pool.Add(i);
+            }
         }
+
+        //  calcs the monsters that will appear in the wave
+        while(diff > 0) {
+            var m = getRandomMonsterWithinDiff(diff, pool);
+            info.enemyNumbers[monsterPresets.IndexOf(m)]++;
+            diff -= m.GetComponent<Monster>().diff;
+        }
+
+        //  orders the list of monsters in the wave based on how strong and how fast they are
 
         if(GameInfo.getNightCount() < nightsBetweenDirAddition * 1)
             info.dir = new direction[] { (direction)Random.Range(1, 5) };
@@ -87,13 +123,37 @@ public class MonsterSpawner : MonoBehaviour {
             info.dir = new direction[] { (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5) };
         else if(GameInfo.getNightCount() < nightsBetweenDirAddition * 4)
             info.dir = new direction[] { (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5), (direction)Random.Range(1, 5) };
+
         return info;
+    }
+    GameObject getRandomMonsterWithinDiff(int diff, List<GameObject> pool) {
+        GameObject temp = null;
+        temp = null;
+        while(temp == null || temp.GetComponent<Monster>().diff > diff) {
+            //  checks if there aren't any monsters left in the pool
+            if(pool.Count == 0)
+                return null;
+
+            //  if the prev chosen monster didn't work, remove it from the pool
+            if(temp != null)
+                pool.Remove(temp);
+
+            //  pick out a different monster
+            temp = pool[Random.Range(0, pool.Count)];
+        }
+
+        //  if the current monster passes, return it
+        return temp;
     }
 
     int calcWaveDiff() {
-        int d1 = GameInfo.wave + 1;
+        int d1 = GameInfo.wave; //  already is 1 on first wave
+
+        //  greatly increases the diff of the last wave of the night
+        if(d1 == GameInfo.wavesPerNight()) 
+            d1 *= 2;
         int d2 = GameInfo.getNightCount() + 1;
-        return (int)(d1 * 2.5f) + (int)(d2 * 5);
+        return (int)(d1 * 5) + (int)(d2 * 5);
     }
 
 
@@ -119,13 +179,34 @@ public class MonsterSpawner : MonoBehaviour {
             monsterGroups[GameInfo.wave].Add(new List<List<MonsterInstance>>());
         }
 
+        position prevPos = position.First;
+        float timeBtwPositions = 3f;
+
         float minDistToLight = 50f; //  CHANGE THIS TO CHANGE HOW FAR MONSTERS SPAWN FROM HOUSE
         int numOfLeaders = 5;
-        for(int l = 0; l < info.dir.Length; l++) {  //  loop through the number of directions the monsters can spawn from
-            for(int i = 0; i < info.enemyNumbers.Count; i++) {  //  loop through the types of monsters
-                KdTree<MonsterInstance> leaders = new KdTree<MonsterInstance>();
-                for(int j = 0; j <= info.enemyNumbers[i] / info.dir.Length; j++) {    //  spawn the number of that type of monster
+        //  loop through the number of directions the monsters can spawn from
+        for(int l = 0; l < info.dir.Length; l++) {
+
+            //  loops through the different types of monsters
+            for(int i = 0; i < info.enemyNumbers.Count; i++) {
+                KdTree<MonsterInstance> leaders = new KdTree<MonsterInstance>();    //  needs the empty list to hold the spot for the empty monsters
+                //  if the waves doesn't have any monsters of this type, move on
+                if(info.enemyNumbers[i] == 0)
+                    continue;
+
+                //  spawns the number of monsters
+                for(int j = 0; j <= (info.enemyNumbers[i] - 1) / info.dir.Length; j++) {
+                    //  checks if the monster has a different wave position than the previous
+                    //  if so, wait a bit
+                    if(monsterPresets[i].GetComponent<Monster>().posInWave != prevPos) {
+                        prevPos = monsterPresets[i].GetComponent<Monster>().posInWave;
+                        yield return new WaitForSeconds(timeBtwPositions);
+                    }
+
+                    //  spawns the monster
                     var temp = Instantiate(monsterPresets[i].gameObject, transform);
+
+                    //  finds a position for the monster to have
                     bool tooClose = true;
                     Vector3 pos = j < numOfLeaders ? getPosAlongCircle(transform.position, rad, info.dir[l], (maxSpread / (numOfLeaders - i)) - (maxSpread / 2f)) : getRandomPosAlongCircle(transform.position, rad, info.dir[l]);
                     int layer = LayerMask.GetMask("Light");
@@ -165,22 +246,28 @@ public class MonsterSpawner : MonoBehaviour {
 
                     
                     temp.transform.position = pos;
+
+                    //  desides if this monster should be a leader
                     if(j < numOfLeaders) {
                         temp.GetComponent<MonsterInstance>().setAsLeader();
 
                         //  create an new grouping under the monster type and set the first monster in that list as this leader
-                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType].Add(new List<MonsterInstance>());
-                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType][monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType].Count - 1].Add(temp.GetComponent<MonsterInstance>());
+                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title].Add(new List<MonsterInstance>());
+                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title][monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title].Count - 1].Add(temp.GetComponent<MonsterInstance>());
                         leaders.Add(temp.GetComponent<MonsterInstance>());
                     }
                     else {
-                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))].Add(temp.GetComponent<MonsterInstance>());
-                        temp.GetComponent<MonsterInstance>().closestLeader = monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().mType][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0];
+                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))].Add(temp.GetComponent<MonsterInstance>());
+                        temp.GetComponent<MonsterInstance>().closestLeader = monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0];
                     }
+
+                    //  misc shisc
                     temp.GetComponent<MonsterInstance>().direction = info.dir[l];
                     temp.GetComponent<MonsterInstance>().relevantWave = GameInfo.wave;
                     temp.GetComponent<MonsterInstance>().setup();
                     FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>());
+
+                    //  wait a random amount of time before spawning the next monster
                     yield return new WaitForSeconds(Random.Range(0f, .2f));
                 }
             }
@@ -188,11 +275,11 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     public void passOnLeadership(MonsterInstance l, int relevantWave) {
-        foreach(var i in monsterGroups[relevantWave][(int)l.GetComponent<MonsterInstance>().mType]) {
+        foreach(var i in monsterGroups[relevantWave][(int)l.GetComponent<MonsterInstance>().title]) {
             if(i[0] == l) { //  found the right list
                 //  checks if it's the last one in the group
                 if(i.Count <= 1) {
-                    monsterGroups[relevantWave][(int)l.GetComponent<MonsterInstance>().mType].Remove(i);
+                    monsterGroups[relevantWave][(int)l.GetComponent<MonsterInstance>().title].Remove(i);
                     return;
                 }
 
@@ -209,7 +296,7 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     public void removeMonsterFromGroup(MonsterInstance m, int relevantWave) {
-        foreach(var i in monsterGroups[relevantWave][(int)m.GetComponent<MonsterInstance>().mType]) {
+        foreach(var i in monsterGroups[relevantWave][(int)m.GetComponent<MonsterInstance>().title]) {
             if(i.Contains(m)) {
                 i.Remove(m);
                 return;
@@ -274,7 +361,7 @@ public class MonsterSpawner : MonoBehaviour {
     public List<MonsterInstance> getAllFollowingMonstersForLeader(MonsterInstance leader) {
         var temp = new List<MonsterInstance>();
 
-        foreach(var i in monsterGroups[leader.relevantWave][(int)leader.mType]) {
+        foreach(var i in monsterGroups[leader.relevantWave][(int)leader.title]) {
             if(i[0] == leader) {
                 for(int x = 1; x < i.Count; x++)
                     temp.Add(i[x]);

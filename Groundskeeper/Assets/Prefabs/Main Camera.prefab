@@ -132,9 +132,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.1
-  scrollSpeed: 10
-  maxZoom: 50
+  scrollSpeed: 5
+  maxZoom: 30
   minZoom: 15
+  canZoom: 1
+  offsetFromPlayer: {x: 0, y: 0, z: 0}
+  movingUp: 1
 --- !u!1001 &30003785591014877
 PrefabInstance:
   m_ObjectHideFlags: 0

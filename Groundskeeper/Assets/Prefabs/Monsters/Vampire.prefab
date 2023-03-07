@@ -264,14 +264,16 @@ MonoBehaviour:
   hurtSound: {fileID: 8300000, guid: ddb92acf59f1c0c43824049952f6d2fd, type: 3}
   bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
   healthBar: {fileID: 0}
+  hi: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: 72bb858af56f9be4ca23646258848727, type: 3}
   backSprite: {fileID: 21300000, guid: a8b6d263ffd4219428810867df432a5b, type: 3}
   leftSprite: {fileID: 21300000, guid: a195faee7e39bb2488f6f6f184ec7c32, type: 3}
   rightSprite: {fileID: 21300000, guid: 631856ed3f37e65449f027bfe7014bf8, type: 3}
   spriteObj: {fileID: 1477919413779669650}
   shadowObj: {fileID: 0}
+  canMove: 1
   movementParticles: {fileID: 6949006053084930653}
-  mType: 1
+  title: 1
   speed: 0.8
   attackDamage: 1
   damageToDefences: 1
@@ -280,6 +282,8 @@ MonoBehaviour:
   earliestNight: 1
   favoriteTarget: 1
   type: 1
+  freqInWave: 1
+  posInWave: 2
   flying: 0
   sprite: {fileID: 21300000, guid: 72bb858af56f9be4ca23646258848727, type: 3}
   attackCoolDown: 0.05

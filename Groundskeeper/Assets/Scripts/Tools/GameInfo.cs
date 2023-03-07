@@ -5,22 +5,30 @@ using UnityEngine;
 public static class GameInfo {
     public static bool playing { get; set; } = true;
     public static int wave { get; set; } = 0;
-    public static int wavesPerNight() { return 5; } //  changing this fucks up monster spawner
+    public static int wavesPerNight() {
+        int nc = getNightCount();
+        if(nc < 5)
+            return 5;
+        if(nc < 10)
+            return 7;
+        if(nc < 20)
+            return 10;
+        if(nc < 50)
+            return 15;
+        return 20;
+    }
 
     public static int monstersKilled { get; set; } = 0;
 
     //  nights / waves / enemies shit
-
     static string soulTag = "souls";
     static string nightTag = "nights";
     static string lastSeenEnemyTag = "LastSeenEnemyTag";
 
-    //  player shit
-
+    //  player / house shit
     static string pWeaponTag = "PlayerWeaponInex";
 
     //  Game Board shit
-
     public static string helperTag = "helperTag";
     public static string lastSavedHelperCount = "LastSavedHelperCount";
 
@@ -36,7 +44,20 @@ public static class GameInfo {
     public static string envCount = "envCount";
 
     //  Buy tree shit
-    public static string buyTreeTag = "BuyTreeTag";
+    public static string buyTreeSubNodeTickTag(Buyable.buyType m, BuyTreeCanvas.subType s) {
+        if(s == BuyTreeCanvas.subType.None || m == Buyable.buyType.None) {
+            Debug.LogError("Yall's done fucked up");
+            return null;
+        }
+        return "TickForSubNode: " + s.ToString() + " of: " + m.ToString();
+    }
+    public static string buyTreeSubNodeTierTag(Buyable.buyType m, BuyTreeCanvas.subType s) {
+        if(s == BuyTreeCanvas.subType.None || m == Buyable.buyType.None) {
+            Debug.LogError("Yall's done fucked up");
+            return null;
+        }
+        return "TierForSubNode: " + s.ToString() + " of: " + m.ToString();
+    }
     //  buffs
     static string helperDamageBuffTag = "HelperDamageBuff";
     static string helperHealthBuffTag = "HelperHealthBuff";
@@ -44,6 +65,11 @@ public static class GameInfo {
     static string structureHealthBuffTag = "StructureHealthBuff";
     static string pWeaponDamageBuffTag = "PlayerWeaponDamageBuff";
     static string pWeaponSpeedBuffTag = "PlayerWeaponSpeedBuff";
+
+    //  house buffs
+    static string houseHealthTag = "HouseHealthTag";
+    static string houseMaxHealthTag = "HouseMaxHealthTag";
+    static string houseLightRadTag = "HouseLightRadiusTag";
 
     //  unlocked shit
     public static string weaponCount = "numOfWeapons";
@@ -56,11 +82,6 @@ public static class GameInfo {
     }
 
     //  options / settings
-    static string masterVolumeTag = "MasterVolumeTag";
-    static string musicVolumeTag = "MusicVolumeTag";
-    static string sfxVolumeTag = "SFXVolumeTag";
-    static string screenModeTag = "ScreenMode";
-    static string vsyncTag = "VsyncTag";
     static string gameOptionsTag = "GameOptions";
 
 
@@ -86,6 +107,10 @@ public static class GameInfo {
         resetNights();
         resetLastSeenEnemy();
         clearBoard();
+
+        //  resets the house
+        setHouseMaxHealth(1000);
+        setHouseLightRad(30f);
     }
     public static void clearBoard() {
         //      clears all of the shit before saving new shit
@@ -192,6 +217,19 @@ public static class GameInfo {
         return SaveData.getInt(unlockedBuyableTag(title)) == 1;
     }
 
+    //  buy tree
+    public static void setBuyTreeSubNodeTick(Buyable.buyType m, BuyTreeCanvas.subType s, int tick) {
+        SaveData.setInt(buyTreeSubNodeTickTag(m, s), tick);
+    }
+    public static int getBuyTreeSubNodeTick(Buyable.buyType m, BuyTreeCanvas.subType s) {
+        return SaveData.getInt(buyTreeSubNodeTickTag(m, s));
+    }
+    public static void setBuyTreeSubNodeTier(Buyable.buyType m, BuyTreeCanvas.subType s, int tier) {
+        SaveData.setInt(buyTreeSubNodeTierTag(m, s), tier);
+    }
+    public static int getBuyTreeSubNodeTier(Buyable.buyType m, BuyTreeCanvas.subType s) {
+        return SaveData.getInt(buyTreeSubNodeTierTag(m, s));
+    }
     //          BUFFS
     //  helper buffs
     public static void setHelperDamageBuff(float buff) {
@@ -212,6 +250,7 @@ public static class GameInfo {
     public static float getHelperHealthBuff() {
         return SaveData.getFloat(helperHealthBuffTag) == 0f ? 1f : SaveData.getFloat(helperHealthBuffTag);
     }
+    //  defence buffs
     public static void setDefenceDamageBuff(float buff) {
         SaveData.setFloat(defenceDamageBuffTag, buff);
     }
@@ -221,6 +260,7 @@ public static class GameInfo {
     public static float getDefenceDamageBuff() {
         return SaveData.getFloat(defenceDamageBuffTag) == 0f ? 1f : SaveData.getFloat(defenceDamageBuffTag);
     }
+    //  structure buffs
     public static void setStructureHealthBuff(float buff) {
         SaveData.setFloat(structureHealthBuffTag, buff);
     }
@@ -230,6 +270,7 @@ public static class GameInfo {
     public static float getStructureHealthBuff() {
         return SaveData.getFloat(structureHealthBuffTag) == 0f ? 1f : SaveData.getFloat(structureHealthBuffTag);
     }
+    //  player buffs
     public static void setPWeaponDamageBuff(float buff) {
         SaveData.setFloat(pWeaponDamageBuffTag, buff);
     }
@@ -247,6 +288,26 @@ public static class GameInfo {
     }
     public static float getPWeaponSpeedBuff() {
         return SaveData.getFloat(pWeaponSpeedBuffTag) == 0f ? 1f : SaveData.getFloat(pWeaponSpeedBuffTag);
+    }
+
+    //  house buffs
+    public static void setHouseHealth(int h) {
+        SaveData.setInt(houseHealthTag, h);
+    }
+    public static int getHouseHealth() {
+        return SaveData.getInt(houseHealthTag);
+    }
+    public static void setHouseMaxHealth(int h) {
+        SaveData.setInt(houseMaxHealthTag, h);
+    }
+    public static int getHouseMaxHealth() {
+        return SaveData.getInt(houseMaxHealthTag);
+    }
+    public static void setHouseLightRad(float r) {
+        SaveData.setFloat(houseLightRadTag, r);
+    }
+    public static float getHouseLightRad() {
+        return SaveData.getFloat(houseLightRadTag);
     }
 
     public static void saveGameOptions(GameOptions go) {

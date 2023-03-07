@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using FunkyCode;
 
 public class HouseInstance : Building {
     [HideInInspector]
@@ -12,6 +13,8 @@ public class HouseInstance : Building {
     [SerializeField] public GameObject playerSpawnPos;
     [SerializeField] List<GameObject> corners = new List<GameObject>();
     KdTree<Transform> cs = new KdTree<Transform>();
+    [SerializeField] Light2D hLight;
+    int healthRepairedEachNight = 20;
 
     private void Start() {
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
@@ -19,6 +22,17 @@ public class HouseInstance : Building {
         FindObjectOfType<PlayerInstance>().hCenter = getCenter();
         foreach(var i in FindObjectsOfType<Mortal>())
             i.hi = this;
+
+        //  sets up the house based on the saves in GameInfo
+        //  health
+        maxHealth = GameInfo.getHouseMaxHealth();
+        if(GameInfo.getNightCount() == 0) {
+            GameInfo.setHouseHealth(maxHealth);
+        }
+        health = (int)Mathf.Clamp(GameInfo.getHouseHealth() + healthRepairedEachNight, 0.0f, maxHealth);
+
+        //  Light
+        hLight.size = GameInfo.getHouseLightRad();
     }
 
     public Vector2 getCenter() {
@@ -62,6 +76,10 @@ public class HouseInstance : Building {
 
         //  nothing in the way
         return target;
+    }
+
+    public void saveHealth() {
+        GameInfo.setHouseHealth(health);
     }
 
     public override GameObject getBloodParticles() {

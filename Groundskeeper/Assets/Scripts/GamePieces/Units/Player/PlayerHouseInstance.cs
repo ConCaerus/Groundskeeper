@@ -18,6 +18,8 @@ public class PlayerHouseInstance : Movement {
         controls = new InputMaster();
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();
+        mortalInit();
+        movementInit(null, FindObjectOfType<LayerSorter>());
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
     }
@@ -29,6 +31,8 @@ public class PlayerHouseInstance : Movement {
         //  if player is not moving, decrement the movementInfo
         //  if player is moving, increase the movementInfo to target value
         moveInfo = controls.Player.Move.inProgress ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, Vector2.zero, slowSpeed * 100.0f * Time.fixedDeltaTime);
+        if(!controls.Player.Move.inProgress)
+            lookAtPos(GameInfo.mousePos());
     }
     void movementChange(Vector2 dir) {
         targetMoveInfo = dir;

@@ -7,11 +7,11 @@ public abstract class Monster : Attacker {
         All, People, Buildings, House
     }
 
-    public enum monsterType {
+    public enum monsterTitle {
         Zombie, Vampire, Wisp, Wraith
     }
 
-    public monsterType mType;
+    public monsterTitle title;
     public float speed;
     public int attackDamage;
     public int damageToDefences;
@@ -20,6 +20,8 @@ public abstract class Monster : Attacker {
     public int earliestNight = 0;
     public targetType favoriteTarget;
     public GameInfo.MonsterType type;
+    public MonsterSpawner.frequency freqInWave;
+    public MonsterSpawner.position posInWave;
     public bool flying = false;
     public Sprite sprite;
 }

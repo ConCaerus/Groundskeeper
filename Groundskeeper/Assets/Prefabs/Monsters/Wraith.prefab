@@ -236,22 +236,26 @@ MonoBehaviour:
   hurtSound: {fileID: 8300000, guid: 9baf9dc19f77df447b41ed0eeb03a23f, type: 3}
   bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
   healthBar: {fileID: 0}
+  hi: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: 354b803d31e3f054fa60ac9a0f295a11, type: 3}
   backSprite: {fileID: 21300000, guid: fa1405b750f43a9469b404772f6386e0, type: 3}
   leftSprite: {fileID: 21300000, guid: a5a2943b5ba0ec44c9a66ef72d4381c3, type: 3}
   rightSprite: {fileID: 21300000, guid: 4ec4dcc97ade7944ebdc81362f43794d, type: 3}
   spriteObj: {fileID: 1477919413779669650}
   shadowObj: {fileID: 1477919413712165063}
+  canMove: 1
   movementParticles: {fileID: 0}
-  mType: 3
-  speed: 0.7
-  attackDamage: 10
+  title: 3
+  speed: 0.6
+  attackDamage: 7
   damageToDefences: 1
   diff: 5
   soulsGiven: 7
   earliestNight: 5
   favoriteTarget: 1
   type: 2
+  freqInWave: 2
+  posInWave: 1
   flying: 1
   sprite: {fileID: 21300000, guid: 354b803d31e3f054fa60ac9a0f295a11, type: 3}
   attackCoolDown: 0.5

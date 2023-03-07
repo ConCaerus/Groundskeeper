@@ -130,6 +130,9 @@ public class GameBoard : MonoBehaviour {
                 yield return new WaitForEndOfFrame();
         }
         SaveData.setInt(GameInfo.envCount, environment.Count);
+
+        //  other stuff
+        FindObjectOfType<HouseInstance>().saveHealth();
         saver = null;
     }
 

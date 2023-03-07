@@ -21,7 +21,7 @@ public class Buyable : MonoBehaviour {
 
     [System.Serializable]
     public enum buyType {
-        None, Helper, Defence, Structure
+        None, Helper, Defence, Structure, Weapon, House
     }
     [System.Serializable]
     public enum buyableTitle {  //  not in order cause that would be a bitch to keep track of

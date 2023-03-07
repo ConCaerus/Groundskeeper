@@ -10,8 +10,12 @@ public class BuyTreeNode : MonoBehaviour {
     [SerializeField] public InfoableImage info;
 
     public int cost { get; private set; }
-    public int tier { get; private set; } = 0;
+    public int tier { get; private set; } = 0;  //  gets one of these every time it reachs a max tick
+    public int tick { get; private set; } = 0;
+    [HideInInspector] public int maxTier;
+    [HideInInspector] public int maxTicks;
     public Buyable.buyType mainType = Buyable.buyType.None;
+    public BuyTreeCanvas.subType subType = BuyTreeCanvas.subType.None;
 
     public void setTitle(string name) {
         title.text = name;
@@ -33,13 +37,13 @@ public class BuyTreeNode : MonoBehaviour {
     public void showAnimation(bool sub) {
         transform.GetChild(0).DOComplete();
         transform.GetChild(0).transform.localScale = Vector3.zero;
-        float endScale = 1.0f;
+        float endScale = 1f;
         if(sub)
-            endScale = .5f + .15f * tier;
+            endScale = .5f;
         transform.GetChild(0).transform.DOScale(endScale, .1f);
     }
 
-    public void setTier(int t, int maxTier) {
+    public void setTier(int t) {
         if(t < maxTier && t > -1) {
             tier = t;
             if(tier == 0)
@@ -68,8 +72,31 @@ public class BuyTreeNode : MonoBehaviour {
         else if(t >= maxTier)
             tier = 100;  //  just to make sure that the code knows that tier is not usable
     }
+    public void setTick(int t) {
+        tick = t;
 
-    public bool canIncrease(int maxTier) {
-        return !(tier >= maxTier && slider.value >= 1f);
+        //  checks if the slider is complete
+        if(tier != -1 && tier == maxTier && tick == maxTicks) {
+            slider.doColor(Color.white, .1f);
+        }
+
+        //  incs the tier if tick is full
+        if(tick >= maxTicks) {
+            setTier(tier + 1);
+            if(tier < maxTier)
+                tick = 0;
+        }
+
+        //  updates slider
+        slider.DOKill();
+        slider.doValue((float)tick / maxTicks, .1f, false);
+        slider.setText(tick.ToString());
+    }
+    public void incTick() {
+        setTick(tick + 1);
+    }
+
+    public bool canIncrease() {
+        return !(tier >= maxTier && tick >= maxTicks);
     }
 }

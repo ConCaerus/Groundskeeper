@@ -91,14 +91,18 @@ public class PlayerInstance : Attacker {
         if(gtc != null) {
             if(isSprinting())
                 gtc.hasSprinted();
-            if(Mathf.Abs(moveInfo.x) > 0f || Mathf.Abs(moveInfo.y) > 0f)
+            if(moveInfo != Vector2.zero)
                 gtc.hasMoved();
         }
 
         //  if player is not moving, decrement the movementInfo
         //  if player is moving, increase the movementInfo to target value
         moveInfo = controls.Player.Move.inProgress ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, Vector2.zero, slowSpeed * 100.0f * Time.fixedDeltaTime);
-
+        
+        //  if the player's not moving, look at the mouse
+        if(!controls.Player.Move.inProgress) {
+            lookAtPos(GameInfo.mousePos());
+        }
 
         //  adjusts the player's light based on how far they are to the edge
         //      player is out of bounds, so turn off their light

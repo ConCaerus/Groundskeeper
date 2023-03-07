@@ -10,9 +10,9 @@ public class PresetLibrary : MonoBehaviour {
     public GameObject getMonster(int index) {
         return monsters[index];
     }
-    public GameObject getMonster(Monster.monsterType type) {
+    public GameObject getMonster(Monster.monsterTitle type) {
         foreach(var i in monsters) {
-            if(i.GetComponent<MonsterInstance>().mType == type)
+            if(i.GetComponent<MonsterInstance>().title == type)
                 return i;
         }
         return null;

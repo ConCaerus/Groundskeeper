@@ -157,7 +157,7 @@ public class MonsterInstance : Monster {
         return attackKnockBack;
     }
     public override void specialEffectOnAttack(GameObject defender) {
-        if(mType == monsterType.Vampire) {
+        if(title == monsterTitle.Vampire) {
             health = Mathf.Clamp(health + attackDamage, 0, maxHealth);
         }
         if(defender.GetComponent<PlayerInstance>() != null)
@@ -186,7 +186,7 @@ public class MonsterInstance : Monster {
             ms.removeMonsterFromGroup(this, relevantWave);
         //  start a new wave if this was the last monster of the wave
         if(!ms.stillHasMonstersFromWave(relevantWave)) {
-            if(relevantWave == GameInfo.wavesPerNight() - 1)    //  this is the last monster of the night
+            if(relevantWave == GameInfo.wavesPerNight())    //  this is the last monster of the night
                 ms.endGame();
             else if(relevantWave == GameInfo.wave)              //  this monster is the last monster of the current wave
                 ms.startNewWave();  //  this updates the rose also
