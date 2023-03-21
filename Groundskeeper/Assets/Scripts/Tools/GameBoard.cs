@@ -50,8 +50,8 @@ public class GameBoard : MonoBehaviour {
             var obj = bl.getDefence(data.name, false);
             dhs.spawnDefence(obj, data.pos);
         }
-        for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedMiscCount); i++) {
-            var d = SaveData.getString(GameInfo.miscTag + i.ToString());
+        for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedStructerCount); i++) {
+            var d = SaveData.getString(GameInfo.structureTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
             var obj = bl.getStructure(data.name, false);
@@ -100,7 +100,7 @@ public class GameBoard : MonoBehaviour {
         foreach(var i in GameObject.FindGameObjectsWithTag("Structure")) {
             var save = new ObjectSaveData(i.GetComponent<Buyable>());
             var data = JsonUtility.ToJson(save);
-            SaveData.setString(GameInfo.miscTag + pIndex.ToString(), data);
+            SaveData.setString(GameInfo.structureTag + pIndex.ToString(), data);
             pIndex++;
             if(!fastSave && pIndex % thingsPerFrame == 0)
                 yield return new WaitForEndOfFrame();
@@ -115,7 +115,7 @@ public class GameBoard : MonoBehaviour {
         //      saves how many new shit got saved for the next time the shit gets cleared
         SaveData.setInt(GameInfo.lastSavedHelperCount, hIndex);
         SaveData.setInt(GameInfo.lastSavedDefenceCount, dIndex);
-        SaveData.setInt(GameInfo.lastSavedMiscCount, pIndex);
+        SaveData.setInt(GameInfo.lastSavedStructerCount, pIndex);
 
         //     SAVES THE ENVIRONMENT
         //  clears the save data

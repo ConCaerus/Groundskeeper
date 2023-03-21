@@ -37,8 +37,8 @@ public static class GameInfo {
     public static string defenceTag = "defenceTag";
     public static string lastSavedDefenceCount = "LastSavedDefenceCount";
 
-    public static string miscTag = "miscTag";
-    public static string lastSavedMiscCount = "LastSavedMiscCount";
+    public static string structureTag = "miscTag";
+    public static string lastSavedStructerCount = "LastSavedMiscCount";
 
     public static string envTag = "EnvTag";
     public static string envCount = "envCount";
@@ -62,8 +62,6 @@ public static class GameInfo {
     static string helperStatsTag = "HelperStatsTag";
     static string defenceStatsTag = "DamageStatsTag";
     static string structureStatsTag = "StructureStatsTag";
-    static string defenceDamageBuffTag = "DefenceDamageBuff";
-    static string structureHealthBuffTag = "StructureHealthBuff";
 
     //  house buffs
     static string houseStatsTag = "HouseStatsTag";
@@ -114,14 +112,14 @@ public static class GameInfo {
             SaveData.deleteKey(helperTag + i.ToString());
         for(int i = 0; i < SaveData.getInt(lastSavedDefenceCount) + 1; i++)
             SaveData.deleteKey(defenceTag + i.ToString());
-        for(int i = 0; i < SaveData.getInt(lastSavedMiscCount) + 1; i++)
-            SaveData.deleteKey(miscTag + i.ToString());
+        for(int i = 0; i < SaveData.getInt(lastSavedStructerCount) + 1; i++)
+            SaveData.deleteKey(structureTag + i.ToString());
         for(int i = 0; i < SaveData.getInt(envCount) + 1; i++)
             SaveData.deleteKey(envTag + i.ToString());
 
         SaveData.setInt(lastSavedHelperCount, 0);
         SaveData.setInt(lastSavedDefenceCount, 0);
-        SaveData.setInt(lastSavedMiscCount, 0);
+        SaveData.setInt(lastSavedStructerCount, 0);
         SaveData.setInt(envCount, 0);
     }
 
@@ -225,24 +223,26 @@ public static class GameInfo {
         return JsonUtility.FromJson<HelperStats>(data);
     }
     //  defence buffs
-    public static void setDefenceDamageBuff(float buff) {
-        SaveData.setFloat(defenceDamageBuffTag, buff);
+    public static void setDefenceStats(DefenceStats stats) {
+        var data = JsonUtility.ToJson(stats);
+        SaveData.setString(defenceStatsTag, data);
     }
-    public static void incDefenceDamageBuff(float buff) {
-        SaveData.setFloat(defenceDamageBuffTag, buff + getDefenceDamageBuff());
-    }
-    public static float getDefenceDamageBuff() {
-        return SaveData.getFloat(defenceDamageBuffTag) == 0f ? 1f : SaveData.getFloat(defenceDamageBuffTag);
+    public static DefenceStats getDefenceStats() {
+        var data = SaveData.getString(defenceStatsTag);
+        if(string.IsNullOrEmpty(data))
+            return new DefenceStats(1.0f);
+        return JsonUtility.FromJson<DefenceStats>(data);
     }
     //  structure buffs
-    public static void setStructureHealthBuff(float buff) {
-        SaveData.setFloat(structureHealthBuffTag, buff);
+    public static void setStructureStats(StructureStats stats) {
+        var data = JsonUtility.ToJson(stats);
+        SaveData.setString(structureStatsTag, data);
     }
-    public static void incStructureHealthBuff(float buff) {
-        SaveData.setFloat(structureHealthBuffTag, buff + getStructureHealthBuff());
-    }
-    public static float getStructureHealthBuff() {
-        return SaveData.getFloat(structureHealthBuffTag) == 0f ? 1f : SaveData.getFloat(structureHealthBuffTag);
+    public static StructureStats getStructureStats() {
+        var data = SaveData.getString(structureStatsTag);
+        if(string.IsNullOrEmpty(data))
+            return new StructureStats(1.0f);
+        return JsonUtility.FromJson<StructureStats>(data);
     }
     //  player buffs
     public static void setPlayerStats(PlayerStats stats) {
@@ -251,7 +251,7 @@ public static class GameInfo {
     }
     public static PlayerStats getPlayerStats() {
         var data = SaveData.getString(playerStatsTag);
-        if(string.IsNullOrEmpty(data)) 
+        if(string.IsNullOrEmpty(data))
             return new PlayerStats(Weapon.weaponTitle.Axe, 1.0f, 1.0f);
         return JsonUtility.FromJson<PlayerStats>(data);
     }
@@ -337,6 +337,24 @@ public class HelperStats {
     public HelperStats(float wDmgBuff, float hBuff) {
         helperWeaponDamageBuff = wDmgBuff;
         helperWeaponHealthBuff = hBuff;
+    }
+}
+
+[System.Serializable]
+public class DefenceStats {
+    public float defenceDamageBuff;
+
+    public DefenceStats(float dmgBuff) {
+        defenceDamageBuff = dmgBuff;
+    }
+}
+
+[System.Serializable]
+public class StructureStats {
+    public float structureHealthBuff;
+
+    public StructureStats(float hlthBuff) {
+        structureHealthBuff = hlthBuff;
     }
 }
 

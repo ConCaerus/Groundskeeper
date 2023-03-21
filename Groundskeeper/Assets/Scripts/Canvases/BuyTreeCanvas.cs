@@ -258,6 +258,8 @@ public class BuyTreeCanvas : MenuCanvas {
         var hStats = GameInfo.getHouseStats();
         var pStats = GameInfo.getPlayerStats();
         var helpStats = GameInfo.getHelperStats();
+        var dStats = GameInfo.getDefenceStats();
+        var sStats = GameInfo.getStructureStats();
 
         switch(index) {
             //  helpers
@@ -270,12 +272,12 @@ public class BuyTreeCanvas : MenuCanvas {
             //  defences
             case 1:
                 if(s == subType.Damage)
-                    GameInfo.incDefenceDamageBuff(defenceDamageInc[tier]);
+                    dStats.defenceDamageBuff += defenceDamageInc[tier];
                 break;
             //  structures
             case 2:
                 if(s == subType.Health)
-                    GameInfo.incStructureHealthBuff(structureHealthInc[tier]);
+                    sStats.structureHealthBuff += structureHealthInc[tier];
                 break;
             //  weapons
             case 3:
@@ -297,6 +299,8 @@ public class BuyTreeCanvas : MenuCanvas {
         GameInfo.setHouseStats(hStats);
         GameInfo.setPlayerStats(pStats);
         GameInfo.setHelperStats(helpStats);
+        GameInfo.setDefenceStats(dStats);
+        GameInfo.setStructureStats(sStats);
     }
 
 

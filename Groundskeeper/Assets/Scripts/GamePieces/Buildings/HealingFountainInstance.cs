@@ -7,12 +7,14 @@ public class HealingFountainInstance : BuildingInstance {
     [SerializeField] float healAmtPerSec;
 
     Coroutine healer = null;
+    StructureStats sStats;
 
 
     private void Start() {
+        sStats = GameInfo.getStructureStats();
         //  apply health buff
-        maxHealth = (int)(maxHealth * GameInfo.getStructureHealthBuff());
-        health = (int)(health * GameInfo.getStructureHealthBuff()); //  i don't know if buildings start each night with full health
+        maxHealth = (int)(maxHealth * sStats.structureHealthBuff);
+        health = (int)(health * sStats.structureHealthBuff); //  i don't know if buildings start each night with full health
     }
 
     private void OnCollisionEnter2D(Collision2D col) {

@@ -5,12 +5,13 @@ using UnityEngine;
 public class DefenceInstance : Defence {
     [SerializeField] GameObject bloodParticles;
     TickDamager td;
+    DefenceStats dStats;
 
     public void dealDamage(GameObject obj) {
         if(obj == null)
             return;
         //  apply buffs to the damage
-        int realDmg = (int)(dmgAmt * GameInfo.getDefenceDamageBuff());
+        int realDmg = (int)(dmgAmt * dStats.defenceDamageBuff);
 
         //  removes the obj from the ticking pool if the unit is going to die this time
         if(obj.GetComponent<Mortal>().health <= realDmg)
@@ -20,6 +21,7 @@ public class DefenceInstance : Defence {
     }
 
     private void Start() {
+        dStats = GameInfo.getDefenceStats();
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(transform.position.y, GetComponent<SpriteRenderer>());
         td = FindObjectOfType<TickDamager>();
     }
