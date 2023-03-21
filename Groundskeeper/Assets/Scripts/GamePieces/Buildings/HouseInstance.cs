@@ -4,11 +4,10 @@ using UnityEngine;
 using DG.Tweening;
 using FunkyCode;
 
-public class HouseInstance : Building {
+public class HouseInstance : BuildingInstance {
     [HideInInspector]
     [SerializeField] public float viewDist = 80f;
     [SerializeField] GameObject arrow;
-    [SerializeField] GameObject bloodParticles;
     [SerializeField] public CircleCollider2D radiusCol;
     [SerializeField] public GameObject playerSpawnPos;
     [SerializeField] List<GameObject> corners = new List<GameObject>();
@@ -20,6 +19,7 @@ public class HouseInstance : Building {
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
         FindObjectOfType<MonsterSpawner>().transform.position = getCenter();
         FindObjectOfType<PlayerInstance>().hCenter = getCenter();
+        FindObjectOfType<GameBoard>().structures.Add(this);
         foreach(var i in FindObjectsOfType<Mortal>())
             i.hi = this;
 
@@ -78,13 +78,6 @@ public class HouseInstance : Building {
 
     public void saveCurrentHouseStats() {
         GameInfo.setHouseStats(new HouseStats(health, maxHealth, hLight.size));
-    }
-
-    public override GameObject getBloodParticles() {
-        return bloodParticles;
-    }
-    public override Color getStartingColor() {
-        return Color.white;
     }
 
     public override void die() {

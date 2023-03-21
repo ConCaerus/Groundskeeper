@@ -18,6 +18,7 @@ public class Buyable : MonoBehaviour {
 
     [SerializeField] public buyType bType;
     [SerializeField] public string description = "Description";
+    public bool isAttractive;
 
     [System.Serializable]
     public enum buyType {
@@ -25,7 +26,7 @@ public class Buyable : MonoBehaviour {
     }
     [System.Serializable]
     public enum buyableTitle {  //  not in order cause that would be a bitch to keep track of
-        None, Lumberjack, Spikes, Tar, HealingFountain, Scarecrow, House
+        None, Lumberjack, Spikes, Tar, HealingFountain, Scarecrow, House, VoodooDoll
     };
 
     private void Start() {

@@ -164,7 +164,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 09c8f0ca66617974ab39e32ce816a01b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -237,7 +237,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5885474163258482202}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.5, z: 0}
+  m_LocalPosition: {x: -0.02, y: -1.82, z: 0}
   m_LocalScale: {x: 2, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4020595392461985259}
@@ -306,9 +306,8 @@ GameObject:
   - component: {fileID: 781272015645960741}
   - component: {fileID: 6186354697606408479}
   - component: {fileID: -7301817404344565355}
-  - component: {fileID: 9120468517171006270}
   m_Layer: 9
-  m_Name: Scarecrow
+  m_Name: VoodooDoll
   m_TagString: Helper
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -354,9 +353,9 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.11935806, y: -1.1547015}
-      - {x: -0.28170305, y: -2.0814738}
-      - {x: 0.08520371, y: -2.2225084}
+    - - {x: -0.037521362, y: -0.56548333}
+      - {x: -0.6745177, y: -1.5740917}
+      - {x: 0.6089502, y: -1.5350871}
 --- !u!50 &6186354697606408479
 Rigidbody2D:
   serializedVersion: 4
@@ -391,7 +390,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cost: 25
-  title: 5
+  title: 7
   placementObstacleLayers: 0000000002000000
   tile: {fileID: 11400000, guid: 500c86a80a7354248b654d42789d49a4, type: 2}
   mainCollider: {fileID: 781272015645960741}
@@ -400,37 +399,6 @@ MonoBehaviour:
   bType: 1
   description: Very attractive to monsters
   isAttractive: 1
---- !u!114 &9120468517171006270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5885474163630609340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6515902800d443b49a37a8e176cf1c5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 250
-  unitHealth: 250
-  hurtSound: {fileID: 0}
-  bloodStain: {fileID: 0}
-  healthBar: {fileID: 0}
-  hi: {fileID: 0}
-  forwardSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
-  backSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
-  leftSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
-  rightSprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
-  spriteObj: {fileID: 5885474163079569782}
-  shadowObj: {fileID: 5885474163258482202}
-  canMove: 1
-  movementParticles: {fileID: 0}
-  speed: 0
-  helpAmount: 0
-  helpType: 0
-  sprite: {fileID: 21300000, guid: 8426ab2eedc29c8469c049f1dd46b5d7, type: 3}
-  bloodParticles: {fileID: 0}
 --- !u!1 &8522752653620781266
 GameObject:
   m_ObjectHideFlags: 0

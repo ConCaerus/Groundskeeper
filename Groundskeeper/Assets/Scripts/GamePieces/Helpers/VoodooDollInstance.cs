@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScarecrowInstance : Helper {
+public class VoodooDollInstance : Helper {
     [SerializeField] GameObject bloodParticles;
 
     //  functions that don't do squat but i'm too lazy to make the helper class not need these
@@ -22,7 +22,7 @@ public class ScarecrowInstance : Helper {
         return null;
     }
     public override void updateSprite(Vector2 movingDir) {
-        
+
     }
     public override bool restartWalkAnim() {
         return false;

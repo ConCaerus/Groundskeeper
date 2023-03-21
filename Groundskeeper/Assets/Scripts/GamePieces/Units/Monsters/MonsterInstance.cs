@@ -13,7 +13,7 @@ public class MonsterInstance : Monster {
     [HideInInspector][SerializeField] public Transform followingTransform = null;
 
     public bool infatuated { get; set; } = false;   //  monster is close to the house and will not attack anything else besides the house
-    bool leader = false;
+    public bool leader = false;
     [HideInInspector] public MonsterInstance closestLeader = null;
 
     Vector2 spriteOriginal, shadowOriginal;   //  for showing and hiding
@@ -98,6 +98,7 @@ public class MonsterInstance : Monster {
         leader = true;
     }
 
+    //  targets get set in the child sight collider
     public void updateMovement() {
         //  following person
         if(!leader && closestLeader != null) {
@@ -112,8 +113,11 @@ public class MonsterInstance : Monster {
         else {
             if(followingTransform != null)
                 moveTarget = followingTransform.position;
-            else if(followingTransform == null)
+
+            //  if doesn't have a target, give it a generic target to follow
+            else if(followingTransform == null) {
                 moveTarget = favoriteTarget == targetType.People ? (Vector2)pt.position : houseCenter;
+            }
         }
         moveToPos(moveTarget, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
     }

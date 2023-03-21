@@ -7,7 +7,9 @@ public class GameBoard : MonoBehaviour {
     [SerializeField] GameObject holder, envHolder;
 
 
-    [HideInInspector] public KdTree<LumberjackInstance> aHelpers = new KdTree<LumberjackInstance>();
+    [HideInInspector] public KdTree<Helper> helpers = new KdTree<Helper>();
+    [HideInInspector] public KdTree<BuildingInstance> structures = new KdTree<BuildingInstance>();
+    [HideInInspector] public KdTree<DefenceInstance> defences = new KdTree<DefenceInstance>();
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 

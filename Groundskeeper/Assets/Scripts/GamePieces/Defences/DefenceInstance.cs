@@ -22,6 +22,7 @@ public class DefenceInstance : Defence {
 
     private void Start() {
         dStats = GameInfo.getDefenceStats();
+        FindObjectOfType<GameBoard>().defences.Add(this);
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(transform.position.y, GetComponent<SpriteRenderer>());
         td = FindObjectOfType<TickDamager>();
     }

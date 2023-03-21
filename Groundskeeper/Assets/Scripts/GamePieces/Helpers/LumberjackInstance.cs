@@ -24,10 +24,14 @@ public class LumberjackInstance : Helper {
         startingPos = transform.position;
         hi = FindObjectOfType<HouseInstance>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Helper"));
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Structure"));
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("House"));   //  lumberjacks still move around the house, this just makes EXTRA sure they don't get stuck
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponents<Collider2D>()[0].isTrigger ? GetComponents<Collider2D>()[1] : GetComponents<Collider2D>()[0], spriteObj.GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         FindObjectOfType<UnitMovementUpdater>().addHelper(this);
         FindObjectOfType<HelperAttackManager>().addHelper(this);
+        FindObjectOfType<GameBoard>().helpers.Add(this);
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
         targetMoveInfo = transform.position;
@@ -123,7 +127,7 @@ public class LumberjackInstance : Helper {
         return Color.white;
     }
     public override void die() {
-        FindObjectOfType<GameBoard>().aHelpers.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
+        FindObjectOfType<GameBoard>().helpers.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
         if(healthBar != null)
             Destroy(healthBar.gameObject);
         Destroy(gameObject);

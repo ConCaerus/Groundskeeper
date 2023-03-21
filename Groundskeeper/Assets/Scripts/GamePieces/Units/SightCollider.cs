@@ -8,13 +8,22 @@ public class SightCollider : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D col) {
         //  monster shit
         if(unit.GetComponent<MonsterInstance>() != null) {
-            //  an attackable unit entered sights
-            if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper") {
-                var mi = unit.GetComponent<MonsterInstance>();
-                if(mi.favoriteTarget == Monster.targetType.People || mi.favoriteTarget == Monster.targetType.All) {
-                    mi.followingTransform = col.gameObject.transform;
-                }
+            var mi = unit.GetComponent<MonsterInstance>();
+            //  checks if tag is untargetable
+            if(!isTagTargetable(col.gameObject.tag, mi))
+                return;
+
+            //  checks if attractive pieces have entered the sight
+            if(col.GetComponent<Buyable>() != null && col.GetComponent<Buyable>().isAttractive) {
+                mi.followingTransform = col.gameObject.transform;
             }
+
+            //  checks if already has target
+            if(mi.followingTransform != null && mi.followingTransform.gameObject != null) {
+                return;
+            }
+            //  if in need of target, give
+            mi.followingTransform = col.gameObject.transform;
         }
 
         //  lumberjack / helper shit
@@ -63,5 +72,23 @@ public class SightCollider : MonoBehaviour {
         GetComponent<Collider2D>().enabled = false;
         yield return new WaitForEndOfFrame();
         GetComponent<Collider2D>().enabled = true;
+    }
+
+    bool isTagTargetable(string tag, MonsterInstance mi) {
+        //  checks if tag is in the attackable pool
+        if(!(tag == "Player" || tag == "Helper" || tag == "Structure" || tag == "House"))
+            return false;
+        //  if can attack all, return true right away
+        if(mi.favoriteTarget == Monster.targetType.All)
+            return true;
+
+        //  specifics
+        switch(tag) {
+            case "Player": 
+            case "Helper": return mi.favoriteTarget == Monster.targetType.People;
+            case "Structure": return mi.favoriteTarget == Monster.targetType.Structures;
+            case "House": return mi.favoriteTarget == Monster.targetType.House;
+        }
+        return false;
     }
 }

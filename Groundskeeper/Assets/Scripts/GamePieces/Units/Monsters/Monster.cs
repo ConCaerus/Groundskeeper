@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Monster : Attacker {
     public enum targetType {
-        All, People, Buildings, House
+        All, People, Structures, House
     }
 
     public enum monsterTitle {
