@@ -11,10 +11,12 @@ public class PlayerAxeInstance : PlayerWeaponVariant {
     GameTutorialCanvas gtc;
     PlayerUICanvas puc;
     Collider2D col;
+    TransitionCanvas tc;
 
     public override void variantSetup() {
         gtc = FindObjectOfType<GameTutorialCanvas>();
         puc = FindObjectOfType<PlayerUICanvas>();
+        tc = FindObjectOfType<TransitionCanvas>();
     }
 
     public override void performOnAttack() {
@@ -26,7 +28,7 @@ public class PlayerAxeInstance : PlayerWeaponVariant {
     }
 
     public override void performOnAttackEnd() {
-        if(charger != null) {
+        if(charger != null && tc.finishedLoading) {
             if(gtc != null) {
                 gtc.hasAttacked();
                 if(pi.weaponAttackMod > 1.01f)

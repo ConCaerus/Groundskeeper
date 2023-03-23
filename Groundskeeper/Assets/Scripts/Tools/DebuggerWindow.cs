@@ -15,6 +15,10 @@ public class DebuggerWindow : EditorWindow {
 
     private void OnGUI() {
         GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Clear Souls"))
+            GameInfo.addSouls(-GameInfo.getSouls(true), true);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
         if(GUILayout.Button("+100s")) 
             GameInfo.addSouls(100, true);
         if(GUILayout.Button("+1000s"))
@@ -43,8 +47,8 @@ public class DebuggerWindow : EditorWindow {
             Debug.Log("Night: " + GameInfo.getNightCount());
         if(GUILayout.Button("Inc Night"))
             GameInfo.addNights(1);
-        if(GUILayout.Button("Coin Count"))
-            Debug.Log("Night: " + GameInfo.getSouls());
+        if(GUILayout.Button("Soul Count"))
+            Debug.Log("Souls: " + GameInfo.getSouls(true));
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();

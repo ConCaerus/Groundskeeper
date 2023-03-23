@@ -79,9 +79,9 @@ public class GameUICanvas : MonoBehaviour {
         p = DOTween.To(() => soulsRecieved, x => soulsRecieved = x, s, .35f)
     .OnUpdate(() => {
         if(!ended)
-            soulsText.text = (GameInfo.getSouls() + soulsRecieved).ToString("0.0") + "s";
+            soulsText.text = (GameInfo.getSouls(false) + soulsRecieved).ToString("0.0") + "s";
         else
-            soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
+            soulsText.text = GameInfo.getSouls(false).ToString("0.0") + "s";
     });
 
 

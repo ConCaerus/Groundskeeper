@@ -70,7 +70,7 @@ public class PlacementGrid : MonoBehaviour {
         currentObj = thing;
     }
 
-    public void move() {
+    void move() {
         clear();
         var pos = map.WorldToCell(GameInfo.mousePos());
 
@@ -84,7 +84,7 @@ public class PlacementGrid : MonoBehaviour {
         map.enabled = false;
         placing = false;
     }
-    public void place() {
+    void place() {
         //  can't place in this spot
         if(map.color == Color.red)
             return;
@@ -126,7 +126,7 @@ public class PlacementGrid : MonoBehaviour {
             ssm.placedHouse();
         }
     }
-    public void remove() {
+    void remove() {
         if(map.color == Color.green)
             return;
         bool found = false;

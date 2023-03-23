@@ -73,11 +73,14 @@ public class TickDamager : MonoBehaviour {
     }
 
     public IEnumerator tick(TickInfo info) {
+        //  does something
         info.tickAction(info.obj);
 
+        //  checks if the ticks are done
         if(info.determinedTickCount == 0)
             yield break;
 
+        //  decrements the ticks
         if(info.determinedTickCount > -1)
             info.determinedTickCount--;
 

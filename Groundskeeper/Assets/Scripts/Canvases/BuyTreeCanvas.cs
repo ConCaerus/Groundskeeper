@@ -215,7 +215,7 @@ public class BuyTreeCanvas : MenuCanvas {
     }
     GameObject createSubNode(GameObject sub, subType s, int maxTick, int maxTier) {
         var o = Instantiate(node.gameObject, sub.transform);
-        int sInd = sub == subCircles[0] ? 0 : sub == subCircles[1] ? 1 : sub == subCircles[2] ? 2 : 3;
+        int sInd = sub == subCircles[0] ? 0 : sub == subCircles[1] ? 1 : sub == subCircles[2] ? 2 : sub == subCircles[3] ? 3 : 4;
         var obtn = o.GetComponent<BuyTreeNode>();
         obtn.subType = s;
         obtn.mainType = indexToMainType(sInd);
@@ -288,7 +288,7 @@ public class BuyTreeCanvas : MenuCanvas {
                 break;
             //  house
             case 4:
-                if(s == subType.Light)
+                if(s == subType.Light) 
                     hStats.houseLightRad += 10f;
                 else if(s == subType.Repair)
                     hStats.houseHealth += 25;
@@ -335,7 +335,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
 
     void updateSoulsText() {
-        soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
+        soulsText.text = GameInfo.getSouls(false).ToString("0.0") + "s";
     }
 
 

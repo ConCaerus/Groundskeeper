@@ -38,9 +38,16 @@ public class MonsterInstance : Monster {
 
     private void OnCollisionStay2D(Collision2D col) {
         if(canAttack) {
-            if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Building" || col.gameObject.tag == "House") {
-                //  can't attack house if favorite target is only people
-                if(!(col.gameObject.tag == "House" && favoriteTarget == targetType.People))
+            if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Structure" || col.gameObject.tag == "House") {
+                //  if can attack all targets, skip testing and just attack
+                if(favoriteTarget == targetType.All)
+                    attack(col.gameObject, true);
+                //  check if the target is attackable by this monster
+                else if(col.gameObject.tag == "House" && (favoriteTarget == targetType.Structures || favoriteTarget == targetType.House))
+                    attack(col.gameObject, true);
+                else if(col.gameObject.tag == "Helper" && favoriteTarget == targetType.People)
+                    attack(col.gameObject, true);
+                else if(col.gameObject.tag == "Structure" && favoriteTarget == targetType.Structures)
                     attack(col.gameObject, true);
 
                 //  if attacks a lumberjack, tells them that they can attack back

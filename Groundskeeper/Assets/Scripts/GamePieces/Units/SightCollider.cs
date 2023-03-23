@@ -13,17 +13,19 @@ public class SightCollider : MonoBehaviour {
             if(!isTagTargetable(col.gameObject.tag, mi))
                 return;
 
-            //  checks if attractive pieces have entered the sight
-            if(col.GetComponent<Buyable>() != null && col.GetComponent<Buyable>().isAttractive) {
-                mi.followingTransform = col.gameObject.transform;
-            }
-
-            //  checks if already has target
-            if(mi.followingTransform != null && mi.followingTransform.gameObject != null) {
+            //  checks if already going after an attractive target
+            if(mi.followingTransform != null && mi.followingTransform.GetComponent<Buyable>() != null && mi.followingTransform.GetComponent<Buyable>().isAttractive) {
                 return;
             }
+            //  checks if attractive pieces have entered the sight
+            else if(col.GetComponent<Buyable>() != null && col.GetComponent<Buyable>().isAttractive) {
+                mi.followingTransform = col.gameObject.transform;
+                return;
+            }
+
             //  if in need of target, give
-            mi.followingTransform = col.gameObject.transform;
+            if(mi.followingTransform == null)
+                mi.followingTransform = col.gameObject.transform;
         }
 
         //  lumberjack / helper shit
@@ -84,7 +86,7 @@ public class SightCollider : MonoBehaviour {
 
         //  specifics
         switch(tag) {
-            case "Player": 
+            case "Player":
             case "Helper": return mi.favoriteTarget == Monster.targetType.People;
             case "Structure": return mi.favoriteTarget == Monster.targetType.Structures;
             case "House": return mi.favoriteTarget == Monster.targetType.House;

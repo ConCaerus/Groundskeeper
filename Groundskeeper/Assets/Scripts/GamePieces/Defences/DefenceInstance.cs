@@ -2,23 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DefenceInstance : Defence {
+public abstract class DefenceInstance : Defence {
     [SerializeField] GameObject bloodParticles;
     TickDamager td;
     DefenceStats dStats;
 
-    public void dealDamage(GameObject obj) {
-        if(obj == null)
+    public void dealDamage(GameObject triggerer) {
+        if(triggerer == null)
             return;
         //  apply buffs to the damage
         int realDmg = (int)(dmgAmt * dStats.defenceDamageBuff);
 
-        //  removes the obj from the ticking pool if the unit is going to die this time
-        if(obj.GetComponent<Mortal>().health <= realDmg)
-            td.removeTick(obj);
+        //  does any special actions
+        specialTickAction(triggerer);
 
-        obj.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, false);
+        //  removes the obj from the ticking pool if the unit is going to die this time
+        if(triggerer.GetComponent<Mortal>().health <= realDmg)
+            td.removeTick(triggerer);
+
+        triggerer.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, false);
     }
+
+    public abstract void specialTickAction(GameObject triggerer);
 
     private void Start() {
         dStats = GameInfo.getDefenceStats();
@@ -27,7 +32,7 @@ public class DefenceInstance : Defence {
         td = FindObjectOfType<TickDamager>();
     }
 
-    public override void customHitLogic(float knockback, Vector2 origin, bool stun) {
+    public override void hitLogic(float knockback, Vector2 origin, bool stun) {
     }
 
     public override GameObject getBloodParticles() {

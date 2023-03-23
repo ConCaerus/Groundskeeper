@@ -42,7 +42,7 @@ public class PregameCanvas : MonoBehaviour {
     public void setup() {
         FindObjectOfType<GameUICanvas>().hide();
         transform.GetChild(0).gameObject.SetActive(true);
-        soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
+        soulsText.text = GameInfo.getSouls(false).ToString("0.0") + "s";
         lower.SetActive(true);
         foreach(var i in lowerGenericButtonHolder.GetComponentsInChildren<Button>()) {
             i.gameObject.SetActive(true);
@@ -79,7 +79,7 @@ public class PregameCanvas : MonoBehaviour {
         if(EventSystem.current.IsPointerOverGameObject()) {
             pg.clear();
         }
-        soulsText.text = GameInfo.getSouls().ToString("0.0") + "s";
+        soulsText.text = GameInfo.getSouls(false).ToString("0.0") + "s";
 
         pwi.canAttackG = !(mouseOverUI() || pg.placing);
     }

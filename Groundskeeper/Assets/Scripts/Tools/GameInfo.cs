@@ -81,7 +81,7 @@ public static class GameInfo {
 
 
     public enum MonsterType {
-        Both, Physical, Spiritual
+        Both, Physical, Nonphysical
     }
 
     //  makes it so if the player buys something and leaves the game before the board saves, they don't lose any souls
@@ -133,15 +133,15 @@ public static class GameInfo {
 
 
     //  saves
-    public static void addSouls(float c, bool saveAfter) {
+    public static void addSouls(float c, bool saveImmediately) {
         souls += c;
-        if(saveAfter)
+        if(saveImmediately)
             saveSouls();
     }
     public static void saveSouls() {  //  scary function OwO
         SaveData.setFloat(soulTag, souls);
     }
-    public static float getSouls(bool getSaved = false) {
+    public static float getSouls(bool getSaved) {
         return getSaved ? SaveData.getFloat(soulTag) : souls;
     }
 

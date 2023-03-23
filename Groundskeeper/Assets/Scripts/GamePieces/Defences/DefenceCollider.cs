@@ -13,7 +13,7 @@ public class DefenceCollider : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D col) {
         if(col.gameObject.tag == "Monster") {
-            if(def.target == col.gameObject.GetComponent<MonsterInstance>().type) {
+            if(def.target == GameInfo.MonsterType.Both || def.target == col.gameObject.GetComponent<MonsterInstance>().type) {
                 td.addTick(col.gameObject, def);
             }
         }

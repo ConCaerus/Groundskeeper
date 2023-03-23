@@ -38,7 +38,7 @@ public abstract class Mortal : MonoBehaviour {
 
     public abstract void die();
 
-    public abstract void customHitLogic(float knockback, Vector2 origin, bool stun = true);
+    public abstract void hitLogic(float knockback, Vector2 origin, bool stun = true);
     public abstract GameObject getBloodParticles();
     public abstract Color getStartingColor();
 
@@ -64,6 +64,15 @@ public abstract class Mortal : MonoBehaviour {
 
         health -= dmg;
         //  check for death
+        checkForDeath();
+
+        if(bloodParticle != null)
+            bloodParticle.GetComponent<ParticleSystem>().Play();
+
+        hitLogic(knockback, origin, stun);
+    }
+
+    protected bool checkForDeath() {
         if(health <= 0) {
             if(bloodParticle != null) {
                 //  change the blood particles to emmit double the normal amount of particles
@@ -77,12 +86,9 @@ public abstract class Mortal : MonoBehaviour {
             }
 
             die();  //  this probably has a enabled = false; in there
+            return true;
         }
-
-        if(bloodParticle != null)
-            bloodParticle.GetComponent<ParticleSystem>().Play();
-
-        customHitLogic(knockback, origin, stun);
+        return false;
     }
 
 

@@ -51,7 +51,7 @@ public class SoulTransactionHandler : MonoBehaviour {
         float poorTime = .25f, richTime = .5f;
 
         //  player ain't bitchin'
-        if(cost > GameInfo.getSouls()) {
+        if(cost > GameInfo.getSouls(false)) {
             soulsText.color = Color.red;
             soulsText.transform.DOPunchScale(new Vector3(.25f, .25f), poorTime);
             soulsText.DOColor(Color.white, poorTime);
@@ -60,9 +60,9 @@ public class SoulTransactionHandler : MonoBehaviour {
 
         //  player do be bitchin'
         //  transaction
-        float prevSouls = GameInfo.getSouls();
+        float prevSouls = GameInfo.getSouls(false);
         GameInfo.addSouls(-cost, saveSouls);
-        float aftSouls = GameInfo.getSouls();
+        float aftSouls = GameInfo.getSouls(false);
 
         //  make spent texts
         //  checks if already has a costText group for the soulsText

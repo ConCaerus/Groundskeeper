@@ -11,8 +11,11 @@ public class HealingFountainInstance : BuildingInstance {
 
 
     private void Start() {
+        mortalInit();
         sStats = GameInfo.getStructureStats();
         FindObjectOfType<GameBoard>().structures.Add(this);
+        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), GetComponent<SpriteRenderer>());
+        FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         //  apply health buff
         maxHealth = (int)(maxHealth * sStats.structureHealthBuff);
         health = (int)(health * sStats.structureHealthBuff); //  i don't know if buildings start each night with full health

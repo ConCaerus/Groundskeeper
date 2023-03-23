@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 
 public abstract class MortalUnit : Mortal {
-    public override void customHitLogic(float knockback, Vector2 origin, bool stunMonster = true) {
+    public override void hitLogic(float knockback, Vector2 origin, bool stunMonster = true) {
         var rb = gameObject.GetComponent<Rigidbody2D>();
         //  take knockback
         if(rb != null) {

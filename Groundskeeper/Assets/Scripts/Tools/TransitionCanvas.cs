@@ -10,6 +10,8 @@ public class TransitionCanvas : MonoBehaviour {
 
     Coroutine loader = null;
 
+    public bool finishedLoading = false;
+
 
     private void Awake() {
         QualitySettings.vSyncCount = GameInfo.getGameOptions().vSync ? 1 : 0; // don't do shit to this
@@ -53,10 +55,11 @@ public class TransitionCanvas : MonoBehaviour {
             while(!gb.loaded)
                 yield return new WaitForSeconds(.1f);
         }
-            if(FindObjectOfType<PlayerInstance>() != null)
-                FindObjectOfType<PlayerInstance>().setCanMove(GameInfo.getNightCount() > 0);
-            else if(FindObjectOfType<PlayerHouseInstance>() != null)
-                FindObjectOfType<PlayerHouseInstance>().setCanMove(GameInfo.getNightCount() > 0);
+        if(FindObjectOfType<PlayerInstance>() != null)
+            FindObjectOfType<PlayerInstance>().setCanMove(GameInfo.getNightCount() > 0);
+        else if(FindObjectOfType<PlayerHouseInstance>() != null)
+            FindObjectOfType<PlayerHouseInstance>().setCanMove(GameInfo.getNightCount() > 0);
         background.SetActive(false);
+        finishedLoading = true;
     }
 }

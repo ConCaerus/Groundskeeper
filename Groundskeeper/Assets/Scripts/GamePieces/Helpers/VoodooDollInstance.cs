@@ -6,7 +6,7 @@ public class VoodooDollInstance : Helper {
     [SerializeField] GameObject bloodParticles;
 
     //  functions that don't do squat but i'm too lazy to make the helper class not need these
-    public override void customHitLogic(float knockback, Vector2 origin, bool stunMonster = true) {
+    public override void hitLogic(float knockback, Vector2 origin, bool stunMonster = true) {
 
     }
     public override float getAttackCoolDown() {
@@ -59,5 +59,11 @@ public class VoodooDollInstance : Helper {
         if(healthBar != null)
             Destroy(healthBar.gameObject);
         Destroy(gameObject);
+    }
+
+    //  Damage that monsters receive when attacking this
+    //  NOTE: This number is a multiplier that gets applied to the monsters attack
+    public float getMirroredDamageMod() {
+        return .5f;
     }
 }
