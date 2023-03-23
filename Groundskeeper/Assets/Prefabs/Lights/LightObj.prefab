@@ -258,7 +258,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3489cdea809007e46a089538d3a48dfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outerRadius: 75
+  fInfo:
+    flickerVariation: 0
+    hardShadow: {fileID: 0}
+    hardShadowStartSize: {x: 0, y: 0}
 --- !u!50 &8065376804309299367
 Rigidbody2D:
   serializedVersion: 4

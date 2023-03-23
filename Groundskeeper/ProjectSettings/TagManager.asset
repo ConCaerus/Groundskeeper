@@ -5,14 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Weapon
-  - Building
   - House
   - Monster
   - Defence
   - Helper
   - Light
   - Environment
-  - Bystander
   - Structure
   layers:
   - Default

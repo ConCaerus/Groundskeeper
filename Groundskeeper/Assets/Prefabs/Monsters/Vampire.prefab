@@ -278,6 +278,7 @@ MonoBehaviour:
   attackDamage: 1
   damageToDefences: 1
   diff: 2
+  originalSoulsGiven: 5
   soulsGiven: 5
   earliestNight: 1
   favoriteTarget: 1
@@ -289,6 +290,7 @@ MonoBehaviour:
   attackCoolDown: 0.05
   attackKnockBack: 0
   followingTransform: {fileID: 0}
+  leader: 0
   closestLeader: {fileID: 0}
   affectedMoveAmt: 0
   bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}

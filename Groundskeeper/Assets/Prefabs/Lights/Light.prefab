@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6967870594991004475}
   m_Layer: 6
   m_Name: Light
-  m_TagString: Untagged
+  m_TagString: Light
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,16 +48,16 @@ MonoBehaviour:
   eventPresetId: 0
   lightLayer: 0
   occlusionLayer: 0
-  translucentLayer: 2
+  translucentLayer: 0
   translucentPresetId: 0
-  color: {r: 2.2322829, g: 2.2322829, b: 2.2322829, a: 0.5}
-  size: 20.9
+  color: {r: 4.2823267, g: 4.2823267, b: 4.2823267, a: 1}
+  size: 75
   spotAngleInner: 360
   spotAngleOuter: 360
   coreSize: 0.5
   falloff: 0
   lightStrength: 0.072
-  outerAngle: 20.5
+  outerAngle: 22.6
   lightRadius: 1
   shadowDistanceClose: 0
   shadowDistanceFar: 5

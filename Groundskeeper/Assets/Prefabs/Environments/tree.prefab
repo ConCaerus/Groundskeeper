@@ -167,6 +167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Tree
   hits: 3
+  tit: 0
 --- !u!60 &721251196033553166
 PolygonCollider2D:
   m_ObjectHideFlags: 0

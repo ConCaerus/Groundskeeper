@@ -83,6 +83,21 @@ public static class GameInfo {
     public enum MonsterType {
         Both, Physical, Nonphysical
     }
+    public enum GamePiece {
+        None, Player, Helper, Defence, Structure, House, Monster, Environment
+    }
+    public static GamePiece tagToGamePiece(string tag) {
+        switch(tag) {
+            case "Player": return GamePiece.Player;
+            case "Helper": return GamePiece.Helper;
+            case "Defence": return GamePiece.Defence;
+            case "Structure": return GamePiece.Structure;
+            case "House": return GamePiece.House;
+            case "Monster": return GamePiece.Monster;
+            case "Environment": return GamePiece.Environment;
+        }
+        return GamePiece.None;
+    }
 
     //  makes it so if the player buys something and leaves the game before the board saves, they don't lose any souls
     public static float souls;

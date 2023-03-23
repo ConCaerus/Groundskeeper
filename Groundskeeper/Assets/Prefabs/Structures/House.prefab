@@ -584,6 +584,11 @@ MonoBehaviour:
   hi: {fileID: 0}
   title: House
   sprite: {fileID: 21300000, guid: 5fa5c4144b6de4042a3730a163f3d1fb, type: 3}
+  usesAreaOfEffect: 0
+  aoeEffectedGamePieces: 
+  aoeRadius: 0
+  aoeEffectAmount: 0
+  aoeObject: {fileID: 0}
   bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
   viewDist: 80
   arrow: {fileID: 3769568573139926079}

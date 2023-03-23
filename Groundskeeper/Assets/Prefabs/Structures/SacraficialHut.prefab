@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4456731478231792691}
   - component: {fileID: 4237534904317676787}
   m_Layer: 14
-  m_Name: HealingFountain
+  m_Name: SacraficialHut
   m_TagString: Structure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cost: 25
-  title: 4
+  title: 15
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 83272f7901ca1df42ad6ec304b29dfef, type: 2}
   mainCollider: {fileID: 4456731478231792693}

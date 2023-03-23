@@ -7,18 +7,10 @@ public class HealingFountainInstance : BuildingInstance {
     [SerializeField] float healAmtPerSec;
 
     Coroutine healer = null;
-    StructureStats sStats;
-
 
     private void Start() {
         mortalInit();
-        sStats = GameInfo.getStructureStats();
-        FindObjectOfType<GameBoard>().structures.Add(this);
-        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), GetComponent<SpriteRenderer>());
-        FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
-        //  apply health buff
-        maxHealth = (int)(maxHealth * sStats.structureHealthBuff);
-        health = (int)(health * sStats.structureHealthBuff); //  i don't know if buildings start each night with full health
+        buildingInit();
     }
 
     private void OnCollisionEnter2D(Collision2D col) {
@@ -43,5 +35,12 @@ public class HealingFountainInstance : BuildingInstance {
         yield return new WaitForSeconds(1f / div);
         
         healer = GetComponent<Collider2D>().IsTouching(touchingCol) ? StartCoroutine(heal(unit, touchingCol)) : null;
+    }
+
+    public override void aoeEffect(GameObject effected, float amount) {
+        //  does nothing
+    }
+    public override void aoeLeaveEffect(GameObject effected, float amount) {
+        //  does nothing 
     }
 }

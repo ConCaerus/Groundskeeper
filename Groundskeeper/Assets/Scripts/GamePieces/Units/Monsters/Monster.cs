@@ -16,7 +16,7 @@ public abstract class Monster : Attacker {
     public int attackDamage;
     public int damageToDefences;
     public int diff = 0;
-    public float soulsGiven = 0f;
+    public float originalSoulsGiven = 0f, soulsGiven = 0f;
     public int earliestNight = 0;
     public targetType favoriteTarget;
     public GameInfo.MonsterType type;

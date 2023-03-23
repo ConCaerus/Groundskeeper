@@ -72,7 +72,7 @@ public abstract class Mortal : MonoBehaviour {
         hitLogic(knockback, origin, stun);
     }
 
-    protected bool checkForDeath() {
+    public bool checkForDeath() {
         if(health <= 0) {
             if(bloodParticle != null) {
                 //  change the blood particles to emmit double the normal amount of particles
