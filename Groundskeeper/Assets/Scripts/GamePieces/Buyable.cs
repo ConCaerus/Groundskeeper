@@ -27,7 +27,7 @@ public class Buyable : MonoBehaviour {
     [System.Serializable]
     public enum buyableTitle {  //  not in order cause that would be a bitch to keep track of
         None, Lumberjack, Spikes, Tar, HealingFountain, Scarecrow, House, VoodooDoll, Priest, Huntsman, Demon, 
-        HolyPuddle, SeaSalt, SoulNibbler, DevilsTrap, SacraficialHut, DevilsShrine, SightStealer, SoulSucker, SoulBooster
+        HolyPuddle, SeaSalt, SoulNibbler, DevilsTrap, IronMaiden, DevilsShrine, BloodFumigator, Thurible, SoulBooster
     };
 
     private void Start() {

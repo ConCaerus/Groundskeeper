@@ -8,14 +8,12 @@ public class SoulBoosterInstance : BuildingInstance {
         buildingInit();
     }
 
-    public override void aoeEffect(GameObject effected, float amount) {
+    public override void aoeEffect(GameObject effected) {
         //  increases the number of souls that the monster will drop
         effected.GetComponent<MonsterInstance>().soulsGiven = effected.GetComponent<MonsterInstance>().originalSoulsGiven * 2.0f;
-        Debug.Log("Inc: " + effected.GetComponent<MonsterInstance>().soulsGiven);
     }
-    public override void aoeLeaveEffect(GameObject effected, float amount) {
+    public override void aoeLeaveEffect(GameObject effected) {
         //  decreases the number of souls that the monster will drop
         effected.GetComponent<MonsterInstance>().soulsGiven = effected.GetComponent<MonsterInstance>().originalSoulsGiven;
-        Debug.Log("Dec: " + effected.GetComponent<MonsterInstance>().soulsGiven);
     }
 }

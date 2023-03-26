@@ -80,10 +80,10 @@ public class HouseInstance : BuildingInstance {
         GameInfo.setHouseStats(new HouseStats(health, maxHealth, hLight.size));
     }
 
-    public override void aoeEffect(GameObject effected, float amount) {
+    public override void aoeEffect(GameObject effected) {
         //  does nothing
     }
-    public override void aoeLeaveEffect(GameObject effected, float amount) {
+    public override void aoeLeaveEffect(GameObject effected) {
         //  does nothing
     }
 

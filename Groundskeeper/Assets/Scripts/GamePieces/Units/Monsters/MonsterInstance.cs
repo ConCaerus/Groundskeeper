@@ -12,8 +12,9 @@ public class MonsterInstance : Monster {
 
     [HideInInspector][SerializeField] public Transform followingTransform = null;
 
-    public bool infatuated { get; set; } = false;   //  monster is close to the house and will not attack anything else besides the house
-    public bool leader = false;
+    //  cannot be confused if is leader
+    public bool confused { get; private set; } = false;
+    [HideInInspector] public bool leader = false;
     [HideInInspector] public MonsterInstance closestLeader = null;
 
     Vector2 spriteOriginal, shadowOriginal;   //  for showing and hiding
@@ -38,7 +39,12 @@ public class MonsterInstance : Monster {
 
     private void OnCollisionStay2D(Collision2D col) {
         if(canAttack) {
-            if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Structure" || col.gameObject.tag == "House") {
+            //  if the unit is confused, have it attack other monsters 
+            if(confused && !leader && col.gameObject.tag == "Monster") 
+                attack(col.gameObject, true);
+
+            //  normal attack
+            else if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Structure" || col.gameObject.tag == "House") {
                 //  if can attack all targets, skip testing and just attack
                 if(favoriteTarget == targetType.All)
                     attack(col.gameObject, true);
@@ -54,12 +60,6 @@ public class MonsterInstance : Monster {
                 if(col.gameObject.tag == "Helper" && col.gameObject.GetComponent<LumberjackInstance>() != null)
                     col.gameObject.GetComponent<LumberjackInstance>().inReach = true;
             }
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D col) {
-        if(!infatuated && col.gameObject.tag == "House") {
-            infatuated = true;
         }
     }
 
@@ -98,13 +98,22 @@ public class MonsterInstance : Monster {
         FindObjectOfType<UnitMovementUpdater>().addMonster(this);
     }
 
-    #region ---   MOVEMENT SHIT   ---
-
     public void setAsLeader() {
         sCol.SetActive(true);
+        confused = false;
         leader = true;
     }
+    public void setConfused(bool b) {
+        confused = !leader && b;
+        StartCoroutine(unconfuseSelf());
+    }
 
+    IEnumerator unconfuseSelf() {
+        yield return new WaitForSeconds(10f);
+        confused = false;
+    }
+
+    #region ---   MOVEMENT SHIT   ---
     //  targets get set in the child sight collider
     public void updateMovement() {
         //  following person
@@ -185,6 +194,18 @@ public class MonsterInstance : Monster {
         return normColor;
     }
     public override void die() {
+        //  souls 
+        guc.incSouls(soulsGiven);
+        GameInfo.addSouls(soulsGiven, guc.ended);
+
+        //  falir
+        var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null).GetComponent<ParticleSystem>();
+        s.emission.SetBurst(0, new ParticleSystem.Burst(.5f, soulsGiven * 4.0f));
+        s.Play();
+
+        unshownDie();
+    }
+    public void unshownDie() {
         c.enabled = false;
         //  removes the monster from the game board monsters
         gb.monsters.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
@@ -206,15 +227,9 @@ public class MonsterInstance : Monster {
         }
 
         //  boring stuff
-        //FindObjectOfType<HouseUpper>().removeUnitFromInTopUnits(this);
         GameInfo.monstersKilled++;
-        guc.incSouls(soulsGiven);
-        GameInfo.addSouls(soulsGiven, guc.ended);
 
         //  fliar
-        var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null).GetComponent<ParticleSystem>();
-        s.emission.SetBurst(0, new ParticleSystem.Burst(.5f, soulsGiven * 4.0f));
-        s.Play();
         transform.DOScale(0f, .25f);
 
         //  cleanup

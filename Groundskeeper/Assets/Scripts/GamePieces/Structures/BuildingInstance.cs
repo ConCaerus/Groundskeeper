@@ -4,10 +4,11 @@ using UnityEngine;
 
 public abstract class BuildingInstance : Building {
     [SerializeField] GameObject bloodParticles;
+    protected StructureAreaOfEffect saoe;
 
     protected void buildingInit() {
         var sStats = GameInfo.getStructureStats();
-        FindObjectOfType<GameBoard>().structures.Add(this);
+        //FindObjectOfType<GameBoard>().structures.Add(this);
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         //  apply health buff
@@ -16,16 +17,17 @@ public abstract class BuildingInstance : Building {
 
         //  AOE shit
         if(usesAreaOfEffect) {
-            aoeObject.GetComponent<CircleCollider2D>().radius = aoeRadius;
-            aoeObject.GetComponent<StructureAreaOfEffect>().aoeEffect = aoeEffect;
-            aoeObject.GetComponent<StructureAreaOfEffect>().amt = aoeEffectAmount;
+            saoe = aoeObject.GetComponent<StructureAreaOfEffect>();
+            StartCoroutine(saoe.areaStartExpansion(aoeRadius));
+            saoe.aoeEffect = aoeEffect;
+            saoe.aoeLeaveEffect = aoeLeaveEffect;
             foreach(var i in aoeEffectedGamePieces)
-                aoeObject.GetComponent<StructureAreaOfEffect>().effectedPieces.Add(i);
+                saoe.effectedPieces.Add(i);
         }
     }
 
-    public abstract void aoeEffect(GameObject effected, float amount);
-    public abstract void aoeLeaveEffect(GameObject effected, float amount);
+    public abstract void aoeEffect(GameObject effected);
+    public abstract void aoeLeaveEffect(GameObject effected);
 
     public override GameObject getBloodParticles() {
         return bloodParticles;

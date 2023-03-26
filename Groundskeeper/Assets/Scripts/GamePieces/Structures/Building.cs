@@ -10,6 +10,5 @@ public abstract class Building : BuildingMortal {
     public bool usesAreaOfEffect;
     public List<GameInfo.GamePiece> aoeEffectedGamePieces;
     public float aoeRadius;
-    public float aoeEffectAmount;
     public GameObject aoeObject;
 }

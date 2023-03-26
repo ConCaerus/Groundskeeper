@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 53039265502390698}
   - component: {fileID: 4237534904317676787}
   m_Layer: 14
-  m_Name: SoulSucker
+  m_Name: Thurible
   m_TagString: Structure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4456731478231792695}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.92, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1190786828602139548}
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 41884af92fe4c17488c213737be71976, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bc3e5a13ed50d064698838989bd2fd84, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -104,7 +104,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3, y: 3}
+    oldSize: {x: 3, y: 4.69}
     newSize: {x: 1, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -112,10 +112,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.312315, y: -1.0893393}
-      - {x: -0.74298096, y: 0.29515457}
-      - {x: 0.59114647, y: 0.29418564}
-      - {x: 0.22616959, y: -1.1060905}
+    - - {x: -0.26709402, y: -2.0841987}
+      - {x: -0.21163553, y: -1.378018}
+      - {x: 0.20676911, y: -1.3563766}
+      - {x: 0.24878001, y: -2.0670345}
 --- !u!114 &53039265502390698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +139,6 @@ MonoBehaviour:
   usesAreaOfEffect: 1
   aoeEffectedGamePieces: 06000000
   aoeRadius: 5
-  aoeEffectAmount: 0
   aoeObject: {fileID: 2236783080790677581}
   bloodParticles: {fileID: 0}
 --- !u!114 &4237534904317676787
@@ -157,7 +156,7 @@ MonoBehaviour:
   cost: 25
   title: 18
   placementObstacleLayers: 000000000100000002000000
-  tile: {fileID: 11400000, guid: 83272f7901ca1df42ad6ec304b29dfef, type: 2}
+  tile: {fileID: 11400000, guid: 98388c5a2ac4cfd428f14ff8ca722ae0, type: 2}
   mainCollider: {fileID: 4456731478231792693}
   mainSprite: {fileID: 4456731478231792690}
   placementCollider: {fileID: 0}
@@ -189,7 +188,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8867277225175597390}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.024, y: -1.223, z: 0}
+  m_LocalPosition: {x: -0.024, y: -2.14, z: 0}
   m_LocalScale: {x: 1.725, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4456731478231792692}

@@ -37,10 +37,10 @@ public class HealingFountainInstance : BuildingInstance {
         healer = GetComponent<Collider2D>().IsTouching(touchingCol) ? StartCoroutine(heal(unit, touchingCol)) : null;
     }
 
-    public override void aoeEffect(GameObject effected, float amount) {
+    public override void aoeEffect(GameObject effected) {
         //  does nothing
     }
-    public override void aoeLeaveEffect(GameObject effected, float amount) {
+    public override void aoeLeaveEffect(GameObject effected) {
         //  does nothing 
     }
 }

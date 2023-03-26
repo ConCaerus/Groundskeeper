@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4456731478231792692}
   - component: {fileID: 4456731478231792690}
   - component: {fileID: 4456731478231792693}
-  - component: {fileID: 4456731478231792691}
+  - component: {fileID: -7631138162272347185}
   - component: {fileID: 4237534904317676787}
   m_Layer: 14
   m_Name: DevilsShrine
@@ -32,6 +32,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1190786828602139548}
+  - {fileID: 6507108407483255426}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -75,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 41884af92fe4c17488c213737be71976, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 75bd2a98a4068624b8612754504b84c5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -103,7 +104,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3, y: 3}
+    oldSize: {x: 3, y: 3.4}
     newSize: {x: 1, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -115,7 +116,7 @@ PolygonCollider2D:
       - {x: -0.74298096, y: 0.29515457}
       - {x: 0.59114647, y: 0.29418564}
       - {x: 0.22616959, y: -1.1060905}
---- !u!114 &4456731478231792691
+--- !u!114 &-7631138162272347185
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,24 +125,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4456731478231792695}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c8d4bcdad6a49646bdcf948eed853d5, type: 3}
+  m_Script: {fileID: 11500000, guid: 3abfef820bfb89444bd70e74bae21c5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 500
-  unitHealth: 500
+  maxHealth: 750
+  unitHealth: 750
   hurtSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
-  title: Healing Fountain
-  sprite: {fileID: 21300000, guid: 41884af92fe4c17488c213737be71976, type: 3}
-  usesAreaOfEffect: 0
-  aoeEffectedGamePieces: 
-  aoeRadius: 0
-  aoeEffectAmount: 0
-  aoeObject: {fileID: 0}
+  title: Devil's Shrine
+  sprite: {fileID: 0}
+  usesAreaOfEffect: 1
+  aoeEffectedGamePieces: 01000000020000000300000004000000
+  aoeRadius: 5
+  aoeObject: {fileID: 249622816929867076}
   bloodParticles: {fileID: 0}
-  healAmtPerSec: 25
 --- !u!114 &4237534904317676787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,7 +156,7 @@ MonoBehaviour:
   cost: 25
   title: 16
   placementObstacleLayers: 000000000100000002000000
-  tile: {fileID: 11400000, guid: 83272f7901ca1df42ad6ec304b29dfef, type: 2}
+  tile: {fileID: 11400000, guid: 9e2f3584afdfeea46add150f70790c75, type: 2}
   mainCollider: {fileID: 4456731478231792693}
   mainSprite: {fileID: 4456731478231792690}
   placementCollider: {fileID: 0}
@@ -246,3 +245,70 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &2264444700441315807
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4456731478231792692}
+    m_Modifications:
+    - target: {fileID: 2024995665699794075, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_Name
+      value: AreaOfEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+--- !u!1 &249622816929867076 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2024995665699794075, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+  m_PrefabInstance: {fileID: 2264444700441315807}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6507108407483255426 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4981272471642391389, guid: 009c746a3231b7b409b4540d8e67c52d, type: 3}
+  m_PrefabInstance: {fileID: 2264444700441315807}
+  m_PrefabAsset: {fileID: 0}

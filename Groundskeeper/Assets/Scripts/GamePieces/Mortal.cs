@@ -42,7 +42,7 @@ public abstract class Mortal : MonoBehaviour {
     public abstract GameObject getBloodParticles();
     public abstract Color getStartingColor();
 
-    public void takeDamage(int dmg, float knockback, Vector2 origin, bool activateInvinc = true, bool stun = true) {
+    public void takeDamage(int dmg, float knockback, Vector2 origin, bool activateInvinc = true, bool stun = true, bool bloodEffect = true) {
         if(invincible || dmg <= 0.0f)
             return;
         if(activateInvinc)
@@ -51,12 +51,12 @@ public abstract class Mortal : MonoBehaviour {
         //  flair
         if(hurtSound != null)
             FindObjectOfType<AudioManager>().playSound(hurtSound, transform.position);
-        if(getBloodParticles() != null) {
+        if(getBloodParticles() != null && bloodEffect) {
             if(bloodParticle == null)
                 bloodParticle = Instantiate(getBloodParticles().gameObject, transform.position, Quaternion.identity, null);
             bloodParticle.transform.position = transform.position;
         }
-        if(bloodStain != null) {
+        if(bloodStain != null && bloodEffect) {
             var bs = Instantiate(bloodStain.gameObject, transform.position, Quaternion.identity, null);
             bs.GetComponent<SpriteRenderer>().DOColor(Color.clear, 30f);
             Destroy(bs.gameObject, 10.1f);
@@ -66,10 +66,21 @@ public abstract class Mortal : MonoBehaviour {
         //  check for death
         checkForDeath();
 
-        if(bloodParticle != null)
+        if(bloodParticle != null && bloodEffect)
             bloodParticle.GetComponent<ParticleSystem>().Play();
 
         hitLogic(knockback, origin, stun);
+    }
+    public void heal(int hAmt, bool triggerEffect = true) {
+        if(hAmt < 0) {
+            Debug.LogError("dont'");
+            return;
+        }
+        health = Mathf.Clamp(health + hAmt, 0, maxHealth);
+
+        if(triggerEffect) {
+            //  do a little particle system here
+        }
     }
 
     public bool checkForDeath() {

@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6967870594991004469}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.58, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -50,8 +50,8 @@ MonoBehaviour:
   occlusionLayer: 0
   translucentLayer: 0
   translucentPresetId: 0
-  color: {r: 4.2823267, g: 4.2823267, b: 4.2823267, a: 1}
-  size: 75
+  color: {r: 5.0114546, g: 5.0114546, b: 5.0114546, a: 0.5}
+  size: 15
   spotAngleInner: 360
   spotAngleOuter: 360
   coreSize: 0.5
