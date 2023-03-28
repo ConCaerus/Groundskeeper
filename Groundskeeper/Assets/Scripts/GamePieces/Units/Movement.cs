@@ -22,7 +22,7 @@ public abstract class Movement : MortalUnit {
     Collider2D srCol;
 
     //  abstract because monsters change their sprites differently to everyone else
-    public abstract void updateSprite(Vector2 movingDir);
+    public abstract void updateSprite(Vector2 movingDir, bool opposite);
     protected void movementInit(SetupSequenceManager s, LayerSorter l) {
         ssm = s;
         ls = l;
@@ -45,7 +45,7 @@ public abstract class Movement : MortalUnit {
                 anim = StartCoroutine(walkAnim());
         }
 
-        updateSprite(info);
+        updateSprite(info, speed < 0f);
     }
 
     protected void moveToPos(Vector2 pos, Rigidbody2D rb, float speed) {
@@ -58,7 +58,7 @@ public abstract class Movement : MortalUnit {
         var s = speed * 10.0f * (beingAttackedByMonster ? inhibitMod : 1.0f);
         rb.MovePosition(Vector2.MoveTowards(rb.gameObject.transform.position, pos, s * Time.fixedDeltaTime));
 
-        updateSprite(pos - (Vector2)transform.position);
+        updateSprite(pos - (Vector2)transform.position, speed < 0f);
     }
 
     public void lookAtPos(Vector2 target) {

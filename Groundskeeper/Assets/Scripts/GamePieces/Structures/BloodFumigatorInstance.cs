@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BloodFumigatorInstance : BuildingInstance {
+public class BloodFumigatorInstance : StructureInstance {
 
     private void Start() {
         mortalInit();

@@ -8,7 +8,7 @@ public class GameBoardSpawner : MonoBehaviour {
     [SerializeField] GameObject holder, envHolder;
 
 
-    [HideInInspector] public KdTree<LumberjackInstance> aHelpers = new KdTree<LumberjackInstance>();
+    [HideInInspector] public KdTree<HelperInstance> aHelpers = new KdTree<HelperInstance>();
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 

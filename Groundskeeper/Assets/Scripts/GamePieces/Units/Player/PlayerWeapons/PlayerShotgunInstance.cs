@@ -32,11 +32,13 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
         DOTween.To(() => gunLight.size, x => gunLight.size = x, 0.0f, .15f);
 
         //  logic
-        attack(GameInfo.mousePos(), pi.weaponAttackMod);
+        attack(GameInfo.mousePos(), Vector2.zero, pi.weaponAttackMod);
         pi.weaponAttackMod = 1.0f;
     }
 
     public override void performOnAttackEnd() {
+    }
+    public override void lobToMonster() {
     }
 
     Vector2 rotate_point(float cx, float cy, float angle, Vector2 p) {

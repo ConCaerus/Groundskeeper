@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using FunkyCode;
 
-public class HouseInstance : BuildingInstance {
+public class HouseInstance : StructureInstance {
     [HideInInspector]
     [SerializeField] public float viewDist = 80f;
     [SerializeField] GameObject arrow;

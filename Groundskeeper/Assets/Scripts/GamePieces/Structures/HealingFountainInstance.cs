@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingFountainInstance : BuildingInstance {
+public class HealingFountainInstance : StructureInstance {
 
     [SerializeField] float healAmtPerSec;
 

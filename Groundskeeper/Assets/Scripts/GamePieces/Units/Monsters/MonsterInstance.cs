@@ -11,6 +11,7 @@ public class MonsterInstance : Monster {
 
 
     [HideInInspector][SerializeField] public Transform followingTransform = null;
+    [HideInInspector] public bool hasTarget = false;
 
     //  cannot be confused if is leader
     public bool confused { get; private set; } = false;
@@ -55,10 +56,6 @@ public class MonsterInstance : Monster {
                     attack(col.gameObject, true);
                 else if(col.gameObject.tag == "Structure" && favoriteTarget == targetType.Structures)
                     attack(col.gameObject, true);
-
-                //  if attacks a lumberjack, tells them that they can attack back
-                if(col.gameObject.tag == "Helper" && col.gameObject.GetComponent<LumberjackInstance>() != null)
-                    col.gameObject.GetComponent<LumberjackInstance>().inReach = true;
             }
         }
     }
@@ -119,7 +116,7 @@ public class MonsterInstance : Monster {
         //  following person
         if(!leader && closestLeader != null) {
             //  move towards the same person / structure as the leader
-            if(closestLeader.followingTransform != null)
+            if(closestLeader.hasTarget)
                 moveTarget = closestLeader.followingTransform.position;
             //  move towards the same position as the leader with the same offset as current
             else {
@@ -127,11 +124,11 @@ public class MonsterInstance : Monster {
             }
         }
         else {
-            if(followingTransform != null)
+            if(hasTarget)
                 moveTarget = followingTransform.position;
 
             //  if doesn't have a target, give it a generic target to follow
-            else if(followingTransform == null) {
+            else {
                 moveTarget = favoriteTarget == targetType.People ? (Vector2)pt.position : houseCenter;
             }
         }
@@ -143,12 +140,13 @@ public class MonsterInstance : Monster {
     public override WalkAnimInfo getWalkInfo() {
         return flying ? new WalkAnimInfo(.25f, .35f, 0f, 0f) : new WalkAnimInfo(.25f, .35f, 15f, 5f);
     }
-    public override void updateSprite(Vector2 movingDir) {
+    public override void updateSprite(Vector2 movingDir, bool opposite) {
         Vector2 offset = moveTarget - (Vector2)transform.position;
         if(offset == Vector2.zero) {
             sr.sprite = forwardSprite;
             return;
         }
+        //  should never have opposite sprite so im not gonna add it
         else if(Mathf.Abs(offset.x) > Mathf.Abs(offset.y))
             sr.sprite = offset.x > 0.0f ? rightSprite : leftSprite;
         else

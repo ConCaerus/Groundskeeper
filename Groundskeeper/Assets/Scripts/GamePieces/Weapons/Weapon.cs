@@ -5,11 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Weapon", menuName = "Weapon", order = 1)]
 public class Weapon : ScriptableObject {
     public enum attackType {
-        Swing, Shoot
+        Swing, Shoot, Lob
     }
 
     public enum weaponTitle {
-        None, Axe, Rifle, Shotgun
+        None, Axe, Rifle, Shotgun, Pitchfork, HolyWater
     }
 
     public weaponTitle title;

@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class UnitMovementUpdater : MonoBehaviour {
 
-    public void addHelper(LumberjackInstance helper) {
+    public void addHelper(HelperInstance helper) {
         StartCoroutine(waitToFindANewTargetForHelper(helper));
     }
     public void addMonster(MonsterInstance monster) {
         StartCoroutine(updateMovementEachFrame(monster));
     }
 
-    IEnumerator waitToFindANewTargetForHelper(LumberjackInstance helper) {
+    IEnumerator waitToFindANewTargetForHelper(HelperInstance helper) {
         while(helper != null && helper.gameObject != null) {
             helper.updateMovement();
             yield return new WaitForFixedUpdate();

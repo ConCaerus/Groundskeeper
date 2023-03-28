@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public abstract class BuildingMortal : Mortal {
+public abstract class StructureMortal : Mortal {
 
     public override void hitLogic(float knockback, Vector2 origin, bool stun = true) {
         float takeTime = .5f;

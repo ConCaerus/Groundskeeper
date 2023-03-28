@@ -3,37 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HelperAttackManager : MonoBehaviour {
+    GameBoard gb;
 
-    public void addHelper(LumberjackInstance hel) {
-        StartCoroutine(attackLogic(hel));
+    private void Awake() {
+        gb = FindObjectOfType<GameBoard>();
+    }
+
+    public void addHelper(HelperInstance hel) {
+        StartCoroutine(inReachLogic(hel));
     }
 
 
-    IEnumerator attackLogic(LumberjackInstance hel) {
+    IEnumerator inReachLogic(HelperInstance hel) {
+        //  checks if helper is null
         if(hel == null)
             yield break;
-        while(FindObjectOfType<GameBoard>().monsters.Count == 0)
+
+        //  waits for monsters to spawn
+        while(gb.monsters.Count == 0)
             yield return new WaitForSeconds(2.0f);
 
+        //  checks if helper is null
         if(hel == null)
             yield break;
-        /*
-        var d = 0f;
-        if(hel.followingTransform != null) {
-            d = Vector2.Distance(hel.transform.position, hel.followingTransform.position);
-        }
-        else {
-            var mon = FindObjectOfType<GameBoard>().monsters.FindClosest(hel.transform.position);
-            d = Vector2.Distance(hel.transform.position, mon.transform.position);
-        }
-        hel.inReach = d <= inReachDist;
 
-        if(!hel.inReach)
-            yield return new WaitForSeconds(Mathf.Clamp((d - inReachDist) / 12.0f, .05f, 2.0f));  //  wait to check if in reach again based on the distance to the nearest fucker
-        */
+        //  checks if in reach
         if(hel.inReach) {
-            hel.GetComponentInChildren<LumberjackWeaponInstance>().attack(Vector2.zero);   //  attack the fucker
-            yield return new WaitForSeconds(hel.getAttackCoolDown());  //  already set to inReach, wait to check if not inreach
+            hel.inReachEnterAction(hel.followingTransform.gameObject);
         }
 
         //  while nothing important is happening
@@ -43,6 +39,6 @@ public class HelperAttackManager : MonoBehaviour {
         //  if something important is about to happen
         if(hel != null && hel.gameObject != null && hel.hasTarget)
             yield return new WaitForEndOfFrame();
-        StartCoroutine(attackLogic(hel));
+        StartCoroutine(inReachLogic(hel));
     }
 }

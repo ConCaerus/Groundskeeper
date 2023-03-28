@@ -28,11 +28,13 @@ public class PlayerRifleInstance : PlayerWeaponVariant {
         gunLight.size = 20f;
         DOTween.To(() => gunLight.size, x => gunLight.size = x, 0.0f, .15f);
 
-        attack(GameInfo.mousePos(), pi.weaponAttackMod);
+        attack(GameInfo.mousePos(), Vector2.zero, pi.weaponAttackMod);
         pi.weaponAttackMod = 1.0f;
     }
 
     public override void performOnAttackEnd() {
+    }
+    public override void lobToMonster() {
     }
 
     //  currently shoots from the position of the gun sprite

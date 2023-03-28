@@ -21,7 +21,7 @@ public class ScarecrowInstance : Helper {
     public override WalkAnimInfo getWalkInfo() {
         return null;
     }
-    public override void updateSprite(Vector2 movingDir) {
+    public override void updateSprite(Vector2 movingDir, bool opposite) {
         
     }
     public override bool restartWalkAnim() {

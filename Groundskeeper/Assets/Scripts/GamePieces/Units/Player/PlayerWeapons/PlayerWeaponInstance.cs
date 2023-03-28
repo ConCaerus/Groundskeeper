@@ -76,6 +76,8 @@ public class PlayerWeaponInstance : WeaponInstance {
 
     public override void shootMonster() {
     }
+    public override void lobToMonster() {
+    }
 
     void attackPerformed(InputAction.CallbackContext c) {
         if(ssm.isActiveAndEnabled)

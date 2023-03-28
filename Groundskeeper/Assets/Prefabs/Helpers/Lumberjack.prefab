@@ -137,7 +137,7 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.09, y: 0}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 3.5
 --- !u!114 &8815149983043130293
@@ -585,8 +585,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5885474163630609343}
   - component: {fileID: 781272015645960741}
-  - component: {fileID: 6384955675220499103}
   - component: {fileID: 6186354697606408479}
+  - component: {fileID: 6059297364201455406}
   - component: {fileID: -7301817404344565355}
   m_Layer: 9
   m_Name: Lumberjack
@@ -638,42 +638,6 @@ PolygonCollider2D:
     - - {x: -0.023654938, y: 0.045968056}
       - {x: -0.56011873, y: -1.185322}
       - {x: 0.5811334, y: -1.1958491}
---- !u!114 &6384955675220499103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5885474163630609340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bed6f93906f85ca4a8aa12f2a1fa0000, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  unitHealth: 100
-  hurtSound: {fileID: 0}
-  bloodStain: {fileID: 0}
-  healthBar: {fileID: 0}
-  hi: {fileID: 0}
-  forwardSprite: {fileID: 21300000, guid: f0c3013faa6a93d4db6bc88e5e7e02ac, type: 3}
-  backSprite: {fileID: 21300000, guid: 70cdb683bbef23244bbe16ea5adcf8b6, type: 3}
-  leftSprite: {fileID: 21300000, guid: add69aa6b34dbaa4cb74f2b93ab57041, type: 3}
-  rightSprite: {fileID: 21300000, guid: 3a924ecb4d7490144ba80c140bb6c99e, type: 3}
-  spriteObj: {fileID: 5885474163079569782}
-  shadowObj: {fileID: 5885474163258482202}
-  canMove: 1
-  movementParticles: {fileID: 6843156628040084235}
-  speed: 0.8
-  helpAmount: 1
-  helpType: 2
-  sprite: {fileID: 21300000, guid: f0c3013faa6a93d4db6bc88e5e7e02ac, type: 3}
-  followingTransform: {fileID: 0}
-  hasTarget: 0
-  inReach: 0
-  startingPos: {x: 0, y: 0}
-  bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
-  weaponAnim: {fileID: 0}
 --- !u!50 &6186354697606408479
 Rigidbody2D:
   serializedVersion: 4
@@ -695,6 +659,42 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &6059297364201455406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5885474163630609340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bed6f93906f85ca4a8aa12f2a1fa0000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 150
+  unitHealth: 150
+  hurtSound: {fileID: 0}
+  bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
+  healthBar: {fileID: 0}
+  hi: {fileID: 0}
+  forwardSprite: {fileID: 21300000, guid: f0c3013faa6a93d4db6bc88e5e7e02ac, type: 3}
+  backSprite: {fileID: 21300000, guid: 70cdb683bbef23244bbe16ea5adcf8b6, type: 3}
+  leftSprite: {fileID: 21300000, guid: add69aa6b34dbaa4cb74f2b93ab57041, type: 3}
+  rightSprite: {fileID: 21300000, guid: 3a924ecb4d7490144ba80c140bb6c99e, type: 3}
+  spriteObj: {fileID: 5885474163079569782}
+  shadowObj: {fileID: 5885474163258482202}
+  canMove: 1
+  movementParticles: {fileID: 6335986319718400554, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+  speed: 0.8
+  helpAmount: 0
+  helpType: 1
+  sprite: {fileID: 21300000, guid: f0c3013faa6a93d4db6bc88e5e7e02ac, type: 3}
+  followingTransform: {fileID: 0}
+  hasTarget: 0
+  inReach: 0
+  startingPos: {x: 0, y: 0}
+  bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
+  weaponAnim: {fileID: 6571409838577942773}
 --- !u!114 &-7301817404344565355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -935,11 +935,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
---- !u!198 &6843156628040084235 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6335986319718400554, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
-  m_PrefabInstance: {fileID: 655897509591034145}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3037591956524550687 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2539333671518102334, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class IronMaidenInstance : BuildingInstance {
+public class IronMaidenInstance : StructureInstance {
     Coroutine eaterWaiter = null;
     [SerializeField] Sprite openSprite, closedSprite;
     SpriteRenderer sr;

@@ -128,8 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e840abbf9ec88d4ebe9b683c0d62825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 600
-  unitHealth: 600
+  maxHealth: 350
+  unitHealth: 350
   hurtSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 25
+  cost: 30
   title: 18
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 98388c5a2ac4cfd428f14ff8ca722ae0, type: 2}
@@ -161,7 +161,7 @@ MonoBehaviour:
   mainSprite: {fileID: 4456731478231792690}
   placementCollider: {fileID: 0}
   bType: 3
-  description: Fixes scratches and scars
+  description: Releases holy mist into the air, damaging any close monsters
   isAttractive: 0
 --- !u!1 &8867277225175597390
 GameObject:

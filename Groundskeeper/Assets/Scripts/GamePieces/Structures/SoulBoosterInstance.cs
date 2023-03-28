@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoulBoosterInstance : BuildingInstance {
+public class SoulBoosterInstance : StructureInstance {
     private void Start() {
         mortalInit();
         buildingInit();

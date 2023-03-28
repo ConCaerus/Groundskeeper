@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -815747036435024762}
   - component: {fileID: 4237534904317676787}
   m_Layer: 14
-  m_Name: SightStealer
+  m_Name: BloodFumigator
   m_TagString: Structure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,8 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b03d906a360f240bbd8973d77dab43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 500
-  unitHealth: 500
+  maxHealth: 250
+  unitHealth: 250
   hurtSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 25
+  cost: 35
   title: 17
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 309761b361eb220459dc0522cc1286d2, type: 2}
@@ -161,7 +161,7 @@ MonoBehaviour:
   mainSprite: {fileID: 4456731478231792690}
   placementCollider: {fileID: 0}
   bType: 3
-  description: Fixes scratches and scars
+  description: Releases a mist of blood into the air, confusing monsters
   isAttractive: 0
 --- !u!1 &8867277225175597390
 GameObject:

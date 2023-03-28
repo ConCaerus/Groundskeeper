@@ -46,7 +46,7 @@ public class PlayerHouseInstance : Movement {
     public override bool restartWalkAnim() {
         return controls.Player.Move.inProgress;
     }
-    public override void updateSprite(Vector2 movingDir) {
+    public override void updateSprite(Vector2 movingDir, bool opposite) {
         //  not moving
         if(movingDir == Vector2.zero)
             return;

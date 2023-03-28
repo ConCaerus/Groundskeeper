@@ -128,8 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b83f472607448347a63d6e1167a18cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 750
-  unitHealth: 750
+  maxHealth: 500
+  unitHealth: 500
   hurtSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 25
+  cost: 35
   title: 15
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 4fc564cf42dad2b4e89f0a3acbe054b5, type: 2}
@@ -163,7 +163,7 @@ MonoBehaviour:
   mainSprite: {fileID: 4456731478231792690}
   placementCollider: {fileID: 0}
   bType: 3
-  description: Fixes scratches and scars
+  description: Traps and kills monsters while also giving more souls
   isAttractive: 0
 --- !u!1 &8867277225175597390
 GameObject:

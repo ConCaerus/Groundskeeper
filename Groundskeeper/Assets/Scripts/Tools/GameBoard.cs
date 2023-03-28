@@ -8,7 +8,7 @@ public class GameBoard : MonoBehaviour {
 
 
     [HideInInspector] public KdTree<Helper> helpers = new KdTree<Helper>();
-    [HideInInspector] public KdTree<BuildingInstance> structures = new KdTree<BuildingInstance>();
+    [HideInInspector] public KdTree<StructureInstance> structures = new KdTree<StructureInstance>();
     [HideInInspector] public KdTree<DefenceInstance> defences = new KdTree<DefenceInstance>();
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
@@ -83,8 +83,8 @@ public class GameBoard : MonoBehaviour {
         //      saves new shit
         foreach(var i in GameObject.FindGameObjectsWithTag("Helper")) {
             var save = new ObjectSaveData(i.GetComponent<Buyable>());
-            if(i.GetComponent<LumberjackInstance>() != null)
-                save = new ObjectSaveData(i.GetComponent<LumberjackInstance>());
+            if(i.GetComponent<HelperInstance>() != null)
+                save = new ObjectSaveData(i.GetComponent<HelperInstance>());
             var data = JsonUtility.ToJson(save);
             SaveData.setString(GameInfo.helperTag + hIndex.ToString(), data);
             hIndex++;
@@ -243,7 +243,7 @@ public class ObjectSaveData {
         pos = b.transform.position;
     }
 
-    public ObjectSaveData(LumberjackInstance l) {
+    public ObjectSaveData(HelperInstance l) {
         name = l.GetComponent<Buyable>().title.ToString();
         pos = l.startingPos;
     }

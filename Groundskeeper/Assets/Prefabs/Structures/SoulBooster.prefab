@@ -128,8 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a796c5b80b99884b9f36e28f31121ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 750
-  unitHealth: 750
+  maxHealth: 200
+  unitHealth: 200
   hurtSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
@@ -161,7 +161,7 @@ MonoBehaviour:
   mainSprite: {fileID: 4456731478231792690}
   placementCollider: {fileID: 0}
   bType: 3
-  description: Fixes scratches and scars
+  description: Boosts the number of souls dropped by close monsters
   isAttractive: 0
 --- !u!1 &8867277225175597390
 GameObject:

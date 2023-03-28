@@ -127,8 +127,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c8d4bcdad6a49646bdcf948eed853d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 500
-  unitHealth: 500
+  maxHealth: 100
+  unitHealth: 100
   hurtSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
@@ -138,7 +138,6 @@ MonoBehaviour:
   usesAreaOfEffect: 0
   aoeEffectedGamePieces: 
   aoeRadius: 0
-  aoeEffectAmount: 0
   aoeObject: {fileID: 0}
   bloodParticles: {fileID: 0}
   healAmtPerSec: 25

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BuildingInstance : Building {
+public abstract class StructureInstance : Structure {
     [SerializeField] GameObject bloodParticles;
     protected StructureAreaOfEffect saoe;
 

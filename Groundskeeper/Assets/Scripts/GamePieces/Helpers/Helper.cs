@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Helper : Attacker {
     public enum helperType {
-        None, All, Attack, Repair, Heal
+        None, Attack, Repair, Heal
     }
 
     public float speed;

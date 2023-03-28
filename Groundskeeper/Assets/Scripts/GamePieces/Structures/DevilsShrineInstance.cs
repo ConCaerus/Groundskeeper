@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DevilsShrineInstance : BuildingInstance {
+public class DevilsShrineInstance : StructureInstance {
     Coroutine healer = null;
 
     //  make this game object because monster instance might not be being attactched after modifying

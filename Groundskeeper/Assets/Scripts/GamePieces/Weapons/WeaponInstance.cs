@@ -29,11 +29,12 @@ public abstract class WeaponInstance : MonoBehaviour {
     [SerializeField] public Animator wAnimator;
     [SerializeField] public GameObject gunFireParticlesPos;
     [SerializeField] public FunkyCode.Light2D gunLight;
+    [SerializeField] GameObject lobObject;
 
     bool isPlayerWeapon = false;
 
 
-    public Weapon reference { get; private set; }
+    public Weapon reference { get; protected set; }
 
     public bool canMove = true;
     [HideInInspector] public bool used = true;
@@ -69,13 +70,11 @@ public abstract class WeaponInstance : MonoBehaviour {
         am = FindObjectOfType<AudioManager>();
 
         //  sets reference
-        //  helper shit
-        if(GetComponentInParent<LumberjackInstance>() != null)
-            reference = FindObjectOfType<PresetLibrary>().getWeapon(Weapon.weaponTitle.Axe);
-        else
+        if(GetComponentInParent<HelperInstance>() == null)
             isPlayerWeapon = true;
 
-        GetComponent<Collider2D>().enabled = false;
+        if(c != null)
+            c.enabled = false;
         trail.emitting = false;
         transform.localPosition = offsetFromUser;
     }
@@ -151,7 +150,8 @@ public abstract class WeaponInstance : MonoBehaviour {
 
 
     //  set attackingPos to Vector2.zero to not use it
-    public void attack(Vector2 attackingPos, float mod = 0.0f) {
+    //  set targetPos to Vector2.zero to not use it
+    public void attack(Vector2 attackingPos, Vector2 targetPos, float mod = 0.0f) {
         if(anim != null || !used || !a.getCanAttack())
             return;
         if(reference.swingSound != null)
@@ -160,10 +160,13 @@ public abstract class WeaponInstance : MonoBehaviour {
             anim = StartCoroutine(swingAttackAnim(mod, attackingPos));
         else if(reference.aType == Weapon.attackType.Shoot)
             anim = StartCoroutine(shootAttackAnim(mod, attackingPos));
+        else if(reference.aType == Weapon.attackType.Lob)
+            StartCoroutine(lobAttackAnim(targetPos));
     }
 
 
     public abstract void shootMonster();
+    public abstract void lobToMonster();
 
     IEnumerator shootAttackAnim(float mod, Vector2 attackingPos) {
         canMove = false;
@@ -280,5 +283,21 @@ public abstract class WeaponInstance : MonoBehaviour {
         transform.parent.DOScale(1.0f, swingTime);
         yield return new WaitForSeconds(swingTime);
         */
+    }
+
+    IEnumerator lobAttackAnim(Vector2 targetPos) {
+        float duration = .75f;
+        a.startCooldown();
+        user.GetComponent<Movement>().lookAtPos(targetPos);
+
+        var obj = Instantiate(lobObject.gameObject);
+        obj.transform.position = transform.position;
+
+        obj.transform.DOMove(targetPos, duration);
+        Destroy(obj.gameObject, duration + .1f);
+        
+        obj.transform.DOScale(new Vector3(1.25f, 1.25f), duration / 2.0f);
+        yield return new WaitForSeconds(duration / 2.0f);
+        obj.transform.DOScale(new Vector3(1.0f, 1.0f), duration / 2.0f);
     }
 }
