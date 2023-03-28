@@ -24,7 +24,7 @@ public class RepairmanInstance : HelperInstance {
 
         hasTarget = false;
         //  finished healing, so look for another structure
-        GetComponentInChildren<SightCollider>().resetCollider();
+        GetComponentInChildren<SightCollider>().resetCollider(this);
         GetComponentInChildren<HelperInReachCollider>().resetCollider();
         repairWaiter = null;
     }

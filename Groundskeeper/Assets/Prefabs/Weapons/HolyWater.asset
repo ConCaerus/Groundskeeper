@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: HolyWater
   m_EditorClassIdentifier: 
   title: 5
-  damage: 5
+  damage: 3
   knockback: 0
-  cooldown: 0.5
+  cooldown: 2
   aType: 2
   range: 10
+  groundedTime: 3
   trailPos: {x: 1.21, y: -0.52}
   sprite: {fileID: 21300000, guid: 463123bb20540a04d88a7a1e43817a0c, type: 3}
   swingSound: {fileID: 0}

@@ -294,9 +294,13 @@ public abstract class WeaponInstance : MonoBehaviour {
         obj.transform.position = transform.position;
 
         obj.transform.DOMove(targetPos, duration);
-        Destroy(obj.gameObject, duration + .1f);
-        
-        obj.transform.DOScale(new Vector3(1.25f, 1.25f), duration / 2.0f);
+        obj.GetComponent<LobbedInstance>().lob(duration);
+
+        //  starts the lobbed anim
+        obj.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, 360.0f * 3f), duration, RotateMode.FastBeyond360);
+
+        //  starts half animation
+        obj.transform.DOScale(new Vector3(1.5f, 1.5f), duration / 2.0f);
         yield return new WaitForSeconds(duration / 2.0f);
         obj.transform.DOScale(new Vector3(1.0f, 1.0f), duration / 2.0f);
     }

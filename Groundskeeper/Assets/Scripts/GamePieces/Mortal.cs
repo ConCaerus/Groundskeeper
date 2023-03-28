@@ -42,7 +42,7 @@ public abstract class Mortal : MonoBehaviour {
     public abstract GameObject getBloodParticles();
     public abstract Color getStartingColor();
 
-    public void takeDamage(int dmg, float knockback, Vector2 origin, bool activateInvinc = true, bool stun = true, bool bloodEffect = true) {
+    public void takeDamage(int dmg, float knockback, Vector2 origin, bool activateInvinc, bool stun, bool bloodEffect) {
         if(invincible || dmg <= 0.0f)
             return;
         if(activateInvinc)

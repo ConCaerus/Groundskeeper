@@ -47,6 +47,7 @@ public class HelperTooCloseCollider : MonoBehaviour {
 
     //  resets the collider to check and see if there are still any relevant collisions
     public void resetCollider() {
+        hi.tooClose = false;
         c.radius = 0f;
         expandArea();
     }

@@ -29,7 +29,6 @@ public abstract class HelperInstance : Helper {
         hi = FindObjectOfType<HouseInstance>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Helper"));
-        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("House"));   //  still move around the house, this just makes EXTRA sure they don't get stuck
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponents<Collider2D>()[0].isTrigger ? GetComponents<Collider2D>()[1] : GetComponents<Collider2D>()[0], spriteObj.GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         FindObjectOfType<UnitMovementUpdater>().addHelper(this);
@@ -64,8 +63,10 @@ public abstract class HelperInstance : Helper {
             inReach = false;
             tooClose = false;
             //  already at starting pos
-            if(Vector2.Distance(transform.position, startingPos) < .01f)
+            if(Vector2.Distance(transform.position, startingPos) < .01f) {
+                target = Vector2.zero;
                 return;
+            }
         }
         if(followingTransform != null) {
             target = followingTransform.position;
@@ -84,7 +85,7 @@ public abstract class HelperInstance : Helper {
         moveInfo = (hasTarget && !inReach) ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, startingPos, slowSpeed * 100.0f * Time.fixedDeltaTime);
     }
     public override bool restartWalkAnim() {
-        return hasTarget && !inReach;
+        return (hasTarget || target != Vector2.zero) && !inReach;
     }
     public override void updateSprite(Vector2 movingDir, bool opposite) {
         //  not moving, face forward

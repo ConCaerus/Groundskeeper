@@ -212,7 +212,7 @@ public class PlayerInstance : Attacker {
         while(health > 0.0f) {
             if(health < maxHealth)
                 health++;
-            yield return new WaitForSeconds(.35f);
+            yield return new WaitForSeconds(.5f);
         }
     }
     #endregion

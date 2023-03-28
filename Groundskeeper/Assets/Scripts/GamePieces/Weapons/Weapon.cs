@@ -18,6 +18,7 @@ public class Weapon : ScriptableObject {
     public float cooldown;
     public attackType aType;
     public float range; //  only should be relevant for guns
+    public float groundedTime;  //  only should be relevant for lobbed weapons
 
     public Vector2 trailPos;
 

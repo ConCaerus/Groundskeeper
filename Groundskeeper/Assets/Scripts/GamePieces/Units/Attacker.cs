@@ -22,7 +22,7 @@ public abstract class Attacker : Movement {
             //  Voodoo Doll
             else if(target.gameObject.GetComponent<VoodooDollInstance>() != null && getDamage() > 0.0f) {
                 var mod = target.gameObject.GetComponent<VoodooDollInstance>().getMirroredDamageMod();
-                takeDamage((int)Mathf.Clamp(getDamage() * mod, 1, getDamage()), 0.0f, target.transform.position, false, false);
+                takeDamage((int)Mathf.Clamp(getDamage() * mod, 1, getDamage()), 0.0f, target.transform.position, false, false, true);
                 specialEffectOnAttack(gameObject);
 
                 //  checks if this fucker died to the doll
@@ -32,7 +32,7 @@ public abstract class Attacker : Movement {
 
             //  deal damage
             if(getDamage() > 0.0f) {
-                target.gameObject.GetComponent<Mortal>().takeDamage(getDamage(), getKnockback(), transform.position, true);
+                target.gameObject.GetComponent<Mortal>().takeDamage(getDamage(), getKnockback(), transform.position, true, true, true);
                 specialEffectOnAttack(target);
             }
             //  start cooldown

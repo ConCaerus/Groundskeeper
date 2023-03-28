@@ -60,7 +60,7 @@ public class SightCollider : MonoBehaviour {
                     mi.followingTransform = FindObjectOfType<PlayerInstance>().gameObject.transform;
                 else
                     mi.followingTransform = FindObjectOfType<HouseInstance>().gameObject.transform;
-                resetCollider();
+                resetCollider(mi);
             }
         }
 
@@ -73,7 +73,7 @@ public class SightCollider : MonoBehaviour {
             if(col.gameObject.transform == li.followingTransform) {
                 li.hasTarget = false;
                 li.followingTransform = null;
-                resetCollider();
+                resetCollider(li);
             }
         }
     }
@@ -86,7 +86,15 @@ public class SightCollider : MonoBehaviour {
     }
 
     //  resets the collider to check and see if there are still any relevant collisions
-    public void resetCollider() {
+    public void resetCollider(HelperInstance li) {
+        li.hasTarget = false;
+        li.followingTransform = null;
+        c.radius = 0f;
+        expandArea();
+    }
+    public void resetCollider(MonsterInstance li) {
+        li.hasTarget = false;
+        li.followingTransform = null;
         c.radius = 0f;
         expandArea();
     }

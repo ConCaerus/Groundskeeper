@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 875077114824489792}
   - component: {fileID: 830481030187955912}
+  - component: {fileID: 6633574928065753302}
+  - component: {fileID: 6310127324770906718}
   m_Layer: 0
   m_Name: HolyWater
   m_TagString: Untagged
@@ -82,3 +84,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6633574928065753302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981169365813095468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76be6876897cd614eb5ca4375ee10662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reference: {fileID: 11400000, guid: 7b4b41790b3eb7148b4d3de2c85c1e14, type: 2}
+  damageDealer: 8
+  tickBtwTime: 0.15
+  tickSlowAmt: 0.25
+  tickEndAfterTicks: 5
+--- !u!58 &6310127324770906718
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981169365813095468}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 3

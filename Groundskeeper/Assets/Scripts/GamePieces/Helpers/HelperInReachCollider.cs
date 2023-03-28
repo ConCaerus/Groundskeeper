@@ -83,6 +83,7 @@ public class HelperInReachCollider : MonoBehaviour {
 
     //  resets the collider to check and see if there are still any relevant collisions
     public void resetCollider() {
+        hi.inReach = false;
         c.radius = 0f;
         expandArea();
     }

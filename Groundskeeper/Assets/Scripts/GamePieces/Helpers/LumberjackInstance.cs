@@ -14,7 +14,8 @@ public class LumberjackInstance : HelperInstance {
     }
 
     IEnumerator attackAnim() {
-        wi.attack(Vector2.zero, target);   //  attack the fucker
+        if(hasTarget)
+            wi.attack(Vector2.zero, target);   //  attack the fucker
         yield return new WaitForSeconds(getAttackCoolDown());  //  already set to inReach, wait to check if not inreach
         attackWaiter = null;
     }

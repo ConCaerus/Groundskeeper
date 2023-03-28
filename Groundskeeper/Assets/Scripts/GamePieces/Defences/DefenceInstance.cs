@@ -20,7 +20,7 @@ public abstract class DefenceInstance : Defence {
         if(triggerer.GetComponent<Mortal>().health <= realDmg)
             td.removeTick(triggerer);
 
-        triggerer.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, false);
+        triggerer.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, false, true);
     }
 
     public abstract void specialTickAction(GameObject triggerer);

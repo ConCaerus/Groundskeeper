@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class TickDamager : MonoBehaviour {
@@ -12,7 +13,7 @@ public class TickDamager : MonoBehaviour {
         public Coroutine ticker = null;
         public Buyable.buyableTitle effect;
 
-        public TickInfo(GameObject m, action ac, float btwTime, Buyable.buyableTitle t, int endAfterCount = -1) {
+        public TickInfo(GameObject m, action ac, Buyable.buyableTitle t, float btwTime, int endAfterCount = -1) {
             obj = m;
             tickAction = ac;
             timeBtwTicks = btwTime;
@@ -20,7 +21,7 @@ public class TickDamager : MonoBehaviour {
             effect = t;
         }
 
-        public void updateInfo(action ac, float btwTime, Buyable.buyableTitle t, int endAfterCount = -1) {
+        public void updateInfo(action ac, Buyable.buyableTitle t, float btwTime, int endAfterCount = -1) {
             tickAction = ac;
             timeBtwTicks = btwTime;
             determinedTickCount = endAfterCount;
@@ -31,20 +32,23 @@ public class TickDamager : MonoBehaviour {
     List<TickInfo> ticks = new List<TickInfo>();
 
     public void addTick(GameObject m, DefenceInstance def) {
+        addTick(m, def.dealDamage, def.GetComponent<Buyable>().title, def.btwHitTime, def.slowAmt, def.tickCount);
+    }
+    public void addTick(GameObject m, action ac, Buyable.buyableTitle tit, float btwTime, float slowAmt, int endAfterCount = -1) {
         int index = getTickIndex(m);
         //  create a tick for a new object
         if(index == -1) {
-            var t = new TickInfo(m, def.dealDamage, def.btwHitTime, def.GetComponent<Buyable>().title, def.tickCount);
+            var t = new TickInfo(m, ac, tit, btwTime, endAfterCount);
             ticks.Add(t);
             StartCoroutine(tick(ticks[ticks.Count - 1]));
         }
 
         //  increment the touching count of the already ticking object
         else {
-            ticks[index].updateInfo(def.dealDamage, def.btwHitTime, def.GetComponent<Buyable>().title, def.tickCount);
+            ticks[index].updateInfo(ac, tit, btwTime, endAfterCount);
         }
 
-        m.GetComponent<MonsterInstance>().affectedMoveAmt = def.slowAmt;
+        m.GetComponent<MonsterInstance>().affectedMoveAmt = slowAmt;
     }
     public void removeTick(GameObject m) {
         int index = getTickIndex(m);
@@ -74,6 +78,8 @@ public class TickDamager : MonoBehaviour {
 
     public IEnumerator tick(TickInfo info) {
         //  does something
+        if(info.obj == null || info.tickAction == null)
+            yield break;
         info.tickAction(info.obj);
 
         //  checks if the ticks are done
