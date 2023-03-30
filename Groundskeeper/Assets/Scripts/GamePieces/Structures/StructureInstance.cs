@@ -6,9 +6,9 @@ public abstract class StructureInstance : Structure {
     [SerializeField] GameObject bloodParticles;
     protected StructureAreaOfEffect saoe;
 
-    protected void buildingInit() {
+    protected void structureInit() {
         var sStats = GameInfo.getStructureStats();
-        //FindObjectOfType<GameBoard>().structures.Add(this);
+        FindObjectOfType<GameBoard>().structures.Add(this);
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), GetComponent<SpriteRenderer>());
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         //  apply health buff

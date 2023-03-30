@@ -10,7 +10,7 @@ public class ThuribleInstance : StructureInstance {
 
     private void Start() {
         mortalInit();
-        buildingInit();
+        structureInit();
     }
 
     public override void aoeEffect(GameObject effected) {

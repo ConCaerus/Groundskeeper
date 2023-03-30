@@ -40,4 +40,33 @@ public class Buyable : MonoBehaviour {
         FindObjectOfType<LayerSorter>().waitAndRequestNewSortingLayer(mainCollider, mainSprite);
         transform.DOPunchScale(new Vector3(1.5f, 1.5f), .15f);
     }
+
+    public string titleToText() {
+        switch(title) {
+            //  if the title is just one word, return it as is
+            case buyableTitle.Lumberjack:
+            case buyableTitle.Spikes:
+            case buyableTitle.Tar:
+            case buyableTitle.Scarecrow:
+            case buyableTitle.House:
+            case buyableTitle.Priest:
+            case buyableTitle.Repairman:
+            case buyableTitle.Demon:
+            case buyableTitle.Thurible:
+                return title.ToString();
+
+            //  if the title is more than one word, add a space before returning it
+            case buyableTitle.HealingFountain: return "Healing Fountain";
+            case buyableTitle.VoodooDoll: return "Voodoo Doll";
+            case buyableTitle.HolyPuddle: return "Holy Puddle";
+            case buyableTitle.SeaSalt: return "Sea Salt";
+            case buyableTitle.SoulNibbler: return "Soul Nibbler";
+            case buyableTitle.DevilsTrap: return "Devil's Trap";
+            case buyableTitle.IronMaiden: return "Iron Maiden";
+            case buyableTitle.DevilsShrine: return "Devil's Shrine";
+            case buyableTitle.BloodFumigator: return "Blood Fumigator";
+            case buyableTitle.SoulBooster: return "Soul Booster";
+        }
+        return string.Empty;
+    }
 }

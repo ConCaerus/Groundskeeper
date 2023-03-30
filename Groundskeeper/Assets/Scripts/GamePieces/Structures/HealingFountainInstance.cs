@@ -10,7 +10,7 @@ public class HealingFountainInstance : StructureInstance {
 
     private void Start() {
         mortalInit();
-        buildingInit();
+        structureInit();
     }
 
     private void OnCollisionEnter2D(Collision2D col) {

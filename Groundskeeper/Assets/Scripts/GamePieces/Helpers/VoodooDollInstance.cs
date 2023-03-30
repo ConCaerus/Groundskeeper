@@ -46,10 +46,8 @@ public class VoodooDollInstance : Helper {
 
     private void Start() {
         mortalInit();
+        helperInit();
         spriteObj.GetComponent<SpriteRenderer>().sprite = sprite;
-        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), spriteObj.GetComponent<SpriteRenderer>());
-        FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
-        FindObjectOfType<GameBoard>().helpers.Add(this);
     }
 
 

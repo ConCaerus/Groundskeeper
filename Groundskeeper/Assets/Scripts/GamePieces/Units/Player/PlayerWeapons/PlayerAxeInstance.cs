@@ -10,7 +10,6 @@ public class PlayerAxeInstance : PlayerWeaponVariant {
 
     GameTutorialCanvas gtc;
     PlayerUICanvas puc;
-    Collider2D col;
     TransitionCanvas tc;
 
     public override void variantSetup() {

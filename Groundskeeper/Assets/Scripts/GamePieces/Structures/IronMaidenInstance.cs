@@ -10,7 +10,7 @@ public class IronMaidenInstance : StructureInstance {
 
     private void Start() {
         mortalInit();
-        buildingInit();
+        structureInit();
         sr = GetComponent<SpriteRenderer>();
     }
 

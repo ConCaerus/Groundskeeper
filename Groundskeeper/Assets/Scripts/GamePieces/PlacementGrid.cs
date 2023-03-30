@@ -16,6 +16,9 @@ public class PlacementGrid : MonoBehaviour {
     SoulTransactionHandler cth;
 
     SetupSequenceManager ssm;
+    GameBoard gb;
+
+    Vector2 prevPos;
 
     [System.Serializable]
     public struct thing {
@@ -36,6 +39,7 @@ public class PlacementGrid : MonoBehaviour {
         pc = FindObjectOfType<PregameCanvas>();
         cth = FindObjectOfType<SoulTransactionHandler>();
         ssm = FindObjectOfType<SetupSequenceManager>();
+        gb = FindObjectOfType<GameBoard>();
     }
 
     private void Update() {
@@ -45,22 +49,70 @@ public class PlacementGrid : MonoBehaviour {
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
 
-            //  checks if the icon is hovering over anything it shouldn't
-            LayerMask layermask = LayerMask.GetMask("Player");
-            layermask += LayerMask.GetMask("HouseFloor");
-            foreach(var i in currentObj.GetComponent<Buyable>().placementObstacleLayers) {
-                layermask += LayerMask.GetMask(i.ToString());
-            }
-            RaycastHit2D hit = Physics2D.Raycast(p, Vector3.forward, Mathf.Infinity, layermask);
-            if(hit) {
-                map.color = Color.red;
+            //  checks if the icon moved during the last update
+            //  if so, check if it moved over anything it shouldn't have
+            if((Vector2)p != prevPos) {
+                prevPos = p;
+                map.color = Color.green;
+
+                //  checks if the icon is hovering over either the player, or the house
+                LayerMask layermask = LayerMask.GetMask("Player");
+                layermask += LayerMask.GetMask("HouseFloor");
+                /*
+                foreach(var i in currentObj.GetComponent<Buyable>().placementObstacleLayers) {
+                    layermask += LayerMask.GetMask(i.ToString());
+                }
+                */
+                RaycastHit2D hit = Physics2D.Raycast(p, Vector3.forward, Mathf.Infinity, layermask);
+                if(hit) {
+                    map.color = Color.red;
+                }
+                //  checks if the icon is hovering over another buyable that would restrict it from being placed
+                foreach(var i in currentObj.GetComponent<Buyable>().placementObstacleLayers) {
+                    switch(i) {
+                        case obstacleTag.Helper:
+                            foreach(var h in gb.helpers) {
+                                //  does have the same position (causing bad juju)
+                                if((Vector2)p == h.startingPos) {
+                                    map.color = Color.red;
+                                    break;
+                                }
+                            }
+                            break;
+
+                        case obstacleTag.Defence:
+                            foreach(var h in gb.defences) {
+                                //  does have the same position (causing bad juju)
+                                if((Vector2)p == (Vector2)h.gameObject.transform.position) {
+                                    map.color = Color.red;
+                                    break;
+                                }
+                            }
+                            break;
+
+                        case obstacleTag.Structure:
+                            foreach(var h in gb.structures) {
+                                //  does have the same position (causing bad juju)
+                                if((Vector2)p == (Vector2)h.gameObject.transform.position) {
+                                    map.color = Color.red;
+                                    break;
+                                }
+                            }
+                            break;
+                    }
+
+                    if(map.color == Color.red)
+                        break;
+                }
             }
 
             if(Input.GetMouseButton(0) && !pc.mouseOverUI() && map.color == Color.green) {
-                place();
+                place(p);
+                prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
             }
             else if(Input.GetMouseButton(1) && !pc.mouseOverUI()) {
-                remove();
+                remove(p);
+                prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
             }
         }
     }
@@ -74,8 +126,6 @@ public class PlacementGrid : MonoBehaviour {
         clear();
         var pos = map.WorldToCell(GameInfo.mousePos());
 
-        map.color = Color.green;
-
         map.SetTile(pos, currentObj.GetComponent<Buyable>().tile);
     }
     public void end() {
@@ -84,7 +134,7 @@ public class PlacementGrid : MonoBehaviour {
         map.enabled = false;
         placing = false;
     }
-    void place() {
+    void place(Vector2 pos) {
         //  can't place in this spot
         if(map.color == Color.red)
             return;
@@ -102,7 +152,6 @@ public class PlacementGrid : MonoBehaviour {
             foreach(var i in FindObjectsOfType<PregameBuyableButton>())
                 i.manageNewDot();
         }
-        var pos = map.CellToWorld(map.WorldToCell(GameInfo.mousePos())) + new Vector3(map.cellSize.x / 2f, map.cellSize.y / 2f);
         if(currentObj.GetComponent<DefenceInstance>() == null) {
             obj = Instantiate(currentObj.gameObject, holder.transform);
 
@@ -126,16 +175,15 @@ public class PlacementGrid : MonoBehaviour {
             ssm.placedHouse();
         }
     }
-    void remove() {
+    void remove(Vector2 pos) {
         if(map.color == Color.green)
             return;
         bool found = false;
         int c = 0;
 
-        var pos = map.CellToWorld(map.WorldToCell(GameInfo.mousePos())) + new Vector3(map.cellSize.x / 2f, map.cellSize.y / 2f);
         GameObject f = null;
         foreach(var i in FindObjectsOfType<Buyable>()) {
-            if(i.transform.position == pos || (i.GetComponent<HelperInstance>() != null && i.GetComponent<HelperInstance>().startingPos == (Vector2)pos)) {
+            if(i.transform.position == (Vector3)pos || (i.GetComponent<HelperInstance>() != null && i.GetComponent<HelperInstance>().startingPos == (Vector2)pos)) {
                 c = i.GetComponent<Buyable>().cost;
                 f = i.gameObject;
                 found = true;

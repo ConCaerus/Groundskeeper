@@ -19,6 +19,7 @@ public class PlayerWeaponInstance : WeaponInstance {
     SetupSequenceManager ssm;
     InputMaster controls;
     GameTutorialCanvas gtc;
+    TransitionCanvas tc;
 
     void Awake() {
         ssm = FindObjectOfType<SetupSequenceManager>();
@@ -28,6 +29,7 @@ public class PlayerWeaponInstance : WeaponInstance {
         controls.Player.Attack.performed += attackPerformed;
         controls.Player.Attack.canceled += attackEnded;
         gtc = FindObjectOfType<GameTutorialCanvas>();
+        tc = FindObjectOfType<TransitionCanvas>();
 
 
         //  sets up the variant
@@ -80,7 +82,7 @@ public class PlayerWeaponInstance : WeaponInstance {
     }
 
     void attackPerformed(InputAction.CallbackContext c) {
-        if(ssm.isActiveAndEnabled)
+        if(ssm.isActiveAndEnabled || !tc.finishedLoading)
             return;
         if(canAttackG && transform.lossyScale.x > 0f && a.getCanAttack()) {
             if(gtc != null)

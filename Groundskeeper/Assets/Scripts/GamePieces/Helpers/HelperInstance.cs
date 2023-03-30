@@ -14,40 +14,30 @@ public abstract class HelperInstance : Helper {
     [HideInInspector] public bool inReach = false;
     [HideInInspector] public bool tooClose = false;
     public Vector2 target { get; private set; }
-    [HideInInspector] public Vector2 startingPos;
 
     [SerializeField] GameObject bloodParticles;
     [SerializeField] Animator weaponAnim;
-    HelperStats hStats;
     protected WeaponInstance wi = null;
     Rigidbody2D rb;
 
     private void Start() {
         mortalInit();
         movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
-        startingPos = transform.position;
+        helperInit();
         hi = FindObjectOfType<HouseInstance>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Helper"));
-        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponents<Collider2D>()[0].isTrigger ? GetComponents<Collider2D>()[1] : GetComponents<Collider2D>()[0], spriteObj.GetComponent<SpriteRenderer>());
-        FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         FindObjectOfType<UnitMovementUpdater>().addHelper(this);
         //FindObjectOfType<HelperAttackManager>().addHelper(this);
-        FindObjectOfType<GameBoard>().helpers.Add(this);
         spriteOriginal = spriteObj.transform.localScale;
         shadowOriginal = shadowObj.transform.localScale;
         targetMoveInfo = transform.position;
-        hStats = GameInfo.getHelperStats();
         if(GetComponentInChildren<WeaponInstance>() != null)
             wi = GetComponentInChildren<WeaponInstance>();
         hasTarget = false;
         inReach = false;
         followingTransform = null;
         rb = GetComponentInParent<Rigidbody2D>();
-
-        //  apply health buff
-        maxHealth = (int)(maxHealth * hStats.helperWeaponHealthBuff);
-        health = maxHealth;
     }
 
     public abstract void inReachEnterAction(GameObject other);

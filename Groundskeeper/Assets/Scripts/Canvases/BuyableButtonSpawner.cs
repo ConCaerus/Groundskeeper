@@ -41,7 +41,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
 
         foreach(var i in buyables) {
             var obj = Instantiate(buyableButton.gameObject, holder);
-            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().title.ToString();
+            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().titleToText();
             obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().cost.ToString("0.0") + "s";
             obj.GetComponent<InfoableImage>().info = i.GetComponent<Buyable>().title.ToString() + ":\n" + i.GetComponent<Buyable>().description;
             if(!bl.hasPlayerSeenBuyable(i.GetComponent<Buyable>().title)) {
