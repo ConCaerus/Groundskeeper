@@ -689,10 +689,11 @@ MonoBehaviour:
   helpAmount: 0
   helpType: 1
   sprite: {fileID: 21300000, guid: f0c3013faa6a93d4db6bc88e5e7e02ac, type: 3}
+  startingPos: {x: 0, y: 0}
   followingTransform: {fileID: 0}
   hasTarget: 0
   inReach: 0
-  startingPos: {x: 0, y: 0}
+  tooClose: 0
   bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
   weaponAnim: {fileID: 6571409838577942773}
 --- !u!114 &-7301817404344565355
@@ -717,6 +718,7 @@ MonoBehaviour:
   bType: 1
   description: Thinks monsters are trees
   isAttractive: 0
+  effectRadius: 13
 --- !u!1 &5885474164528724324
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,6 +825,7 @@ MonoBehaviour:
   wAnimator: {fileID: 6571409838577942773}
   gunFireParticlesPos: {fileID: 0}
   gunLight: {fileID: 0}
+  lobObject: {fileID: 0}
   canMove: 1
   used: 1
 --- !u!58 &1866524963220972915

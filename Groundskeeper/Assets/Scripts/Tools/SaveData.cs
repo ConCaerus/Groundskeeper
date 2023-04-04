@@ -4,7 +4,6 @@ using UnityEngine;
 
 public static class SaveData {
     static string saveIndexString = "Save Data Save Index";
-    static string saveNameTag = "slotSaveNameTag";
     static string usedTagsTag = "UsedTagsTag";
     static string saveIndexTag() {
         return saveTag(PlayerPrefs.GetInt(saveIndexString));
@@ -71,7 +70,6 @@ public static class SaveData {
         setCurrentSaveIndex(i);
 
         deleteAllTagsInCurrentSave();
-        setSaveName(string.Empty);
 
         setCurrentSaveIndex(prevIndex);
         PlayerPrefs.Save();
@@ -152,23 +150,6 @@ public static class SaveData {
         PlayerPrefs.SetString(usedTagsTag, d);
     }
 
-    public static string getSaveName(int i) {
-        var prevIndex = getCurrentSaveIndex();
-        setCurrentSaveIndex(i);
-
-        var temp = getString(saveNameTag);
-
-        setCurrentSaveIndex(prevIndex);
-        return temp;
-    }
-    public static string getCurrentSaveName() {
-        return getString(saveNameTag);
-    }
-    public static void setSaveName(string name) {
-        setString(saveNameTag, name);
-        PlayerPrefs.Save();
-    }
-
     public static int getCurrentSaveIndex() {
         return PlayerPrefs.GetInt(saveIndexString);
     }
@@ -177,7 +158,11 @@ public static class SaveData {
     }
 
     public static bool hasSaveDataForSlot(int i) {
-        return getSaveName(i) != string.Empty;
+        int prev = getCurrentSaveIndex();
+        setCurrentSaveIndex(i);
+        bool temp = TimeInfo.getSecondInSave() > 0f;
+        setCurrentSaveIndex(prev);
+        return temp;
     }
 }
 

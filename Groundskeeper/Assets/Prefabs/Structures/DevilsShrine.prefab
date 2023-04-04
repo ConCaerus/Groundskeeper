@@ -112,10 +112,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.312315, y: -1.0893393}
-      - {x: -0.74298096, y: 0.29515457}
-      - {x: 0.59114647, y: 0.29418564}
-      - {x: 0.22616959, y: -1.1060905}
+    - - {x: -1.0707963, y: -1.2973099}
+      - {x: -0.95095164, y: -0.5000275}
+      - {x: 0.77465, y: -0.4765293}
+      - {x: 0.9357165, y: -1.2895942}
 --- !u!114 &-7631138162272347185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,10 +135,9 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   hi: {fileID: 0}
   title: Devil's Shrine
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 75bd2a98a4068624b8612754504b84c5, type: 3}
   usesAreaOfEffect: 1
   aoeEffectedGamePieces: 01000000020000000300000004000000
-  aoeRadius: 5
   aoeObject: {fileID: 249622816929867076}
   bloodParticles: {fileID: 0}
 --- !u!114 &4237534904317676787
@@ -163,6 +162,7 @@ MonoBehaviour:
   bType: 3
   description: Heals all things that are close
   isAttractive: 0
+  effectRadius: 10
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

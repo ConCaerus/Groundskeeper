@@ -112,10 +112,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.312315, y: -1.0893393}
-      - {x: -0.74298096, y: 0.29515457}
-      - {x: 0.59114647, y: 0.29418564}
-      - {x: 0.22616959, y: -1.1060905}
+    - - {x: -1.0889711, y: -1.5174958}
+      - {x: -0.81268096, y: -0.5412444}
+      - {x: 0.72058916, y: -0.5621274}
+      - {x: 1.042654, y: -1.52429}
 --- !u!114 &-5417575982919454867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,11 +134,10 @@ MonoBehaviour:
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
-  title: Sacraficial Hut
-  sprite: {fileID: 0}
+  title: Iron Maiden
+  sprite: {fileID: -4717504322420724721, guid: 80a67fcf6e1e1024096f028681462b47, type: 3}
   usesAreaOfEffect: 1
   aoeEffectedGamePieces: 06000000
-  aoeRadius: 3
   aoeObject: {fileID: 6408082574672058617}
   bloodParticles: {fileID: 0}
   openSprite: {fileID: -4717504322420724721, guid: 80a67fcf6e1e1024096f028681462b47, type: 3}
@@ -165,6 +164,7 @@ MonoBehaviour:
   bType: 3
   description: Traps and kills monsters while also giving more souls
   isAttractive: 0
+  effectRadius: 1
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,8 +190,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8867277225175597390}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.024, y: -1.223, z: 0}
-  m_LocalScale: {x: 1.725, y: 1, z: 1}
+  m_LocalPosition: {x: -0.024, y: -1.701, z: 0}
+  m_LocalScale: {x: 2.9540625, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4456731478231792692}
   m_RootOrder: 0

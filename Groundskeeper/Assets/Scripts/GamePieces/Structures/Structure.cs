@@ -9,6 +9,5 @@ public abstract class Structure : StructureMortal {
     [Header("Area of Effect")]
     public bool usesAreaOfEffect;
     public List<GameInfo.GamePiece> aoeEffectedGamePieces;
-    public float aoeRadius;
     public GameObject aoeObject;
 }

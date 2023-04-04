@@ -18,7 +18,8 @@ public class Buyable : MonoBehaviour {
 
     [SerializeField] public buyType bType;
     [SerializeField] public string description = "Description";
-    public bool isAttractive;
+    [SerializeField] public bool isAttractive;
+    [SerializeField] public float effectRadius;
 
     [System.Serializable]
     public enum buyType {

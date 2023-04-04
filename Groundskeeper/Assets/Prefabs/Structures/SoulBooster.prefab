@@ -135,10 +135,9 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   hi: {fileID: 0}
   title: Soul Booster
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: c3e88ffa0f6c9944d98bf57ee296b81e, type: 3}
   usesAreaOfEffect: 1
   aoeEffectedGamePieces: 06000000
-  aoeRadius: 10
   aoeObject: {fileID: 2231455946746666465}
   bloodParticles: {fileID: 0}
 --- !u!114 &4237534904317676787
@@ -163,6 +162,7 @@ MonoBehaviour:
   bType: 3
   description: Boosts the number of souls dropped by close monsters
   isAttractive: 0
+  effectRadius: 20
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

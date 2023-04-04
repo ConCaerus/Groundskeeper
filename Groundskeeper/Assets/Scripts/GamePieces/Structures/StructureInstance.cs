@@ -18,7 +18,7 @@ public abstract class StructureInstance : Structure {
         //  AOE shit
         if(usesAreaOfEffect) {
             saoe = aoeObject.GetComponent<StructureAreaOfEffect>();
-            StartCoroutine(saoe.areaStartExpansion(aoeRadius));
+            StartCoroutine(saoe.areaStartExpansion(GetComponent<Buyable>().effectRadius));
             saoe.aoeEffect = aoeEffect;
             saoe.aoeLeaveEffect = aoeLeaveEffect;
             foreach(var i in aoeEffectedGamePieces)

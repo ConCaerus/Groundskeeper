@@ -16,9 +16,20 @@ public class SaveCanvas : MonoBehaviour {
     public void showSaveInfo() {
         var curInd = SaveData.getCurrentSaveIndex();
         for(int i = 0; i < slots.Length; i++) {
-            SaveData.setCurrentSaveIndex(i);
-            var name = SaveData.getCurrentSaveName();
-            slots[i].GetComponentInChildren<TextMeshProUGUI>().text = (i + 1).ToString() + ") " + (name == "" ? "Empty Slot" : name) + "\n" + TimeInfo.timeToString();
+            //  checks if the slot has info
+            if(SaveData.hasSaveDataForSlot(i)) {
+                SaveData.setCurrentSaveIndex(i);
+                //  slot number and time played
+                slots[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Slot: " + (i + 1).ToString() + "\n" + TimeInfo.timeToString();
+                //  night count
+                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Night: " + (GameInfo.getNightCount() + 1).ToString();
+            }
+
+            //  if has no info for the slot, tell the player that it is empty
+            else {
+                slots[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Empty Slot";
+                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+            }
         }
         SaveData.setCurrentSaveIndex(curInd);
     }
@@ -28,32 +39,14 @@ public class SaveCanvas : MonoBehaviour {
         showSaveInfo();
     }
 
-
-    public void updateNameText(string name) {
-        nameText.text = name;
-    }
-    public void setNameAndLoadGame(string name) {
-        nameText.text = name;
+    public void loadNewGame() {
         SaveData.deleteCurrentSave();
-        SaveData.setSaveName(name);
         GameInfo.resetSave(FindObjectOfType<BuyableLibrary>(), FindObjectOfType<PresetLibrary>());
         FindObjectOfType<TransitionCanvas>().loadScene("Game");
     }
 
     public void loadGame(int i) {
         SaveData.setCurrentSaveIndex(i);
-        //  create a new save
-        if(!SaveData.hasSaveDataForSlot(i)) {
-            //  unselected the current button so that when the play hits enter, they don't press it again
-            GameObject myEventSystem = GameObject.Find("EventSystem");
-            myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
-            //  name shit
-            nameText.transform.parent.gameObject.SetActive(true);
-            FindObjectOfType<TextInputReader>().startReading(16, "No Name", updateNameText, setNameAndLoadGame);
-        }
-
-        //  load the save
-        else
-            FindObjectOfType<TransitionCanvas>().loadScene("Game");
+        FindObjectOfType<TransitionCanvas>().loadScene("Game");
     }
 }

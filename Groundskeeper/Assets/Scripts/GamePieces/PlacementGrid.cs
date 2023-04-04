@@ -7,7 +7,8 @@ public class PlacementGrid : MonoBehaviour {
     [SerializeField] GameObject holder;
     Tilemap map;
 
-    [SerializeField][HideInInspector] public bool placing = false;
+    [HideInInspector] public bool placing = false;
+    [SerializeField] GameObject radiusEffect;
 
     [HideInInspector] public GameObject currentObj = null;
 
@@ -40,14 +41,16 @@ public class PlacementGrid : MonoBehaviour {
         cth = FindObjectOfType<SoulTransactionHandler>();
         ssm = FindObjectOfType<SetupSequenceManager>();
         gb = FindObjectOfType<GameBoard>();
+
+        radiusEffect.SetActive(false);
     }
 
     private void Update() {
         if(placing) {
-            move();
             var pos = map.WorldToCell(GameInfo.mousePos());
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
+            move(p);
 
             //  checks if the icon moved during the last update
             //  if so, check if it moved over anything it shouldn't have
@@ -120,15 +123,25 @@ public class PlacementGrid : MonoBehaviour {
     public void changePlacing(GameObject thing, bool toggle) {
         placing = toggle ? !placing : true;
         currentObj = thing;
+
+        //  checks if the new thing needs the radius effect
+        radiusEffect.SetActive(false);
+        if(placing && currentObj.GetComponent<Buyable>() != null && currentObj.GetComponent<Buyable>().effectRadius > 0f) {
+            radiusEffect.SetActive(true);
+            var x = currentObj.GetComponent<Buyable>().effectRadius * 2f;
+            radiusEffect.transform.localScale = new Vector3(x, x);
+        }
     }
 
-    void move() {
+    void move(Vector2 worldPos) {
         clear();
         var pos = map.WorldToCell(GameInfo.mousePos());
 
+        radiusEffect.transform.position = worldPos;
         map.SetTile(pos, currentObj.GetComponent<Buyable>().tile);
     }
     public void end() {
+        radiusEffect.SetActive(false);
         map.color = Color.clear;
         currentObj = null;
         map.enabled = false;

@@ -35,4 +35,8 @@ public static class TimeInfo {
 
         return h.ToString("0") + ":" + m.ToString("00");
     }
+
+    public static float getSecondInSave() {
+        return SaveData.getFloat(timeTag, 0f);
+    }
 }

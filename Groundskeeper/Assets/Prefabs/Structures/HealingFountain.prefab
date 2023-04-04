@@ -112,9 +112,9 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -0.312315, y: -1.0893393}
-      - {x: -0.74298096, y: 0.29515457}
-      - {x: 0.59114647, y: 0.29418564}
-      - {x: 0.22616959, y: -1.1060905}
+      - {x: -0.51396704, y: -0.282359}
+      - {x: 0.5114894, y: -0.26341367}
+      - {x: 0.27595523, y: -1.1060905}
 --- !u!114 &4456731478231792691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +137,6 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 41884af92fe4c17488c213737be71976, type: 3}
   usesAreaOfEffect: 0
   aoeEffectedGamePieces: 
-  aoeRadius: 0
   aoeObject: {fileID: 0}
   bloodParticles: {fileID: 0}
   healAmtPerSec: 25
@@ -163,6 +162,7 @@ MonoBehaviour:
   bType: 3
   description: Fixes scratches and scars
   isAttractive: 0
+  effectRadius: 0
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

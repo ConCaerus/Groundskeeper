@@ -134,11 +134,10 @@ MonoBehaviour:
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
-  title: Soul Sucker
-  sprite: {fileID: 0}
+  title: Thurible
+  sprite: {fileID: 21300000, guid: bc3e5a13ed50d064698838989bd2fd84, type: 3}
   usesAreaOfEffect: 1
   aoeEffectedGamePieces: 06000000
-  aoeRadius: 5
   aoeObject: {fileID: 2236783080790677581}
   bloodParticles: {fileID: 0}
 --- !u!114 &4237534904317676787
@@ -163,6 +162,7 @@ MonoBehaviour:
   bType: 3
   description: Releases holy mist into the air, damaging any close monsters
   isAttractive: 0
+  effectRadius: 10
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0
