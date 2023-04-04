@@ -16,8 +16,9 @@ MonoBehaviour:
   damage: 30
   knockback: 2
   cooldown: 0.5
-  aType: 0
+  aType: 3
   range: 0
+  groundedTime: 0
   trailPos: {x: 1.33, y: -0.13}
   sprite: {fileID: 21300000, guid: 9734c3adc30110d49abf2d170fe79738, type: 3}
   swingSound: {fileID: 0}

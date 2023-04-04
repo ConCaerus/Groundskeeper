@@ -7,6 +7,9 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] Weapon[] weapons;
     [SerializeField] GameObject[] environment;
 
+    public GameObject[] getMonsters() {
+        return monsters;
+    }
     public GameObject getMonster(int index) {
         return monsters[index];
     }

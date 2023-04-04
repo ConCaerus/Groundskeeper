@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 1477919414227495094}
   - component: {fileID: 1477919414227495091}
   - component: {fileID: 6935577520523582635}
-  - component: {fileID: 933221866}
+  - component: {fileID: 7712737829526840318}
   m_Layer: 7
   m_Name: Vampire
   m_TagString: Monster
@@ -247,7 +247,7 @@ PolygonCollider2D:
     - - {x: -0.023654938, y: 0.045968056}
       - {x: -0.56011873, y: -1.185322}
       - {x: 0.5811334, y: -1.1958491}
---- !u!114 &933221866
+--- !u!114 &7712737829526840318
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1477919414227495092}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 137fd1c902e8c7e4eaa0ebc94d45ce84, type: 3}
+  m_Script: {fileID: 11500000, guid: 4397de6deb7e4ad4983d46cdfa99894a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
@@ -290,6 +290,8 @@ MonoBehaviour:
   attackCoolDown: 0.05
   attackKnockBack: 0
   followingTransform: {fileID: 0}
+  hasTarget: 0
+  hasCultistBuff: 0
   leader: 0
   closestLeader: {fileID: 0}
   affectedMoveAmt: 0

@@ -30,7 +30,7 @@ public class LobbedInstance : MonoBehaviour {
     }
 
     public void dealDamage(GameObject triggerer) {
-        if(triggerer == null || triggerer.GetComponent<Mortal>() == null)
+        if(triggerer == null || triggerer.GetComponent<Mortal>() == null || reference == null)
             return;
         //  apply buffs to the damage
         int realDmg = (int)(reference.damage * GameInfo.getHelperStats().helperWeaponDamageBuff);

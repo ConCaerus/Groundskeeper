@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UIElements;
 
-public class MonsterInstance : Monster {
+public abstract class MonsterInstance : Monster {
     Vector2 moveTarget;
 
     [SerializeField] float attackCoolDown = .5f, attackKnockBack = 0f;
@@ -12,6 +12,7 @@ public class MonsterInstance : Monster {
 
     [HideInInspector][SerializeField] public Transform followingTransform = null;
     [HideInInspector] public bool hasTarget = false;
+    [HideInInspector] public bool hasCultistBuff = false;
 
     //  cannot be confused if is leader
     public bool confused { get; private set; } = false;
@@ -27,6 +28,8 @@ public class MonsterInstance : Monster {
     [HideInInspector] public int relevantWave;
     [HideInInspector] public MonsterSpawner.direction direction;
     [SerializeField] GameObject sCol;
+
+    [SerializeField] public List<GameInfo.GamePiece> sightEffectedPieces = new List<GameInfo.GamePiece>();
 
     //  storage
     Transform pt;
@@ -105,6 +108,9 @@ public class MonsterInstance : Monster {
         StartCoroutine(unconfuseSelf());
     }
 
+    public abstract void sightEnterEffect(GameObject other);
+    public abstract void sightExitEffect(GameObject other);
+
     IEnumerator unconfuseSelf() {
         yield return new WaitForSeconds(10f);
         confused = false;
@@ -169,7 +175,7 @@ public class MonsterInstance : Monster {
         return attackCoolDown;
     }
     public override int getDamage() {
-        return attackDamage;
+        return (int)(attackDamage * (hasCultistBuff ? 1.5f : 1f));
     }
     public override float getKnockback() {
         return attackKnockBack;

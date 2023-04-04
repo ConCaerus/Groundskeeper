@@ -158,6 +158,8 @@ public abstract class WeaponInstance : MonoBehaviour {
             am.playSound(reference.swingSound, transform.position);
         if(reference.aType == Weapon.attackType.Swing)
             anim = StartCoroutine(swingAttackAnim(mod, attackingPos));
+        else if(reference.aType == Weapon.attackType.Stab)
+            anim = StartCoroutine(stabAttackAnim(mod, attackingPos));
         else if(reference.aType == Weapon.attackType.Shoot)
             anim = StartCoroutine(shootAttackAnim(mod, attackingPos));
         else if(reference.aType == Weapon.attackType.Lob)
@@ -283,6 +285,39 @@ public abstract class WeaponInstance : MonoBehaviour {
         transform.parent.DOScale(1.0f, swingTime);
         yield return new WaitForSeconds(swingTime);
         */
+    }
+
+    IEnumerator stabAttackAnim(float mod, Vector2 attackingPos) {
+        canMove = false;
+        trail.emitting = true;
+        a.startCooldown();
+        if(attackingPos != Vector2.zero)
+            user.GetComponent<Movement>().lookAtPos(attackingPos);
+        wAnimator.SetTrigger("stabWindup");
+
+        float ableToHitMonsterTime = .25f;
+
+        //  lunge the player towards the fucker
+        if(isPlayerWeapon) {
+            float lungeMod = 1.5f * mod;
+            var origin = (Vector2)pt.position;
+            var target = GameInfo.mousePos();
+            var px = target.x - origin.x;
+            var py = target.y - origin.y;
+            var theta = Mathf.Atan2(py, px);
+            var t = new Vector2(lungeMod * Mathf.Cos(theta), lungeMod * Mathf.Sin(theta));
+            pt.DOMove(t + origin, .15f);
+        }
+
+        c.enabled = true;
+        yield return new WaitForSeconds(ableToHitMonsterTime);
+        c.enabled = false;
+
+        //  start moving again
+        c.enabled = false;
+        trail.emitting = false;
+        canMove = true;
+        anim = null;
     }
 
     IEnumerator lobAttackAnim(Vector2 targetPos) {

@@ -41,14 +41,14 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     public class waveInfo {
-        public List<int> enemyNumbers;
+        public List<int> enemyNumbers; //  list of how many of each monster are in the wave. [0, 3] could mean 0 zombies and 3 vampires
         public direction[] dir;
         public int diff;
 
         public waveInfo() {
             enemyNumbers = new List<int>();
             for(int i = 0; i <= GameInfo.getLastSeenEnemyIndex(); i++) {
-                enemyNumbers.Add(0);
+                enemyNumbers.Add(0);    //  sets them all to zero to start with
             }
         }
     }
@@ -61,6 +61,7 @@ public class MonsterSpawner : MonoBehaviour {
 
     private void Awake() {
         pl = FindObjectOfType<PresetLibrary>();
+        GameInfo.updateLastSeenEnemyIndex(pl);
 
         //  adds the lists for each wave of the night
         for(int i = 0; i < GameInfo.wavesPerNight() + 1; i++)
@@ -128,7 +129,6 @@ public class MonsterSpawner : MonoBehaviour {
     }
     GameObject getRandomMonsterWithinDiff(int diff, List<GameObject> pool) {
         GameObject temp = null;
-        temp = null;
         while(temp == null || temp.GetComponent<Monster>().diff > diff) {
             //  checks if there aren't any monsters left in the pool
             if(pool.Count == 0)
@@ -159,10 +159,6 @@ public class MonsterSpawner : MonoBehaviour {
 
     public void startNewWave() {
         if(gameEnded) return;
-        //  check if a new enemy should be seen
-        while(GameInfo.getLastSeenEnemyIndex() < monsterPresets.Count - 1 && monsterPresets[GameInfo.getLastSeenEnemyIndex() + 1].GetComponent<Monster>().earliestNight <= GameInfo.getNightCount()) {
-            GameInfo.incLastSeenEnemy();
-        }
 
         GameInfo.wave++;
         FindObjectOfType<GameUICanvas>().updateCount();

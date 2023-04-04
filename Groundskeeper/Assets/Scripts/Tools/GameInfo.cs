@@ -98,6 +98,9 @@ public static class GameInfo {
         }
         return GamePiece.None;
     }
+    public static string gamePieceToTag(GamePiece piece) {
+        return piece.ToString();
+    }
 
     //  makes it so if the player buys something and leaves the game before the board saves, they don't lose any souls
     public static float souls;
@@ -171,8 +174,14 @@ public static class GameInfo {
         return SaveData.getInt(nightTag);
     }
 
-    public static void incLastSeenEnemy() {
-        SaveData.setInt(lastSeenEnemyTag, SaveData.getInt(lastSeenEnemyTag) + 1);
+    public static void updateLastSeenEnemyIndex(PresetLibrary pl) {
+        int temp = 0;
+        foreach(var i in pl.getMonsters()) {
+            if(i.GetComponent<MonsterInstance>().earliestNight <= getNightCount()) {
+                temp++;
+            }
+        }
+        SaveData.setInt(lastSeenEnemyTag, temp);
     }
     static void resetLastSeenEnemy() {
         SaveData.setInt(lastSeenEnemyTag, 0);

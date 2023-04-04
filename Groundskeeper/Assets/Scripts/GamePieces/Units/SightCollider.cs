@@ -17,6 +17,18 @@ public class SightCollider : MonoBehaviour {
         //  monster shit
         if(unit.GetComponent<MonsterInstance>() != null) {
             var mi = unit.GetComponent<MonsterInstance>();
+
+            //  effects
+            if(mi.sightEffectedPieces.Count > 0) {
+                foreach(var i in mi.sightEffectedPieces) {
+                    if(GameInfo.gamePieceToTag(i) == col.gameObject.tag) {
+                        mi.sightEnterEffect(col.gameObject);
+                        break;
+                    }
+                }
+            }
+
+            //  movement
             //  checks if tag is untargetable
             if(!isTagTargetable(col.gameObject.tag, mi))
                 return;
@@ -55,12 +67,23 @@ public class SightCollider : MonoBehaviour {
         if(unit.GetComponent<MonsterInstance>() != null) {
             var mi = unit.GetComponent<MonsterInstance>();
 
+            //  movement
             if(col.gameObject.transform == mi.followingTransform) {
                 if(mi.favoriteTarget == Monster.targetType.People)
                     mi.followingTransform = FindObjectOfType<PlayerInstance>().gameObject.transform;
                 else
                     mi.followingTransform = FindObjectOfType<HouseInstance>().gameObject.transform;
                 resetCollider(mi);
+            }
+
+            //  effects
+            if(mi.sightEffectedPieces.Count > 0) {
+                foreach(var i in mi.sightEffectedPieces) {
+                    if(GameInfo.gamePieceToTag(i) == col.gameObject.tag) {
+                        mi.sightExitEffect(col.gameObject);
+                        break;
+                    }
+                }
             }
         }
 

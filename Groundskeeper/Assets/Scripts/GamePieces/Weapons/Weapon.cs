@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Weapon", menuName = "Weapon", order = 1)]
 public class Weapon : ScriptableObject {
     public enum attackType {
-        Swing, Shoot, Lob
+        Swing, Shoot, Lob, Stab
     }
 
     public enum weaponTitle {
