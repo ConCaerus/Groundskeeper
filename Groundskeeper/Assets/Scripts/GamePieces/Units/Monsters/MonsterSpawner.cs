@@ -45,9 +45,9 @@ public class MonsterSpawner : MonoBehaviour {
         public direction[] dir;
         public int diff;
 
-        public waveInfo() {
+        public waveInfo(PresetLibrary pl) {
             enemyNumbers = new List<int>();
-            for(int i = 0; i <= GameInfo.getLastSeenEnemyIndex(); i++) {
+            for(int i = 0; i < pl.getAvailableMonsters().Count; i++) {
                 enemyNumbers.Add(0);    //  sets them all to zero to start with
             }
         }
@@ -69,8 +69,7 @@ public class MonsterSpawner : MonoBehaviour {
 
         //  adds all of the seen enemies to the monster preset
         monsterPresets.Clear();
-        for(int i = 0; i < GameInfo.getLastSeenEnemyIndex() + 1; i++)
-            monsterPresets.Add(pl.getMonster(i));
+        monsterPresets = pl.getAvailableMonsters();
         //  orders the list based on the positions the monsters spawn in
         monsterPresets = monsterPresets.OrderBy(o => o.GetComponent<Monster>().posInWave).ToList();
     }
@@ -88,7 +87,7 @@ public class MonsterSpawner : MonoBehaviour {
 
 
     public waveInfo calcWave() {
-        waveInfo info = new waveInfo();
+        waveInfo info = new waveInfo(pl);
         var diff = calcWaveDiff();
         info.diff = diff;
 
@@ -171,7 +170,7 @@ public class MonsterSpawner : MonoBehaviour {
     IEnumerator spawnMonsters(waveInfo info) {
         FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
         FindObjectOfType<WaveWarnerRose>().warn(info.dir, maxTimeBtwWaves());
-        for(int i = 0; i <= GameInfo.getLastSeenEnemyIndex(); i++) {
+        for(int i = 0; i < monsterPresets.Count(); i++) {
             monsterGroups[GameInfo.wave].Add(new List<List<MonsterInstance>>());
         }
 
@@ -201,6 +200,7 @@ public class MonsterSpawner : MonoBehaviour {
 
                     //  spawns the monster
                     var temp = Instantiate(monsterPresets[i].gameObject, transform);
+                    var tmi = temp.GetComponent<MonsterInstance>();
 
                     //  finds a position for the monster to have
                     bool tooClose = true;
@@ -245,23 +245,24 @@ public class MonsterSpawner : MonoBehaviour {
 
                     //  desides if this monster should be a leader
                     if(j < numOfLeaders) {
-                        temp.GetComponent<MonsterInstance>().setAsLeader();
+                        tmi.setAsLeader();
 
+                        //  can't use enumerators as indexes you fucking idiot
                         //  create an new grouping under the monster type and set the first monster in that list as this leader
-                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title].Add(new List<MonsterInstance>());
-                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title][monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title].Count - 1].Add(temp.GetComponent<MonsterInstance>());
-                        leaders.Add(temp.GetComponent<MonsterInstance>());
+                        monsterGroups[GameInfo.wave][i].Add(new List<MonsterInstance>());
+                        monsterGroups[GameInfo.wave][i][monsterGroups[GameInfo.wave][i].Count - 1].Add(tmi);
+                        leaders.Add(tmi);
                     }
                     else {
-                        monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))].Add(temp.GetComponent<MonsterInstance>());
-                        temp.GetComponent<MonsterInstance>().closestLeader = monsterGroups[GameInfo.wave][(int)temp.GetComponent<MonsterInstance>().title][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0];
+                        monsterGroups[GameInfo.wave][i][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))].Add(tmi);
+                        tmi.closestLeader = monsterGroups[GameInfo.wave][i][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0];
                     }
 
                     //  misc shisc
-                    temp.GetComponent<MonsterInstance>().direction = info.dir[l];
-                    temp.GetComponent<MonsterInstance>().relevantWave = GameInfo.wave;
-                    temp.GetComponent<MonsterInstance>().setup();
-                    FindObjectOfType<GameBoard>().monsters.Add(temp.GetComponent<MonsterInstance>());
+                    tmi.direction = info.dir[l];
+                    tmi.relevantWave = GameInfo.wave;
+                    tmi.setup();
+                    FindObjectOfType<GameBoard>().monsters.Add(tmi);
 
                     //  wait a random amount of time before spawning the next monster
                     yield return new WaitForSeconds(Random.Range(0f, .2f));

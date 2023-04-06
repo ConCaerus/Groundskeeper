@@ -24,6 +24,16 @@ public class PresetLibrary : MonoBehaviour {
         return monsters.Length;
     }
 
+    public List<GameObject> getAvailableMonsters() {
+        List<GameObject> temp = new List<GameObject>();
+        foreach(var i in monsters) {
+            if(i.GetComponent<MonsterInstance>().earliestNight <= GameInfo.getNightCount()) {
+                temp.Add(i.gameObject);
+            }
+        }
+        return temp;
+    }
+
     public void sortMonsters() {
         //  creates a pool that can have monsters taken out of
         var pool = new List<GameObject>();
@@ -132,11 +142,10 @@ public class PresetLibrary : MonoBehaviour {
     //  tried to do it with looping through all weapons and checking if their title.ToString() was equal to the parameter title
     //  didn't work (kept thinking to nonequivalent strings were equal)
     public Weapon.weaponTitle getEquivalentWeaponTitle(string title) {
-        switch(title.ToLower()) {
-            case "axe": return Weapon.weaponTitle.Axe;
-            case "shotgun": return Weapon.weaponTitle.Shotgun;
-            case "rifle": return Weapon.weaponTitle.Rifle;
-            default: return Weapon.weaponTitle.None;
+        foreach(var i in weapons) {
+            if(title == i.title.ToString())
+                return i.title;
         }
+        return Weapon.weaponTitle.None;
     }
 }

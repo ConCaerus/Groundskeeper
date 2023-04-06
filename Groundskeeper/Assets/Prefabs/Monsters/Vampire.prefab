@@ -300,6 +300,7 @@ MonoBehaviour:
   relevantWave: 0
   direction: 0
   sCol: {fileID: 3458673470204341085}
+  sightEffectedPieces: 
 --- !u!1001 &3999800981870502007
 PrefabInstance:
   m_ObjectHideFlags: 0

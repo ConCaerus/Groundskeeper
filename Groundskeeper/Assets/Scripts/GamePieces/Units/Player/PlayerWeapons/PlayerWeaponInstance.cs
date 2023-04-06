@@ -44,8 +44,14 @@ public class PlayerWeaponInstance : WeaponInstance {
             case Weapon.weaponTitle.Rifle:
                 variant = GetComponent<PlayerRifleInstance>();
                 break;
+            case Weapon.weaponTitle.Dagger:
+                variant = GetComponent<PlayerDaggerInstance>();
+                break;
+            case Weapon.weaponTitle.Sledgehammer:
+                variant = GetComponent<PlayerSledgehammerInstance>();
+                break;
             default:
-                Debug.LogError("PlayerWeaponInstance could not find a relevant variant script");
+                Debug.Log("PlayerWeaponInstance could not find a relevant variant script");
                 break;
         }
         foreach(var i in GetComponents<PlayerWeaponVariant>()) {

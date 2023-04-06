@@ -72,6 +72,15 @@ public class DebuggerWindow : EditorWindow {
             var stats = GameInfo.getPlayerStats();
             GameInfo.setPlayerStats(new PlayerStats(Weapon.weaponTitle.Rifle, stats.playerWeaponDamageBuff, stats.playerWeaponSpeedBuff));
         }
+        if(GUILayout.Button("Give Dagger")) {
+            var stats = GameInfo.getPlayerStats();
+            GameInfo.setPlayerStats(new PlayerStats(Weapon.weaponTitle.Dagger, stats.playerWeaponDamageBuff, stats.playerWeaponSpeedBuff));
+            Debug.Log(GameInfo.getPlayerStats().getWeaponTitle(FindObjectOfType<PresetLibrary>()));
+        }
+        if(GUILayout.Button("Give Sledger")) {
+            var stats = GameInfo.getPlayerStats();
+            GameInfo.setPlayerStats(new PlayerStats(Weapon.weaponTitle.Sledgehammer, stats.playerWeaponDamageBuff, stats.playerWeaponSpeedBuff));
+        }
         GUILayout.EndHorizontal();
     }
 }

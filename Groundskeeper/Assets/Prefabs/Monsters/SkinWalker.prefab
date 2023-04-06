@@ -252,7 +252,7 @@ MonoBehaviour:
   diff: 6
   originalSoulsGiven: 10
   soulsGiven: 10
-  earliestNight: 4
+  earliestNight: 7
   favoriteTarget: 1
   type: 1
   freqInWave: 1

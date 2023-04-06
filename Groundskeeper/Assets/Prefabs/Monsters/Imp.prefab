@@ -272,6 +272,7 @@ MonoBehaviour:
   relevantWave: 0
   direction: 0
   sCol: {fileID: 107147300482145878}
+  sightEffectedPieces: 
 --- !u!60 &4429582821961573204
 PolygonCollider2D:
   m_ObjectHideFlags: 0

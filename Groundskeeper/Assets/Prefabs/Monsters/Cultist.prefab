@@ -363,7 +363,7 @@ MonoBehaviour:
   diff: 4
   originalSoulsGiven: 7
   soulsGiven: 7
-  earliestNight: 0
+  earliestNight: 6
   favoriteTarget: 3
   type: 1
   freqInWave: 0
