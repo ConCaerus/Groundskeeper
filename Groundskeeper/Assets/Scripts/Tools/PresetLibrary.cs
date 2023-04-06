@@ -24,6 +24,25 @@ public class PresetLibrary : MonoBehaviour {
         return monsters.Length;
     }
 
+    public void sortMonsters() {
+        //  creates a pool that can have monsters taken out of
+        var pool = new List<GameObject>();
+        foreach(var i in monsters)
+            pool.Add(i);
+
+        //  does the sorting
+        for(int i = 0; i < monsters.Length; i++) {
+            var winner = pool[0];
+
+            for(int j = pool.Count - 1; j > 0; j--) {
+                if(pool[j].GetComponent<Monster>().earliestNight < winner.GetComponent<MonsterInstance>().earliestNight)
+                    winner = pool[j];
+            }
+            monsters[i] = winner;
+            pool.Remove(winner);
+        }
+    }
+
     public GameObject getEnvironment(int index) {
         return environment[index];
     }

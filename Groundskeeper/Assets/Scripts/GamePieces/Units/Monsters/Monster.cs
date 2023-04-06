@@ -8,7 +8,7 @@ public abstract class Monster : Attacker {
     }
 
     public enum monsterTitle {
-        Zombie, Vampire, Wisp, Wraith, Clown, Ghost, Demon, Wendigo, Cultist, Imp
+        Zombie, Vampire, Wisp, Wraith, Clown, Ghost, Demon, Wendigo, Cultist, Imp, SkinWalker
     }
 
     public monsterTitle title;

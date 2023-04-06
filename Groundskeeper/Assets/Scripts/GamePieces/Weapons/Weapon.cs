@@ -9,7 +9,7 @@ public class Weapon : ScriptableObject {
     }
 
     public enum weaponTitle {
-        None, Axe, Rifle, Shotgun, Pitchfork, HolyWater
+        None, Axe, Rifle, Shotgun, Pitchfork, HolyWater, Dagger, Sledgehammer
     }
 
     public weaponTitle title;

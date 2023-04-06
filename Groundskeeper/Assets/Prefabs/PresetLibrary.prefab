@@ -45,18 +45,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsters:
   - {fileID: 1477919414227495092, guid: 12577c32039cb7f4fb3c2f59e106b4e7, type: 3}
-  - {fileID: 1477919414227495092, guid: 371815f79d52b1c41b83b8ba4913ff22, type: 3}
-  - {fileID: 1477919414227495092, guid: b57c915f3cce3f642b375156db5f9600, type: 3}
-  - {fileID: 1477919414227495092, guid: 457640b9425fe344eafbfe64d91c8dfa, type: 3}
+  - {fileID: 1477919414227495092, guid: fb403f352160bea418e236779d9892b0, type: 3}
   - {fileID: 1477919414227495092, guid: 964acfda3ea673647989e12c2db2b557, type: 3}
   - {fileID: 1477919414227495092, guid: 8918bd1cc1941e24f9671e7dc91dfdf1, type: 3}
   - {fileID: 1477919414227495092, guid: 5021d837f9113bc4185018caa02de6fb, type: 3}
+  - {fileID: 1477919414227495092, guid: 371815f79d52b1c41b83b8ba4913ff22, type: 3}
+  - {fileID: 1477919414227495092, guid: 87565819ef2f91342907ccad32a3fb42, type: 3}
+  - {fileID: 1477919414227495092, guid: b57c915f3cce3f642b375156db5f9600, type: 3}
+  - {fileID: 1477919414227495092, guid: 457640b9425fe344eafbfe64d91c8dfa, type: 3}
   weapons:
   - {fileID: 11400000, guid: d3cdeef634eb56f42b3587e81d9d0aa3, type: 2}
   - {fileID: 11400000, guid: 56fd9f11a29956040929a8dea4c49740, type: 2}
   - {fileID: 11400000, guid: f666778c85a534f419bb311e2e84fc6a, type: 2}
   - {fileID: 11400000, guid: 217a86711dfb7ee4281f2084adbf549e, type: 2}
   - {fileID: 11400000, guid: 7b4b41790b3eb7148b4d3de2c85c1e14, type: 2}
+  - {fileID: 11400000, guid: 362d4d60c6855e54ba50f5ebb7f0c9db, type: 2}
+  - {fileID: 11400000, guid: 7bf65281ba4625a45bfe9b800327a0cd, type: 2}
   environment:
   - {fileID: 6781478881865433263, guid: 4c562ecd24afa0245af2935eafa99bf0, type: 3}
   - {fileID: 7473083248459037945, guid: 964b56f30531301459c4200a376e73f2, type: 3}
