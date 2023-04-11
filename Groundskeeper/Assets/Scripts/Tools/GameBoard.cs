@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class GameBoard : MonoBehaviour {
 
@@ -10,9 +11,11 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public KdTree<Helper> helpers = new KdTree<Helper>();
     [HideInInspector] public KdTree<StructureInstance> structures = new KdTree<StructureInstance>();
     [HideInInspector] public KdTree<DefenceInstance> defences = new KdTree<DefenceInstance>();
+    [HideInInspector] public KdTree<DeadGuyInstance> deadGuys = new KdTree<DeadGuyInstance>();
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
+    const int minDeadGuyCount = 100;
 
     const float boardRadius = 100f;
     Coroutine saver = null;
@@ -37,6 +40,7 @@ public class GameBoard : MonoBehaviour {
     }
     public void loadBoard() {
         var bl = FindObjectOfType<BuyableLibrary>();
+        var pl = FindObjectOfType<PresetLibrary>();
         var dhs = FindObjectOfType<DefenceHolderSpawner>();
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedHelperCount); i++) {
             var d = SaveData.getString(GameInfo.helperTag + i.ToString());
@@ -52,13 +56,37 @@ public class GameBoard : MonoBehaviour {
             var obj = bl.getDefence(data.name, false);
             dhs.spawnDefence(obj, data.pos);
         }
-        for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedStructerCount); i++) {
+        for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedStructureCount); i++) {
             var d = SaveData.getString(GameInfo.structureTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
             var obj = bl.getStructure(data.name, false);
             Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
         }
+        for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedDeadGuyCount); i++) {
+            var d = SaveData.getString(GameInfo.deadGuyTag + i.ToString());
+            var data = JsonUtility.FromJson<ObjectSaveData>(d);
+
+            var obj = pl.getDeadGuy(data.name);
+            Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
+        }
+
+        //  spawn the first set of dead guys
+        if(GameInfo.getNightCount() == 0 && deadGuys.Count == 0) {
+            for(int i = 0; i < minDeadGuyCount; i++) {
+                var obj = pl.getRandomDeadGuy();
+                Instantiate(obj, getRandomMapPos(), Quaternion.identity, holder.transform);
+            }
+        }
+        //  spawns new dead guys if needs to spawn more
+        else if(SaveData.getInt(GameInfo.lastSavedDeadGuyCount) < minDeadGuyCount) {
+            int spawnNum = Random.Range(1, minDeadGuyCount - SaveData.getInt(GameInfo.lastSavedDeadGuyCount) + 1);
+            for(int i = 0; i < spawnNum; i++) {
+                var obj = pl.getRandomDeadGuy();
+                Instantiate(obj, getRandomMapPos(), Quaternion.identity, holder.transform);
+            }
+        }
+
 
         if(GameInfo.getNightCount() > 0) {
             var hD = SaveData.getString(houseTag);
@@ -76,11 +104,11 @@ public class GameBoard : MonoBehaviour {
     }
 
     IEnumerator saveWaiter() {
-        int hIndex = 0, dIndex = 0, pIndex = 0, thingsPerFrame = 1;
+        int hIndex = 0, dIndex = 0, pIndex = 0, dgIndex = 0, thingsPerFrame = 1;
         //      clears all of the shit before saving new shit
         GameInfo.clearBoard();
 
-        //      saves new shit
+        //      saves buyables
         foreach(var i in GameObject.FindGameObjectsWithTag("Helper")) {
             var save = new ObjectSaveData(i.GetComponent<Buyable>());
             if(i.GetComponent<HelperInstance>() != null)
@@ -108,6 +136,16 @@ public class GameBoard : MonoBehaviour {
                 yield return new WaitForEndOfFrame();
         }
 
+        //  saves dead guys
+        foreach(var i in GameObject.FindGameObjectsWithTag("DeadGuy")) {
+            var save = new ObjectSaveData(i.GetComponent<DeadGuyInstance>());
+            var data = JsonUtility.ToJson(save);
+            SaveData.setString(GameInfo.deadGuyTag + dgIndex.ToString(), data);
+            dgIndex++;
+            if(!fastSave && pIndex % thingsPerFrame == 0)
+                yield return new WaitForEndOfFrame();
+        }
+
         //  specific cases of unique buyables
         var hSave = new ObjectSaveData(FindObjectOfType<HouseInstance>().GetComponent<Buyable>());
         var hData = JsonUtility.ToJson(hSave);
@@ -117,7 +155,8 @@ public class GameBoard : MonoBehaviour {
         //      saves how many new shit got saved for the next time the shit gets cleared
         SaveData.setInt(GameInfo.lastSavedHelperCount, hIndex);
         SaveData.setInt(GameInfo.lastSavedDefenceCount, dIndex);
-        SaveData.setInt(GameInfo.lastSavedStructerCount, pIndex);
+        SaveData.setInt(GameInfo.lastSavedStructureCount, pIndex);
+        SaveData.setInt(GameInfo.lastSavedDeadGuyCount, dgIndex);
 
         //     SAVES THE ENVIRONMENT
         //  clears the save data
@@ -137,6 +176,11 @@ public class GameBoard : MonoBehaviour {
         //  other stuff
         FindObjectOfType<HouseInstance>().saveCurrentHouseStats();
         saver = null;
+    }
+
+    public Vector2 getRandomMapPos() {
+        var hDiag = 6.83f * Mathf.Sqrt(2);  //  6.83 = FindObjectOfType<HouseInstance>().GetComponent<SpriteRenderer>().bounds.size.x / 2.0f
+        return Random.insideUnitCircle.normalized * Random.Range(hDiag + 1, boardRadius);
     }
 
     IEnumerator environmentSpawner(bool hasEnvs) {
@@ -239,6 +283,10 @@ public class ObjectSaveData {
     }
 
     public ObjectSaveData(Buyable b) {
+        name = b.title.ToString();
+        pos = b.transform.position;
+    }
+    public ObjectSaveData(DeadGuyInstance b) {
         name = b.title.ToString();
         pos = b.transform.position;
     }

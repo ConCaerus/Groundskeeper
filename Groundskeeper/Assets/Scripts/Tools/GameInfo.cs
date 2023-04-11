@@ -38,7 +38,10 @@ public static class GameInfo {
     public static string lastSavedDefenceCount = "LastSavedDefenceCount";
 
     public static string structureTag = "miscTag";
-    public static string lastSavedStructerCount = "LastSavedMiscCount";
+    public static string lastSavedStructureCount = "LastSavedMiscCount";
+
+    public static string deadGuyTag = "deadGuyTag";
+    public static string lastSavedDeadGuyCount = "LastSavedDeadGuyCount";
 
     public static string envTag = "EnvTag";
     public static string envCount = "envCount";
@@ -130,14 +133,14 @@ public static class GameInfo {
             SaveData.deleteKey(helperTag + i.ToString());
         for(int i = 0; i < SaveData.getInt(lastSavedDefenceCount) + 1; i++)
             SaveData.deleteKey(defenceTag + i.ToString());
-        for(int i = 0; i < SaveData.getInt(lastSavedStructerCount) + 1; i++)
+        for(int i = 0; i < SaveData.getInt(lastSavedStructureCount) + 1; i++)
             SaveData.deleteKey(structureTag + i.ToString());
         for(int i = 0; i < SaveData.getInt(envCount) + 1; i++)
             SaveData.deleteKey(envTag + i.ToString());
 
         SaveData.setInt(lastSavedHelperCount, 0);
         SaveData.setInt(lastSavedDefenceCount, 0);
-        SaveData.setInt(lastSavedStructerCount, 0);
+        SaveData.setInt(lastSavedStructureCount, 0);
         SaveData.setInt(envCount, 0);
     }
 

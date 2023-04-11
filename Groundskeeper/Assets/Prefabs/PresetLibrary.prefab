@@ -65,3 +65,5 @@ MonoBehaviour:
   - {fileID: 6781478881865433263, guid: 4c562ecd24afa0245af2935eafa99bf0, type: 3}
   - {fileID: 7473083248459037945, guid: 964b56f30531301459c4200a376e73f2, type: 3}
   - {fileID: 6781478881865433263, guid: a18375911e874b24dbdd50b6a9fa8553, type: 3}
+  deadGuys:
+  - {fileID: 4290818844650980010, guid: 5c4e471f206f5294eb337f9af4e7fc22, type: 3}

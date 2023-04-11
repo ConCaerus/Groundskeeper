@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PresetLibrary : MonoBehaviour {
     [SerializeField] GameObject[] monsters;
     [SerializeField] Weapon[] weapons;
     [SerializeField] GameObject[] environment;
+    [SerializeField] GameObject[] deadGuys;
 
     public GameObject[] getMonsters() {
         return monsters;
@@ -68,6 +70,22 @@ public class PresetLibrary : MonoBehaviour {
     }
     public int getEnvironmentCount() {
         return environment.Length;
+    }
+
+    public GameObject getRandomDeadGuy() {
+        //  selects a random dead guy from the array
+        var temp = deadGuys[Random.Range(0, deadGuys.Length)];
+
+        //  determines how many souls it gives based on the night count
+        temp.GetComponent<DeadGuyInstance>().soulsGiven = 150 * GameInfo.getNightCount();
+        return temp;
+    }
+    public GameObject getDeadGuy(string title) {
+        foreach(var i in deadGuys) {
+            if(i.GetComponent<DeadGuyInstance>().title == title)
+                return i;
+        }
+        return null;
     }
 
     public Weapon getWeapon(int index) {

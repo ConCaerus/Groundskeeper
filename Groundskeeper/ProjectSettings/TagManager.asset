@@ -12,6 +12,7 @@ TagManager:
   - Light
   - Environment
   - Structure
+  - DeadGuy
   layers:
   - Default
   - TransparentFX
@@ -30,7 +31,7 @@ TagManager:
   - Structure
   - Environment
   - SightCollider
-  - 
+  - DeadGuy
   - 
   - 
   - 
