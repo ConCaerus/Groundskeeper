@@ -72,7 +72,6 @@ public class GameUICanvas : MonoBehaviour {
         soulsText.DOColor(Color.white, .15f);
         var s = soulsRecieved + souls;
         soulsRecieved += souls;
-
         if(p != null)
             DOTween.Kill(p);
 

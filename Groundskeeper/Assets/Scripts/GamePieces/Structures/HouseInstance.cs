@@ -15,6 +15,11 @@ public class HouseInstance : StructureInstance {
     [SerializeField] Light2D hLight;
     int healthRepairedEachNight = 20;
 
+    private void OnCollisionStay2D(Collision2D col) {
+        if(col.gameObject.tag == "DeadGuy")
+            Destroy(col.gameObject);
+    }
+
     private void Start() {
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
         FindObjectOfType<MonsterSpawner>().transform.position = getCenter();

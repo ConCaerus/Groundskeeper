@@ -26,12 +26,12 @@ TagManager:
   - Helper
   - Defence
   - Building
-  - House
+  - DeadGuy
   - HouseFloor
   - Structure
   - Environment
   - SightCollider
-  - DeadGuy
+  - House
   - 
   - 
   - 

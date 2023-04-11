@@ -18,6 +18,8 @@ MonoBehaviour:
   cooldown: 0.5
   aType: 1
   range: 10
+  groundedTime: 0
   trailPos: {x: 1.33, y: -0.13}
   sprite: {fileID: 21300000, guid: 3fba12f55e1b59a45bab756408fe2690, type: 3}
   swingSound: {fileID: 0}
+  playerWeapon: 1

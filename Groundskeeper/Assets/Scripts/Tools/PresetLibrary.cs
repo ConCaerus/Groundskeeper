@@ -77,15 +77,21 @@ public class PresetLibrary : MonoBehaviour {
         var temp = deadGuys[Random.Range(0, deadGuys.Length)];
 
         //  determines how many souls it gives based on the night count
-        temp.GetComponent<DeadGuyInstance>().soulsGiven = 150 * GameInfo.getNightCount();
+        temp.GetComponent<DeadGuyInstance>().soulsGiven = 150f * (GameInfo.getNightCount() + 1);
         return temp;
     }
     public GameObject getDeadGuy(string title) {
+        GameObject temp = null;
         foreach(var i in deadGuys) {
-            if(i.GetComponent<DeadGuyInstance>().title == title)
-                return i;
+            if(i.GetComponent<DeadGuyInstance>().title == title) {
+                temp = i.gameObject;
+                break;
+            }
         }
-        return null;
+
+        if(temp != null)
+            temp.GetComponent<DeadGuyInstance>().soulsGiven = 150f * (GameInfo.getNightCount() + 1);
+        return temp;
     }
 
     public Weapon getWeapon(int index) {
@@ -153,12 +159,13 @@ public class PresetLibrary : MonoBehaviour {
         return true;
     }
     public void unlockAllWeapons() {
-        foreach(var i in weapons)
-            GameInfo.unlockWeapon(i.title);
+        foreach(var i in weapons) {
+            if(i.playerWeapon)
+                GameInfo.unlockWeapon(i.title);
+        }
     }
 
-    //  tried to do it with looping through all weapons and checking if their title.ToString() was equal to the parameter title
-    //  didn't work (kept thinking to nonequivalent strings were equal)
+
     public Weapon.weaponTitle getEquivalentWeaponTitle(string title) {
         foreach(var i in weapons) {
             if(title == i.title.ToString())

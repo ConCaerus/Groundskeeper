@@ -340,6 +340,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
 
     protected override void show() {
+        mainCircles[0].GetComponentInChildren<Button>().Select();
         transform.DOKill();
         transform.DOScale(1.0f, .15f);
         //createTree();

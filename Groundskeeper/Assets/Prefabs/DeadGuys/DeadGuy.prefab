@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 4290818844650980015}
   - component: {fileID: 4290818844650980014}
   - component: {fileID: 4290818844650980001}
-  m_Layer: 17
+  m_Layer: 12
   m_Name: DeadGuy
   m_TagString: DeadGuy
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 2
 --- !u!58 &4290818844650980001
 CircleCollider2D:
   m_ObjectHideFlags: 0

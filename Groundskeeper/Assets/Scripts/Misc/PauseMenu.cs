@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PauseMenu : MenuCanvas {
     InputMaster controls;
     [SerializeField] GameObject background;
+    [SerializeField] Button defaultButt;
 
     private void Awake() {
         controls = new InputMaster();
@@ -27,6 +29,7 @@ public class PauseMenu : MenuCanvas {
 
     protected override void show() {
         background.SetActive(true);
+        defaultButt.Select();
         Time.timeScale = 0.0f;
     }
     protected override void close() {

@@ -22,3 +22,4 @@ MonoBehaviour:
   trailPos: {x: 1.33, y: -0.13}
   sprite: {fileID: 21300000, guid: 3298ab7e90c77224daae1dc82c6a206a, type: 3}
   swingSound: {fileID: 0}
+  playerWeapon: 1

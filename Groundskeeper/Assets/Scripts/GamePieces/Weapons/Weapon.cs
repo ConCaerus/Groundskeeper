@@ -24,4 +24,6 @@ public class Weapon : ScriptableObject {
 
     public Sprite sprite;
     public AudioClip swingSound;
+
+    public bool playerWeapon;
 }

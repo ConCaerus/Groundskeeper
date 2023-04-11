@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class DeadGuyInstance : Interactable {
-    [HideInInspector] public int soulsGiven = 250; //  have this number go up as the nights increase
+    [HideInInspector] public float soulsGiven = 250f; //  have this number go up as the nights increase
     [SerializeField] public string title;
 
     GameUICanvas guc;
@@ -11,6 +12,8 @@ public class DeadGuyInstance : Interactable {
     private void Start() {
         FindObjectOfType<GameBoard>().deadGuys.Add(this);
         guc = FindObjectOfType<GameUICanvas>();
+
+        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), GetComponent<SpriteRenderer>());
     }
 
     public override bool canInteract() {
@@ -21,7 +24,10 @@ public class DeadGuyInstance : Interactable {
         //  give souls and destory
         GameInfo.addSouls(soulsGiven, false);
         guc.incSouls(soulsGiven);
-        Destroy(gameObject);
+
+        //  dying animation
+        transform.DOScale(0.0f, .15f);
+        Destroy(gameObject, .151f);
     }
 
     public override void deinteract() {
