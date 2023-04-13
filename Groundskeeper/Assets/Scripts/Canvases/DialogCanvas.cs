@@ -56,9 +56,6 @@ public class DialogCanvas : MonoBehaviour {
     }
 
 
-    private void OnDisable() {
-        controls.Disable();
-    }
 
 
     void advance() {
@@ -160,6 +157,7 @@ public class DialogCanvas : MonoBehaviour {
     public void show() {
         box.transform.DOKill();
         box.transform.DOMoveY(0.0f, .15f);
+
     }
     public void hide() {
         box.transform.DOKill();
@@ -170,6 +168,19 @@ public class DialogCanvas : MonoBehaviour {
         box.transform.DOKill();
         box.transform.position = new Vector3(box.transform.position.x, hidePos.transform.position.y);
         showingText = false;
+    }
+
+
+    private void OnEnable() {
+        FindObjectOfType<MouseManager>().addOnInputChangeFunc(switchInputType);
+    }
+    private void OnDisable() {
+        controls.Disable();
+    }
+
+
+    public void switchInputType(bool usingKeyboard) {
+        hardSkipSlider.setText(usingKeyboard ? "Q" : "B");
     }
 }
 

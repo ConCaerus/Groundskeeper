@@ -10,6 +10,8 @@ public abstract class Interactable : MonoBehaviour {
     [SerializeField] bool toggleMovement = true;
     [SerializeField] GameObject targetOffsetPosition;
 
+    MouseManager mm;
+
 
     private void OnTriggerEnter2D(Collider2D col) {
         if(col.gameObject.tag == "Player") {
@@ -32,6 +34,7 @@ public abstract class Interactable : MonoBehaviour {
 
 
     private void Awake() {
+        mm = FindObjectOfType<MouseManager>();
         controls = new InputMaster();
         controls.Player.Interact.performed += ctx => toggleInteract();
     }

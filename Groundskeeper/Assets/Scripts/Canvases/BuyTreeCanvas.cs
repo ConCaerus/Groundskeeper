@@ -96,25 +96,28 @@ public class BuyTreeCanvas : MenuCanvas {
         setupSlider(hbtn.getSlider(), false,
             (float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length,
             delegate {
-                //  checks money
-                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true)) {
-                    //  checks if there are any more locked buyables of that type
-                    if(qw != null && pl.unlockWeapon(qw.title)) {
-                        //  transaction
-                        hbtn.setCost(c);
+                //  checks if the menu is still open
+                if(isOpen()) {
+                    //  checks money
+                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true)) {
+                        //  checks if there are any more locked buyables of that type
+                        if(qw != null && pl.unlockWeapon(qw.title)) {
+                            //  transaction
+                            hbtn.setCost(c);
 
-                        //  flair
-                        hbtn.getSlider().doValue((float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length, sliderFillSpeed, true);
-                        hbtn.getSlider().setText(pl.getUnlockedWeapons().Count.ToString());
-                        hbtn.animateClick();
-                        updateSoulsText();
+                            //  flair
+                            hbtn.getSlider().doValue((float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length, sliderFillSpeed, true);
+                            hbtn.getSlider().setText(pl.getUnlockedWeapons().Count.ToString());
+                            hbtn.animateClick();
+                            updateSoulsText();
 
-                        //  update buyables in queue
-                        FindObjectOfType<UnlockCanvas>().showForWeapon(qw);
-                        queuedWeapon = pl.getRandomLockedWeapon();
-                        qw = queuedWeapon;
-                        hbtn.info.info = (qw == null) ? "Completed" : qw.title.ToString();
-                        FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
+                            //  update buyables in queue
+                            FindObjectOfType<UnlockCanvas>().showForWeapon(qw);
+                            queuedWeapon = pl.getRandomLockedWeapon();
+                            qw = queuedWeapon;
+                            hbtn.info.info = (qw == null) ? "Completed" : qw.title.ToString();
+                            FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
+                        }
                     }
                 }
             });
@@ -140,7 +143,10 @@ public class BuyTreeCanvas : MenuCanvas {
         setupSlider(hbtn.getSlider(), false,
             (float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length,
             delegate {
-                Debug.Log("Bought House Upgrade");
+                //  checks if the menu is still open
+                if(isOpen()) {
+                    Debug.Log("Bought House Upgrade");
+                }
             });
         hbtn.getSlider().doValueKill();
         hbtn.getSlider().setValue(1.0f);
@@ -164,32 +170,35 @@ public class BuyTreeCanvas : MenuCanvas {
         setupSlider(hbtn.getSlider(), false,
             (float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1), false) / bl.getTotalNumberOfBuyables(t),
             delegate {
-                var c = bl.getBuyableUnlockCost(t, bl.getRelevantUnlockTierForBuyableType(t));
-                //  checks money
-                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true)) {
-                    //  checks if there are any more locked buyables of that type
-                    if(bl.unlockBuyable(qb)) {
-                        //  transaction
-                        hbtn.setCost(getUpdatedCost(hbtn));
+                //  checks if the menu is still open
+                if(isOpen()) {
+                    var c = bl.getBuyableUnlockCost(t, bl.getRelevantUnlockTierForBuyableType(t));
+                    //  checks money
+                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true)) {
+                        //  checks if there are any more locked buyables of that type
+                        if(bl.unlockBuyable(qb)) {
+                            //  transaction
+                            hbtn.setCost(getUpdatedCost(hbtn));
 
-                        //  flair
-                        hbtn.getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t, false) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed, true);
-                        hbtn.getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
-                        hbtn.animateClick();
-                        updateSoulsText();
+                            //  flair
+                            hbtn.getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t, false) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed, true);
+                            hbtn.getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
+                            hbtn.animateClick();
+                            updateSoulsText();
 
-                        //  unlock new sub circles
-                        //  show the first sub circles
-                        if(bl.getNumberOfUnlockedBuyables(t, false) == 1) {
-                            createSubCirclesForType(t);
+                            //  unlock new sub circles
+                            //  show the first sub circles
+                            if(bl.getNumberOfUnlockedBuyables(t, false) == 1) {
+                                createSubCirclesForType(t);
+                            }
+
+                            //  update buyables in queue
+                            FindObjectOfType<UnlockCanvas>().showForBuyable(qb.GetComponent<Buyable>());
+                            queuedBuyables[index] = bl.getRandomUnlockableBuyableOfType(t, bl.getRelevantUnlockTierForBuyableType(t));
+                            qb = queuedBuyables[index];
+                            hbtn.info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
+                            FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
                         }
-
-                        //  update buyables in queue
-                        FindObjectOfType<UnlockCanvas>().showForBuyable(qb.GetComponent<Buyable>());
-                        queuedBuyables[index] = bl.getRandomUnlockableBuyableOfType(t, bl.getRelevantUnlockTierForBuyableType(t));
-                        qb = queuedBuyables[index];
-                        hbtn.info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
-                        FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
                     }
                 }
             });
@@ -228,14 +237,17 @@ public class BuyTreeCanvas : MenuCanvas {
 
 
         setupSlider(obtn.getSlider(), true, 0.0f, delegate {
-            //  checks if the player is allowed to buy this upgrade
-            if(obtn.canIncrease()) {
-                if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(obtn.cost, soulsText, true)) {
-                    subLogic(sInd, s, obtn.tier);   //  does the thing that the sub slider is supposed to do
+            //  checks if the menu is still open
+            if(isOpen()) {
+                //  checks if the player is allowed to buy this upgrade
+                if(obtn.canIncrease()) {
+                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(obtn.cost, soulsText, true)) {
+                        subLogic(sInd, s, obtn.tier);   //  does the thing that the sub slider is supposed to do
 
-                    updateSubSlider(obtn);
-                    obtn.animateClick();
-                    updateSoulsText();
+                        updateSubSlider(obtn);
+                        obtn.animateClick();
+                        updateSoulsText();
+                    }
                 }
             }
         });

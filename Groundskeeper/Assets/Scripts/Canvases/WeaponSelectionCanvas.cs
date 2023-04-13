@@ -11,7 +11,12 @@ public class WeaponSelectionCanvas : MenuCanvas {
     PresetLibrary pl;
     PlayerStats pStats;
 
+    InputMaster controls;
+
     private void Start() {
+        controls = new InputMaster();
+        controls.Enable();
+        controls.Player.GamepadCycle.performed += ctx => changeWeapon();
         wsi = FindObjectOfType<WeaponSelectionInteractable>();
         pl = FindObjectOfType<PresetLibrary>();
         holder.SetActive(false);
@@ -24,6 +29,10 @@ public class WeaponSelectionCanvas : MenuCanvas {
 
     protected override void close() {
         holder.SetActive(false);
+    }
+
+    private void OnDisable() {
+        controls.Disable();
     }
 
 

@@ -7,6 +7,9 @@ public class MainMenuCanvas : MonoBehaviour {
     [SerializeField] GameObject menu, save, key;
     [SerializeField] Button playButton;
 
+    Coroutine starter = null;
+
+
     private void Start() {
         key.SetActive(true);
         menu.SetActive(false);
@@ -14,11 +17,19 @@ public class MainMenuCanvas : MonoBehaviour {
     }
 
     private void Update() {
-        if(key.activeInHierarchy && Input.anyKey) {
-            key.SetActive(false);
-            menu.SetActive(true);
-            playButton.Select();
+        if(key.activeInHierarchy && Input.anyKey && starter == null) {
+            starter = StartCoroutine(waitForEndOfInput());
         }
+    }
+
+    IEnumerator waitForEndOfInput() {
+        while(Input.anyKey)
+            yield return new WaitForEndOfFrame();
+
+        //  does stuff
+        key.SetActive(false);
+        menu.SetActive(true);
+        playButton.Select();
     }
 
     public void quit() {

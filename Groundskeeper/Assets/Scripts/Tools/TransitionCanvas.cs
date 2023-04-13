@@ -22,15 +22,6 @@ public class TransitionCanvas : MonoBehaviour {
 
     private void Start() {
         StartCoroutine(loadedSceneWaiter());
-
-        bool hasController = false;
-        foreach(var i in Input.GetJoystickNames()) {
-            if(!string.IsNullOrEmpty(i)) {
-                hasController = true;
-                break;
-            }
-        }
-        Cursor.visible = !hasController;
     }
 
     public void loadScene(string name) {

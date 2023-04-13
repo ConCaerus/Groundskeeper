@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class MenuCanvas : MonoBehaviour {
-
     bool open = false;
 
+    Coroutine opener = null;
 
     public void tryShow() {
-        if(open)
+        if(open || opener != null)
             return;
         //  close any open shit
         foreach(var i in FindObjectsOfType<MenuCanvas>()) {
             if(i.isOpen()) {
-                i.tryClose();
                 return;
             }
         }
 
-        //  opens
-        open = true;
-        show();
+        opener = StartCoroutine(waitForClearInput());
     }
     public void tryClose() {
         if(!open)
@@ -38,5 +35,14 @@ public abstract class MenuCanvas : MonoBehaviour {
 
     public bool isOpen() {
         return open;
+    }
+
+    IEnumerator waitForClearInput() {
+        while(Input.anyKey)
+            yield return new WaitForEndOfFrame();
+        //  opens
+        open = true;
+        show();
+        opener = null;
     }
 }
