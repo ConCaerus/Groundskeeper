@@ -7,10 +7,18 @@ public abstract class MenuCanvas : MonoBehaviour {
 
     Coroutine opener = null;
 
+    InputMaster controls;
+
+    private void Awake() {
+        controls = new InputMaster();
+        controls.Player.Cancel.started += ctx => closeOpenMenus();
+    }
+
     public void tryShow() {
         if(open || opener != null)
             return;
-        //  close any open shit
+
+        //  if anything is already open, return
         foreach(var i in FindObjectsOfType<MenuCanvas>()) {
             if(i.isOpen()) {
                 return;
@@ -24,6 +32,14 @@ public abstract class MenuCanvas : MonoBehaviour {
             return;
         open = false;
         close();
+    }
+
+    void closeOpenMenus() {
+        foreach(var i in FindObjectsOfType<MenuCanvas>()) {
+            if(i.isOpen()) {
+                i.tryClose();
+            }
+        }
     }
 
 
@@ -44,5 +60,13 @@ public abstract class MenuCanvas : MonoBehaviour {
         open = true;
         show();
         opener = null;
+    }
+
+    private void OnEnable() {
+        controls.Enable();
+    }
+
+    private void OnDisable() {
+        controls.Disable();
     }
 }

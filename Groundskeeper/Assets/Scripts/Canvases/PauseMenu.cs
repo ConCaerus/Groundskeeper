@@ -11,7 +11,7 @@ public class PauseMenu : MenuCanvas {
     private void Awake() {
         controls = new InputMaster();
 
-        controls.Pause.Toggle.performed += ctx => togglePause();
+        controls.Pause.Toggle.started += ctx => togglePause();
     }
 
 

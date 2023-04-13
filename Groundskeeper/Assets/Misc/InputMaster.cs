@@ -71,6 +71,15 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""8e2a1477-2b49-49fe-84b4-50cca06e9c83"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -253,11 +262,22 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""15887943-dd3a-42d8-a66a-ef0da272fd91"",
-                    ""path"": ""<Gamepad>/leftStick"",
+                    ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""GamepadCycle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""95716d71-530a-4254-8822-f2523ea63b57"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -657,6 +677,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_GamepadCycle = m_Player.FindAction("GamepadCycle", throwIfNotFound: true);
+        m_Player_Cancel = m_Player.FindAction("Cancel", throwIfNotFound: true);
         // Pause
         m_Pause = asset.FindActionMap("Pause", throwIfNotFound: true);
         m_Pause_Toggle = m_Pause.FindAction("Toggle", throwIfNotFound: true);
@@ -734,6 +755,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_GamepadCycle;
+    private readonly InputAction m_Player_Cancel;
     public struct PlayerActions
     {
         private @InputMaster m_Wrapper;
@@ -743,6 +765,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @GamepadCycle => m_Wrapper.m_Player_GamepadCycle;
+        public InputAction @Cancel => m_Wrapper.m_Player_Cancel;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -767,6 +790,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 @GamepadCycle.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGamepadCycle;
                 @GamepadCycle.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGamepadCycle;
                 @GamepadCycle.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGamepadCycle;
+                @Cancel.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancel;
+                @Cancel.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancel;
+                @Cancel.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCancel;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -786,6 +812,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 @GamepadCycle.started += instance.OnGamepadCycle;
                 @GamepadCycle.performed += instance.OnGamepadCycle;
                 @GamepadCycle.canceled += instance.OnGamepadCycle;
+                @Cancel.started += instance.OnCancel;
+                @Cancel.performed += instance.OnCancel;
+                @Cancel.canceled += instance.OnCancel;
             }
         }
     }
@@ -946,6 +975,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnGamepadCycle(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
     public interface IPauseActions
     {

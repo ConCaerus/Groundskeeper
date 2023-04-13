@@ -16,7 +16,7 @@ public class WeaponSelectionCanvas : MenuCanvas {
     private void Start() {
         controls = new InputMaster();
         controls.Enable();
-        controls.Player.GamepadCycle.performed += ctx => changeWeapon();
+        controls.Player.GamepadCycle.started += ctx => changeWeapon(ctx.ReadValue<Vector2>().x > 0);
         wsi = FindObjectOfType<WeaponSelectionInteractable>();
         pl = FindObjectOfType<PresetLibrary>();
         holder.SetActive(false);
@@ -38,21 +38,23 @@ public class WeaponSelectionCanvas : MenuCanvas {
 
     //  buttons
     public void changeWeapon(bool right) {
-        //  changes the index of the player's current weapon
-        var t = pStats.getWeaponTitle(pl);
-        int ind = pl.getUnlockedWeaponIndex(t);
-        //Debug.Log(t + " " + ind + " " + right + " " + pl.getUnlockedWeapons().Count);
-        ind += right ? 1 : -1;
-        if(ind < 0)
-            ind = pl.getUnlockedWeapons().Count - 1;
-        else if(ind >= pl.getUnlockedWeapons().Count)
-            ind = 0;
+        if(isOpen()) {
+            //  changes the index of the player's current weapon
+            var t = pStats.getWeaponTitle(pl);
+            int ind = pl.getUnlockedWeaponIndex(t);
+            //Debug.Log(t + " " + ind + " " + right + " " + pl.getUnlockedWeapons().Count);
+            ind += right ? 1 : -1;
+            if(ind < 0)
+                ind = pl.getUnlockedWeapons().Count - 1;
+            else if(ind >= pl.getUnlockedWeapons().Count)
+                ind = 0;
 
-        //  saves
-        pStats.playerWeaponTitle = pl.getUnlockedWeapons()[ind].title.ToString();
-        GameInfo.setPlayerStats(pStats);
+            //  saves
+            pStats.playerWeaponTitle = pl.getUnlockedWeapons()[ind].title.ToString();
+            GameInfo.setPlayerStats(pStats);
 
-        //  displays the new weapon sprite
-        wsi.getWeaponSprite().sprite = pl.getUnlockedWeapons()[ind].sprite;
+            //  displays the new weapon sprite
+            wsi.getWeaponSprite().sprite = pl.getUnlockedWeapons()[ind].sprite;
+        }
     }
 }
