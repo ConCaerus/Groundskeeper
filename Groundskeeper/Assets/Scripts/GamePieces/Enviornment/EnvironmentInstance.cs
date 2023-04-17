@@ -20,7 +20,7 @@ public class EnvironmentInstance : MonoBehaviour {
 
         if(hits <= 0) {
             transform.DOScale(0.0f, .25f);
-            FindObjectOfType<GameBoard>().environment.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
+            FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
             GetComponent<Collider2D>().enabled = false;
             GetComponentInParent<CompositeCollider2D>().GenerateGeometry();
             Destroy(gameObject, .25f);

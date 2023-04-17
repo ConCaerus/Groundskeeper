@@ -103,7 +103,7 @@ public class PlayerInstance : Attacker {
         
         //  if the player's not moving, look at the mouse
         if(!controls.Player.Move.inProgress) {
-            lookAtPos(mm.usingKeyboard() ? GameInfo.mousePos() : (Vector2)transform.position + Vector2.down); //  eventually chance vector2.down to the artificial "mouse" that you're going to add for the gamepad
+            lookAtPos(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld()); //  eventually chance vector2.down to the artificial "mouse" that you're going to add for the gamepad
         }
 
         //  adjusts the player's light based on how far they are to the edge

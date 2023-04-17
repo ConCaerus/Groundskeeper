@@ -8,7 +8,7 @@ public abstract class Interactable : MonoBehaviour {
     protected bool touching = false, interacting = false;
 
     [SerializeField] bool toggleMovement = true;
-    [SerializeField] GameObject targetOffsetPosition;
+    [SerializeField] public GameObject targetOffsetPosition;
 
     MouseManager mm;
 

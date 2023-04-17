@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class MouseManager : MonoBehaviour {
     InputMaster controls;
@@ -12,12 +14,11 @@ public class MouseManager : MonoBehaviour {
 
     private void Awake() {
         controls = new InputMaster();
-        controls.InputSwitch.Gamepad.performed += ctx => switchToGamepad();
-        controls.InputSwitch.GamepadStick.performed += ctx => switchToGamepad();
-        controls.InputSwitch.Keyboard.performed += ctx => switchToKeyboard();
-        controls.InputSwitch.Mouse.performed += ctx => switchToKeyboard();
-
-        //  checks if the player is currently using a controller or not
+        controls.Enable();
+        controls.InputSwitch.Mouse.started += ctx => switchToKeyboard();
+        controls.InputSwitch.Gamepad.started += ctx => switchToGamepad();
+        controls.UI.Click.canceled += ctx => checkUIOptions();
+        controls.UI.Submit.canceled += ctx => checkUIOptions();
         bool hasController = false;
         foreach(var i in Input.GetJoystickNames()) {
             if(!string.IsNullOrEmpty(i)) {
@@ -25,7 +26,11 @@ public class MouseManager : MonoBehaviour {
                 break;
             }
         }
-        Cursor.visible = !hasController;
+        if(hasController)
+            switchToKeyboard();
+        else
+            switchToGamepad();
+
     }
 
     void switchToGamepad() {
@@ -33,6 +38,8 @@ public class MouseManager : MonoBehaviour {
             Cursor.visible = false;
             foreach(var i in changeFuncs)
                 i(usingKeyboard());
+            if(EventSystem.current.currentSelectedGameObject == null && FindObjectOfType<Selectable>() != null)
+                FindObjectOfType<Selectable>().Select();
         }
     }
 
@@ -41,6 +48,14 @@ public class MouseManager : MonoBehaviour {
             Cursor.visible = true;
             foreach(var i in changeFuncs)
                 i(usingKeyboard());
+            if(EventSystem.current.currentSelectedGameObject == null && FindObjectOfType<Selectable>() != null)
+                FindObjectOfType<Selectable>().Select();
+        }
+    }
+
+    void checkUIOptions() {
+        if(!usingKeyboard() && EventSystem.current.currentSelectedGameObject == null && FindObjectOfType<Selectable>() != null) {
+            //FindObjectOfType<Selectable>().Select();
         }
     }
 
@@ -56,9 +71,6 @@ public class MouseManager : MonoBehaviour {
         changeFuncs.Remove(f);
     }
 
-    private void OnEnable() {
-        controls.Enable();
-    }
     private void OnDisable() {
         controls.Disable();
     }

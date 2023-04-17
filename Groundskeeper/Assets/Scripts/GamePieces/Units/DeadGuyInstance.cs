@@ -3,37 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class DeadGuyInstance : Interactable {
+public class DeadGuyInstance : MonoBehaviour {
     [HideInInspector] public float soulsGiven = 250f; //  have this number go up as the nights increase
     [SerializeField] public string title;
 
     GameUICanvas guc;
+    GameBoard gb;
 
     private void Start() {
         FindObjectOfType<GameBoard>().deadGuys.Add(this);
         guc = FindObjectOfType<GameUICanvas>();
+        gb = FindObjectOfType<GameBoard>();
 
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), GetComponent<SpriteRenderer>());
     }
 
-    public override bool canInteract() {
-        return true;
-    }
-
-    public override void interact() {
+    public void interactedWith() {
         //  give souls and destory
         GameInfo.addSouls(soulsGiven, false);
         guc.incSouls(soulsGiven);
 
         //  dying animation
+        StartCoroutine(cleanup());
+    }
+
+    IEnumerator cleanup() {
         transform.DOScale(0.0f, .15f);
-        Destroy(gameObject, .151f);
-    }
-
-    public override void deinteract() {
-        //  does nothing
-    }
-
-    public override void anim(bool b) {
+        yield return new WaitForSeconds(.15f);
+        FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
+        GetComponentInParent<DeadGuyHolder>().updateCollider();
+        Destroy(gameObject);
     }
 }

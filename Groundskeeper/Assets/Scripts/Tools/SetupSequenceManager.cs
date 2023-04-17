@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class SetupSequenceManager : MonoBehaviour {
     [SerializeField] SpriteRenderer playerWeaponSr;
@@ -65,9 +66,9 @@ public class SetupSequenceManager : MonoBehaviour {
         yield return new WaitForSeconds(.1f);
 
         //  allows the player to place house
-        pi.setCanMove(true);
         GameInfo.unlockBuyable(Buyable.buyableTitle.House);
         pc.setup();
+        FindObjectOfType<Selectable>().Select();
     }
 
     IEnumerator weaponSetup() {
@@ -111,5 +112,6 @@ public class SetupSequenceManager : MonoBehaviour {
         pwi.canAttackG = true;
         pi.setCanMove(true);
         enabled = false;
+        FindObjectOfType<Selectable>().Select();
     }
 }

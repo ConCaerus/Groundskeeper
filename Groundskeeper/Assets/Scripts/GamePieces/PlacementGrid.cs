@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -18,8 +19,14 @@ public class PlacementGrid : MonoBehaviour {
 
     SetupSequenceManager ssm;
     GameBoard gb;
+    MouseManager mm;
+    GameGamepadCursor ggc;
+
+    InputMaster controls;
 
     Vector2 prevPos;
+
+    bool justUpdatedBoard = false;
 
     [System.Serializable]
     public struct thing {
@@ -41,20 +48,28 @@ public class PlacementGrid : MonoBehaviour {
         cth = FindObjectOfType<SoulTransactionHandler>();
         ssm = FindObjectOfType<SetupSequenceManager>();
         gb = FindObjectOfType<GameBoard>();
+        mm = FindObjectOfType<MouseManager>();
+        ggc = FindObjectOfType<GameGamepadCursor>();
+
+        controls = new InputMaster();
+        controls.Enable();
+        controls.Player.Place.started += ctx => place();
+        controls.Player.Unplace.started += ctx => remove();
+
 
         radiusEffect.SetActive(false);
     }
 
     private void Update() {
         if(placing) {
-            var pos = map.WorldToCell(GameInfo.mousePos());
+            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld());
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
             move(p);
 
             //  checks if the icon moved during the last update
             //  if so, check if it moved over anything it shouldn't have
-            if((Vector2)p != prevPos) {
+            if((Vector2)p != prevPos || justUpdatedBoard) {
                 prevPos = p;
                 map.color = Color.green;
 
@@ -107,21 +122,16 @@ public class PlacementGrid : MonoBehaviour {
                     if(map.color == Color.red)
                         break;
                 }
-            }
-
-            if(Input.GetMouseButton(0) && !pc.mouseOverUI() && map.color == Color.green) {
-                place(p);
-                prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
-            }
-            else if(Input.GetMouseButton(1) && !pc.mouseOverUI()) {
-                remove(p);
-                prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
+                justUpdatedBoard = false;
             }
         }
     }
 
     public void changePlacing(GameObject thing, bool toggle) {
         placing = toggle ? !placing : true;
+
+        if(thing == null || !placing)
+            clear();
         currentObj = thing;
 
         //  checks if the new thing needs the radius effect
@@ -135,7 +145,7 @@ public class PlacementGrid : MonoBehaviour {
 
     void move(Vector2 worldPos) {
         clear();
-        var pos = map.WorldToCell(GameInfo.mousePos());
+        var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld());
 
         radiusEffect.transform.position = worldPos;
         map.SetTile(pos, currentObj.GetComponent<Buyable>().tile);
@@ -147,72 +157,97 @@ public class PlacementGrid : MonoBehaviour {
         map.enabled = false;
         placing = false;
     }
-    void place(Vector2 pos) {
-        //  can't place in this spot
-        if(map.color == Color.red)
-            return;
+    void place() {
+        if(!pc.mouseOverUI() && map.color == Color.green) {
+            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld());
+            var p = map.CellToWorld(pos);
+            p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
+            //  can't place in this spot
+            if(map.color == Color.red)
+                return;
 
-        //  extracts the info from the thing stuct
-        GameObject obj = null;
-        //  checks if the player can afford to place
-        var title = currentObj.GetComponent<Buyable>().title;
-        bool costIsZero = !bl.hasPlayerSeenBuyable(title) && currentObj.GetComponent<Buyable>().bType != Buyable.buyType.Structure;
-        if(!cth.tryTransaction(costIsZero ? 0f : currentObj.GetComponent<Buyable>().cost, pc.soulsText, false))
-            return;
-        if(!bl.hasPlayerSeenBuyable(title)) {
-            bl.playerSawBuyable(title);
-            FindObjectOfType<BuyableButtonSpawner>().updateBuyableButtons();
-            foreach(var i in FindObjectsOfType<PregameBuyableButton>())
-                i.manageNewDot();
-        }
-        if(currentObj.GetComponent<DefenceInstance>() == null) {
-            obj = Instantiate(currentObj.gameObject, holder.transform);
+            //  extracts the info from the thing stuct
+            GameObject obj = null;
+            //  checks if the player can afford to place
+            var title = currentObj.GetComponent<Buyable>().title;
+            bool costIsZero = !bl.hasPlayerSeenBuyable(title) && currentObj.GetComponent<Buyable>().bType != Buyable.buyType.Structure;
+            if(!cth.tryTransaction(costIsZero ? 0f : currentObj.GetComponent<Buyable>().cost, pc.soulsText, false))
+                return;
+            if(!bl.hasPlayerSeenBuyable(title)) {
+                bl.playerSawBuyable(title);
+                FindObjectOfType<BuyableButtonSpawner>().updateBuyableButtons();
+                foreach(var i in FindObjectsOfType<PregameBuyableButton>())
+                    i.manageNewDot();
+            }
+            if(currentObj.GetComponent<DefenceInstance>() == null) {
+                obj = Instantiate(currentObj.gameObject, holder.transform);
 
-            //  places the object in the correct spot
-            obj.transform.position = pos;
+                //  places the object in the correct spot
+                obj.transform.position = p;
 
-            if(obj.GetComponent<HelperInstance>() != null)
-                obj.GetComponent<HelperInstance>().startingPos = pos;
-        }
-        else {
-            obj = FindObjectOfType<DefenceHolderSpawner>().spawnDefence(currentObj.gameObject, pos);
-        }
+                if(obj.GetComponent<HelperInstance>() != null)
+                    obj.GetComponent<HelperInstance>().startingPos = p;
+            }
+            else {
+                obj = FindObjectOfType<DefenceHolderSpawner>().spawnDefence(currentObj.gameObject, p);
+            }
 
-        obj.GetComponent<Buyable>().animateBeingPlaced();
+            obj.GetComponent<Buyable>().animateBeingPlaced();
+            map.color = Color.red;
 
-        //  checks if the house was just placed. If so, stop placing
-        if(currentObj.GetComponent<Buyable>().title == Buyable.buyableTitle.House) {
-            currentObj = null;
-            placing = false;
-            map.color = Color.clear;
-            ssm.placedHouse();
+            //  checks if the house was just placed. If so, stop placing
+            if(currentObj.GetComponent<Buyable>().title == Buyable.buyableTitle.House) {
+                currentObj = null;
+                placing = false;
+                map.color = Color.clear;
+                ssm.placedHouse();
+            }
+            prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
+            StartCoroutine(mapUpdater());
         }
     }
-    void remove(Vector2 pos) {
-        if(map.color == Color.green)
-            return;
-        bool found = false;
-        int c = 0;
+    void remove() {
+        if(!pc.mouseOverUI()) {
+            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld());
+            var p = map.CellToWorld(pos);
+            p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
+            if(map.color == Color.green)
+                return;
+            bool found = false;
+            int c = 0;
 
-        GameObject f = null;
-        foreach(var i in FindObjectsOfType<Buyable>()) {
-            if(i.transform.position == (Vector3)pos || (i.GetComponent<HelperInstance>() != null && i.GetComponent<HelperInstance>().startingPos == (Vector2)pos)) {
-                c = i.GetComponent<Buyable>().cost;
-                f = i.gameObject;
-                found = true;
-                break;
+            GameObject f = null;
+            foreach(var i in FindObjectsOfType<Buyable>()) {
+                if(i.transform.position == p || (i.GetComponent<HelperInstance>() != null && i.GetComponent<HelperInstance>().startingPos == (Vector2)p)) {
+                    c = i.GetComponent<Buyable>().cost;
+                    f = i.gameObject;
+                    found = true;
+                    break;
+                }
             }
-        }
-        if(found) {
-            Destroy(f.gameObject);
-        }
-        else return;
+            if(found) {
+                gb.removeFromGameBoard(f.gameObject);
+                Destroy(f.gameObject);
+            }
+            else return;
 
-        cth.tryTransaction(-c, pc.soulsText, false);
-        map.color = Color.green;
+            cth.tryTransaction(-c, pc.soulsText, false);
+            map.color = Color.green;
+            prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
+            StartCoroutine(mapUpdater());
+        }
+    }
+
+    IEnumerator mapUpdater() {
+        yield return new WaitForEndOfFrame();
+        justUpdatedBoard = true;
     }
 
     public void clear() {
         map.ClearAllTiles();
+    }
+
+    private void OnDisable() {
+        controls.Disable();
     }
 }

@@ -16,7 +16,7 @@ public class WeaponSelectionCanvas : MenuCanvas {
     private void Start() {
         controls = new InputMaster();
         controls.Enable();
-        controls.Player.GamepadCycle.started += ctx => changeWeapon(ctx.ReadValue<Vector2>().x > 0);
+        controls.Player.Aim.started += ctx => changeWeapon(ctx.ReadValue<Vector2>().x > 0);
         wsi = FindObjectOfType<WeaponSelectionInteractable>();
         pl = FindObjectOfType<PresetLibrary>();
         holder.SetActive(false);

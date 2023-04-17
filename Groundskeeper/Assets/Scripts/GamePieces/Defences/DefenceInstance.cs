@@ -43,6 +43,7 @@ public abstract class DefenceInstance : Defence {
     }
 
     public override void die() {
+        FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
         Destroy(gameObject);
     }
 }

@@ -31,6 +31,9 @@ public abstract class WeaponInstance : MonoBehaviour {
     [SerializeField] public FunkyCode.Light2D gunLight;
     [SerializeField] GameObject lobObject;
 
+    MouseManager mm;
+    GameGamepadCursor ggc;
+
     bool isPlayerWeapon = false;
 
 
@@ -68,6 +71,8 @@ public abstract class WeaponInstance : MonoBehaviour {
         em = FindObjectOfType<EnvironmentManager>();
         cm = FindObjectOfType<CameraMovement>();
         am = FindObjectOfType<AudioManager>();
+        mm = FindObjectOfType<MouseManager>();
+        ggc = FindObjectOfType<GameGamepadCursor>();
 
         //  sets reference
         if(GetComponentInParent<HelperInstance>() == null)
@@ -98,8 +103,8 @@ public abstract class WeaponInstance : MonoBehaviour {
     public void lookAtMouse() {
         if(canMove) {
             Vector3 orbVector = Camera.main.WorldToScreenPoint(user.transform.position);
-            var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            orbVector = Input.mousePosition - orbVector;
+            var mousePos = mm.usingKeyboard() ? (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) : ggc.getMousePosInScreen();
+            orbVector = mm.usingKeyboard() ? Input.mousePosition - orbVector : (Vector3)ggc.getMousePosInScreen() - orbVector;
             float angle = Mathf.Atan2(orbVector.y, orbVector.x) * Mathf.Rad2Deg;
             angle += reference.aType == Weapon.attackType.Swing ? 35 : -35;
 

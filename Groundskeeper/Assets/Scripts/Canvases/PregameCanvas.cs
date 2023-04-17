@@ -13,7 +13,7 @@ public class PregameCanvas : MonoBehaviour {
     [SerializeField] public TextMeshProUGUI soulsText;  //  referenced in PlacementGrid place()
     [SerializeField] CircularSlider timer;
     [SerializeField] GameObject helpText;
-    float prepTime = 2*60f; // 2 mins
+    float prepTime = 2 * 60f; // 2 mins
 
     [SerializeField] AudioClip gameMusic;
 
@@ -30,6 +30,8 @@ public class PregameCanvas : MonoBehaviour {
             startTimer();
         else
             helpText.SetActive(false);
+
+        FindObjectOfType<MouseManager>().addOnInputChangeFunc(changeHelpText);
     }
 
     public void startTimer() {
@@ -84,6 +86,13 @@ public class PregameCanvas : MonoBehaviour {
         pwi.canAttackG = !(mouseOverUI() || pg.placing);
     }
 
+    void changeHelpText(bool usingKeyboard) {
+        if(usingKeyboard)
+            helpText.GetComponent<TextMeshProUGUI>().text = "M1-Place\nM2-Sell";
+        else
+            helpText.GetComponent<TextMeshProUGUI>().text = "Y-Place\nB-Sell";
+    }
+
     public bool mouseOverUI() {
         return EventSystem.current.IsPointerOverGameObject();
     }
@@ -115,5 +124,10 @@ public class PregameCanvas : MonoBehaviour {
             FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
         hide();
         FindObjectOfType<InfoBox>().gameObject.SetActive(false);
+    }
+
+    private void OnDisable() {
+        if(FindObjectOfType<MouseManager>() != null)
+            FindObjectOfType<MouseManager>().removeOnInputChangeFunc(changeHelpText);
     }
 }

@@ -143,7 +143,7 @@ public abstract class HelperInstance : Helper {
         return Color.white;
     }
     public override void die() {
-        FindObjectOfType<GameBoard>().helpers.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
+        FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
         if(healthBar != null)
             Destroy(healthBar.gameObject);
         Destroy(gameObject);

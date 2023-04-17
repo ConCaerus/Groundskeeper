@@ -5,7 +5,7 @@ using static UnityEditor.PlayerSettings;
 
 public class GameBoard : MonoBehaviour {
 
-    [SerializeField] GameObject holder, envHolder;
+    [SerializeField] GameObject holder, envHolder, deadGuyHolder;
 
 
     [HideInInspector] public KdTree<Helper> helpers = new KdTree<Helper>();
@@ -15,7 +15,7 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
-    const int minDeadGuyCount = 100;
+    const int minDeadGuyCount = 50;
 
     const float boardRadius = 100f;
     Coroutine saver = null;
@@ -68,14 +68,14 @@ public class GameBoard : MonoBehaviour {
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
             var obj = pl.getDeadGuy(data.name);
-            Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
+            Instantiate(obj, data.pos, Quaternion.identity, deadGuyHolder.transform);
         }
 
         //  spawn the first set of dead guys
         if(GameInfo.getNightCount() == 0 && deadGuys.Count == 0) {
             for(int i = 0; i < minDeadGuyCount; i++) {
                 var obj = pl.getRandomDeadGuy();
-                Instantiate(obj, getRandomMapPos(), Quaternion.identity, holder.transform);
+                Instantiate(obj, getRandomMapPos(), Quaternion.identity, deadGuyHolder.transform);
             }
         }
         //  spawns new dead guys if needs to spawn more
@@ -83,9 +83,10 @@ public class GameBoard : MonoBehaviour {
             int spawnNum = Random.Range(1, minDeadGuyCount - SaveData.getInt(GameInfo.lastSavedDeadGuyCount) + 1);
             for(int i = 0; i < spawnNum; i++) {
                 var obj = pl.getRandomDeadGuy();
-                Instantiate(obj, getRandomMapPos(), Quaternion.identity, holder.transform);
+                Instantiate(obj, getRandomMapPos(), Quaternion.identity, deadGuyHolder.transform);
             }
         }
+        deadGuyHolder.GetComponent<CompositeCollider2D>().GenerateGeometry();
 
 
         if(GameInfo.getNightCount() > 0) {
@@ -269,6 +270,21 @@ public class GameBoard : MonoBehaviour {
 
     public bool saving() {
         return saver != null;
+    }
+
+    public void removeFromGameBoard(GameObject thing) {
+        if(thing.GetComponent<Helper>() != null)
+            helpers.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
+        else if(thing.GetComponent<StructureInstance>() != null)
+            structures.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
+        else if(thing.GetComponent<DefenceInstance>() != null)
+            defences.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
+        else if(thing.GetComponent<DeadGuyInstance>() != null)
+            deadGuys.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
+        else if(thing.GetComponent<MonsterInstance>() != null)
+            monsters.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
+        else if(thing.GetComponent<EnvironmentInstance>() != null)
+            monsters.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
     }
 }
 

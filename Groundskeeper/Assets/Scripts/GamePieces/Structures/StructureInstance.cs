@@ -37,6 +37,7 @@ public abstract class StructureInstance : Structure {
     }
 
     public override void die() {
+        FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
         Destroy(gameObject);
     }
 }

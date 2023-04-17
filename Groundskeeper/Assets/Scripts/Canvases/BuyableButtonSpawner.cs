@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Reflection;
+using UnityEngine.EventSystems;
 
 public class BuyableButtonSpawner : MonoBehaviour {
     [SerializeField] GameObject buyableButton;
@@ -14,13 +15,18 @@ public class BuyableButtonSpawner : MonoBehaviour {
 
     List<Coroutine> buttonCoroutines = new List<Coroutine>();
 
+    [SerializeField] GameObject readyButton;
+
     int prevGenre = -1;
     BuyableLibrary bl;
     PlacementGrid pg;
 
+    MouseManager mm;
+
     private void Awake() {
         bl = FindObjectOfType<BuyableLibrary>();
         pg = FindObjectOfType<PlacementGrid>();
+        mm = FindObjectOfType<MouseManager>();
     }
 
     public void switchGenre(int index) {
@@ -39,6 +45,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
             Destroy(i.gameObject);
         buttons.Clear();
 
+        bool first = true;
         foreach(var i in buyables) {
             var obj = Instantiate(buyableButton.gameObject, holder);
             obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().titleToText();
@@ -50,9 +57,27 @@ public class BuyableButtonSpawner : MonoBehaviour {
             }
             else
                 obj.transform.GetChild(2).gameObject.SetActive(false);
-            obj.GetComponent<Button>().onClick.AddListener(delegate { pg.changePlacing(i.gameObject, i.gameObject == pg.currentObj); });
+            obj.GetComponent<Button>().onClick.AddListener(delegate { 
+                pg.changePlacing(i.gameObject, i.gameObject == pg.currentObj);
+                StartCoroutine(reSelecter(obj.GetComponent<Selectable>()));
+            });
+            if(first)
+                obj.GetComponent<Button>().Select();
+
+            first = false;
             buttons.Add(obj.gameObject);
         }
+
+        if(!mm.usingKeyboard()) {
+            StartCoroutine(reSelecter());
+        }
+    }
+
+    IEnumerator reSelecter(Selectable thing = null) {
+        yield return new WaitForEndOfFrame();
+        if(thing == null)
+            thing = FindObjectOfType<Selectable>();
+        thing.Select();
     }
 
     public void updateBuyableButtons() {

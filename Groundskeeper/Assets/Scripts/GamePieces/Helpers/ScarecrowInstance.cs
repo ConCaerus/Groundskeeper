@@ -53,7 +53,7 @@ public class ScarecrowInstance : Helper {
 
     //  functions that do do squat
     public override void die() {
-        FindObjectOfType<GameBoard>().helpers.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
+        FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
         if(healthBar != null)
             Destroy(healthBar.gameObject);
         Destroy(gameObject);

@@ -12,6 +12,8 @@ public class OptionsCanvas : MenuCanvas {
     FullScreenMode curScreenMode;
     GameOptions.TargetFrameRate tFPS;
 
+    List<Selectable> obscured = new List<Selectable>();
+
 
     private void Start() {
         setup();
@@ -55,10 +57,23 @@ public class OptionsCanvas : MenuCanvas {
     }
 
     protected override void show() {
-        Time.timeScale = 0.0f;
+        //  uninteracts all buttons so that the navigation doesn't get fucked
+        foreach(var i in FindObjectsOfType<Selectable>()) {
+            if(i.interactable) {
+                i.interactable = false;
+                obscured.Add(i);
+            }
+        }
+        if(FindObjectOfType<MortalUnit>() != null)
+            Time.timeScale = 0.0f;
         background.SetActive(true);
+        masterVolSlider.Select();
+
     }
     protected override void close() {
+        foreach(var i in obscured)
+            i.interactable = true;
+        obscured.Clear();
         Time.timeScale = 1.0f;
         background.SetActive(false);
     }

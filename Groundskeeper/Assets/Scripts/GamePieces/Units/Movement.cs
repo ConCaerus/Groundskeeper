@@ -21,6 +21,7 @@ public abstract class Movement : MortalUnit {
     protected SpriteRenderer sr;
     Collider2D srCol;
     protected MouseManager mm;
+    protected GameGamepadCursor ggc;
 
     //  abstract because monsters change their sprites differently to everyone else
     public abstract void updateSprite(Vector2 movingDir, bool opposite);
@@ -29,6 +30,7 @@ public abstract class Movement : MortalUnit {
         ls = l;
         sr = spriteObj.GetComponent<SpriteRenderer>();
         mm = FindObjectOfType<MouseManager>();
+        ggc = FindObjectOfType<GameGamepadCursor>();
         foreach(var i in GetComponents<Collider2D>()) {
             if(!i.isTrigger) {
                 srCol = i;
