@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class EnvironmentInstance : MonoBehaviour {
     public string title;
-    [SerializeField] int hits = 3;
+    [SerializeField] public int hits = 3;
     [SerializeField] public triggerInteractionType tit;
 
     public enum triggerInteractionType {
@@ -19,13 +19,18 @@ public class EnvironmentInstance : MonoBehaviour {
         transform.DOShakeRotation(.15f, 30);
 
         if(hits <= 0) {
-            transform.DOScale(0.0f, .25f);
-            FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
-            GetComponent<Collider2D>().enabled = false;
-            GetComponentInParent<CompositeCollider2D>().GenerateGeometry();
-            Destroy(gameObject, .25f);
-            GameInfo.addSouls(Random.Range(1, 6), false);
+            remove(true);
         }
+    }
+
+    public void remove(bool giveSouls) {
+        transform.DOScale(0.0f, .25f);
+        FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
+        GetComponent<Collider2D>().enabled = false;
+        GetComponentInParent<CompositeCollider2D>().GenerateGeometry();
+        Destroy(gameObject, .25f);
+        if(giveSouls)
+            GameInfo.addSouls(Random.Range(1, 6), false);
     }
 
     public void turnOffCol() {

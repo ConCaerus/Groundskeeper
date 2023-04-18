@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameOverCanvas : MonoBehaviour {
     [SerializeField] GameObject background;
+    [SerializeField] Selectable firstInSequence;
 
     private void Awake() {
         background.SetActive(false);
@@ -16,6 +18,7 @@ public class GameOverCanvas : MonoBehaviour {
         background.transform.localScale = Vector3.zero;
         background.SetActive(true);
         background.transform.DOScale(1.0f, .5f);
+        firstInSequence.Select();
     }
 
 

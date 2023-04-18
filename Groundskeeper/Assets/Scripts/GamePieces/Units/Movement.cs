@@ -23,6 +23,8 @@ public abstract class Movement : MortalUnit {
     protected MouseManager mm;
     protected GameGamepadCursor ggc;
 
+    Transform playerTrans;
+
     //  abstract because monsters change their sprites differently to everyone else
     public abstract void updateSprite(Vector2 movingDir, bool opposite);
     protected void movementInit(SetupSequenceManager s, LayerSorter l) {
@@ -31,6 +33,7 @@ public abstract class Movement : MortalUnit {
         sr = spriteObj.GetComponent<SpriteRenderer>();
         mm = FindObjectOfType<MouseManager>();
         ggc = FindObjectOfType<GameGamepadCursor>();
+        playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
         foreach(var i in GetComponents<Collider2D>()) {
             if(!i.isTrigger) {
                 srCol = i;
@@ -40,7 +43,7 @@ public abstract class Movement : MortalUnit {
     }
 
     protected void moveWithDir(Vector2 info, Rigidbody2D rb, float speed) {
-        if(!canMove || (ssm != null && ssm.isActiveAndEnabled))
+        if(!canMove || (ssm != null && ssm.isActiveAndEnabled) || playerTrans == null)
             return;
         var s = speed * 100.0f * (beingAttackedByMonster ? inhibitMod : 1.0f);
         rb.velocity = info * s * Time.fixedDeltaTime;

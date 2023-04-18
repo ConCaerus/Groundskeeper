@@ -13,6 +13,15 @@ public class DeadGuyHolder : Interactable {
         cc = GetComponent<CompositeCollider2D>();
     }
 
+
+    public void clearDeadGuysWithinRadius(Vector2 origin, float rad) {
+        var closest = gb.deadGuys.FindClosest(origin);
+        while(Vector2.Distance(closest.transform.position, origin) < rad) {
+            closest.gameObject.GetComponent<DeadGuyInstance>().hardCleanup();
+            closest = gb.deadGuys.FindClosest(origin);
+        }
+    }
+
     public override bool canInteract() {
         targetOffsetPosition = gb.deadGuys.FindClosest(player.position).gameObject.transform.GetChild(0).gameObject;
         return true;

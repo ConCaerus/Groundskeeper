@@ -22,10 +22,12 @@ public class CameraMovement : MonoBehaviour {
 
     //  Move to player
     private void LateUpdate() {
-        var target = new Vector3(pt.position.x, pt.position.y, transform.position.z) + (movingUp ? offsetFromPlayer : -offsetFromPlayer);
+        if(pt != null) {
+            var target = new Vector3(pt.position.x, pt.position.y, transform.position.z) + (movingUp ? offsetFromPlayer : -offsetFromPlayer);
 
-        if(transform.position != target)
-            transform.position = Vector3.Lerp(transform.position, target, speed * 100.0f * Time.deltaTime);
+            if(transform.position != target)
+                transform.position = Vector3.Lerp(transform.position, target, speed * 100.0f * Time.deltaTime);
+        }
     }
 
     private void Update() {

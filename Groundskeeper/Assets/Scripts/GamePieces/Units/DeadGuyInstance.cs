@@ -34,4 +34,10 @@ public class DeadGuyInstance : MonoBehaviour {
         GetComponentInParent<DeadGuyHolder>().updateCollider();
         Destroy(gameObject);
     }
+
+    public void hardCleanup() {
+        FindObjectOfType<GameBoard>().removeFromGameBoard(gameObject);
+        GetComponentInParent<DeadGuyHolder>().updateCollider();
+        Destroy(gameObject);
+    }
 }

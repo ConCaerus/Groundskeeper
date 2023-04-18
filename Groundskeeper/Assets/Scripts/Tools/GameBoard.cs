@@ -15,7 +15,7 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
-    const int minDeadGuyCount = 50;
+    const int minDeadGuyCount = 15;
 
     const float boardRadius = 100f;
     Coroutine saver = null;
@@ -284,7 +284,7 @@ public class GameBoard : MonoBehaviour {
         else if(thing.GetComponent<MonsterInstance>() != null)
             monsters.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
         else if(thing.GetComponent<EnvironmentInstance>() != null)
-            monsters.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
+            environment.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
     }
 }
 

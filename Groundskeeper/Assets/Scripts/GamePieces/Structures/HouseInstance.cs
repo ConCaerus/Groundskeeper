@@ -22,6 +22,7 @@ public class HouseInstance : StructureInstance {
 
     private void Start() {
         FindObjectOfType<EnvironmentManager>().hideAllEnvAroundArea(transform.position, 10f);
+        FindObjectOfType<DeadGuyHolder>().clearDeadGuysWithinRadius(transform.position, 10f);
         FindObjectOfType<MonsterSpawner>().transform.position = getCenter();
         FindObjectOfType<PlayerInstance>().hCenter = getCenter();
         FindObjectOfType<GameBoard>().structures.Add(this);
