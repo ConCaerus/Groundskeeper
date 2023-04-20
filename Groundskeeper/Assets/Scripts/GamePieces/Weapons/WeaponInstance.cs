@@ -244,7 +244,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         if(isPlayerWeapon) {
             float lungeMod = 1.5f * mod;
             var origin = (Vector2)pt.position;
-            var target = GameInfo.mousePos();
+            var target = mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld();
             var px = target.x - origin.x;
             var py = target.y - origin.y;
             var theta = Mathf.Atan2(py, px);

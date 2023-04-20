@@ -12,6 +12,7 @@ public class InteractHelperCanvas : MonoBehaviour {
     private void Start() {
         transform.GetChild(0).transform.localScale = Vector3.zero;
         usedScale = FindObjectOfType<PlayerInstance>() == null ? houseScale: gameScale;
+        FindObjectOfType<MouseManager>().addOnInputChangeFunc(updateIntText);
     }
 
     public void show(Vector2 pos) {

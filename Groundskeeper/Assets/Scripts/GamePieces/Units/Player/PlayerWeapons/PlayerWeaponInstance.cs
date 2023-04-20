@@ -21,6 +21,8 @@ public class PlayerWeaponInstance : WeaponInstance {
     GameTutorialCanvas gtc;
     TransitionCanvas tc;
 
+    Coroutine queuedAttack = null;
+
     void Awake() {
         ssm = FindObjectOfType<SetupSequenceManager>();
         canAttackG = GameInfo.getNightCount() > 0;
@@ -99,13 +101,23 @@ public class PlayerWeaponInstance : WeaponInstance {
             sr.DOKill();
             sr.color = Color.red;
             sr.DOColor(Color.white, .35f);
+            queuedAttack = StartCoroutine(attackAfterCooldown());
         }
     }
 
     void attackEnded(InputAction.CallbackContext c) {
+        if(queuedAttack != null)
+            StopCoroutine(queuedAttack);
+        queuedAttack = null;
         if(canAttackG && transform.lossyScale.x > 0f && !ssm.isActiveAndEnabled) {
             variant.performOnAttackEnd();
         }
+    }
+
+    IEnumerator attackAfterCooldown() {
+        while(!a.getCanAttack())
+            yield return new WaitForEndOfFrame();
+        attackPerformed(new InputAction.CallbackContext());
     }
 
     public Weapon getWeapon() {

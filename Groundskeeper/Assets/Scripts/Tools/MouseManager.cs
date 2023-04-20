@@ -13,6 +13,7 @@ public class MouseManager : MonoBehaviour {
 
 
     private void Awake() {
+        changeFuncs.Clear();
         controls = new InputMaster();
         controls.Enable();
         controls.InputSwitch.Mouse.started += ctx => switchToKeyboard();
@@ -55,7 +56,7 @@ public class MouseManager : MonoBehaviour {
 
     void checkUIOptions() {
         if(!usingKeyboard() && EventSystem.current.currentSelectedGameObject == null && FindObjectOfType<Selectable>() != null) {
-            //FindObjectOfType<Selectable>().Select();
+            FindObjectOfType<Selectable>().Select();
         }
     }
 
@@ -66,6 +67,8 @@ public class MouseManager : MonoBehaviour {
 
     public void addOnInputChangeFunc(func f) {
         changeFuncs.Add(f);
+        //  run it right away
+        f(usingKeyboard());
     }
     public void removeOnInputChangeFunc(func f) {
         changeFuncs.Remove(f);

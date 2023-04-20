@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public abstract class Interactable : MonoBehaviour {
     InputMaster controls;
@@ -9,8 +10,6 @@ public abstract class Interactable : MonoBehaviour {
 
     [SerializeField] bool toggleMovement = true;
     [SerializeField] public GameObject targetOffsetPosition;
-
-    MouseManager mm;
 
 
     private void OnTriggerEnter2D(Collider2D col) {
@@ -34,7 +33,6 @@ public abstract class Interactable : MonoBehaviour {
 
 
     private void Awake() {
-        mm = FindObjectOfType<MouseManager>();
         controls = new InputMaster();
         controls.Player.Interact.performed += ctx => toggleInteract();
     }

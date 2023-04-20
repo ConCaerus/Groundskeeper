@@ -4,13 +4,14 @@ using UnityEngine;
 using DG.Tweening;
 
 public class DeadGuyInstance : MonoBehaviour {
-    [HideInInspector] public float soulsGiven = 250f; //  have this number go up as the nights increase
+    [HideInInspector] public float soulsGiven = 25f; //  have this number go up as the nights increase
     [SerializeField] public string title;
 
     GameUICanvas guc;
     GameBoard gb;
 
     private void Start() {
+        soulsGiven *= GameInfo.getNightCount();
         FindObjectOfType<GameBoard>().deadGuys.Add(this);
         guc = FindObjectOfType<GameUICanvas>();
         gb = FindObjectOfType<GameBoard>();

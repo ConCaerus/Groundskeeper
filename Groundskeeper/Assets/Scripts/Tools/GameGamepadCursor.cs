@@ -55,7 +55,7 @@ public class GameGamepadCursor : MonoBehaviour {
     }
 
     bool freeRoam() {
-        return pg != null;
+        return pg != null && pg.placing;
     }
 
     public Vector2 getMousePosInWorld() {

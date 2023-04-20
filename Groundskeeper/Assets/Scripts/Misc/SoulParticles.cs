@@ -8,6 +8,8 @@ public class SoulParticles : MonoBehaviour {
     [SerializeField] FunkyCode.Light2D lightPreset;
     List<FunkyCode.Light2D> lights = new List<FunkyCode.Light2D>();
 
+    int maxNumOfLights = 5;
+
     private void Start() {
         StartCoroutine(stopper());
         StartCoroutine(lightMover());
@@ -16,7 +18,7 @@ public class SoulParticles : MonoBehaviour {
     IEnumerator lightMover() {
         yield return new WaitForSeconds(.1f);
 
-        int c = GetComponent<ParticleSystem>().GetParticles(p);
+        int c = Mathf.Clamp(GetComponent<ParticleSystem>().GetParticles(p), 0, maxNumOfLights);
         var ss = GetComponent<ParticleSystem>().main.simulationSpeed;
         for(int i = 0; i < c; i++) {
             if(i >= lights.Count) {

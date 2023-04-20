@@ -16,6 +16,9 @@ public class GameTutorialCanvas : MonoBehaviour {
         attackingText.color = Color.clear;
         sprintingText.color = Color.clear;
         chargeAttackText.color = Color.clear;
+
+        if(GameInfo.getNightCount() == 0)
+            FindObjectOfType<MouseManager>().addOnInputChangeFunc(changeTextType);
     }
 
     public void show() {
@@ -57,6 +60,20 @@ public class GameTutorialCanvas : MonoBehaviour {
         has[3] = true;
         StopAllCoroutines();
         StartCoroutine(finish());
+    }
+
+    public void changeTextType(bool usingKeyboard) {
+        if(usingKeyboard) {
+            movementText.text = "Move:\nW\nA S D";
+            attackingText.text = "Attack:\nM1 (tap)";
+            sprintingText.text = "Sprint:\nL-Shift";
+            chargeAttackText.text = "Charge Attack:\nM1 (hold)";
+        } else {
+            movementText.text = "Move:\nL-Stick";
+            attackingText.text = "Attack:\nR-Trigger";
+            sprintingText.text = "Sprint:\nL-Bumper";
+            chargeAttackText.text = "Charge Attack:\nR-Trigger\n(hold)";
+        }
     }
 
     IEnumerator finish() {
