@@ -21,10 +21,10 @@ public class HouseTutorialCanvas : MonoBehaviour {
         yield return new WaitForSeconds(1.0f);
         FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(new List<string>() {
             "You lived?", "I mean, <color=\"yellow\">you lived!", "<color=\"yellow\">Congratulations!", "...", "Anyways...", "You need to strengthen your defences", "This cabin is outfitted with a <color=\"red\">soul eater",
-            "Give it some of the <color=\"red\">souls<color=\"white\"> you've collected and it will reward you with...", "with things...", "It's hard to explain. You'll figure it out I'm sure"
+            "Give it some of the <color=\"red\">souls<color=\"white\"> you've collected and it will reward you with...", "with things...", "It's hard to explain. You'll figure it out I'm sure", "When you're done, sleep in the bed"
         }, new List<DialogText.facialExpression>() {
             DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.thinking,
-            DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.normal
+            DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.dismissive
         }),
         delegate { StartCoroutine(mouthTutEnd()); });
     }

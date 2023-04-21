@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public class TransitionCanvas : MonoBehaviour {
     [SerializeField] float showTime = 1f;
-    [SerializeField] GameObject background;
+    [SerializeField] Animator anim;
 
     Coroutine loader = null;
 
@@ -15,12 +15,16 @@ public class TransitionCanvas : MonoBehaviour {
 
     private void Awake() {
         QualitySettings.vSyncCount = GameInfo.getGameOptions().vSync ? 1 : 0; // don't do shit to this
-        background.SetActive(true);
         GameInfo.init();
         DOTween.Init();
+        anim.gameObject.SetActive(true);
     }
 
     private void Start() {
+        //  sets the random rotation that tilts the thing
+        var rand = Random.Range(0, 2);
+        if(rand == 0)
+            anim.gameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180.0f);
         StartCoroutine(loadedSceneWaiter());
     }
 
@@ -34,8 +38,7 @@ public class TransitionCanvas : MonoBehaviour {
     }
 
     IEnumerator loadSceneWaiter(string name) {
-        background.SetActive(true);
-
+        anim.SetTrigger("transition");
         //  waits for the board to finish saving if it is saving
         if(FindObjectOfType<GameBoard>() != null) {
             yield return new WaitForEndOfFrame();
@@ -59,7 +62,8 @@ public class TransitionCanvas : MonoBehaviour {
             FindObjectOfType<PlayerInstance>().setCanMove(GameInfo.getNightCount() > 0);
         else if(FindObjectOfType<PlayerHouseInstance>() != null)
             FindObjectOfType<PlayerHouseInstance>().setCanMove(GameInfo.getNightCount() > 0);
-        background.SetActive(false);
+
+        anim.SetTrigger("transition");
         finishedLoading = true;
     }
 }

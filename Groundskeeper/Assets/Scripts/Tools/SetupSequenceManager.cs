@@ -12,6 +12,8 @@ public class SetupSequenceManager : MonoBehaviour {
     PregameCanvas pc;
     DialogCanvas dc;
 
+    MouseManager mm;
+
     bool p = false;
 
     private void Awake() {
@@ -24,6 +26,7 @@ public class SetupSequenceManager : MonoBehaviour {
         pwi = FindObjectOfType<PlayerWeaponInstance>();
         pc = FindObjectOfType<PregameCanvas>();
         dc = FindObjectOfType<DialogCanvas>();
+        mm = FindObjectOfType<MouseManager>();
         StartCoroutine(houseSetup());
     }
 
@@ -59,8 +62,8 @@ public class SetupSequenceManager : MonoBehaviour {
         //  dialog from the devil that introduces the player to the world
         //  and tells them that they need to place their house
         dc.loadDialogText(new DialogText(
-            new List<string>() { "Welcome to the world", "Place your <color=\"yellow\">house" },
-            new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.normal}), 
+            new List<string>() { "Welcome to the world", mm.usingKeyboard() ? "..." : "Use the <color=\"red\">D-Pad<color=\"white\"> to navigate <color=\"red\">UI", "Place your <color=\"yellow\">house" },
+            new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal}), 
             null);
 
         yield return new WaitForSeconds(.1f);
