@@ -41,20 +41,20 @@ public class WeaponSelectionCanvas : MenuCanvas {
         if(isOpen()) {
             //  changes the index of the player's current weapon
             var t = pStats.getWeaponTitle(pl);
-            int ind = pl.getUnlockedWeaponIndex(t);
+            int ind = pl.getUnlockedWeaponIndex(t, true);
             //Debug.Log(t + " " + ind + " " + right + " " + pl.getUnlockedWeapons().Count);
             ind += right ? 1 : -1;
             if(ind < 0)
-                ind = pl.getUnlockedWeapons().Count - 1;
-            else if(ind >= pl.getUnlockedWeapons().Count)
+                ind = pl.getUnlockedWeapons(true).Count - 1;
+            else if(ind >= pl.getUnlockedWeapons(true).Count)
                 ind = 0;
 
             //  saves
-            pStats.playerWeaponTitle = pl.getUnlockedWeapons()[ind].title.ToString();
+            pStats.playerWeaponTitle = pl.getUnlockedWeapons(true)[ind].title.ToString();
             GameInfo.setPlayerStats(pStats);
 
             //  displays the new weapon sprite
-            wsi.getWeaponSprite().sprite = pl.getUnlockedWeapons()[ind].sprite;
+            wsi.getWeaponSprite().sprite = pl.getUnlockedWeapons(true)[ind].sprite;
         }
     }
 }

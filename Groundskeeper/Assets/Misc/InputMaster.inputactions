@@ -864,6 +864,17 @@
                 },
                 {
                     "name": "",
+                    "id": "e8358dbd-8a15-413b-9ee4-4a438dd2eb28",
+                    "path": "<VirtualMouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "3af14715-2a0b-436c-bf2e-fd7d39f21860",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -886,11 +897,33 @@
                 },
                 {
                     "name": "",
+                    "id": "e3f1a39e-21cd-4245-bdb1-3724ae8c57dc",
+                    "path": "<VirtualMouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "306caf2b-dadf-49ef-8109-20b0eff51c28",
                     "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
+                    "action": "ScrollWheel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "03bc5202-744d-46d4-9708-e6a359eaa99a",
+                    "path": "<VirtualMouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "ScrollWheel",
                     "isComposite": false,
                     "isPartOfComposite": false

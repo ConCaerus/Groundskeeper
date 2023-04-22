@@ -20,6 +20,7 @@ public class PlayerWeaponInstance : WeaponInstance {
     InputMaster controls;
     GameTutorialCanvas gtc;
     TransitionCanvas tc;
+    PregameCanvas pc;
 
     Coroutine queuedAttack = null;
 
@@ -28,10 +29,11 @@ public class PlayerWeaponInstance : WeaponInstance {
         canAttackG = GameInfo.getNightCount() > 0;
         controls = new InputMaster();
         controls.Enable();
-        controls.Player.Attack.performed += attackPerformed;
+        controls.Player.Attack.started += attackPerformed;
         controls.Player.Attack.canceled += attackEnded;
         gtc = FindObjectOfType<GameTutorialCanvas>();
         tc = FindObjectOfType<TransitionCanvas>();
+        pc = FindObjectOfType<PregameCanvas>();
 
 
         //  sets up the variant
@@ -101,7 +103,8 @@ public class PlayerWeaponInstance : WeaponInstance {
             sr.DOKill();
             sr.color = Color.red;
             sr.DOColor(Color.white, .35f);
-            queuedAttack = StartCoroutine(attackAfterCooldown());
+            if(pc == null)
+                queuedAttack = StartCoroutine(attackAfterCooldown());
         }
     }
 

@@ -59,9 +59,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f666778c85a534f419bb311e2e84fc6a, type: 2}
   - {fileID: 11400000, guid: 362d4d60c6855e54ba50f5ebb7f0c9db, type: 2}
   - {fileID: 11400000, guid: 7bf65281ba4625a45bfe9b800327a0cd, type: 2}
+  - {fileID: 11400000, guid: 7b4b41790b3eb7148b4d3de2c85c1e14, type: 2}
+  - {fileID: 11400000, guid: 217a86711dfb7ee4281f2084adbf549e, type: 2}
   environment:
   - {fileID: 6781478881865433263, guid: 4c562ecd24afa0245af2935eafa99bf0, type: 3}
   - {fileID: 7473083248459037945, guid: 964b56f30531301459c4200a376e73f2, type: 3}
   - {fileID: 6781478881865433263, guid: a18375911e874b24dbdd50b6a9fa8553, type: 3}
   deadGuys:
   - {fileID: 4290818844650980010, guid: 5c4e471f206f5294eb337f9af4e7fc22, type: 3}
+  defaultWeapon: 1

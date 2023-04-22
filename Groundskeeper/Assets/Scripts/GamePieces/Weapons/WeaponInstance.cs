@@ -33,6 +33,7 @@ public abstract class WeaponInstance : MonoBehaviour {
 
     MouseManager mm;
     GameGamepadCursor ggc;
+    FreeGamepadCursor fgc;
 
     bool isPlayerWeapon = false;
 
@@ -73,6 +74,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         am = FindObjectOfType<AudioManager>();
         mm = FindObjectOfType<MouseManager>();
         ggc = FindObjectOfType<GameGamepadCursor>();
+        fgc = FindObjectOfType<FreeGamepadCursor>();
 
         //  sets reference
         if(GetComponentInParent<HelperInstance>() == null)
@@ -103,8 +105,10 @@ public abstract class WeaponInstance : MonoBehaviour {
     public void lookAtMouse() {
         if(canMove) {
             Vector3 orbVector = Camera.main.WorldToScreenPoint(user.transform.position);
-            var mousePos = mm.usingKeyboard() ? (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) : ggc.getMousePosInScreen();
-            orbVector = mm.usingKeyboard() ? Input.mousePosition - orbVector : (Vector3)ggc.getMousePosInScreen() - orbVector;
+            var mousePos = mm.usingKeyboard() ? (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) : 
+                ggc != null ? ggc.getMousePosInScreen() : fgc.getScreenCursorPos();
+            orbVector = mm.usingKeyboard() ? Input.mousePosition - orbVector : 
+                ggc != null ? (Vector3)ggc.getMousePosInScreen() - orbVector : (Vector3)fgc.getScreenCursorPos() - orbVector;
             float angle = Mathf.Atan2(orbVector.y, orbVector.x) * Mathf.Rad2Deg;
             angle += reference.aType == Weapon.attackType.Swing ? 35 : -35;
 

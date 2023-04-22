@@ -45,7 +45,6 @@ public class BuyableButtonSpawner : MonoBehaviour {
             Destroy(i.gameObject);
         buttons.Clear();
 
-        bool first = true;
         foreach(var i in buyables) {
             var obj = Instantiate(buyableButton.gameObject, holder);
             obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().titleToText();
@@ -61,10 +60,6 @@ public class BuyableButtonSpawner : MonoBehaviour {
                 pg.changePlacing(i.gameObject, i.gameObject == pg.currentObj);
                 StartCoroutine(reSelecter(obj.GetComponent<Selectable>()));
             });
-            if(first)
-                obj.GetComponent<Button>().Select();
-
-            first = false;
             buttons.Add(obj.gameObject);
         }
 

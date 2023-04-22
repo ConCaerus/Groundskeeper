@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class PregameBuyableButton : MonoBehaviour {
     [SerializeField] TextMeshProUGUI text;
     [SerializeField] GameObject newDot;
-    [SerializeField] bool firstInSeries = false;
 
     BuyableLibrary bl;
 
@@ -16,8 +15,6 @@ public class PregameBuyableButton : MonoBehaviour {
     private void Awake() {
         newDot.SetActive(false);
         bl = FindObjectOfType<BuyableLibrary>();
-        if(firstInSeries)
-            GetComponent<Button>().Select();
     }
 
     public void manageNewDot() {

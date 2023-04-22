@@ -60,10 +60,6 @@ public class EnvironmentManager : MonoBehaviour {
         foreach(var i in used)
             gb.environment.Add(i);
     }
-
-    //  this function is broken
-    //  doesn't remove the hiden environment from GameBoard
-    //  somehow, the number of environments in the GameBoard goes up
     public void hideAllEnvAroundArea(Vector2 center, float rad) {
         KdTree<EnvironmentInstance> used = new KdTree<EnvironmentInstance>();
         var closest = gb.environment.FindClosest(center);

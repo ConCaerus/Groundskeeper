@@ -20,7 +20,7 @@ public class PlacementGrid : MonoBehaviour {
     SetupSequenceManager ssm;
     GameBoard gb;
     MouseManager mm;
-    GameGamepadCursor ggc;
+    FreeGamepadCursor fgc;
 
     InputMaster controls;
 
@@ -49,7 +49,7 @@ public class PlacementGrid : MonoBehaviour {
         ssm = FindObjectOfType<SetupSequenceManager>();
         gb = FindObjectOfType<GameBoard>();
         mm = FindObjectOfType<MouseManager>();
-        ggc = FindObjectOfType<GameGamepadCursor>();
+        fgc = FindObjectOfType<FreeGamepadCursor>();
 
         controls = new InputMaster();
         controls.Enable();
@@ -62,7 +62,7 @@ public class PlacementGrid : MonoBehaviour {
 
     private void Update() {
         if(placing) {
-            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld());
+            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
             move(p);
@@ -145,7 +145,7 @@ public class PlacementGrid : MonoBehaviour {
 
     void move(Vector2 worldPos) {
         clear();
-        var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld());
+        var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
 
         radiusEffect.transform.position = worldPos;
         map.SetTile(pos, currentObj.GetComponent<Buyable>().tile);
@@ -159,7 +159,7 @@ public class PlacementGrid : MonoBehaviour {
     }
     void place() {
         if(!pc.mouseOverUI() && map.color == Color.green) {
-            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld());
+            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
             //  can't place in this spot
@@ -208,7 +208,7 @@ public class PlacementGrid : MonoBehaviour {
     }
     void remove() {
         if(!pc.mouseOverUI()) {
-            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld());
+            var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
             if(map.color == Color.green)

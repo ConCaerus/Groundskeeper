@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using UnityEngine.UI;
 
-public class GamepadCursor : MonoBehaviour {
+public class FreeGamepadCursor : MonoBehaviour {
     Mouse vMouse;
     Mouse curMouse;
     [SerializeField] RectTransform canvasRect;
@@ -23,13 +23,13 @@ public class GamepadCursor : MonoBehaviour {
     const string keyboardScheme = "Keyboard";
     string prevControls = "";
 
-    
+    /*
     private void Update() {
         if(prevControls != playerInput.currentControlScheme && vMouse != null) {
             onControlsChanged(playerInput);
         }
         prevControls = playerInput.currentControlScheme;
-    }
+    }*/
 
 
     private void OnEnable() {
@@ -50,14 +50,14 @@ public class GamepadCursor : MonoBehaviour {
         }
 
         InputSystem.onAfterUpdate += updateMotion;
-        //playerInput.onControlsChanged += onControlsChanged;
+        playerInput.onControlsChanged += onControlsChanged;
     }
 
     private void OnDisable() {
         if(vMouse != null && vMouse.added)
             InputSystem.RemoveDevice(vMouse);
         InputSystem.onAfterUpdate -= updateMotion;
-        //playerInput.onControlsChanged -= onControlsChanged;
+        playerInput.onControlsChanged -= onControlsChanged;
     }
 
     void updateMotion() {
@@ -108,5 +108,12 @@ public class GamepadCursor : MonoBehaviour {
             anchorCursor(curMouse.position.ReadValue());
             prevControls = gamepadscheme;
         }
+    }
+
+    public Vector2 getScreenCursorPos() {
+        return cursorTrans.transform.position;
+    }
+    public Vector2 getWorldCursorPos() {
+        return Camera.main.ScreenToWorldPoint(cursorTrans.transform.position);
     }
 }

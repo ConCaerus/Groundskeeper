@@ -69,6 +69,7 @@ public abstract class MonsterInstance : Monster {
         movementInit(null, FindObjectOfType<LayerSorter>());
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("DeadGuy"));
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("PlayerBoundsCollider"));
         //stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         //FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         pt = FindObjectOfType<PlayerInstance>().transform;

@@ -197,11 +197,11 @@ public static class GameInfo {
     //  scary function that does scary things
     static void lockAllWeaponsExceptStarting(PresetLibrary pl) {
         //  locks everything
-        foreach(var i in pl.getWeapons())
+        foreach(var i in pl.getWeapons(false))
             SaveData.setInt(unlockedWeaponTag(i.title), 0);
 
         //  except default
-        unlockWeapon(Weapon.weaponTitle.Axe);
+        unlockWeapon(pl.defaultWeapon);
     }
     public static void unlockWeapon(Weapon.weaponTitle title) {
         SaveData.setInt(unlockedWeaponTag(title), 1);

@@ -47,7 +47,7 @@ public class BuyTreeCanvas : MenuCanvas {
         queuedBuyables[0] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Helper, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Helper));
         queuedBuyables[1] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Defence, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Defence));
         queuedBuyables[2] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Structure, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Structure));
-        queuedWeapon = pl.getRandomLockedWeapon();
+        queuedWeapon = pl.getRandomLockedWeapon(true);
 
         //  main shits
         for(int i = 0; i < 3; i++)
@@ -83,7 +83,7 @@ public class BuyTreeCanvas : MenuCanvas {
         int index = 3;
         var h = Instantiate(node.gameObject, mainCircles[index].transform);
         var hbtn = h.GetComponent<BuyTreeNode>();
-        hbtn.getSlider().setText(pl.getUnlockedWeapons().Count.ToString());
+        hbtn.getSlider().setText(pl.getUnlockedWeapons(true).Count.ToString());
         hbtn.setTitle("Weapon");
         var c = 200;    //  cost of the fucker
         hbtn.setCost(c);
@@ -94,7 +94,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
         //  LOGIC FOR ACTUALLY UNLOCKING THINGS
         setupSlider(hbtn.getSlider(), false,
-            (float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length,
+            (float)pl.getUnlockedWeapons(true).Count / pl.getWeapons(true).Count,
             delegate {
                 //  checks if the menu is still open
                 if(isOpen()) {
@@ -106,14 +106,14 @@ public class BuyTreeCanvas : MenuCanvas {
                             hbtn.setCost(c);
 
                             //  flair
-                            hbtn.getSlider().doValue((float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length, sliderFillSpeed, true);
-                            hbtn.getSlider().setText(pl.getUnlockedWeapons().Count.ToString());
+                            hbtn.getSlider().doValue((float)pl.getUnlockedWeapons(true).Count / pl.getWeapons(true).Count, sliderFillSpeed, true);
+                            hbtn.getSlider().setText(pl.getUnlockedWeapons(true).Count.ToString());
                             hbtn.animateClick();
                             updateSoulsText();
 
                             //  update buyables in queue
                             FindObjectOfType<UnlockCanvas>().showForWeapon(qw);
-                            queuedWeapon = pl.getRandomLockedWeapon();
+                            queuedWeapon = pl.getRandomLockedWeapon(true);
                             qw = queuedWeapon;
                             hbtn.info.info = (qw == null) ? "Completed" : qw.title.ToString();
                             FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
@@ -122,8 +122,8 @@ public class BuyTreeCanvas : MenuCanvas {
                 }
             });
         hbtn.getSlider().doValueKill();
-        hbtn.maxTicks = pl.getWeapons().Length;
-        hbtn.setTick(pl.getUnlockedWeapons().Count);
+        hbtn.maxTicks = pl.getWeapons(true).Count;
+        hbtn.setTick(pl.getUnlockedWeapons(true).Count);
         return h;
     }
     GameObject createHouseNode() {
@@ -141,7 +141,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
         //  LOGIC FOR ACTUALLY UNLOCKING THINGS
         setupSlider(hbtn.getSlider(), false,
-            (float)pl.getUnlockedWeapons().Count / pl.getWeapons().Length,
+            (float)pl.getUnlockedWeapons(true).Count / pl.getWeapons(true).Count,
             delegate {
                 //  checks if the menu is still open
                 if(isOpen()) {
@@ -231,6 +231,7 @@ public class BuyTreeCanvas : MenuCanvas {
         obtn.maxTier = maxTier;
         obtn.maxTicks = maxTick;
         obtn.info.info = s.ToString();
+        obtn.setCost(getUpdatedCost(obtn));
 
         obtn.setTier(GameInfo.getBuyTreeSubNodeTier(indexToMainType(sInd), s));
         obtn.setTick(GameInfo.getBuyTreeSubNodeTick(indexToMainType(sInd), s));

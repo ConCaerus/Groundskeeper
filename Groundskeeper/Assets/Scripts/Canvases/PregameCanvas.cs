@@ -17,6 +17,8 @@ public class PregameCanvas : MonoBehaviour {
 
     [SerializeField] AudioClip gameMusic;
 
+    [SerializeField] GameObject freeGamepadCursor, gameGamepadCursor;
+
     PlacementGrid pg;
     PlayerWeaponInstance pwi;
 
@@ -42,6 +44,8 @@ public class PregameCanvas : MonoBehaviour {
         timer.doColor(Color.red, prepTime);
     }
     public void setup() {
+        gameGamepadCursor.SetActive(false);
+        freeGamepadCursor.SetActive(true);
         FindObjectOfType<GameUICanvas>().hide();
         transform.GetChild(0).gameObject.SetActive(true);
         soulsText.text = GameInfo.getSouls(false).ToString("0.0") + "s";
@@ -122,8 +126,13 @@ public class PregameCanvas : MonoBehaviour {
         FindObjectOfType<PlayerInstance>().setCanAttack(true);
         if(gameMusic != null)
             FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
-        hide();
         FindObjectOfType<InfoBox>().gameObject.SetActive(false);
+
+        //  switches controller canvases
+        freeGamepadCursor.SetActive(false);
+        gameGamepadCursor.SetActive(true);
+
+        hide();
     }
 
     private void OnDisable() {

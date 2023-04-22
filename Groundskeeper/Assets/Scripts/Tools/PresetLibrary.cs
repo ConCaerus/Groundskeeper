@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class PresetLibrary : MonoBehaviour {
@@ -8,6 +9,7 @@ public class PresetLibrary : MonoBehaviour {
     [SerializeField] Weapon[] weapons;
     [SerializeField] GameObject[] environment;
     [SerializeField] GameObject[] deadGuys;
+    [SerializeField] public Weapon.weaponTitle defaultWeapon;
 
     public GameObject[] getMonsters() {
         return monsters;
@@ -111,45 +113,58 @@ public class PresetLibrary : MonoBehaviour {
         }
         return -1;
     }
-    public int getUnlockedWeaponIndex(Weapon.weaponTitle title) {
-        var ws = getUnlockedWeapons();
+    public int getUnlockedWeaponIndex(Weapon.weaponTitle title, bool playerExclusive) {
+        var ws = getUnlockedWeapons(playerExclusive);
         for(int i = 0; i < ws.Count; i++) {
             if(title == ws[i].title)
                 return i;
         }
         return -1;
     }
-    public Weapon getRandomLockedWeapon() {
-        var ws = getLockedWeapons();
+    public Weapon getRandomLockedWeapon(bool playerExclusive) {
+        var ws = getLockedWeapons(playerExclusive);
         if(ws.Count == 0)
             return null;
         return ws[Random.Range(0, ws.Count)];
     }
 
-    public Weapon[] getWeapons() {
-        return weapons;
-    }
-    public List<Weapon> getLockedWeapons() {
-        var temp = new List<Weapon>();
+    public List<Weapon> getWeapons(bool playerExclusive) {
+        List<Weapon> temp = new List<Weapon>();
         foreach(var i in weapons) {
-            if(!GameInfo.isWeaponUnlocked(i.title))
+            if(i.playerWeapon || !playerExclusive)
                 temp.Add(i);
         }
         return temp;
     }
-    public List<Weapon> getUnlockedWeapons() {
+    public List<Weapon> getLockedWeapons(bool playerExclusive) {
         var temp = new List<Weapon>();
         foreach(var i in weapons) {
-            if(GameInfo.isWeaponUnlocked(i.title))
+            if(!GameInfo.isWeaponUnlocked(i.title) && (!playerExclusive || i.playerWeapon))
                 temp.Add(i);
         }
-
-        //  checks if no weapons are unlocked, if so, unlock the first one
-        if(temp.Count == 0) {
-            if(unlockWeapon(weapons[0].title))
-                return getUnlockedWeapons();
+        //  makes sure that the default weapon is not in this list
+        foreach(var i in temp) {
+            if(i.title == defaultWeapon) {
+                unlockWeapon(defaultWeapon);
+                return getLockedWeapons(playerExclusive);
+            }
         }
         return temp;
+    }
+    public List<Weapon> getUnlockedWeapons(bool playerExclusive) {
+        var temp = new List<Weapon>();
+        foreach(var i in weapons) {
+            if(GameInfo.isWeaponUnlocked(i.title) && (!playerExclusive || i.playerWeapon))
+                temp.Add(i);
+        }
+        //  makes sure that the list contains the default weapon
+        foreach(var i in temp) {
+            if(i.title == defaultWeapon)
+                return temp;
+        }
+        //  if it doesn't, unlock the default weapon and go through the function again
+        unlockWeapon(defaultWeapon);
+        return getUnlockedWeapons(playerExclusive);
     }
 
     public bool unlockWeapon(Weapon.weaponTitle title) {

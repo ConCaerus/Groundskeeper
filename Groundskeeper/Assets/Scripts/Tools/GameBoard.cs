@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class GameBoard : MonoBehaviour {
 
@@ -17,7 +16,7 @@ public class GameBoard : MonoBehaviour {
 
     const int minDeadGuyCount = 15;
 
-    const float boardRadius = 100f;
+    const float boardRadius = 75f;
     Coroutine saver = null;
     const string houseTag = "HouseTag";
 

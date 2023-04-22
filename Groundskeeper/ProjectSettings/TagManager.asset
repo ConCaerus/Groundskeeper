@@ -32,7 +32,7 @@ TagManager:
   - Environment
   - SightCollider
   - House
-  - 
+  - PlayerBoundsCollider
   - 
   - 
   - 
