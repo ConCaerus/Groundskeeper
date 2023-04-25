@@ -15,7 +15,7 @@ public class GameGamepadCursor : MonoBehaviour {
     PlacementGrid pg;
 
 
-    private void Start() {
+    private void Awake() {
         controls = new InputMaster();
         controls.Enable();
         controls.Player.Aim.performed += ctx => aimCursor(ctx.ReadValue<Vector2>());
@@ -34,28 +34,12 @@ public class GameGamepadCursor : MonoBehaviour {
     }
 
     void cursorChange(bool showCursor) {
-        image.enabled = showCursor || freeRoam();
+        image.enabled = showCursor;
     }
 
     void aimCursor(Vector2 dir) {
-        //  player is not placing a buyable, so have the cursor orbit the player
-        if(!freeRoam()) {
-            var worldTarget = (Vector2)player.transform.position + dir * rangeMod;
-            transform.position = Camera.main.WorldToScreenPoint(worldTarget);
-        }
-
-        //  player is placing a buyable, so haver the cursor move freely
-        else {
-            var worldTarget = getMousePosInWorld() + dir * rangeMod / 10f;
-            var target = Camera.main.WorldToScreenPoint(worldTarget);
-            target.x = Mathf.Clamp(target.x, 0.0f, Screen.width);
-            target.y = Mathf.Clamp(target.y, 0.0f, Screen.height);
-            transform.position = target;
-        }
-    }
-
-    bool freeRoam() {
-        return pg != null && pg.placing;
+        var worldTarget = (Vector2)player.transform.position + dir * rangeMod;
+        transform.position = Camera.main.WorldToScreenPoint(worldTarget);
     }
 
     public Vector2 getMousePosInWorld() {

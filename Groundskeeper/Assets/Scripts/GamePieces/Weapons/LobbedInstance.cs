@@ -14,6 +14,7 @@ public class LobbedInstance : MonoBehaviour {
     [SerializeField] float tickBtwTime;
     [SerializeField] float tickSlowAmt;
     [SerializeField] int tickEndAfterTicks;
+    [SerializeField] GameObject effect;
 
     private void OnTriggerEnter2D(Collider2D col) {
         //  add tick damage
@@ -62,10 +63,14 @@ public class LobbedInstance : MonoBehaviour {
         //  deal damage
         expandArea();
 
+        //  start playing effect
+        effect.GetComponent<ParticleSystem>().Play();
+
         yield return new WaitForSeconds(reference.groundedTime);
         //  end effect / cleanup
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(c, GetComponent<SpriteRenderer>());
         shrinkArea();
+        effect.GetComponent<ParticleSystem>().Stop();
         transform.DOScale(0f, .15f);
         Destroy(gameObject, .15f);
     }

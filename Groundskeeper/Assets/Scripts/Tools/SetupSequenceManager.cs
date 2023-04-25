@@ -62,8 +62,8 @@ public class SetupSequenceManager : MonoBehaviour {
         //  dialog from the devil that introduces the player to the world
         //  and tells them that they need to place their house
         dc.loadDialogText(new DialogText(
-            new List<string>() { "Welcome to the world", mm.usingKeyboard() ? "..." : "Use the <color=\"red\">D-Pad<color=\"white\"> to navigate <color=\"red\">UI", "Place your <color=\"yellow\">house" },
-            new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal}), 
+            new List<string>() { "Welcome to the world", "Place your <color=\"yellow\">house" },
+            new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.normal}), 
             null);
 
         yield return new WaitForSeconds(.1f);
@@ -71,7 +71,6 @@ public class SetupSequenceManager : MonoBehaviour {
         //  allows the player to place house
         GameInfo.unlockBuyable(Buyable.buyableTitle.House);
         pc.setup();
-        FindObjectOfType<Selectable>().Select();
     }
 
     IEnumerator weaponSetup() {
@@ -115,6 +114,5 @@ public class SetupSequenceManager : MonoBehaviour {
         pwi.canAttackG = true;
         pi.setCanMove(true);
         enabled = false;
-        FindObjectOfType<Selectable>().Select();
     }
 }

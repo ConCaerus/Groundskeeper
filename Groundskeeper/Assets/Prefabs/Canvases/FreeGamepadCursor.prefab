@@ -127,7 +127,7 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 1
-  m_DefaultControlScheme: Gamepad
+  m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -159,7 +159,7 @@ RectTransform:
   m_GameObject: {fileID: 3905708389624016826}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
   m_Children: []
   m_Father: {fileID: 3905708389370422421}
   m_RootOrder: 0
@@ -223,5 +223,6 @@ MonoBehaviour:
   canvas: {fileID: 3905708389370422422}
   playerInput: {fileID: 3905708389370422420}
   cursorTrans: {fileID: 3905708389624016825}
-  curSpeed: 1000
+  cursorImage: {fileID: 3905708389624016824}
+  curSpeed: 5000
   padding: 35

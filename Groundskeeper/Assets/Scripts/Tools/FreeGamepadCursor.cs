@@ -13,12 +13,13 @@ public class FreeGamepadCursor : MonoBehaviour {
     [SerializeField] Canvas canvas;
     [SerializeField] PlayerInput playerInput;
     [SerializeField] RectTransform cursorTrans;
+    [SerializeField] Image cursorImage;
 
     [SerializeField] float curSpeed = 1000f;
 
     [SerializeField] float padding = 35f;
 
-    bool prevState;
+    bool lPrevState, rPrevState;
     const string gamepadscheme = "Gamepad";
     const string keyboardScheme = "Keyboard";
     string prevControls = "";
@@ -30,6 +31,11 @@ public class FreeGamepadCursor : MonoBehaviour {
         }
         prevControls = playerInput.currentControlScheme;
     }*/
+
+
+    private void Start() {
+        FindObjectOfType<MouseManager>().addOnInputChangeFunc(changeCursor);
+    }
 
 
     private void OnEnable() {
@@ -77,14 +83,24 @@ public class FreeGamepadCursor : MonoBehaviour {
         InputState.Change(vMouse.delta, stickVal);
 
         bool clicked = Gamepad.current.aButton.IsPressed();
-        if(prevState != clicked) {
+        bool rightClicked = Gamepad.current.xButton.IsPressed();
+        if(lPrevState != clicked) {
             vMouse.CopyState<MouseState>(out var mouseState);
             mouseState.WithButton(MouseButton.Left, clicked);
             InputState.Change(vMouse, mouseState);
-            prevState = clicked;
+            lPrevState = clicked;
+        }
+        else if(rPrevState != rightClicked) {
+            vMouse.CopyState<MouseState>(out var mouseState);
+            mouseState.WithButton(MouseButton.Right, rightClicked);
+            InputState.Change(vMouse, mouseState);
+            rPrevState = rightClicked;
         }
 
         anchorCursor(newPos);
+    }
+    void changeCursor(bool usingKeyboard) {
+        cursorImage.enabled = !usingKeyboard;
     }
 
     void anchorCursor(Vector2 pos) {

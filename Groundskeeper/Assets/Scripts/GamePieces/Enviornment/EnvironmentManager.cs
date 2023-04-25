@@ -14,6 +14,9 @@ public class EnvironmentManager : MonoBehaviour {
 
     GameBoard gb;
 
+    private void Awake() {
+        gb = FindObjectOfType<GameBoard>();
+    }
 
     public GameObject spawnEnv(GameObject env, Vector2 pos) {
         if(curHolder == null || numToNextHolder <= 0 || env.GetComponent<EnvironmentInstance>().title != curReference) {
@@ -33,7 +36,6 @@ public class EnvironmentManager : MonoBehaviour {
         return o;
     }
     public void finishSpawning() {
-        gb = FindObjectOfType<GameBoard>();
         foreach(var i in holders) {
             if(i.transform.GetChild(0).GetComponent<EnvironmentInstance>().tit != EnvironmentInstance.triggerInteractionType.notTrigger) {
                 i.GetComponent<CompositeCollider2D>().isTrigger = true;
@@ -46,21 +48,13 @@ public class EnvironmentManager : MonoBehaviour {
         gb.loaded = true;
     }
 
-
-    public void showAllEnvAroundArea(Vector2 center, float rad) {
-        KdTree<EnvironmentInstance> used = new KdTree<EnvironmentInstance>();
-        var closest = gb.environment.FindClosest(center);
-        while(Vector2.Distance(closest.transform.position, center) < rad) {
-            show(closest.gameObject);
-            used.Add(closest);
-            gb.environment.RemoveAll(x => x.gameObject.GetInstanceID() == closest.gameObject.GetInstanceID());
-            closest = gb.environment.FindClosest(center);
-        }
-
-        foreach(var i in used)
-            gb.environment.Add(i);
-    }
     public void hideAllEnvAroundArea(Vector2 center, float rad) {
+        StartCoroutine(waitAndHideAllEnvAroundArea(center, rad));
+    }
+
+    IEnumerator waitAndHideAllEnvAroundArea(Vector2 center, float rad) {
+        while(!gb.loaded)
+            yield return new WaitForEndOfFrame();
         KdTree<EnvironmentInstance> used = new KdTree<EnvironmentInstance>();
         var closest = gb.environment.FindClosest(center);
         while(Vector2.Distance(closest.transform.position, center) < rad) {

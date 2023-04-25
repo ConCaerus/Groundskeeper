@@ -44,7 +44,7 @@ public class ThuribleInstance : StructureInstance {
             m.takeDamage(1, 0f, transform.position, false, false, false);
             GameInfo.addSouls(m.soulsGiven / 10f, false);
         }
-        yield return new WaitForSeconds(.25f);
+        yield return new WaitForSeconds(.5f);
         sucker = StartCoroutine(suckMonsters());
     }
 }

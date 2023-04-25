@@ -211,8 +211,6 @@ public class PlacementGrid : MonoBehaviour {
             var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
-            if(map.color == Color.green)
-                return;
             bool found = false;
             int c = 0;
 
@@ -231,7 +229,7 @@ public class PlacementGrid : MonoBehaviour {
             }
             else return;
 
-            cth.tryTransaction(-c, pc.soulsText, false);
+            cth.tryTransaction(-c * .9f, pc.soulsText, false);
             map.color = Color.green;
             prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
             StartCoroutine(mapUpdater());

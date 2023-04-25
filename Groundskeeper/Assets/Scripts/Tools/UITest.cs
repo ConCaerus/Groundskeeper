@@ -6,8 +6,15 @@ using UnityEngine.EventSystems;
 public class UITest : MonoBehaviour {
     int UILayer;
 
+    MouseManager mm;
+    FreeGamepadCursor fgc;
+    GameGamepadCursor ggc;
+
     private void Start() {
         UILayer = LayerMask.NameToLayer("UI");
+        mm = FindObjectOfType<MouseManager>();
+        fgc = FindObjectOfType<FreeGamepadCursor>();
+        ggc = FindObjectOfType<GameGamepadCursor>();
     }
 
     //Returns 'true' if we touched or hovering on Unity UI element.
@@ -28,9 +35,14 @@ public class UITest : MonoBehaviour {
 
 
     //Gets all event system raycast results of current mouse or touch position.
-    static List<RaycastResult> GetEventSystemRaycastResults() {
+    List<RaycastResult> GetEventSystemRaycastResults() {
         PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = Input.mousePosition;
+        if(mm.usingKeyboard())
+            eventData.position = Input.mousePosition;
+        else if(fgc != null)
+            eventData.position = fgc.getScreenCursorPos();
+        else if(ggc != null)
+            eventData.position = ggc.getMousePosInScreen();
         List<RaycastResult> raysastResults = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, raysastResults);
         return raysastResults;

@@ -140,6 +140,7 @@ MonoBehaviour:
   aoeEffectedGamePieces: 06000000
   aoeObject: {fileID: 2231455946746666465}
   bloodParticles: {fileID: 0}
+  soulEffect: {fileID: 7023917575839067495, guid: c272f2b856402434aadf027a885ae041, type: 3}
 --- !u!114 &4237534904317676787
 MonoBehaviour:
   m_ObjectHideFlags: 0

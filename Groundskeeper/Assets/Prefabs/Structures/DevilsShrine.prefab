@@ -140,6 +140,7 @@ MonoBehaviour:
   aoeEffectedGamePieces: 01000000020000000300000004000000
   aoeObject: {fileID: 249622816929867076}
   bloodParticles: {fileID: 0}
+  healingEffect: {fileID: 4960845970224103046, guid: 99905d2a455c0794a90ba19a110f21f6, type: 3}
 --- !u!114 &4237534904317676787
 MonoBehaviour:
   m_ObjectHideFlags: 0
