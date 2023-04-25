@@ -133,6 +133,9 @@ MonoBehaviour:
   bType: 2
   description: Slows down monsters to a crawl
   isAttractive: 0
+  effectRadius: 0
+  unlockedImagePos: {x: 0, y: -2.5}
+  unlockedImageSize: {x: 1, y: 1}
 --- !u!114 &4833784202559309208
 MonoBehaviour:
   m_ObjectHideFlags: 0

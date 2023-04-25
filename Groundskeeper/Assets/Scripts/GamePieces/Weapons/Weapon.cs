@@ -26,4 +26,6 @@ public class Weapon : ScriptableObject {
     public AudioClip swingSound;
 
     public bool playerWeapon;
+    public Vector2 unlockedImagePos;
+    public Vector2 unlockedImageSize;
 }

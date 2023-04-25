@@ -37,6 +37,7 @@ public class DeadGuyHolder : Interactable {
 
     public void updateCollider() {
         cc.GenerateGeometry();
+        tryDeinteract();
     }
 
     public override void anim(bool b) {

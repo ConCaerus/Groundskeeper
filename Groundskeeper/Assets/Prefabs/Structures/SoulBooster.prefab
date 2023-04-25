@@ -164,6 +164,8 @@ MonoBehaviour:
   description: Boosts the number of souls dropped by close monsters
   isAttractive: 0
   effectRadius: 20
+  unlockedImagePos: {x: 0, y: 0.8}
+  unlockedImageSize: {x: 0.31, y: 0.31}
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

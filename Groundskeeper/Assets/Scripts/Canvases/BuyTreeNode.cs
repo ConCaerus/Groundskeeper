@@ -24,6 +24,8 @@ public class BuyTreeNode : MonoBehaviour {
         cost = c;
         if(c > 0)
             costText.text = c.ToString() + "s";
+        else
+            costText.text = "";
     }
     public CircularSlider getSlider() {
         return slider;
@@ -46,31 +48,37 @@ public class BuyTreeNode : MonoBehaviour {
     public void setTier(int t) {
         if(t < maxTier && t > -1) {
             tier = t;
-            if(tier == 0)
-                tierText.text = "I";
-            else if(tier == 1)
-                tierText.text = "II";
-            else if(tier == 2)
-                tierText.text = "III";
-            else if(tier == 3)
-                tierText.text = "IV";
-            else if(tier == 4)
-                tierText.text = "V";
-            else if(tier == 5)
-                tierText.text = "VI";
-            else if(tier == 6)
-                tierText.text = "VII";
-            else if(tier == 7)
-                tierText.text = "VIII";
-            else if(tier == 8)
-                tierText.text = "IX";
-            else if(tier == 9)
-                tierText.text = "X";
+            tierText.text = tierToString(tier);
         }
         else if(t == -1)
             tierText.text = "";
-        else if(t >= maxTier)
-            tier = 100;  //  just to make sure that the code knows that tier is not usable
+        else if(t >= maxTier) {
+            tier = 100;
+            tierText.text = tierToString(maxTier - 1);
+        }
+    }
+    string tierToString(int t) {
+        if(t == 0)
+            return "I";
+        else if(t == 1)
+            return "II";
+        else if(t == 2)
+            return "III";
+        else if(t == 3)
+            return "IV";
+        else if(t == 4)
+            return "V";
+        else if(t == 5)
+            return "VI";
+        else if(t == 6)
+            return "VII";
+        else if(t == 7)
+            return "VIII";
+        else if(t == 8)
+            return "IX";
+        else if(t == 9)
+            return "X";
+        return "";
     }
     public void setTick(int t) {
         tick = t;

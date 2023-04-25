@@ -4977,6 +4977,8 @@ MonoBehaviour:
   description: Releases a mist of blood into the air, confusing monsters
   isAttractive: 0
   effectRadius: 10
+  unlockedImagePos: {x: 0, y: 4.9}
+  unlockedImageSize: {x: 0.27, y: 0.27}
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

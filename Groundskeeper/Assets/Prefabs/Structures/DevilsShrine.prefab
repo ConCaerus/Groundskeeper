@@ -164,6 +164,8 @@ MonoBehaviour:
   description: Heals all things that are close
   isAttractive: 0
   effectRadius: 10
+  unlockedImagePos: {x: 2.4, y: -0.8}
+  unlockedImageSize: {x: 0.3, y: 0.3}
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

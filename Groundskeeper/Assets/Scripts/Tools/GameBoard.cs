@@ -14,7 +14,7 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
-    const int minDeadGuyCount = 15;
+    const int minDeadGuyCount = 10;
 
     const float boardRadius = 75f;
     Coroutine saver = null;

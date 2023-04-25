@@ -285,6 +285,9 @@ public static class GameInfo {
 
     //  house buffs
     public static void setHouseStats(HouseStats stats) {
+        //  clamps stats to be realistic
+        stats.houseHealth = Mathf.Clamp(stats.houseHealth, -1, stats.houseMaxHealth);
+
         var data = JsonUtility.ToJson(stats);
         SaveData.setString(houseStatsTag, data);
     }

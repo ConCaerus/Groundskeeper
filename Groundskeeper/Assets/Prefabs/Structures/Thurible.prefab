@@ -164,6 +164,8 @@ MonoBehaviour:
   description: Releases holy mist into the air, damaging any close monsters
   isAttractive: 0
   effectRadius: 10
+  unlockedImagePos: {x: 0, y: -2.5}
+  unlockedImageSize: {x: 0.23, y: 0.23}
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

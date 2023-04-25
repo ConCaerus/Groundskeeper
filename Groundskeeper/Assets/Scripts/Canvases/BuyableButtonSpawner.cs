@@ -50,7 +50,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
             obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().titleToText();
             obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().cost.ToString("0.0") + "s";
             obj.GetComponent<InfoableImage>().info = i.GetComponent<Buyable>().title.ToString() + ":\n" + i.GetComponent<Buyable>().description;
-            if(!bl.hasPlayerSeenBuyable(i.GetComponent<Buyable>().title)) {
+            if(!bl.hasPlayerSeenBuyable(i.GetComponent<Buyable>().title) || i.GetComponent<Buyable>().cost == 0f) {
                 StartCoroutine(setupDot(obj.transform, obj.transform.GetChild(2).transform, i.GetComponent<Buyable>()));
                 obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Free!";
             }

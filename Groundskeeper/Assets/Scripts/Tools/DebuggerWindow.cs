@@ -82,6 +82,23 @@ public class DebuggerWindow : EditorWindow {
             GameInfo.setPlayerStats(new PlayerStats(Weapon.weaponTitle.Sledgehammer, stats.playerWeaponDamageBuff, stats.playerWeaponSpeedBuff));
         }
         GUILayout.EndHorizontal();
+
+        GUILayout.Label("House");
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Max Health?"))
+            Debug.Log(GameInfo.getHouseStats().houseMaxHealth);
+        if(GUILayout.Button("Health?"))
+            Debug.Log(GameInfo.getHouseStats().houseHealth);
+        if(GUILayout.Button("Light Rad?"))
+            Debug.Log(GameInfo.getHouseStats().houseLightRad);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Set House Health To 1")) {
+            var s = GameInfo.getHouseStats();
+            s.houseHealth = 1;
+            GameInfo.setHouseStats(s);
+        }
+        GUILayout.EndHorizontal();
     }
 }
 

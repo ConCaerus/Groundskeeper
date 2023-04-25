@@ -17,6 +17,8 @@ public class UnlockCanvas : MonoBehaviour {
     struct unlockInfo {
         public string title;
         public Sprite sprite;
+        public Vector2 pos;
+        public Vector2 size;
     }
 
     private void Start() {
@@ -30,14 +32,18 @@ public class UnlockCanvas : MonoBehaviour {
             var info = new unlockInfo();
             info.title = b.title.ToString();
             info.sprite = b.mainSprite.sprite;
+            info.pos = b.unlockedImagePos;
+            info.size = b.unlockedImageSize;
             queue.Add(info);
             return;
         }
         background.gameObject.SetActive(true);
 
-        text.text = b.title.ToString() + " Unlocked";
+        text.text = b.title.ToString() + " Unlocked!";
         icon.sprite = b.mainSprite.sprite;
         icon.SetNativeSize();
+        icon.transform.localPosition = b.unlockedImagePos;
+        icon.transform.localScale = b.unlockedImageSize;
 
         hiderWaiter = StartCoroutine(hider());
     }
@@ -46,14 +52,18 @@ public class UnlockCanvas : MonoBehaviour {
             var info = new unlockInfo();
             info.title = w.title.ToString();
             info.sprite = w.sprite;
+            info.pos = w.unlockedImagePos;
+            info.size = w.unlockedImageSize;
             queue.Add(info);
             return;
         }
         background.gameObject.SetActive(true);
 
-        text.text = w.title.ToString() + " Unlocked";
+        text.text = w.title.ToString() + " Unlocked!";
         icon.sprite = w.sprite;
         icon.SetNativeSize();
+        icon.transform.localPosition = w.unlockedImagePos;
+        icon.transform.localScale = w.unlockedImageSize;
 
         hiderWaiter = StartCoroutine(hider());
     }
@@ -65,9 +75,11 @@ public class UnlockCanvas : MonoBehaviour {
         }
         background.gameObject.SetActive(true);
 
-        text.text = info.title.ToString() + " Unlocked";
+        text.text = info.title.ToString() + " Unlocked!";
         icon.sprite = info.sprite;
         icon.SetNativeSize();
+        icon.transform.localPosition = info.pos;
+        icon.transform.localScale = info.size;
 
         hiderWaiter = StartCoroutine(hider());
     }

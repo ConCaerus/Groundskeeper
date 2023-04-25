@@ -23,3 +23,5 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 9734c3adc30110d49abf2d170fe79738, type: 3}
   swingSound: {fileID: 0}
   playerWeapon: 0
+  unlockedImagePos: {x: 4.9, y: 7.3}
+  unlockedImageSize: {x: 0.34, y: 0.34}

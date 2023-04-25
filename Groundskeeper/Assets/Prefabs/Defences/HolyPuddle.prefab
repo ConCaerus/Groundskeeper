@@ -133,6 +133,9 @@ MonoBehaviour:
   bType: 2
   description: Burns both physical and nonphysical monsters
   isAttractive: 0
+  effectRadius: 0
+  unlockedImagePos: {x: 0, y: -2.5}
+  unlockedImageSize: {x: 1, y: 1}
 --- !u!114 &6878444007974107705
 MonoBehaviour:
   m_ObjectHideFlags: 0

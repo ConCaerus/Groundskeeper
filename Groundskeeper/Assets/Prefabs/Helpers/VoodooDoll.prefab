@@ -400,6 +400,9 @@ MonoBehaviour:
   bType: 1
   description: Attractive, yet deadly
   isAttractive: 1
+  effectRadius: 0
+  unlockedImagePos: {x: 0, y: -2.4}
+  unlockedImageSize: {x: 0.36, y: 0.36}
 --- !u!114 &3645410074486694175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -430,6 +433,7 @@ MonoBehaviour:
   helpAmount: 0
   helpType: 0
   sprite: {fileID: 21300000, guid: 09c8f0ca66617974ab39e32ce816a01b, type: 3}
+  startingPos: {x: 0, y: 0}
   bloodParticles: {fileID: 0}
 --- !u!1 &8522752653620781266
 GameObject:

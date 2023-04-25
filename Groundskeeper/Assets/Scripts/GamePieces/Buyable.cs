@@ -20,6 +20,8 @@ public class Buyable : MonoBehaviour {
     [SerializeField] public string description = "Description";
     [SerializeField] public bool isAttractive;
     [SerializeField] public float effectRadius;
+    [SerializeField] public Vector2 unlockedImagePos;
+    [SerializeField] public Vector2 unlockedImageSize;
 
     [System.Serializable]
     public enum buyType {

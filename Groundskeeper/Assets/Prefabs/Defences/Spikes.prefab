@@ -133,6 +133,9 @@ MonoBehaviour:
   bType: 2
   description: Very deadly to any monster that walks on it
   isAttractive: 0
+  effectRadius: 0
+  unlockedImagePos: {x: 0, y: -2.5}
+  unlockedImageSize: {x: 1, y: 1}
 --- !u!114 &3169957001068333607
 MonoBehaviour:
   m_ObjectHideFlags: 0

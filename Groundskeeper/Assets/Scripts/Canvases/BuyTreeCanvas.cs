@@ -13,6 +13,7 @@ public class BuyTreeCanvas : MenuCanvas {
     float[] defenceDamageInc = { .1f, .15f, .25f };
     float[] structureHealthInc = { .1f, .15f, .25f };
     float[] weaponDamageInc = { .1f, .15f, .25f }, weaponSpeedInc = { .1f, .15f, .25f };
+    int houseRepairAmt = 50;
 
     [SerializeField] GameObject node;
 
@@ -76,7 +77,7 @@ public class BuyTreeCanvas : MenuCanvas {
         //  house
         createHouseNode();
         createSubNode(subCircles[4], subType.Light, 5, 1);
-        createSubNode(subCircles[4], subType.Repair, 10, 10);
+        createSubNode(subCircles[4], subType.Repair, GameInfo.getHouseStats().houseMaxHealth / houseRepairAmt, 1);
     }
 
     GameObject createWeaponNode() {
@@ -132,7 +133,7 @@ public class BuyTreeCanvas : MenuCanvas {
         var hbtn = h.GetComponent<BuyTreeNode>();
         hbtn.getSlider().setText("0");
         hbtn.setTitle("House");
-        var c = 200;    //  cost of the fucker
+        var c = 0;    //  cost of the fucker
         hbtn.setCost(c);
         hbtn.setTier(-1); //  hides the tierText
         //var qw = queuedWeapon;
@@ -234,7 +235,10 @@ public class BuyTreeCanvas : MenuCanvas {
         obtn.setCost(getUpdatedCost(obtn));
 
         obtn.setTier(GameInfo.getBuyTreeSubNodeTier(indexToMainType(sInd), s));
-        obtn.setTick(GameInfo.getBuyTreeSubNodeTick(indexToMainType(sInd), s));
+        if(s != subType.Repair)
+            obtn.setTick(GameInfo.getBuyTreeSubNodeTick(indexToMainType(sInd), s));
+        else
+            obtn.setTick(GameInfo.getHouseStats().houseHealth / houseRepairAmt);
 
 
         setupSlider(obtn.getSlider(), true, 0.0f, delegate {
@@ -301,10 +305,10 @@ public class BuyTreeCanvas : MenuCanvas {
                 break;
             //  house
             case 4:
-                if(s == subType.Light) 
+                if(s == subType.Light)
                     hStats.houseLightRad += 10f;
                 else if(s == subType.Repair)
-                    hStats.houseHealth += 25;
+                    hStats.houseHealth += houseRepairAmt;
                 break;
         }
 
@@ -317,7 +321,6 @@ public class BuyTreeCanvas : MenuCanvas {
     }
 
 
-    //  this function could be cleaned up a lot
     void updateSubSlider(BuyTreeNode node) {
         node.incTick();
 
