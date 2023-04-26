@@ -475,6 +475,15 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Keyboard"",
+                    ""type"": ""Button"",
+                    ""id"": ""57288240-741b-42da-b90d-88a132b2cab6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -618,6 +627,17 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Gamepad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88583c41-da3e-4baf-a4f4-c7dc7b7b4038"",
+                    ""path"": ""<Keyboard>/anyKey"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Keyboard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -787,7 +807,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""arrows"",
-                    ""id"": ""82eab9ca-88b3-4a26-b475-e0228a792b14"",
+                    ""id"": ""ee0d6354-ea51-4026-8b3f-ab54aca91c24"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -798,7 +818,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""b651fe5b-a2b7-4136-8689-7c50f06857ad"",
+                    ""id"": ""3961857c-49e1-4487-95c7-c21272a9325c"",
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -809,7 +829,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""48979a0b-3338-4345-8a9a-d9d65b0e8f9e"",
+                    ""id"": ""8c7b505b-2c7a-4079-8f0d-11b4d1a14403"",
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -820,7 +840,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""406d81f2-449c-4791-a1f6-017dde4a3602"",
+                    ""id"": ""dd4d3236-5e95-4ba5-b55e-0a7ace66f462"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -831,7 +851,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""f98cd36f-297c-498d-9f08-0dca67011e76"",
+                    ""id"": ""b862ed7c-302a-409d-9e02-6ccdf2fe188b"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -839,6 +859,17 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cbaa2432-e4aa-4e12-8ace-ea17d5c27a7e"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Navigate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
@@ -1053,6 +1084,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         m_InputSwitch = asset.FindActionMap("InputSwitch", throwIfNotFound: true);
         m_InputSwitch_Mouse = m_InputSwitch.FindAction("Mouse", throwIfNotFound: true);
         m_InputSwitch_Gamepad = m_InputSwitch.FindAction("Gamepad", throwIfNotFound: true);
+        m_InputSwitch_Keyboard = m_InputSwitch.FindAction("Keyboard", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1289,12 +1321,14 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
     private IInputSwitchActions m_InputSwitchActionsCallbackInterface;
     private readonly InputAction m_InputSwitch_Mouse;
     private readonly InputAction m_InputSwitch_Gamepad;
+    private readonly InputAction m_InputSwitch_Keyboard;
     public struct InputSwitchActions
     {
         private @InputMaster m_Wrapper;
         public InputSwitchActions(@InputMaster wrapper) { m_Wrapper = wrapper; }
         public InputAction @Mouse => m_Wrapper.m_InputSwitch_Mouse;
         public InputAction @Gamepad => m_Wrapper.m_InputSwitch_Gamepad;
+        public InputAction @Keyboard => m_Wrapper.m_InputSwitch_Keyboard;
         public InputActionMap Get() { return m_Wrapper.m_InputSwitch; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1310,6 +1344,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 @Gamepad.started -= m_Wrapper.m_InputSwitchActionsCallbackInterface.OnGamepad;
                 @Gamepad.performed -= m_Wrapper.m_InputSwitchActionsCallbackInterface.OnGamepad;
                 @Gamepad.canceled -= m_Wrapper.m_InputSwitchActionsCallbackInterface.OnGamepad;
+                @Keyboard.started -= m_Wrapper.m_InputSwitchActionsCallbackInterface.OnKeyboard;
+                @Keyboard.performed -= m_Wrapper.m_InputSwitchActionsCallbackInterface.OnKeyboard;
+                @Keyboard.canceled -= m_Wrapper.m_InputSwitchActionsCallbackInterface.OnKeyboard;
             }
             m_Wrapper.m_InputSwitchActionsCallbackInterface = instance;
             if (instance != null)
@@ -1320,6 +1357,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 @Gamepad.started += instance.OnGamepad;
                 @Gamepad.performed += instance.OnGamepad;
                 @Gamepad.canceled += instance.OnGamepad;
+                @Keyboard.started += instance.OnKeyboard;
+                @Keyboard.performed += instance.OnKeyboard;
+                @Keyboard.canceled += instance.OnKeyboard;
             }
         }
     }
@@ -1471,6 +1511,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
     {
         void OnMouse(InputAction.CallbackContext context);
         void OnGamepad(InputAction.CallbackContext context);
+        void OnKeyboard(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using UnityEngine.UI;
 
-public class FreeGamepadCursor : MonoBehaviour {
+public class FreeGamepadHouseCursor : MonoBehaviour {
     Mouse vMouse;
     Mouse curMouse;
     [SerializeField] RectTransform canvasRect;
@@ -25,6 +25,7 @@ public class FreeGamepadCursor : MonoBehaviour {
     string prevControls = "";
 
     MouseManager mm;
+    BuyTreeCanvas btc;
 
     Vector2 prevPos;
 
@@ -37,9 +38,11 @@ public class FreeGamepadCursor : MonoBehaviour {
     }*/
 
 
-    private void Start() {
+    private void Awake() {
         mm = FindObjectOfType<MouseManager>();
         mm.addOnInputChangeFunc(changeCursor);
+        btc = FindObjectOfType<BuyTreeCanvas>();
+        showCursor(false, false);
     }
 
 

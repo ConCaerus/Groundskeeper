@@ -12,32 +12,33 @@ public class GameGamepadCursor : MonoBehaviour {
 
     Image image;
 
-    PlacementGrid pg;
-
-
-    private void Awake() {
+    private void Start() {
         controls = new InputMaster();
         controls.Enable();
-        controls.Player.Aim.performed += ctx => aimCursor(ctx.ReadValue<Vector2>());
-        controls.Player.Aim.started += ctx => cursorChange(true);
-        controls.Player.Aim.canceled += ctx => cursorChange(false);
         image = GetComponent<Image>();
-        pg = FindObjectOfType<PlacementGrid>();
-
-        FindObjectOfType<MouseManager>().addOnInputChangeFunc(changeCursor);
-        changeCursor(FindObjectOfType<MouseManager>().usingKeyboard());
         changeCursor(true);
     }
 
+    public void setup() {
+        controls.Player.Aim.performed += ctx => aimCursor(ctx.ReadValue<Vector2>());
+        controls.Player.Aim.started += ctx => cursorChange(true);
+        controls.Player.Aim.canceled += ctx => cursorChange(false);
+
+        FindObjectOfType<MouseManager>().addOnInputChangeFunc(changeCursor);
+        changeCursor(FindObjectOfType<MouseManager>().usingKeyboard());
+    }
+
     public void changeCursor(bool usingKeyboard) {
-        image.enabled = !usingKeyboard;
+        image.enabled = !usingKeyboard && Time.timeScale != 0f;
     }
 
     void cursorChange(bool showCursor) {
-        image.enabled = showCursor;
+        image.enabled = showCursor && Time.timeScale != 0f;
     }
 
     void aimCursor(Vector2 dir) {
+        if(Time.timeScale == 0f)
+            return;
         var worldTarget = (Vector2)player.transform.position + dir * rangeMod;
         transform.position = Camera.main.WorldToScreenPoint(worldTarget);
     }
@@ -52,6 +53,7 @@ public class GameGamepadCursor : MonoBehaviour {
 
 
     private void OnDisable() {
-        controls.Disable();
+        if(controls != null)
+            controls.Disable();
     }
 }

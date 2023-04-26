@@ -109,6 +109,7 @@ public static class GameInfo {
     public static float souls;
 
     public static void init() {
+        Cursor.lockState = CursorLockMode.Confined;
         playing = true;
         wave = 0;
         monstersKilled = 0;

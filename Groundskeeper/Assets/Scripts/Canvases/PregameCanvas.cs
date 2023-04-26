@@ -5,7 +5,6 @@ using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-using DG.Tweening;
 
 public class PregameCanvas : MonoBehaviour {
     [SerializeField] GameObject upper, lower, lowerGenericButtonHolder;
@@ -44,7 +43,6 @@ public class PregameCanvas : MonoBehaviour {
         timer.doColor(Color.red, prepTime);
     }
     public void setup() {
-        gameGamepadCursor.SetActive(false);
         freeGamepadCursor.SetActive(true);
         FindObjectOfType<GameUICanvas>().hide();
         transform.GetChild(0).gameObject.SetActive(true);
@@ -94,7 +92,7 @@ public class PregameCanvas : MonoBehaviour {
         if(usingKeyboard)
             helpText.GetComponent<TextMeshProUGUI>().text = "M1-Place\nM2-Sell";
         else
-            helpText.GetComponent<TextMeshProUGUI>().text = "Y-Place\nB-Sell";
+            helpText.GetComponent<TextMeshProUGUI>().text = "A-Place\nX-Sell";
     }
 
     public bool mouseOverUI() {
@@ -129,8 +127,9 @@ public class PregameCanvas : MonoBehaviour {
         FindObjectOfType<InfoBox>().gameObject.SetActive(false);
 
         //  switches controller canvases
-        freeGamepadCursor.SetActive(false);
-        gameGamepadCursor.SetActive(true);
+        FindObjectOfType<FreeGamepadCursor>().destroyCursor();
+        FindObjectOfType<FreeGamepadCursor>().enabled = false;
+        FindObjectOfType<GameGamepadCursor>().setup();
 
         hide();
     }

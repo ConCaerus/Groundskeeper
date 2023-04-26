@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PauseMenu : MenuCanvas {
@@ -10,7 +11,6 @@ public class PauseMenu : MenuCanvas {
 
     private void Awake() {
         controls = new InputMaster();
-
         controls.Pause.Toggle.started += ctx => togglePause();
     }
 
@@ -31,10 +31,14 @@ public class PauseMenu : MenuCanvas {
         background.SetActive(true);
         defaultButt.Select();
         Time.timeScale = 0.0f;
+        if(FindObjectOfType<FreeGamepadCursor>() != null)
+            FindObjectOfType<FreeGamepadCursor>().showCursor(false, true);
     }
     protected override void close() {
         background.SetActive(false);
         Time.timeScale = 1.0f;
+        if(FindObjectOfType<FreeGamepadCursor>() != null)
+            FindObjectOfType<FreeGamepadCursor>().showCursor(true, true);
     }
 
     public void resume() {

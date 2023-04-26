@@ -105,10 +105,19 @@ public abstract class WeaponInstance : MonoBehaviour {
     public void lookAtMouse() {
         if(canMove) {
             Vector3 orbVector = Camera.main.WorldToScreenPoint(user.transform.position);
-            var mousePos = mm.usingKeyboard() ? (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) : 
-                ggc != null ? ggc.getMousePosInScreen() : fgc.getScreenCursorPos();
-            orbVector = mm.usingKeyboard() ? Input.mousePosition - orbVector : 
-                ggc != null ? (Vector3)ggc.getMousePosInScreen() - orbVector : (Vector3)fgc.getScreenCursorPos() - orbVector;
+            var mousePos = Vector2.zero;
+            if(mm.usingKeyboard()) {
+                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                orbVector = Input.mousePosition - orbVector;
+            }
+            else if(!fgc.isActiveAndEnabled) {
+                mousePos = ggc.getMousePosInWorld();
+                orbVector = (Vector3)ggc.getMousePosInScreen() - orbVector;
+            }
+            else {
+                mousePos = fgc.getWorldCursorPos();
+                orbVector = (Vector3)fgc.getScreenCursorPos() - orbVector;
+            }
             float angle = Mathf.Atan2(orbVector.y, orbVector.x) * Mathf.Rad2Deg;
             angle += reference.aType == Weapon.attackType.Swing ? 35 : -35;
 
@@ -199,7 +208,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         if(isPlayerWeapon) {
             float lungeMod = 1.5f * mod;
             var origin = (Vector2)pt.position;
-            var target = GameInfo.mousePos();
+            var target = mm.usingKeyboard() ? GameInfo.mousePos() : fgc.gameObject != null ? fgc.getWorldCursorPos() : ggc.getMousePosInWorld();
             var px = target.x - origin.x;
             var py = target.y - origin.y;
             var theta = Mathf.Atan2(py, px);
@@ -248,7 +257,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         if(isPlayerWeapon) {
             float lungeMod = 1.5f * mod;
             var origin = (Vector2)pt.position;
-            var target = mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld();
+            var target = mm.usingKeyboard() ? GameInfo.mousePos() : fgc.gameObject != null ? fgc.getWorldCursorPos() : ggc.getMousePosInWorld();
             var px = target.x - origin.x;
             var py = target.y - origin.y;
             var theta = Mathf.Atan2(py, px);
@@ -310,7 +319,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         if(isPlayerWeapon) {
             float lungeMod = 1.5f * mod;
             var origin = (Vector2)pt.position;
-            var target = GameInfo.mousePos();
+            var target = mm.usingKeyboard() ? GameInfo.mousePos() : fgc.gameObject != null ? fgc.getWorldCursorPos() : ggc.getMousePosInWorld();
             var px = target.x - origin.x;
             var py = target.y - origin.y;
             var theta = Mathf.Atan2(py, px);

@@ -18,8 +18,13 @@ public class InfoBox : MonoBehaviour {
 
     UITest uit;
 
+    MouseManager mm;
+    FreeGamepadCursor fgc;
+
     private void Start() {
         uit = FindObjectOfType<UITest>();
+        mm = FindObjectOfType<MouseManager>();
+        fgc = FindObjectOfType<FreeGamepadCursor>();
         hide();
     }
 
@@ -45,7 +50,7 @@ public class InfoBox : MonoBehaviour {
     public void updatePos() {
         if(!box.gameObject.activeInHierarchy)
             return;
-        var mousePos = Input.mousePosition;
+        var mousePos = mm.usingKeyboard() ? Input.mousePosition : (Vector3)fgc.getScreenCursorPos();
         box.transform.position = new Vector3(mousePos.x, mousePos.y);
     }
 
@@ -73,9 +78,9 @@ public class InfoBox : MonoBehaviour {
         box.gameObject.SetActive(true);
         text.text = info;
 
-        var mousePos = Input.mousePosition;
-        box.sizeDelta = new Vector2(text.preferredWidth + padding > 200 ? 200 : text.preferredWidth + padding, text.preferredHeight + padding);
+        var mousePos = mm.usingKeyboard() ? Input.mousePosition : (Vector3)fgc.getScreenCursorPos();
         box.transform.position = new Vector3(mousePos.x, mousePos.y);
+        box.sizeDelta = new Vector2(text.preferredWidth + padding > 200 ? 200 : text.preferredWidth + padding, text.preferredHeight + padding);
         shower = null;
         shown = true;
     }

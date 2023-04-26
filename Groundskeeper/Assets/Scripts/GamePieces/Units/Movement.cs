@@ -22,6 +22,7 @@ public abstract class Movement : MortalUnit {
     Collider2D srCol;
     protected MouseManager mm;
     protected GameGamepadCursor ggc;
+    protected FreeGamepadCursor fgc;
 
     Transform playerTrans;
 
@@ -33,6 +34,7 @@ public abstract class Movement : MortalUnit {
         sr = spriteObj.GetComponent<SpriteRenderer>();
         mm = FindObjectOfType<MouseManager>();
         ggc = FindObjectOfType<GameGamepadCursor>();
+        fgc = FindObjectOfType<FreeGamepadCursor>();
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
         foreach(var i in GetComponents<Collider2D>()) {
             if(!i.isTrigger) {

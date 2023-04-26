@@ -158,7 +158,7 @@ public class PlacementGrid : MonoBehaviour {
         placing = false;
     }
     void place() {
-        if(!pc.mouseOverUI() && map.color == Color.green) {
+        if(!pc.mouseOverUI() && map.color == Color.green && placing) {
             var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);

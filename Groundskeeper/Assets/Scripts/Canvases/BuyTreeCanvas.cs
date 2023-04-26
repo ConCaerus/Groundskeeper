@@ -203,8 +203,6 @@ public class BuyTreeCanvas : MenuCanvas {
                     }
                 }
             });
-        if(index == 0)
-            h.GetComponentInChildren<Button>().Select();
         hbtn.getSlider().doValueKill();
         hbtn.getSlider().setValue((float)bl.getNumberOfUnlockedBuyables((Buyable.buyType)(index + 1), false) / bl.getTotalNumberOfBuyables(t));
         return h;
@@ -356,9 +354,9 @@ public class BuyTreeCanvas : MenuCanvas {
 
 
     protected override void show() {
-        mainCircles[0].GetComponentInChildren<Button>().Select();
         transform.DOKill();
         transform.DOScale(1.0f, .15f);
+        FindObjectOfType<FreeGamepadHouseCursor>().showCursor(true, false);
         //createTree();
     }
 
@@ -366,5 +364,6 @@ public class BuyTreeCanvas : MenuCanvas {
         transform.DOKill();
         transform.localScale = Vector3.zero;
         FindObjectOfType<MouthInteractable>().tryDeinteract();
+        FindObjectOfType<FreeGamepadHouseCursor>().showCursor(false, false);
     }
 }

@@ -11,12 +11,18 @@ public class MouseManager : MonoBehaviour {
 
     List<func> changeFuncs = new List<func>();
 
+    FreeGamepadCursor fgc;
+    FreeGamepadHouseCursor fghc;
+
 
     private void Awake() {
+        fgc = FindObjectOfType<FreeGamepadCursor>();
+        fghc = FindObjectOfType<FreeGamepadHouseCursor>();
         changeFuncs.Clear();
         controls = new InputMaster();
         controls.Enable();
         controls.InputSwitch.Mouse.started += ctx => switchToKeyboard();
+        controls.InputSwitch.Keyboard.started += ctx => switchToKeyboard();
         controls.InputSwitch.Gamepad.started += ctx => switchToGamepad();
         bool hasController = false;
         foreach(var i in Input.GetJoystickNames()) {
@@ -35,16 +41,23 @@ public class MouseManager : MonoBehaviour {
     void switchToGamepad() {
         if(Cursor.visible) {
             Cursor.visible = false;
+            if(fgc != null && fgc.isActiveAndEnabled)
+                Cursor.lockState = CursorLockMode.Confined;
+            else if(fghc != null && fghc.isActiveAndEnabled)
+                Cursor.lockState = CursorLockMode.Confined;
+            else
+                Cursor.lockState = CursorLockMode.Locked;
             foreach(var i in changeFuncs)
-                i(usingKeyboard());
+                i(false);
         }
     }
 
     void switchToKeyboard() {
         if(!Cursor.visible) {
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
             foreach(var i in changeFuncs)
-                i(usingKeyboard());
+                i(true);
         }
     }
 

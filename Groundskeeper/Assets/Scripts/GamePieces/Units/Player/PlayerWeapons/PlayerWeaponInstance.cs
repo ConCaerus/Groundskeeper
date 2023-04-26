@@ -92,7 +92,7 @@ public class PlayerWeaponInstance : WeaponInstance {
     }
 
     void attackPerformed(InputAction.CallbackContext c) {
-        if(ssm.isActiveAndEnabled || !tc.finishedLoading)
+        if((ssm != null && ssm.isActiveAndEnabled) || !tc.finishedLoading || this == null)
             return;
         if(canAttackG && transform.lossyScale.x > 0f && a.getCanAttack()) {
             if(gtc != null)
@@ -128,6 +128,8 @@ public class PlayerWeaponInstance : WeaponInstance {
     }
 
     private void OnDisable() {
+        controls.Player.Attack.started -= attackPerformed;
+        controls.Player.Attack.canceled -= attackEnded;
         controls.Disable();
     }
 }

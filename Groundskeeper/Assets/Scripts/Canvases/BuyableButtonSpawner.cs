@@ -58,21 +58,9 @@ public class BuyableButtonSpawner : MonoBehaviour {
                 obj.transform.GetChild(2).gameObject.SetActive(false);
             obj.GetComponent<Button>().onClick.AddListener(delegate { 
                 pg.changePlacing(i.gameObject, i.gameObject == pg.currentObj);
-                StartCoroutine(reSelecter(obj.GetComponent<Selectable>()));
             });
             buttons.Add(obj.gameObject);
         }
-
-        if(!mm.usingKeyboard()) {
-            StartCoroutine(reSelecter());
-        }
-    }
-
-    IEnumerator reSelecter(Selectable thing = null) {
-        yield return new WaitForEndOfFrame();
-        if(thing == null)
-            thing = FindObjectOfType<Selectable>();
-        thing.Select();
     }
 
     public void updateBuyableButtons() {

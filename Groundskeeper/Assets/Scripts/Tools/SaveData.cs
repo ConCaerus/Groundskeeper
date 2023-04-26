@@ -92,27 +92,25 @@ public static class SaveData {
 
                 //  saves the new, empty list
                 th.t1 = new List<string>();
-                saveTagCollector(th);
                 break;
             case 1:
                 //  deletes all keys
-                foreach(var i in th.t1)
+                foreach(var i in th.t2)
                     deleteKey(i);
 
                 //  saves the new, empty list
-                th.t1 = new List<string>();
-                saveTagCollector(th);
+                th.t2 = new List<string>();
                 break;
             case 2:
                 //  deletes all keys
-                foreach(var i in th.t1)
+                foreach(var i in th.t3)
                     deleteKey(i);
 
                 //  saves the new, empty list
-                th.t1 = new List<string>();
-                saveTagCollector(th);
+                th.t3 = new List<string>();
                 break;
         }
+        saveTagCollector(th);
     }
 
 

@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -507,7 +507,10 @@ MonoBehaviour:
   costText: {fileID: 1219086282486704207}
   tierText: {fileID: 7605708894043907046}
   info: {fileID: 4989566328012080715}
+  maxTier: 0
+  maxTicks: 0
   mainType: 0
+  subType: 0
 --- !u!1 &7766012765160504132
 GameObject:
   m_ObjectHideFlags: 0
@@ -649,6 +652,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5495417382219809434}
     m_Modifications:
+    - target: {fileID: 2208842612743620536, guid: 137ce8b4bdc3383438aaa2883921ce8a, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5972870680757922744, guid: 137ce8b4bdc3383438aaa2883921ce8a, type: 3}
       propertyPath: m_Name
       value: CircularSlider
