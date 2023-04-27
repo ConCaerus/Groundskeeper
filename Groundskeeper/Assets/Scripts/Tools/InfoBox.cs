@@ -20,11 +20,13 @@ public class InfoBox : MonoBehaviour {
 
     MouseManager mm;
     FreeGamepadCursor fgc;
+    FreeGamepadHouseCursor fghc;
 
     private void Start() {
         uit = FindObjectOfType<UITest>();
         mm = FindObjectOfType<MouseManager>();
         fgc = FindObjectOfType<FreeGamepadCursor>();
+        fghc = FindObjectOfType<FreeGamepadHouseCursor>();
         hide();
     }
 
@@ -50,7 +52,13 @@ public class InfoBox : MonoBehaviour {
     public void updatePos() {
         if(!box.gameObject.activeInHierarchy)
             return;
-        var mousePos = mm.usingKeyboard() ? Input.mousePosition : (Vector3)fgc.getScreenCursorPos();
+        var mousePos = Vector2.zero;
+        if(mm.usingKeyboard())
+            mousePos = Input.mousePosition;
+        else if(fgc != null)
+            mousePos = fgc.getScreenCursorPos();
+        else
+            mousePos = fghc.getScreenCursorPos();
         box.transform.position = new Vector3(mousePos.x, mousePos.y);
     }
 
@@ -78,7 +86,13 @@ public class InfoBox : MonoBehaviour {
         box.gameObject.SetActive(true);
         text.text = info;
 
-        var mousePos = mm.usingKeyboard() ? Input.mousePosition : (Vector3)fgc.getScreenCursorPos();
+        var mousePos = Vector2.zero;
+        if(mm.usingKeyboard())
+            mousePos = Input.mousePosition;
+        else if(fgc != null)
+            mousePos = fgc.getScreenCursorPos();
+        else
+            mousePos = fghc.getScreenCursorPos();
         box.transform.position = new Vector3(mousePos.x, mousePos.y);
         box.sizeDelta = new Vector2(text.preferredWidth + padding > 200 ? 200 : text.preferredWidth + padding, text.preferredHeight + padding);
         shower = null;

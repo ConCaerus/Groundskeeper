@@ -9,12 +9,14 @@ public class UITest : MonoBehaviour {
     MouseManager mm;
     FreeGamepadCursor fgc;
     GameGamepadCursor ggc;
+    FreeGamepadHouseCursor fghc;
 
     private void Start() {
         UILayer = LayerMask.NameToLayer("UI");
         mm = FindObjectOfType<MouseManager>();
         fgc = FindObjectOfType<FreeGamepadCursor>();
         ggc = FindObjectOfType<GameGamepadCursor>();
+        fghc = FindObjectOfType<FreeGamepadHouseCursor>();
     }
 
     //Returns 'true' if we touched or hovering on Unity UI element.
@@ -43,6 +45,8 @@ public class UITest : MonoBehaviour {
             eventData.position = fgc.getScreenCursorPos();
         else if(ggc != null)
             eventData.position = ggc.getMousePosInScreen();
+        else if(fghc != null)
+            eventData.position = fghc.getScreenCursorPos();
         List<RaycastResult> raysastResults = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, raysastResults);
         return raysastResults;

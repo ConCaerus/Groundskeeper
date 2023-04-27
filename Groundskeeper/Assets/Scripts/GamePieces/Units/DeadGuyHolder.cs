@@ -20,6 +20,7 @@ public class DeadGuyHolder : Interactable {
             closest.gameObject.GetComponent<DeadGuyInstance>().hardCleanup();
             closest = gb.deadGuys.FindClosest(origin);
         }
+        cc.GenerateGeometry();
     }
 
     public override bool canInteract() {

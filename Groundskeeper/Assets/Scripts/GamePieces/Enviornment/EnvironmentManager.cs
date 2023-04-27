@@ -62,6 +62,10 @@ public class EnvironmentManager : MonoBehaviour {
             used.Add(closest);
             closest = gb.environment.FindClosest(center);
         }
+
+        //  regenerats all geometry
+        foreach(var i in holders)
+            i.GetComponent<CompositeCollider2D>().GenerateGeometry();
     }
 
     public void hitEnvironment(Vector2 pos) {

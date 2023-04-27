@@ -20,9 +20,6 @@ public class FreeGamepadHouseCursor : MonoBehaviour {
     [SerializeField] float padding = 35f;
 
     bool lPrevState, rPrevState;
-    const string gamepadscheme = "Gamepad";
-    const string keyboardScheme = "Keyboard";
-    string prevControls = "";
 
     MouseManager mm;
     BuyTreeCanvas btc;
@@ -38,7 +35,7 @@ public class FreeGamepadHouseCursor : MonoBehaviour {
     }*/
 
 
-    private void Awake() {
+    private void Start() {
         mm = FindObjectOfType<MouseManager>();
         mm.addOnInputChangeFunc(changeCursor);
         btc = FindObjectOfType<BuyTreeCanvas>();
@@ -48,7 +45,6 @@ public class FreeGamepadHouseCursor : MonoBehaviour {
 
     private void OnEnable() {
         mm = FindObjectOfType<MouseManager>();
-        prevControls = keyboardScheme;
         if(vMouse == null) {
             vMouse = (Mouse)InputSystem.AddDevice("VirtualMouse");
         }
@@ -109,15 +105,15 @@ public class FreeGamepadHouseCursor : MonoBehaviour {
     void changeCursor(bool usingKeyboard) {
         if(cursorImage == null)
             return;
-        onControlsChanged(playerInput);
-        cursorImage.enabled = !usingKeyboard;
+        //onControlsChanged(playerInput);
+        cursorImage.enabled = !usingKeyboard && btc.isOpen();
     }
 
     //  when hiding (and moveCursor is true) if b is true, the cursor will move out of the way of all UI and move to (0, 0)
     //  when showing (and moveCursor is true) if b is false, the cursor will move to the previously stored position (stored when hiding)
     public void showCursor(bool b, bool moveCursor) {
         if(cursorImage != null) {
-            cursorImage.enabled = b;
+            cursorImage.enabled = b && btc.isOpen();
             if(moveCursor) {
                 if(!b)
                     prevPos = vMouse.position.ReadValue();
@@ -136,24 +132,6 @@ public class FreeGamepadHouseCursor : MonoBehaviour {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, pos, canvas.renderMode
             ==  RenderMode.ScreenSpaceOverlay ? null : Camera.main, out anchoredPos);
         cursorTrans.anchoredPosition = anchoredPos;
-    }
-
-    void onControlsChanged(PlayerInput pl) {
-        if(cursorImage == null)
-            return;
-        if(pl.currentControlScheme == keyboardScheme && prevControls != keyboardScheme && vMouse != null) {
-            Cursor.visible = true;
-            curMouse.WarpCursorPosition(vMouse.position.ReadValue());
-            cursorTrans.gameObject.GetComponent<Image>().enabled = false;
-            prevControls = keyboardScheme;
-        }
-        else if(pl.currentControlScheme == gamepadscheme && prevControls != gamepadscheme) {
-            cursorTrans.gameObject.GetComponent<Image>().enabled = true;
-            Cursor.visible = false;
-            InputState.Change(vMouse.position, curMouse.position.ReadValue());
-            anchorCursor(curMouse.position.ReadValue());
-            prevControls = gamepadscheme;
-        }
     }
 
     public Vector2 getScreenCursorPos() {

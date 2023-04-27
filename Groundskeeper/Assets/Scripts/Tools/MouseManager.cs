@@ -35,7 +35,6 @@ public class MouseManager : MonoBehaviour {
             switchToKeyboard();
         else
             switchToGamepad();
-
     }
 
     void switchToGamepad() {

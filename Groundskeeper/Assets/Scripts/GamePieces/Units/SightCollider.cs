@@ -30,6 +30,7 @@ public class SightCollider : MonoBehaviour {
 
             //  movement
             //  checks if tag is untargetable
+            Debug.Log(col.gameObject.name + " " + isTagTargetable(col.gameObject.tag, mi));
             if(!isTagTargetable(col.gameObject.tag, mi))
                 return;
 

@@ -81,15 +81,26 @@ public abstract class MonsterInstance : Monster {
         ms = FindObjectOfType<MonsterSpawner>();
         c = GetComponent<Collider2D>();
 
+        //  roll chance to become a boss monster
+        bool boss = Random.Range(0, 10) == 0;
+        float bossSizeMod = 1.5f;
+
+        if(boss) {
+            soulsGiven *= 2f;
+            maxHealth *= 2;
+            health *= 2;
+            attackDamage *= 2;
+        }
+
         //  randomize the look of the monster
         float sizeDiff = Random.Range(1.0f - .2f, 1.0f + .2f), minColor = .4f, maxColor = .9f;
-        transform.localScale = new Vector3(sizeDiff, sizeDiff);
+        transform.localScale = new Vector3(!boss ? sizeDiff : sizeDiff * bossSizeMod, !boss ? sizeDiff : sizeDiff * bossSizeMod);
         normColor = new Color(Random.Range(minColor, maxColor), Random.Range(minColor, maxColor), Random.Range(minColor, maxColor), sr.color.a);
         sr.color = normColor;
 
         spriteOriginal = spriteObj.transform.localScale;
         if(shadowObj != null)
-            shadowOriginal = shadowObj.transform.localScale;
+            shadowOriginal = !boss ? shadowObj.transform.localScale : shadowObj.transform.localScale * bossSizeMod;
 
         if(!leader)
             sCol.SetActive(false);

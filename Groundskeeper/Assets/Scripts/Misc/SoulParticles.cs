@@ -8,7 +8,7 @@ public class SoulParticles : MonoBehaviour {
     [SerializeField] FunkyCode.Light2D lightPreset;
     List<FunkyCode.Light2D> lights = new List<FunkyCode.Light2D>();
 
-    int maxNumOfLights = 5;
+    int maxNumOfLights = 3;
 
     private void Start() {
         StartCoroutine(stopper());
@@ -19,10 +19,13 @@ public class SoulParticles : MonoBehaviour {
         yield return new WaitForSeconds(.1f);
 
         int c = Mathf.Clamp(GetComponent<ParticleSystem>().GetParticles(p), 0, maxNumOfLights);
+        float s = Mathf.Clamp(GetComponent<ParticleSystem>().GetParticles(p), lightPreset.size, lightPreset.size * 3f);
         var ss = GetComponent<ParticleSystem>().main.simulationSpeed;
         for(int i = 0; i < c; i++) {
             if(i >= lights.Count) {
-                lights.Add(Instantiate(lightPreset, p[i].position, Quaternion.identity, transform));
+                var temp = Instantiate(lightPreset, p[i].position, Quaternion.identity, transform);
+                temp.size = s;
+                lights.Add(temp);
                 StartCoroutine(lightKiller(lights[lights.Count - 1].gameObject, p[i].remainingLifetime / ss));
             }
             else if(lights[i] == null)
