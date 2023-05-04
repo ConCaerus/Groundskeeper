@@ -84,6 +84,8 @@ public abstract class Movement : MortalUnit {
 
     protected IEnumerator walkAnim(bool jumpDir = true) {
         spriteObj.transform.DOPunchPosition(new Vector3(0.0f, 0.7f, 0.0f), getWalkInfo().time);
+        float tehe = 0.15f;
+        spriteObj.transform.DOPunchScale(new Vector3(-tehe, tehe), getWalkInfo().time);
         if(shadowObj != null)
             shadowObj.transform.DOComplete();
         Vector2 shadOriginal = Vector2.zero;

@@ -34,11 +34,14 @@ public class FreeGamepadHouseCursor : MonoBehaviour {
         prevControls = playerInput.currentControlScheme;
     }*/
 
+    private void Awake() {
+        mm = FindObjectOfType<MouseManager>();
+        btc = FindObjectOfType<BuyTreeCanvas>();
+    }
+
 
     private void Start() {
-        mm = FindObjectOfType<MouseManager>();
         mm.addOnInputChangeFunc(changeCursor);
-        btc = FindObjectOfType<BuyTreeCanvas>();
         showCursor(false, false);
     }
 
