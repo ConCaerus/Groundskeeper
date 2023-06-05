@@ -22,7 +22,7 @@ public abstract class HelperInstance : Helper {
 
     private void Start() {
         mortalInit();
-        movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
+        movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>(), true);
         helperInit();
         hi = FindObjectOfType<HouseInstance>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));

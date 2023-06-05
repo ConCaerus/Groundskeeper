@@ -633,6 +633,7 @@ MonoBehaviour:
     rPos: {x: 45, y: 464}
   faceObj: {fileID: 2395144703169560543}
   hardSkipSlider: {fileID: 8971344016834062110}
+  devilVoice: {fileID: 8300000, guid: 0b204cae6c168d74296070ee0212bbdc, type: 3}
 --- !u!1 &6636587074901171159
 GameObject:
   m_ObjectHideFlags: 0

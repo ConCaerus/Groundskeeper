@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -1564564615718368588}
   m_Layer: 10
   m_Name: Tar
-  m_TagString: Defence
+  m_TagString: Defense
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -151,6 +151,7 @@ MonoBehaviour:
   maxHealth: 250
   unitHealth: 250
   hurtSound: {fileID: 0}
+  dieSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}

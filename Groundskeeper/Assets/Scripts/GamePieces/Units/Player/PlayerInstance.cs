@@ -50,7 +50,7 @@ public class PlayerInstance : Attacker {
         controls = new InputMaster();
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();
-        movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>());
+        movementInit(FindObjectOfType<SetupSequenceManager>(), FindObjectOfType<LayerSorter>(), true);
         pwi = GetComponentInChildren<PlayerWeaponInstance>();
         c = GetComponent<Collider2D>();
         pStats = GameInfo.getPlayerStats();

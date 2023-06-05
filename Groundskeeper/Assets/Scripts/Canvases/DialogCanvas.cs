@@ -24,6 +24,8 @@ public class DialogCanvas : MonoBehaviour {
     [SerializeField] CircularSlider hardSkipSlider;
     Coroutine hardSkiper = null;
 
+    [SerializeField] AudioClip devilVoice;
+
     [System.Serializable]
     struct eyeExpressionPos {
         public Vector2 lPos, rPos;
@@ -61,6 +63,7 @@ public class DialogCanvas : MonoBehaviour {
     void advance() {
         if(!showingText)
             return;
+        FindObjectOfType<AudioManager>().playSound(devilVoice, Camera.main.transform.position);
         faceObj.transform.DOComplete();
         faceObj.transform.DOPunchPosition(new Vector3(0.0f, 10.0f), .25f);
         if(!skip && anim != null)
@@ -105,6 +108,7 @@ public class DialogCanvas : MonoBehaviour {
         lEye.transform.DOLocalMove(eyePoses[(int)e].lPos, .15f);
     }
     public void loadDialogText(DialogText t, func runOnDone) {
+        FindObjectOfType<AudioManager>().playSound(devilVoice, Camera.main.transform.position);
         currentTexts = t;
         showText(currentTexts.dialogs[0], currentTexts.expressions[0]);
         f = runOnDone;

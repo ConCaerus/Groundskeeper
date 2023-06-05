@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 6781478881865433257}
   - component: {fileID: 6781478881865433256}
   - component: {fileID: 721251196033553166}
+  - component: {fileID: 317490395030628709}
   m_Layer: 15
   m_Name: tree
   m_TagString: Environment
@@ -168,6 +169,8 @@ MonoBehaviour:
   title: Tree
   hits: 3
   tit: 0
+  sways: 1
+  hitSound: {fileID: 8300000, guid: e853b7ab198046440a8be7faf09c592e, type: 3}
 --- !u!60 &721251196033553166
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -193,6 +196,25 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.13518906, y: -2.4762907}
-      - {x: -0.11495119, y: -2.0343435}
-      - {x: -0.33320755, y: -2.4128675}
+    - - {x: 0.38560104, y: -0.14552808}
+      - {x: 0.05841154, y: 0.60461926}
+      - {x: -0.2754187, y: -0.08210468}
+--- !u!95 &317490395030628709
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781478881865433263}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5ace655906ec3cf48b7fb85ed7d6b112, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

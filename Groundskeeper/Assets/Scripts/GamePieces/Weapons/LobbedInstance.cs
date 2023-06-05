@@ -40,6 +40,8 @@ public class LobbedInstance : MonoBehaviour {
         if(triggerer.GetComponent<Mortal>().health <= realDmg)
             td.removeTick(triggerer);
 
+        if(triggerer == null || triggerer.GetComponent<Mortal>() == null || reference == null)
+            return;
         triggerer.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, false, false);
     }
 

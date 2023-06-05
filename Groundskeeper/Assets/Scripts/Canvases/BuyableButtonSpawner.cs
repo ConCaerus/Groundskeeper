@@ -38,7 +38,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
         prevGenre = index;
         pg.placing = false;
         List<GameObject> buyables = index == 0 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Helper, true) :
-            index == 1 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Defence, true) :
+            index == 1 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Defense, true) :
             bl.getUnlockedBuyablesOfType(Buyable.buyType.Structure, true);
 
         foreach(var i in buttons)
@@ -65,7 +65,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
 
     public void updateBuyableButtons() {
         List<GameObject> buyables = prevGenre == 0 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Helper, true) :
-            prevGenre == 1 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Defence, true) :
+            prevGenre == 1 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Defense, true) :
             bl.getUnlockedBuyablesOfType(Buyable.buyType.Structure, true);
 
         foreach(var i in buttons)

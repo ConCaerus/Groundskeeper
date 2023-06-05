@@ -10,12 +10,13 @@ public abstract class MonsterInstance : Monster {
     [SerializeField] float attackCoolDown = .5f, attackKnockBack = 0f;
 
 
-    [HideInInspector][SerializeField] public Transform followingTransform = null;
-    [HideInInspector] public bool hasTarget = false;
+    [SerializeField] public Transform followingTransform = null;
+    [SerializeField] public bool hasTarget = false, hasAttractiveTarget = false;
     [HideInInspector] public bool hasCultistBuff = false;
 
     //  cannot be confused if is leader
     public bool confused { get; private set; } = false;
+    Vector2 confusedTarget = Vector2.zero;
     [HideInInspector] public bool leader = false;
     [HideInInspector] public MonsterInstance closestLeader = null;
 
@@ -44,8 +45,9 @@ public abstract class MonsterInstance : Monster {
     private void OnCollisionStay2D(Collision2D col) {
         if(canAttack) {
             //  if the unit is confused, have it attack other monsters 
-            if(confused && !leader && col.gameObject.tag == "Monster") 
+            if(confused && col.gameObject.tag == "Monster") {
                 attack(col.gameObject, true);
+            }
 
             //  normal attack
             else if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Structure" || col.gameObject.tag == "House") {
@@ -55,7 +57,7 @@ public abstract class MonsterInstance : Monster {
                 //  check if the target is attackable by this monster
                 else if(col.gameObject.tag == "House" && (favoriteTarget == targetType.Structures || favoriteTarget == targetType.House))
                     attack(col.gameObject, true);
-                else if(col.gameObject.tag == "Helper" && favoriteTarget == targetType.People)
+                else if((col.gameObject.tag == "Helper" || col.gameObject.tag == "Player") && favoriteTarget == targetType.People)
                     attack(col.gameObject, true);
                 else if(col.gameObject.tag == "Structure" && favoriteTarget == targetType.Structures)
                     attack(col.gameObject, true);
@@ -66,10 +68,11 @@ public abstract class MonsterInstance : Monster {
 
     public void setup() {
         mortalInit();
-        movementInit(null, FindObjectOfType<LayerSorter>());
+        movementInit(null, FindObjectOfType<LayerSorter>(), !flying);
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("DeadGuy"));
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("PlayerBoundsCollider"));
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("SightCollider"));
         //stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         //FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         pt = FindObjectOfType<PlayerInstance>().transform;
@@ -113,11 +116,11 @@ public abstract class MonsterInstance : Monster {
 
     public void setAsLeader() {
         sCol.SetActive(true);
-        confused = false;
         leader = true;
     }
-    public void setConfused(bool b) {
-        confused = !leader && b;
+    public void setConfused(bool b, Vector2 confusedOrigin) {
+        confused = b;
+        confusedTarget = confusedOrigin;
         StartCoroutine(unconfuseSelf());
     }
 
@@ -125,22 +128,37 @@ public abstract class MonsterInstance : Monster {
     public abstract void sightExitEffect(GameObject other);
 
     IEnumerator unconfuseSelf() {
-        yield return new WaitForSeconds(10f);
+        if(leader)
+            sCol.GetComponent<SightCollider>().shrinkArea();
+        yield return new WaitForSeconds(Random.Range(10f, 15f));
+        if(leader)
+            sCol.GetComponent<SightCollider>().expandArea();
         confused = false;
     }
 
     #region ---   MOVEMENT SHIT   ---
     //  targets get set in the child sight collider
     public void updateMovement() {
+        //  checks if confused
+        if(confused) {
+            //  if the monster is confused, target their leader
+            if(!leader)
+                moveTarget = closestLeader.transform.position;
+            //  if the monster is the leader, go to the confused target
+            else
+                moveTarget = confusedTarget;
+            moveToPos(moveTarget, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
+        }
+
+        //  if not confused, set the movetarget to be something normal in case the monster has any followers
         //  following person
         if(!leader && closestLeader != null) {
             //  move towards the same person / structure as the leader
             if(closestLeader.hasTarget)
                 moveTarget = closestLeader.followingTransform.position;
             //  move towards the same position as the leader with the same offset as current
-            else {
+            else
                 moveTarget = closestLeader.moveTarget;
-            }
         }
         else {
             if(hasTarget)
@@ -148,10 +166,14 @@ public abstract class MonsterInstance : Monster {
 
             //  if doesn't have a target, give it a generic target to follow
             else {
-                moveTarget = favoriteTarget == targetType.People ? (Vector2)pt.position : houseCenter;
+                if(pt != null)
+                    moveTarget = favoriteTarget == targetType.People ? (Vector2)pt.position : houseCenter;
+                else
+                    moveTarget = houseCenter;
             }
         }
-        moveToPos(moveTarget, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
+        if(!confused)
+            moveToPos(moveTarget, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
     }
     public override bool restartWalkAnim() {
         return canMove;

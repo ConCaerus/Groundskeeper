@@ -261,7 +261,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 50
   unitHealth: 50
-  hurtSound: {fileID: 8300000, guid: ddb92acf59f1c0c43824049952f6d2fd, type: 3}
+  hurtSound: {fileID: 8300000, guid: 9baf9dc19f77df447b41ed0eeb03a23f, type: 3}
+  dieSound: {fileID: 0}
   bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
@@ -273,10 +274,11 @@ MonoBehaviour:
   shadowObj: {fileID: 0}
   canMove: 1
   movementParticles: {fileID: 6949006053084930653}
+  walkSound: {fileID: 8300000, guid: f7610a448612a8341868f6aedad6e772, type: 3}
   title: 1
   speed: 0.8
   attackDamage: 1
-  damageToDefences: 1
+  damageTodefenses: 0
   diff: 2
   originalSoulsGiven: 5
   soulsGiven: 5
@@ -291,6 +293,7 @@ MonoBehaviour:
   attackKnockBack: 0
   followingTransform: {fileID: 0}
   hasTarget: 0
+  hasAttractiveTarget: 0
   hasCultistBuff: 0
   leader: 0
   closestLeader: {fileID: 0}

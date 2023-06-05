@@ -685,6 +685,7 @@ MonoBehaviour:
   shadowObj: {fileID: 5885474163258482202}
   canMove: 1
   movementParticles: {fileID: 6335986319718400554, guid: ff64d4268998bf14f8e7afc3f1033a07, type: 3}
+  walkSound: {fileID: 8300000, guid: f7610a448612a8341868f6aedad6e772, type: 3}
   speed: 0.8
   helpAmount: 0
   helpType: 1

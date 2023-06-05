@@ -48,6 +48,8 @@ MonoBehaviour:
   title: Bush
   hits: 3
   tit: 1
+  sways: 0
+  hitSound: {fileID: 0}
 --- !u!60 &4089223966208132796
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -73,9 +75,9 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.2709465, y: -0.6353526}
-      - {x: -0.08499819, y: -0.00063565373}
-      - {x: -0.42328018, y: -0.6445141}
+    - - {x: 0.3183403, y: -0.14110714}
+      - {x: -0.024062216, y: 0.36497062}
+      - {x: -0.33526748, y: -0.15026855}
 --- !u!1 &8921911974663055115
 GameObject:
   m_ObjectHideFlags: 0

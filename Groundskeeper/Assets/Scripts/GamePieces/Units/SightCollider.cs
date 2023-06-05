@@ -13,11 +13,12 @@ public class SightCollider : MonoBehaviour {
     CircleCollider2D c;
     float maxRad;
 
+    MonsterInstance mi = null;
+    HelperInstance hi = null;
+
     private void OnTriggerEnter2D(Collider2D col) {
         //  monster shit
-        if(unit.GetComponent<MonsterInstance>() != null) {
-            var mi = unit.GetComponent<MonsterInstance>();
-
+        if(mi != null) {
             //  effects
             if(mi.sightEffectedPieces.Count > 0) {
                 foreach(var i in mi.sightEffectedPieces) {
@@ -30,17 +31,18 @@ public class SightCollider : MonoBehaviour {
 
             //  movement
             //  checks if tag is untargetable
-            //Debug.Log(col.gameObject.name + " " + isTagTargetable(col.gameObject.tag, mi));
+            //  doesn't really need to do this, but just to make sure
             if(!isTagTargetable(col.gameObject.tag, mi))
                 return;
 
             //  checks if already going after an attractive target
-            if(mi.hasTarget && mi.followingTransform.GetComponent<Buyable>() != null && mi.followingTransform.GetComponent<Buyable>().isAttractive) {
+            if(mi.hasTarget && mi.hasAttractiveTarget)
                 return;
-            }
             //  checks if attractive pieces have entered the sight
             else if(col.GetComponent<Buyable>() != null && col.GetComponent<Buyable>().isAttractive) {
                 mi.followingTransform = col.gameObject.transform;
+                mi.hasTarget = true;
+                mi.hasAttractiveTarget = true;
                 return;
             }
 
@@ -48,18 +50,18 @@ public class SightCollider : MonoBehaviour {
             if(!mi.hasTarget) {
                 mi.hasTarget = true;
                 mi.followingTransform = col.gameObject.transform;
+                mi.hasAttractiveTarget = col.GetComponent<Buyable>() != null && col.GetComponent<Buyable>().isAttractive;
             }
         }
 
         //  lumberjack / helper shit
-        else if(unit.GetComponent<HelperInstance>() != null) {
-            var li = unit.GetComponent<HelperInstance>();
+        else if(hi != null) {
             //  checks if tag is targetable
-            if(li.hasTarget || !isTagTargetable(col.gameObject.tag, li, col.gameObject.GetComponent<StructureInstance>()))
+            if(hi.hasTarget || !isTagTargetable(col.gameObject.tag, hi, col.gameObject.GetComponent<StructureInstance>()))
                 return;
 
-            li.hasTarget = true;
-            li.followingTransform = col.gameObject.transform;
+            hi.hasTarget = true;
+            hi.followingTransform = col.gameObject.transform;
         }
     }
 
@@ -103,10 +105,20 @@ public class SightCollider : MonoBehaviour {
     }
 
     private void Awake() {
+        for(int i = 0; i < 20; i++) {
+            var tag = LayerMask.LayerToName(i);
+            if(tag != "Player" && tag != "Helper" && tag != "Structure" && tag != "House" && tag != "Monster")
+                Physics2D.IgnoreLayerCollision(gameObject.layer, i);
+        }
         c = GetComponent<CircleCollider2D>();
         StartCoroutine(areaStartExpansion(c.radius));
         if(dynamicChecking)
             StartCoroutine(dynamicCheck(unit.GetComponent<HelperInstance>(), unit.GetComponent<MonsterInstance>()));
+
+        if(unit.GetComponent<MonsterInstance>() != null)
+            mi = unit.GetComponent<MonsterInstance>();
+        else if(unit.GetComponent<HelperInstance>() != null)
+            hi = unit.GetComponent<HelperInstance>();
     }
 
     //  resets the collider to check and see if there are still any relevant collisions

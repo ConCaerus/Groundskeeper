@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class GameBoard : MonoBehaviour {
 
@@ -9,7 +10,7 @@ public class GameBoard : MonoBehaviour {
 
     [HideInInspector] public KdTree<Helper> helpers = new KdTree<Helper>();
     [HideInInspector] public KdTree<StructureInstance> structures = new KdTree<StructureInstance>();
-    [HideInInspector] public KdTree<DefenceInstance> defences = new KdTree<DefenceInstance>();
+    [HideInInspector] public KdTree<DefenseInstance> defenses = new KdTree<DefenseInstance>();
     [HideInInspector] public KdTree<DeadGuyInstance> deadGuys = new KdTree<DeadGuyInstance>();
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
@@ -24,11 +25,18 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public bool loaded = false;
     [HideInInspector] public bool fastSave = false;
 
+    AudioManager am;
+    Transform pt;
+    float distToStartMusic = 25f;
+
 
     private void Awake() {
         if(GameInfo.getNightCount() == 0)
             GameInfo.clearBoard();
         loadBoard();
+        am = FindObjectOfType<AudioManager>();
+        pt = FindObjectOfType<PlayerInstance>().transform;
+        //StartCoroutine(musicModder(0f));  //  energetic and upbeat music doesn't fit this game
     }
 
     //  NOTE: BOARD RESETS AUTOMATICALLY ON NIGHT 0
@@ -40,7 +48,7 @@ public class GameBoard : MonoBehaviour {
     public void loadBoard() {
         var bl = FindObjectOfType<BuyableLibrary>();
         var pl = FindObjectOfType<PresetLibrary>();
-        var dhs = FindObjectOfType<DefenceHolderSpawner>();
+        var dhs = FindObjectOfType<DefenseHolderSpawner>();
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedHelperCount); i++) {
             var d = SaveData.getString(GameInfo.helperTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
@@ -48,12 +56,12 @@ public class GameBoard : MonoBehaviour {
             var obj = bl.getHelper(data.name, false);
             Instantiate(obj, data.pos, Quaternion.identity, holder.transform);
         }
-        for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedDefenceCount); i++) {
-            var d = SaveData.getString(GameInfo.defenceTag + i.ToString());
+        for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedDefenseCount); i++) {
+            var d = SaveData.getString(GameInfo.defenseTag + i.ToString());
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
-            var obj = bl.getDefence(data.name, false);
-            dhs.spawnDefence(obj, data.pos);
+            var obj = bl.getDefense(data.name, false);
+            dhs.spawnDefense(obj, data.pos);
         }
         for(int i = 0; i < SaveData.getInt(GameInfo.lastSavedStructureCount); i++) {
             var d = SaveData.getString(GameInfo.structureTag + i.ToString());
@@ -67,31 +75,31 @@ public class GameBoard : MonoBehaviour {
             var data = JsonUtility.FromJson<ObjectSaveData>(d);
 
             var obj = pl.getDeadGuy(data.name);
-            Instantiate(obj, data.pos, Quaternion.identity, deadGuyHolder.transform);
+            deadGuys.Add(Instantiate(obj, data.pos, Quaternion.identity, deadGuyHolder.transform).GetComponent<DeadGuyInstance>());
         }
 
         //  spawn the first set of dead guys
         if(GameInfo.getNightCount() == 0 && deadGuys.Count == 0) {
             for(int i = 0; i < minDeadGuyCount; i++) {
                 var obj = pl.getRandomDeadGuy();
-                Instantiate(obj, getRandomMapPos(), Quaternion.identity, deadGuyHolder.transform);
+                deadGuys.Add(Instantiate(obj, getRandomMapPos(), Quaternion.identity, deadGuyHolder.transform).GetComponent<DeadGuyInstance>());
             }
         }
         //  spawns new dead guys if needs to spawn more
         else if(SaveData.getInt(GameInfo.lastSavedDeadGuyCount) < minDeadGuyCount) {
-            int spawnNum = Random.Range(1, minDeadGuyCount - SaveData.getInt(GameInfo.lastSavedDeadGuyCount) + 1);
+            int spawnNum = Random.Range(1, minDeadGuyCount - deadGuys.Count + 1);
             for(int i = 0; i < spawnNum; i++) {
                 var obj = pl.getRandomDeadGuy();
-                Instantiate(obj, getRandomMapPos(), Quaternion.identity, deadGuyHolder.transform);
+                deadGuys.Add(Instantiate(obj, getRandomMapPos(), Quaternion.identity, deadGuyHolder.transform).GetComponent<DeadGuyInstance>());
             }
         }
+
         deadGuyHolder.GetComponent<CompositeCollider2D>().GenerateGeometry();
 
 
         if(GameInfo.getNightCount() > 0) {
             var hD = SaveData.getString(houseTag);
             var hData = JsonUtility.FromJson<ObjectSaveData>(hD);
-
             var hObj = bl.getHouseStructure();
             Instantiate(hObj, hData.pos, Quaternion.identity, holder.transform);
         }
@@ -119,10 +127,10 @@ public class GameBoard : MonoBehaviour {
             if(!fastSave && hIndex % thingsPerFrame == 0)
                 yield return new WaitForEndOfFrame();
         }
-        foreach(var i in GameObject.FindGameObjectsWithTag("Defence")) {
+        foreach(var i in GameObject.FindGameObjectsWithTag("Defense")) {
             var save = new ObjectSaveData(i.GetComponent<Buyable>());
             var data = JsonUtility.ToJson(save);
-            SaveData.setString(GameInfo.defenceTag + dIndex.ToString(), data);
+            SaveData.setString(GameInfo.defenseTag + dIndex.ToString(), data);
             dIndex++;
             if(!fastSave && dIndex % thingsPerFrame == 0)
                 yield return new WaitForEndOfFrame();
@@ -154,14 +162,14 @@ public class GameBoard : MonoBehaviour {
         GameInfo.saveSouls();
         //      saves how many new shit got saved for the next time the shit gets cleared
         SaveData.setInt(GameInfo.lastSavedHelperCount, hIndex);
-        SaveData.setInt(GameInfo.lastSavedDefenceCount, dIndex);
+        SaveData.setInt(GameInfo.lastSavedDefenseCount, dIndex);
         SaveData.setInt(GameInfo.lastSavedStructureCount, pIndex);
         SaveData.setInt(GameInfo.lastSavedDeadGuyCount, dgIndex);
 
         //     SAVES THE ENVIRONMENT
         //  clears the save data
         for(int i = 0; i < SaveData.getInt(GameInfo.envCount); i++)
-            SaveData.deleteKey(GameInfo.envTag + i.ToString());
+            SaveData.deleteKey(GameInfo.envTag + i.ToString(), false);
 
         //  store the list
         for(int i = 0; i < environment.Count; i++) {
@@ -276,14 +284,38 @@ public class GameBoard : MonoBehaviour {
             helpers.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
         else if(thing.GetComponent<StructureInstance>() != null)
             structures.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
-        else if(thing.GetComponent<DefenceInstance>() != null)
-            defences.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
+        else if(thing.GetComponent<DefenseInstance>() != null)
+            defenses.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
         else if(thing.GetComponent<DeadGuyInstance>() != null)
             deadGuys.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
         else if(thing.GetComponent<MonsterInstance>() != null)
             monsters.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
         else if(thing.GetComponent<EnvironmentInstance>() != null)
             environment.RemoveAll(x => x.gameObject.GetInstanceID() == thing.gameObject.GetInstanceID());
+    }
+    public float getBoardRad() {
+        return boardRadius;
+    }
+
+    IEnumerator musicModder(float minPerc, float changeTime = .25f) {
+        if(GameInfo.wave >= GameInfo.wavesPerNight()) {
+            Debug.Log(monsters.Count);
+            if(monsters.Count > 0) {
+                var c = monsters.FindClosest(pt.position);
+                var d = Vector2.Distance(pt.position, c.transform.position);
+                if(d < distToStartMusic) {
+                    var t = (1f - d / distToStartMusic);
+                    am.setMusicVolume(Mathf.Clamp(t, minPerc, 1f), changeTime);
+                    minPerc = t > minPerc ? t : minPerc *= .95f;
+                }
+                else
+                    am.setMusicVolume(minPerc, changeTime);
+            }
+            else
+                am.setMusicVolume(minPerc, changeTime);
+        }
+        yield return new WaitForSeconds(changeTime + .01f);
+        StartCoroutine(musicModder(minPerc));
     }
 }
 

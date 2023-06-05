@@ -6,10 +6,13 @@ using TMPro;
 public abstract class Interactable : MonoBehaviour {
     InputMaster controls;
 
-    protected bool touching = false, interacting = false;
+    [SerializeField] protected bool touching = false, interacting = false;
 
     [SerializeField] bool toggleMovement = true;
     [SerializeField] public GameObject targetOffsetPosition;
+
+    [SerializeField] AudioClip interactSound, deinteractSound;
+    AudioManager am;
 
 
     private void OnTriggerEnter2D(Collider2D col) {
@@ -34,7 +37,8 @@ public abstract class Interactable : MonoBehaviour {
 
     private void Awake() {
         controls = new InputMaster();
-        controls.Player.Interact.performed += ctx => toggleInteract();
+        controls.Player.Interact.canceled += ctx => toggleInteract();
+        am = FindObjectOfType<AudioManager>();
     }
 
 
@@ -48,7 +52,9 @@ public abstract class Interactable : MonoBehaviour {
     public void tryInteract() {
         if(canInteract() && touching) {
             interacting = true;
+            am.playSound(interactSound, transform.position);
             interact();
+
             if(toggleMovement && targetOffsetPosition != null) {
                 if(FindObjectOfType<PlayerInstance>() != null)
                     FindObjectOfType<PlayerInstance>().setCanMove(false);
@@ -62,7 +68,9 @@ public abstract class Interactable : MonoBehaviour {
     public void tryDeinteract() {
         if(canInteract()) {
             interacting = false;
+            am.playSound(deinteractSound, transform.position);
             deinteract();
+
             if(toggleMovement && targetOffsetPosition != null) {
                 if(FindObjectOfType<PlayerInstance>() != null)
                     FindObjectOfType<PlayerInstance>().setCanMove(true);

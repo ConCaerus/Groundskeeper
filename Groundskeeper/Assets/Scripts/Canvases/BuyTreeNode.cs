@@ -80,8 +80,9 @@ public class BuyTreeNode : MonoBehaviour {
             return "X";
         return "";
     }
-    public void setTick(int t) {
+    public bool setTick(int t) {
         tick = t;
+        bool temp = false;
 
         //  checks if the slider is complete
         if(tier != -1 && tier == maxTier && tick == maxTicks) {
@@ -91,17 +92,20 @@ public class BuyTreeNode : MonoBehaviour {
         //  incs the tier if tick is full
         if(tick >= maxTicks) {
             setTier(tier + 1);
-            if(tier < maxTier)
+            temp = true;
+            if(tier < maxTier) {
                 tick = 0;
+            }
         }
 
         //  updates slider
         slider.DOKill();
         slider.doValue((float)tick / maxTicks, .1f, false);
         slider.setText(tick.ToString());
+        return temp;
     }
-    public void incTick() {
-        setTick(tick + 1);
+    public bool incTick() {
+        return setTick(tick + 1);
     }
 
     public bool canIncrease() {

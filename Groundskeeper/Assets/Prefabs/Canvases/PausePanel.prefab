@@ -64,6 +64,7 @@ GameObject:
   - component: {fileID: 239314291793317912}
   - component: {fileID: 239314291793317913}
   - component: {fileID: 239314291793317914}
+  - component: {fileID: 881295305}
   m_Layer: 5
   m_Name: Options
   m_TagString: Untagged
@@ -209,6 +210,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &881295305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239314291793317916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcca938201c851840b11d8afadcc16f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound: {fileID: 8300000, guid: d4821f05971da784c9255f0d989ebe3c, type: 3}
 --- !u!1 &239314291961426840
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,6 +915,7 @@ GameObject:
   - component: {fileID: 239314293212237074}
   - component: {fileID: 239314293212237075}
   - component: {fileID: 239314293212237076}
+  - component: {fileID: 756347349}
   m_Layer: 5
   m_Name: Resume
   m_TagString: Untagged
@@ -1022,6 +1037,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &756347349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239314293212237078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcca938201c851840b11d8afadcc16f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound: {fileID: 8300000, guid: d4821f05971da784c9255f0d989ebe3c, type: 3}
 --- !u!1 &239314293455888600
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,6 +1062,7 @@ GameObject:
   - component: {fileID: 239314293455888596}
   - component: {fileID: 239314293455888597}
   - component: {fileID: 239314293455888598}
+  - component: {fileID: 1152315235}
   m_Layer: 5
   m_Name: Menu
   m_TagString: Untagged
@@ -1155,6 +1184,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1152315235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239314293455888600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcca938201c851840b11d8afadcc16f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound: {fileID: 8300000, guid: d4821f05971da784c9255f0d989ebe3c, type: 3}
 --- !u!1 &5472245855096513523
 GameObject:
   m_ObjectHideFlags: 0

@@ -93,12 +93,47 @@ public class DebuggerWindow : EditorWindow {
             Debug.Log(GameInfo.getHouseStats().houseLightRad);
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Set House Health To Full")) {
+            var s = GameInfo.getHouseStats();
+            s.houseHealth = s.houseMaxHealth;
+            GameInfo.setHouseStats(s);
+        }
+        if(GUILayout.Button("Set House Health To Half")) {
+            var s = GameInfo.getHouseStats();
+            s.houseHealth = s.houseMaxHealth / 2;
+            GameInfo.setHouseStats(s);
+        }
         if(GUILayout.Button("Set House Health To 1")) {
             var s = GameInfo.getHouseStats();
             s.houseHealth = 1;
             GameInfo.setHouseStats(s);
         }
         GUILayout.EndHorizontal();
+
+        GUILayout.Label("Steam");
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Clear Achievements"))
+            FindObjectOfType<SteamManager>().resetAchievements();
+        if(GUILayout.Button("Unlock Achievement")) 
+            unlockAchievement();
+        GUILayout.EndHorizontal();
+    }
+
+    void unlockAchievement() {
+        int i = 0;
+        bool found = false;
+        while((SteamManager.achievements)i != SteamManager.achievements.None && !found) {
+            if(FindObjectOfType<SteamManager>().isAchievementUnlocked((SteamManager.achievements)i))
+                i++;
+            else {
+                found = true;
+                FindObjectOfType<SteamManager>().unlockAchievement((SteamManager.achievements)i);
+            }
+        }
+        if(!found) {
+            FindObjectOfType<SteamManager>().resetAchievements();
+            unlockAchievement();
+        }
     }
 }
 

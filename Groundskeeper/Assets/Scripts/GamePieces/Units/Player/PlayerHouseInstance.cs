@@ -19,7 +19,7 @@ public class PlayerHouseInstance : Movement {
         rb = GetComponent<Rigidbody2D>();
         DOTween.Init();
         mortalInit();
-        movementInit(null, FindObjectOfType<LayerSorter>());
+        movementInit(null, FindObjectOfType<LayerSorter>(), true);
 
         controls.Player.Move.performed += ctx => movementChange(ctx.ReadValue<Vector2>());
     }

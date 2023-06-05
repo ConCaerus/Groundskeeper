@@ -162,6 +162,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toggleMovement: 1
   targetOffsetPosition: {fileID: 3769568573277731417}
+  interactSound: {fileID: 8300000, guid: 2d2adee3fd2552d4c9015ad1b53f5757, type: 3}
+  deinteractSound: {fileID: 0}
   isTheEnd: 0
 --- !u!1 &3769568573139926079
 GameObject:
@@ -579,6 +581,7 @@ MonoBehaviour:
   maxHealth: 1000
   unitHealth: 1000
   hurtSound: {fileID: 8300000, guid: 02b609c48662ae545a7e9eba6c3d9f8e, type: 3}
+  dieSound: {fileID: 8300000, guid: 02079394d38f92a4c8e6451380d057e6, type: 3}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
@@ -647,6 +650,8 @@ MonoBehaviour:
   description: No place like home
   isAttractive: 0
   effectRadius: 0
+  unlockedImagePos: {x: 0, y: 0}
+  unlockedImageSize: {x: 0, y: 0}
 --- !u!1 &5716474905688345507
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,14 +10,14 @@ public class BuyTreeCanvas : MenuCanvas {
 
     //  end of tier 1 - 1.4, end of tier 2 - 2.0, end of teir 3 - 3.0
     float[] helperDamageInc = { .1f, .15f, .25f }, helperHealthInc = { .1f, .15f, .25f };
-    float[] defenceDamageInc = { .1f, .15f, .25f };
+    float[] defenseDamageInc = { .1f, .15f, .25f };
     float[] structureHealthInc = { .1f, .15f, .25f };
     float[] weaponDamageInc = { .1f, .15f, .25f }, weaponSpeedInc = { .1f, .15f, .25f };
     int houseRepairAmt = 50;
 
     [SerializeField] GameObject node;
 
-    //  ordered: Helper, Defences, Structure, Weapon, House
+    //  ordered: Helper, defenses, Structure, Weapon, House
     [SerializeField] GameObject[] mainCircles;
     [SerializeField] GameObject[] subCircles;
     [SerializeField] GameObject holder;
@@ -46,7 +46,7 @@ public class BuyTreeCanvas : MenuCanvas {
     void createTree() {
         //  queue up some random buyables to be saved
         queuedBuyables[0] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Helper, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Helper));
-        queuedBuyables[1] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Defence, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Defence));
+        queuedBuyables[1] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Defense, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Defense));
         queuedBuyables[2] = bl.getRandomUnlockableBuyableOfType(Buyable.buyType.Structure, bl.getRelevantUnlockTierForBuyableType(Buyable.buyType.Structure));
         queuedWeapon = pl.getRandomLockedWeapon(true);
 
@@ -66,7 +66,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
         //  side shits
         createSubCirclesForType(Buyable.buyType.Helper);
-        createSubCirclesForType(Buyable.buyType.Defence);
+        createSubCirclesForType(Buyable.buyType.Defense);
         createSubCirclesForType(Buyable.buyType.Structure);
 
         //  weapon
@@ -77,7 +77,7 @@ public class BuyTreeCanvas : MenuCanvas {
         //  house
         createHouseNode();
         createSubNode(subCircles[4], subType.Light, 5, 1);
-        createSubNode(subCircles[4], subType.Repair, GameInfo.getHouseStats().houseMaxHealth / houseRepairAmt, 1);
+        //createSubNode(subCircles[4], subType.Repair, GameInfo.getHouseStats().houseMaxHealth / houseRepairAmt, 1);
     }
 
     GameObject createWeaponNode() {
@@ -100,7 +100,7 @@ public class BuyTreeCanvas : MenuCanvas {
                 //  checks if the menu is still open
                 if(isOpen()) {
                     //  checks money
-                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true)) {
+                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true, true)) {
                         //  checks if there are any more locked buyables of that type
                         if(qw != null && pl.unlockWeapon(qw.title)) {
                             //  transaction
@@ -118,6 +118,10 @@ public class BuyTreeCanvas : MenuCanvas {
                             qw = queuedWeapon;
                             hbtn.info.info = (qw == null) ? "Completed" : qw.title.ToString();
                             FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
+
+                            //  check for achievements
+                            if(qw == null)
+                                FindObjectOfType<SteamManager>().unlockAchievement(SteamManager.achievements.WeaponsMaster);
                         }
                     }
                 }
@@ -133,24 +137,32 @@ public class BuyTreeCanvas : MenuCanvas {
         var hbtn = h.GetComponent<BuyTreeNode>();
         hbtn.getSlider().setText("0");
         hbtn.setTitle("House");
-        var c = 0;    //  cost of the fucker
+        hbtn.info.info = "House Health";
+        var hs = GameInfo.getHouseStats();
+        hbtn.maxTier = 1;
+        hbtn.maxTicks = hs.houseMaxHealth / houseRepairAmt;
+        var c = getUpdatedCost(Buyable.buyType.House, hbtn);
         hbtn.setCost(c);
         hbtn.setTier(-1); //  hides the tierText
-        //var qw = queuedWeapon;
-        //hbtn.info.info = (qw == null) ? "Completed" : qw.title.ToString();
+        hbtn.setTick(hs.houseHealth / houseRepairAmt);
 
 
         //  LOGIC FOR ACTUALLY UNLOCKING THINGS
-        setupSlider(hbtn.getSlider(), false,
-            (float)pl.getUnlockedWeapons(true).Count / pl.getWeapons(true).Count,
-            delegate {
-                //  checks if the menu is still open
-                if(isOpen()) {
-                    Debug.Log("Bought House Upgrade");
+        setupSlider(hbtn.getSlider(), false, 0.0f, delegate {
+            //  checks if the menu is still open
+            if(isOpen()) {
+                if(hbtn.canIncrease()) {
+                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true, true)) {
+                        var hStats = GameInfo.getHouseStats();
+                        subLogic(4, subType.Repair, 1);   //  does the thing that the sub slider is supposed to do
+                        hbtn.incTick();
+
+                        hbtn.animateClick();
+                        updateSoulsText();
+                    }
                 }
-            });
-        hbtn.getSlider().doValueKill();
-        hbtn.getSlider().setValue(1.0f);
+            }
+        });
         return h;
     }
     //  not used to create the weapon node
@@ -175,7 +187,7 @@ public class BuyTreeCanvas : MenuCanvas {
                 if(isOpen()) {
                     var c = bl.getBuyableUnlockCost(t, bl.getRelevantUnlockTierForBuyableType(t));
                     //  checks money
-                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true)) {
+                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true, true)) {
                         //  checks if there are any more locked buyables of that type
                         if(bl.unlockBuyable(qb)) {
                             //  transaction
@@ -199,6 +211,12 @@ public class BuyTreeCanvas : MenuCanvas {
                             qb = queuedBuyables[index];
                             hbtn.info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
                             FindObjectOfType<InfoBox>().updateInfo(hbtn.info.info);
+
+                            //  check for achievements
+                            if(qb == null)
+                                FindObjectOfType<SteamManager>().unlockAchievement(t == Buyable.buyType.Helper ? SteamManager.achievements.InNeedOfHelp :
+                                    t == Buyable.buyType.Defense ? SteamManager.achievements.Defender : t == Buyable.buyType.Structure ? SteamManager.achievements.StructurallySound :
+                                    SteamManager.achievements.None);
                         }
                     }
                 }
@@ -214,8 +232,8 @@ public class BuyTreeCanvas : MenuCanvas {
             createSubNode(subCircles[0], subType.Damage, 4, 3);
             createSubNode(subCircles[0], subType.Health, 4, 3);
         }
-        //  defences
-        if(t == Buyable.buyType.Defence && bl.getNumberOfUnlockedBuyables(Buyable.buyType.Defence, false) > 0)
+        //  defenses
+        if(t == Buyable.buyType.Defense && bl.getNumberOfUnlockedBuyables(Buyable.buyType.Defense, false) > 0)
             createSubNode(subCircles[1], subType.Damage, 4, 3);
         //  structures
         if(t == Buyable.buyType.Structure && bl.getNumberOfUnlockedBuyables(Buyable.buyType.Structure, false) > 0)
@@ -244,7 +262,7 @@ public class BuyTreeCanvas : MenuCanvas {
             if(isOpen()) {
                 //  checks if the player is allowed to buy this upgrade
                 if(obtn.canIncrease()) {
-                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(obtn.cost, soulsText, true)) {
+                    if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(obtn.cost, soulsText, true, true)) {
                         subLogic(sInd, s, obtn.tier);   //  does the thing that the sub slider is supposed to do
 
                         updateSubSlider(obtn);
@@ -260,7 +278,7 @@ public class BuyTreeCanvas : MenuCanvas {
     Buyable.buyType indexToMainType(int ind) {
         switch(ind) {
             case 0: return Buyable.buyType.Helper;
-            case 1: return Buyable.buyType.Defence;
+            case 1: return Buyable.buyType.Defense;
             case 2: return Buyable.buyType.Structure;
             case 3: return Buyable.buyType.Weapon;
             case 4: return Buyable.buyType.House;
@@ -273,7 +291,7 @@ public class BuyTreeCanvas : MenuCanvas {
         var hStats = GameInfo.getHouseStats();
         var pStats = GameInfo.getPlayerStats();
         var helpStats = GameInfo.getHelperStats();
-        var dStats = GameInfo.getDefenceStats();
+        var dStats = GameInfo.getdefenseStats();
         var sStats = GameInfo.getStructureStats();
 
         switch(index) {
@@ -284,10 +302,10 @@ public class BuyTreeCanvas : MenuCanvas {
                 else if(s == subType.Health)
                     helpStats.helperWeaponHealthBuff += helperHealthInc[tier];
                 break;
-            //  defences
+            //  defenses
             case 1:
                 if(s == subType.Damage)
-                    dStats.defenceDamageBuff += defenceDamageInc[tier];
+                    dStats.defenseDamageBuff += defenseDamageInc[tier];
                 break;
             //  structures
             case 2:
@@ -314,13 +332,14 @@ public class BuyTreeCanvas : MenuCanvas {
         GameInfo.setHouseStats(hStats);
         GameInfo.setPlayerStats(pStats);
         GameInfo.setHelperStats(helpStats);
-        GameInfo.setDefenceStats(dStats);
+        GameInfo.setdefenseStats(dStats);
         GameInfo.setStructureStats(sStats);
     }
 
 
     void updateSubSlider(BuyTreeNode node) {
-        node.incTick();
+        if(node.incTick())
+            FindObjectOfType<UnlockCanvas>().showForNewTier(node);
 
         //  saves the new values
         GameInfo.setBuyTreeSubNodeTick(node.mainType, node.subType, node.tick);
@@ -338,8 +357,9 @@ public class BuyTreeCanvas : MenuCanvas {
     }
 
     int getUpdatedCost(BuyTreeNode node) {
-        Buyable.buyType bt = node.mainType;
-
+        return getUpdatedCost(node.mainType, node);
+    }
+    int getUpdatedCost(Buyable.buyType bt, BuyTreeNode node) {
         var c = FindObjectOfType<BuyableLibrary>().getBuyableUnlockCost(bt, FindObjectOfType<BuyableLibrary>().getRelevantUnlockTierForBuyableType(bt));
         if(c == 0)
             c = node.cost + 50;

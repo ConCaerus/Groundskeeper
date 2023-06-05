@@ -30,6 +30,7 @@ public abstract class WeaponInstance : MonoBehaviour {
     [SerializeField] public GameObject gunFireParticlesPos;
     [SerializeField] public FunkyCode.Light2D gunLight;
     [SerializeField] GameObject lobObject;
+    [SerializeField] AudioClip attackSound;
 
     MouseManager mm;
     GameGamepadCursor ggc;
@@ -202,13 +203,15 @@ public abstract class WeaponInstance : MonoBehaviour {
 
         //  fire gun
         //  shoots monster
+        if(attackSound != null)
+            am.playSound(attackSound, transform.position);
         shootMonster();
 
         //  push the player back from recoil
         if(isPlayerWeapon) {
             float lungeMod = 1.5f * mod;
             var origin = (Vector2)pt.position;
-            var target = mm.usingKeyboard() ? GameInfo.mousePos() : fgc.gameObject != null ? fgc.getWorldCursorPos() : ggc.getMousePosInWorld();
+            var target = mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld();
             var px = target.x - origin.x;
             var py = target.y - origin.y;
             var theta = Mathf.Atan2(py, px);
@@ -251,13 +254,16 @@ public abstract class WeaponInstance : MonoBehaviour {
             user.GetComponent<Movement>().lookAtPos(attackingPos);
         wAnimator.SetTrigger(isPlayerWeapon ? "swing" : "instantSwing");
 
+        if(attackSound != null)
+            am.playSound(attackSound, transform.position);
+
         float ableToHitMonsterTime = .25f;
 
         //  lunge the player towards the fucker
         if(isPlayerWeapon) {
             float lungeMod = 1.5f * mod;
             var origin = (Vector2)pt.position;
-            var target = mm.usingKeyboard() ? GameInfo.mousePos() : fgc.gameObject != null ? fgc.getWorldCursorPos() : ggc.getMousePosInWorld();
+            var target = mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld();
             var px = target.x - origin.x;
             var py = target.y - origin.y;
             var theta = Mathf.Atan2(py, px);
@@ -313,13 +319,16 @@ public abstract class WeaponInstance : MonoBehaviour {
             user.GetComponent<Movement>().lookAtPos(attackingPos);
         wAnimator.SetTrigger("stabWindup");
 
+        if(attackSound != null)
+            am.playSound(attackSound, transform.position);
+
         float ableToHitMonsterTime = .25f;
 
         //  lunge the player towards the fucker
         if(isPlayerWeapon) {
             float lungeMod = 1.5f * mod;
             var origin = (Vector2)pt.position;
-            var target = mm.usingKeyboard() ? GameInfo.mousePos() : fgc.gameObject != null ? fgc.getWorldCursorPos() : ggc.getMousePosInWorld();
+            var target = mm.usingKeyboard() ? GameInfo.mousePos() : ggc.getMousePosInWorld();
             var px = target.x - origin.x;
             var py = target.y - origin.y;
             var theta = Mathf.Atan2(py, px);
@@ -348,6 +357,9 @@ public abstract class WeaponInstance : MonoBehaviour {
 
         obj.transform.DOMove(targetPos, duration);
         obj.GetComponent<LobbedInstance>().lob(duration);
+
+        if(attackSound != null)
+            am.playSound(attackSound, transform.position);
 
         //  starts the lobbed anim
         obj.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, 360.0f * 3f), duration, RotateMode.FastBeyond360);

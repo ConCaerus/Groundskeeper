@@ -195,7 +195,7 @@ public class MonsterSpawner : MonoBehaviour {
                     //  if so, wait a bit
                     if(monsterPresets[i].GetComponent<Monster>().posInWave != prevPos) {
                         prevPos = monsterPresets[i].GetComponent<Monster>().posInWave;
-                        yield return new WaitForSeconds(timeBtwPositions);
+                        //yield return new WaitForSeconds(timeBtwPositions);
                     }
 
                     //  spawns the monster
@@ -205,6 +205,7 @@ public class MonsterSpawner : MonoBehaviour {
                     //  finds a position for the monster to have
                     bool tooClose = true;
                     Vector3 pos = j < numOfLeaders ? getPosAlongCircle(transform.position, rad, info.dir[l], (maxSpread / (numOfLeaders - i)) - (maxSpread / 2f)) : getRandomPosAlongCircle(transform.position, rad, info.dir[l]);
+                    pos += new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)); //  adds random offset to the monster's pos
                     int layer = LayerMask.GetMask("Light");
                     while(tooClose) {
                         pos = getRandomPosAlongCircle(transform.position, rad, info.dir[l]);

@@ -128,10 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61268ab1e3695fc44bd2c964df6e11bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toggleMovement: 0
-  targetOffsetPosition: {fileID: 4290818843881779542}
   soulsGiven: 150
   title: DeadGuyClarence
+  interactSound: {fileID: 8300000, guid: b60da0ec39d92b841846f7384b93ae3a, type: 3}
 --- !u!60 &-3159520068786373514
 PolygonCollider2D:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ public abstract class Monster : Attacker {
     public monsterTitle title;
     public float speed;
     public int attackDamage;
-    public int damageToDefences;
+    public int damageTodefenses;
     public int diff = 0;
     public float originalSoulsGiven = 0f, soulsGiven = 0f;
     public int earliestNight = 0;

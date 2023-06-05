@@ -34,6 +34,6 @@ public class PregameBuyableButton : MonoBehaviour {
     }
 
     public Buyable.buyType getType() {
-        return text.text == "Helpers" ? Buyable.buyType.Helper : text.text == "Defences" ? Buyable.buyType.Defence : Buyable.buyType.Structure;
+        return text.text == "Helpers" ? Buyable.buyType.Helper : text.text == "Defenses" ? Buyable.buyType.Defense : Buyable.buyType.Structure;
     }
 }

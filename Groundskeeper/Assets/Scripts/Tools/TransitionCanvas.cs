@@ -37,7 +37,10 @@ public class TransitionCanvas : MonoBehaviour {
         loader = StartCoroutine(loadSceneWaiter(name));
     }
 
+    //  is going to load a new scene
+    //  exit
     IEnumerator loadSceneWaiter(string name) {
+        finishedLoading = false;
         anim.SetTrigger("transition");
         //  waits for the board to finish saving if it is saving
         if(FindObjectOfType<GameBoard>() != null) {
@@ -47,10 +50,13 @@ public class TransitionCanvas : MonoBehaviour {
             while(gb.saving())
                 yield return new WaitForEndOfFrame();
         }
+        FindObjectOfType<AudioManager>().reduceAllVolume(showTime);
         yield return new WaitForSeconds(showTime);
         SceneManager.LoadScene(name);
     }
 
+    //  has just loaded the scene
+    //  intro
     IEnumerator loadedSceneWaiter() {
         var gb = FindObjectOfType<GameBoard>();
         yield return new WaitForEndOfFrame();
@@ -64,6 +70,7 @@ public class TransitionCanvas : MonoBehaviour {
             FindObjectOfType<PlayerHouseInstance>().setCanMove(GameInfo.getNightCount() > 0);
 
         anim.SetTrigger("transition");
+        FindObjectOfType<AudioManager>().increaseAllVolume(showTime);
         finishedLoading = true;
     }
 }

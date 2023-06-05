@@ -22,7 +22,7 @@ public static class TimeInfo {
     }
 
     public static void deleteTimeInfo() {
-        SaveData.deleteKey(timeTag);
+        SaveData.deleteKey(timeTag, false);
     }
 
     public static string timeToString() {

@@ -245,6 +245,7 @@ MonoBehaviour:
   shadowObj: {fileID: 1477919413712165063}
   canMove: 1
   movementParticles: {fileID: 2088077460893613882}
+  walkSound: {fileID: 8300000, guid: f7610a448612a8341868f6aedad6e772, type: 3}
   title: 2
   speed: 0.6
   attackDamage: 5
@@ -263,6 +264,7 @@ MonoBehaviour:
   attackKnockBack: 0
   followingTransform: {fileID: 0}
   hasTarget: 0
+  hasAttractiveTarget: 0
   hasCultistBuff: 0
   leader: 0
   closestLeader: {fileID: 0}

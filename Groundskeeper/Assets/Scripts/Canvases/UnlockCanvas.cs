@@ -39,6 +39,7 @@ public class UnlockCanvas : MonoBehaviour {
         }
         background.gameObject.SetActive(true);
 
+        icon.transform.parent.parent.gameObject.SetActive(true);
         text.text = b.title.ToString() + " Unlocked!";
         icon.sprite = b.mainSprite.sprite;
         icon.SetNativeSize();
@@ -59,11 +60,27 @@ public class UnlockCanvas : MonoBehaviour {
         }
         background.gameObject.SetActive(true);
 
+        icon.transform.parent.parent.gameObject.SetActive(true);
         text.text = w.title.ToString() + " Unlocked!";
         icon.sprite = w.sprite;
         icon.SetNativeSize();
         icon.transform.localPosition = w.unlockedImagePos;
         icon.transform.localScale = w.unlockedImageSize;
+
+        hiderWaiter = StartCoroutine(hider());
+    }
+    public void showForNewTier(BuyTreeNode node) {
+        if(hiderWaiter != null) {
+            var info = new unlockInfo();
+            info.title = "New " + node.subType.ToString() + " Tier";
+            info.sprite = null;
+            queue.Add(info);
+            return;
+        }
+        background.gameObject.SetActive(true);
+
+        text.text = "New " + node.subType.ToString() + " Tier Unlocked!";
+        icon.transform.parent.parent.gameObject.SetActive(false);
 
         hiderWaiter = StartCoroutine(hider());
     }
@@ -76,10 +93,13 @@ public class UnlockCanvas : MonoBehaviour {
         background.gameObject.SetActive(true);
 
         text.text = info.title.ToString() + " Unlocked!";
-        icon.sprite = info.sprite;
-        icon.SetNativeSize();
-        icon.transform.localPosition = info.pos;
-        icon.transform.localScale = info.size;
+        icon.transform.parent.parent.gameObject.SetActive(info.sprite != null);
+        if(info.sprite != null) {
+            icon.sprite = info.sprite;
+            icon.SetNativeSize();
+            icon.transform.localPosition = info.pos;
+            icon.transform.localScale = info.size;
+        }
 
         hiderWaiter = StartCoroutine(hider());
     }

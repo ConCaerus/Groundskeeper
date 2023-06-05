@@ -27,6 +27,11 @@ public class PlacementGrid : MonoBehaviour {
     Vector2 prevPos;
 
     bool justUpdatedBoard = false;
+    bool mouseDown = false;
+
+    Coroutine placer = null;
+
+    [SerializeField] AudioClip placeSound;
 
     [System.Serializable]
     public struct thing {
@@ -36,7 +41,7 @@ public class PlacementGrid : MonoBehaviour {
 
     [System.Serializable]
     public enum obstacleTag {
-        Helper, Defence, Structure
+        Helper, defense, Structure
     }
 
 
@@ -53,7 +58,8 @@ public class PlacementGrid : MonoBehaviour {
 
         controls = new InputMaster();
         controls.Enable();
-        controls.Player.Place.started += ctx => place();
+        controls.Player.Place.started += ctx => mouseDown = true;
+        controls.Player.Place.canceled += ctx => mouseDown = false;
         controls.Player.Unplace.started += ctx => remove();
 
 
@@ -61,6 +67,8 @@ public class PlacementGrid : MonoBehaviour {
     }
 
     private void Update() {
+        if(mouseDown && placer == null)
+            placer = StartCoroutine(place());
         if(placing) {
             var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
             var p = map.CellToWorld(pos);
@@ -98,8 +106,8 @@ public class PlacementGrid : MonoBehaviour {
                             }
                             break;
 
-                        case obstacleTag.Defence:
-                            foreach(var h in gb.defences) {
+                        case obstacleTag.defense:
+                            foreach(var h in gb.defenses) {
                                 //  does have the same position (causing bad juju)
                                 if((Vector2)p == (Vector2)h.gameObject.transform.position) {
                                     map.color = Color.red;
@@ -157,29 +165,29 @@ public class PlacementGrid : MonoBehaviour {
         map.enabled = false;
         placing = false;
     }
-    void place() {
+    IEnumerator place() {
         if(!pc.mouseOverUI() && map.color == Color.green && placing) {
             var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
             var p = map.CellToWorld(pos);
             p += new Vector3(map.cellSize.x / 2.0f, map.cellSize.y / 2.0f);
             //  can't place in this spot
             if(map.color == Color.red)
-                return;
+                yield break;
 
             //  extracts the info from the thing stuct
             GameObject obj = null;
             //  checks if the player can afford to place
             var title = currentObj.GetComponent<Buyable>().title;
-            bool costIsZero = !bl.hasPlayerSeenBuyable(title) && currentObj.GetComponent<Buyable>().bType != Buyable.buyType.Structure;
-            if(!cth.tryTransaction(costIsZero ? 0f : currentObj.GetComponent<Buyable>().cost, pc.soulsText, false))
-                return;
+            bool costIsZero = !bl.hasPlayerSeenBuyable(title);
+            if(!cth.tryTransaction(costIsZero ? 0f : currentObj.GetComponent<Buyable>().cost, pc.soulsText, false, false))
+                yield break;
             if(!bl.hasPlayerSeenBuyable(title)) {
                 bl.playerSawBuyable(title);
                 FindObjectOfType<BuyableButtonSpawner>().updateBuyableButtons();
                 foreach(var i in FindObjectsOfType<PregameBuyableButton>())
                     i.manageNewDot();
             }
-            if(currentObj.GetComponent<DefenceInstance>() == null) {
+            if(currentObj.GetComponent<DefenseInstance>() == null) {
                 obj = Instantiate(currentObj.gameObject, holder.transform);
 
                 //  places the object in the correct spot
@@ -189,10 +197,11 @@ public class PlacementGrid : MonoBehaviour {
                     obj.GetComponent<HelperInstance>().startingPos = p;
             }
             else {
-                obj = FindObjectOfType<DefenceHolderSpawner>().spawnDefence(currentObj.gameObject, p);
+                obj = FindObjectOfType<DefenseHolderSpawner>().spawnDefense(currentObj.gameObject, p);
             }
 
             obj.GetComponent<Buyable>().animateBeingPlaced();
+            FindObjectOfType<AudioManager>().playSound(placeSound, p);
             map.color = Color.red;
 
             //  checks if the house was just placed. If so, stop placing
@@ -204,6 +213,10 @@ public class PlacementGrid : MonoBehaviour {
             }
             prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
             StartCoroutine(mapUpdater());
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            placer = null;
         }
     }
     void remove() {
@@ -229,7 +242,7 @@ public class PlacementGrid : MonoBehaviour {
             }
             else return;
 
-            cth.tryTransaction(-c * .9f, pc.soulsText, false);
+            cth.tryTransaction(-c * .9f, pc.soulsText, false, false);
             map.color = Color.green;
             prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
             StartCoroutine(mapUpdater());

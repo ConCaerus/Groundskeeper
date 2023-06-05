@@ -25,7 +25,7 @@ public class BuyableLibrary : MonoBehaviour {
                 switch(t) {
                     case Buyable.buyType.Helper:
                         return 50;
-                    case Buyable.buyType.Defence:
+                    case Buyable.buyType.Defense:
                         return 35;
                     case Buyable.buyType.Structure:
                         return 75;
@@ -35,7 +35,7 @@ public class BuyableLibrary : MonoBehaviour {
                 switch(t) {
                     case Buyable.buyType.Helper:
                         return 150;
-                    case Buyable.buyType.Defence:
+                    case Buyable.buyType.Defense:
                         return 50;
                     case Buyable.buyType.Structure:
                         return 100;
@@ -45,7 +45,7 @@ public class BuyableLibrary : MonoBehaviour {
                 switch(t) {
                     case Buyable.buyType.Helper:
                         return 200;
-                    case Buyable.buyType.Defence:
+                    case Buyable.buyType.Defense:
                         return 100;
                     case Buyable.buyType.Structure:
                         return 200;
@@ -60,7 +60,7 @@ public class BuyableLibrary : MonoBehaviour {
                 switch(t) {
                     case Buyable.buyType.Helper:
                         return 35;
-                    case Buyable.buyType.Defence:
+                    case Buyable.buyType.Defense:
                         return 10;
                     case Buyable.buyType.Structure:
                         return 50;
@@ -70,7 +70,7 @@ public class BuyableLibrary : MonoBehaviour {
                 switch(t) {
                     case Buyable.buyType.Helper:
                         return 50;
-                    case Buyable.buyType.Defence:
+                    case Buyable.buyType.Defense:
                         return 25;
                     case Buyable.buyType.Structure:
                         return 100;
@@ -80,7 +80,7 @@ public class BuyableLibrary : MonoBehaviour {
                 switch(t) {
                     case Buyable.buyType.Helper:
                         return 100;
-                    case Buyable.buyType.Defence:
+                    case Buyable.buyType.Defense:
                         return 35;
                     case Buyable.buyType.Structure:
                         return 200;
@@ -118,18 +118,18 @@ public class BuyableLibrary : MonoBehaviour {
         return null;
     }
 
-    public GameObject getDefence(int index) {
-        return getUnlockedBuyablesOfType(Buyable.buyType.Defence, false)[index];
+    public GameObject getdefense(int index) {
+        return getUnlockedBuyablesOfType(Buyable.buyType.Defense, false)[index];
     }
-    public GameObject getDefence(string name, bool includeUniques) {
-        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Defence, includeUniques)) {
+    public GameObject getDefense(string name, bool includeUniques) {
+        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Defense, includeUniques)) {
             if(i.GetComponent<Buyable>().title.ToString() == name)
                 return i.gameObject;
         }
         return null;
     }
-    public GameObject getDefence(Buyable.buyableTitle name, bool includeUniques) {
-        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Defence, includeUniques)) {
+    public GameObject getdefense(Buyable.buyableTitle name, bool includeUniques) {
+        foreach(var i in getUnlockedBuyablesOfType(Buyable.buyType.Defense, includeUniques)) {
             if(i.GetComponent<Buyable>().title == name)
                 return i.gameObject;
         }
@@ -232,7 +232,7 @@ public class BuyableLibrary : MonoBehaviour {
     public bool hasUnlockedBuyables(bool includeUniques) {
         bool h = getNumberOfUnlockedBuyables(Buyable.buyType.Helper, includeUniques) > 0;
         bool s = getNumberOfUnlockedBuyables(Buyable.buyType.Structure, includeUniques) > 0;
-        bool d = getNumberOfUnlockedBuyables(Buyable.buyType.Defence, includeUniques) > 0;
+        bool d = getNumberOfUnlockedBuyables(Buyable.buyType.Defense, includeUniques) > 0;
         return h || s || d;
     }
 

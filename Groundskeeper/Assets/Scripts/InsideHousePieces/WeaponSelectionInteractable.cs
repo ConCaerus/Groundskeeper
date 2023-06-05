@@ -16,11 +16,11 @@ public class WeaponSelectionInteractable : Interactable {
     }
 
     public override void interact() {
-        FindObjectOfType<WeaponSelectionCanvas>().tryShow();
+        //FindObjectOfType<WeaponSelectionCanvas>().tryShow();
     }
 
     public override void deinteract() {
-        FindObjectOfType<WeaponSelectionCanvas>().tryClose();
+        //FindObjectOfType<WeaponSelectionCanvas>().tryClose();
     }
 
     public override void anim(bool b) {

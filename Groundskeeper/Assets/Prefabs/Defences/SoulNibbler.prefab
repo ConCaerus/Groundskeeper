@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -7668636032389530519}
   m_Layer: 10
   m_Name: SoulNibbler
-  m_TagString: Defence
+  m_TagString: Defense
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,6 +152,7 @@ MonoBehaviour:
   maxHealth: 500
   unitHealth: 500
   hurtSound: {fileID: 0}
+  dieSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}

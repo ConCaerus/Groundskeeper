@@ -11,7 +11,7 @@ public abstract class MenuCanvas : MonoBehaviour {
 
     private void Awake() {
         controls = new InputMaster();
-        controls.Player.Cancel.started += ctx => closeOpenMenus();
+        controls.Player.Cancel.canceled += ctx => closeOpenMenus();
     }
 
     public void tryShow() {
@@ -28,8 +28,9 @@ public abstract class MenuCanvas : MonoBehaviour {
         opener = StartCoroutine(waitForClearInput());
     }
     public void tryClose() {
-        if(!open)
+        if(!open) {
             return;
+        }
         open = false;
         close();
     }
@@ -54,8 +55,9 @@ public abstract class MenuCanvas : MonoBehaviour {
     }
 
     IEnumerator waitForClearInput() {
-        while(Input.anyKey)
-            yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
         //  opens
         open = true;
         show();

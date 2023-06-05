@@ -10,10 +10,10 @@ public class ButtonSoundPlayer : MonoBehaviour, IPointerEnterHandler {
 
     private void Start() {
         if(GetComponent<Button>() != null && sound != null)
-            GetComponent<Button>().onClick.AddListener(delegate { FindObjectOfType<AudioManager>().playSound(sound, Camera.main.transform.position); });
+            GetComponent<Button>().onClick.AddListener(delegate { FindObjectOfType<AudioManager>().playSound(sound, Camera.main.transform.position, false); });
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        FindObjectOfType<AudioManager>().playSound(sound, Camera.main.transform.position);
+        FindObjectOfType<AudioManager>().playSound(sound, Camera.main.transform.position, false);
     }
 }

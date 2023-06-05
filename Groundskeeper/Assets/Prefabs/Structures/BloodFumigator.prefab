@@ -4945,6 +4945,7 @@ MonoBehaviour:
   maxHealth: 250
   unitHealth: 250
   hurtSound: {fileID: 0}
+  dieSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}

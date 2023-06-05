@@ -7,6 +7,7 @@ public class IronMaidenInstance : StructureInstance {
     Coroutine eaterWaiter = null;
     [SerializeField] Sprite openSprite, closedSprite;
     SpriteRenderer sr;
+    [SerializeField] AudioClip snapSound;
 
     private void Start() {
         mortalInit();
@@ -20,6 +21,7 @@ public class IronMaidenInstance : StructureInstance {
             saoe.shrinkArea();
 
             //  kill the monster without giving the player any souls'
+            //  this is because the maiden has to wait to eat the monster before giving the player any souls
             var mi = effected.GetComponent<MonsterInstance>();
             effected.GetComponent<MonsterInstance>().unshownDie();
 
@@ -33,6 +35,7 @@ public class IronMaidenInstance : StructureInstance {
 
     IEnumerator eater(MonsterInstance mi) {
         //  anim
+        FindObjectOfType<AudioManager>().playSound(snapSound, transform.position);
         sr.sprite = closedSprite;
         transform.DOPunchScale(new Vector3(1.1f, 1.1f), .15f);
         //  waits for the monsters health to run out
@@ -44,6 +47,7 @@ public class IronMaidenInstance : StructureInstance {
         GameInfo.addSouls(sg, guc.ended);
 
         //  resets
+        FindObjectOfType<AudioManager>().playSound(snapSound, transform.position);
         saoe.expandArea();
         sr.sprite = openSprite;
         eaterWaiter = null;

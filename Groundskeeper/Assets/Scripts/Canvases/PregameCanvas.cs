@@ -65,9 +65,9 @@ public class PregameCanvas : MonoBehaviour {
                     if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Helper, true) == 0)
                         i.gameObject.SetActive(false);
                 }
-                if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Defence) {
+                if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Defense) {
                     i.GetComponent<PregameBuyableButton>().manageNewDot();
-                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defence, true) == 0)
+                    if(FindObjectOfType<BuyableLibrary>().getNumberOfUnlockedBuyables(Buyable.buyType.Defense, true) == 0)
                         i.gameObject.SetActive(false);
                 }
                 if(i.GetComponent<PregameBuyableButton>().getType() == Buyable.buyType.Structure) {
@@ -121,7 +121,6 @@ public class PregameCanvas : MonoBehaviour {
         FindObjectOfType<MonsterSpawner>().startNewWave();
         pg.end();
         pwi.canAttackG = true;
-        FindObjectOfType<PlayerInstance>().setCanAttack(true);
         if(gameMusic != null)
             FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
         FindObjectOfType<InfoBox>().gameObject.SetActive(false);

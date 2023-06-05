@@ -114,7 +114,7 @@ MonoBehaviour:
     invertX: 0
     invertY: 0
     depth: 1
-    spriteRenderer: {fileID: 0}
+    spriteRenderer: {fileID: 2886774611030385497}
   mainShape:
     shadowType: 1
     maskType: 1
@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 6781478881865433257}
   - component: {fileID: 6781478881865433256}
   - component: {fileID: 721251196033553166}
+  - component: {fileID: 9211730794672583547}
   m_Layer: 15
   m_Name: bigTree
   m_TagString: Environment
@@ -168,6 +169,8 @@ MonoBehaviour:
   title: BigTree
   hits: 3
   tit: 0
+  sways: 1
+  hitSound: {fileID: 8300000, guid: e853b7ab198046440a8be7faf09c592e, type: 3}
 --- !u!60 &721251196033553166
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -193,6 +196,25 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.31108093, y: -2.7321353}
-      - {x: -0.15344149, y: -1.5724335}
-      - {x: -0.5090994, y: -2.7326734}
+    - - {x: 0.24284363, y: -2.104351}
+      - {x: -0.16709048, y: -1.2175989}
+      - {x: -0.5090994, y: -2.1185365}
+--- !u!95 &9211730794672583547
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6781478881865433263}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5ace655906ec3cf48b7fb85ed7d6b112, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

@@ -5,6 +5,7 @@ using TMPro;
 using DG.Tweening;
 
 public class SoulTransactionHandler : MonoBehaviour {
+    [SerializeField] AudioClip buySound, buyFailSound;
 
     List<CostText> costTexts = new List<CostText>();
     class CostText {
@@ -44,7 +45,7 @@ public class SoulTransactionHandler : MonoBehaviour {
         DOTween.Init();
     }
 
-    public bool tryTransaction(float cost, TextMeshProUGUI soulsText, bool saveSouls) {
+    public bool tryTransaction(float cost, TextMeshProUGUI soulsText, bool saveSouls, bool playSound) {
         soulsText.DOComplete();
         soulsText.transform.DOComplete();
 
@@ -55,6 +56,8 @@ public class SoulTransactionHandler : MonoBehaviour {
             soulsText.color = Color.red;
             soulsText.transform.DOPunchScale(new Vector3(.25f, .25f), poorTime);
             soulsText.DOColor(Color.white, poorTime);
+            if(playSound)
+                FindObjectOfType<AudioManager>().playSound(buyFailSound, Camera.main.transform.position, true);
             return false;
         }
 
@@ -63,6 +66,8 @@ public class SoulTransactionHandler : MonoBehaviour {
         float prevSouls = GameInfo.getSouls(false);
         GameInfo.addSouls(-cost, saveSouls);
         float aftSouls = GameInfo.getSouls(false);
+        if(playSound)
+            FindObjectOfType<AudioManager>().playSound(buySound, Camera.main.transform.position, true);
 
         //  make spent texts
         //  checks if already has a costText group for the soulsText

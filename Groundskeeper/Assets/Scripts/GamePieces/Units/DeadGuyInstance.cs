@@ -4,15 +4,15 @@ using UnityEngine;
 using DG.Tweening;
 
 public class DeadGuyInstance : MonoBehaviour {
-    [HideInInspector] public float soulsGiven = 10f; //  have this number go up as the nights increase
+    [HideInInspector] float soulsGiven = 10f; //  have this number go up as the nights increase
     [SerializeField] public string title;
+    [SerializeField] AudioClip interactSound;
 
     GameUICanvas guc;
     GameBoard gb;
 
     private void Start() {
-        soulsGiven *= GameInfo.getNightCount();
-        FindObjectOfType<GameBoard>().deadGuys.Add(this);
+        soulsGiven *= (GameInfo.getNightCount() + 1);
         guc = FindObjectOfType<GameUICanvas>();
         gb = FindObjectOfType<GameBoard>();
 
@@ -23,6 +23,7 @@ public class DeadGuyInstance : MonoBehaviour {
         //  give souls and destory
         GameInfo.addSouls(soulsGiven, false);
         guc.incSouls(soulsGiven);
+        FindObjectOfType<AudioManager>().playSound(interactSound, transform.position);
 
         //  dying animation
         StartCoroutine(cleanup());

@@ -851,6 +851,17 @@
                 },
                 {
                     "name": "",
+                    "id": "bf17ea98-58e8-4a92-8ed0-812dcfa1490e",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "640cc2a6-269c-4f90-aa79-0255ee81046d",
                     "path": "*/{Submit}",
                     "interactions": "",

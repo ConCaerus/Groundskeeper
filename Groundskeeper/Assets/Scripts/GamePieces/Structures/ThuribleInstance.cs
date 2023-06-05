@@ -25,7 +25,7 @@ public class ThuribleInstance : StructureInstance {
         //  removes the monster from the sucking coroutine
         beingSucked.Remove(effected.gameObject);
         //  stops the coroutine if there are not more monsters being sucked
-        if(beingSucked.Count == 0) {
+        if(beingSucked.Count == 0 && sucker != null) {
             StopCoroutine(sucker);
             sucker = null;
         }

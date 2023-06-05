@@ -11,6 +11,9 @@ public static class SaveData {
     static string saveTag(int i) {
         return "Save" + i.ToString() + " ";
     }
+    static string universalTag() {
+        return "Universal Save ";
+    }
 
 
 
@@ -19,8 +22,16 @@ public static class SaveData {
         PlayerPrefs.SetString(saveIndexTag() + tag, save);
         PlayerPrefs.Save();
     }
+    public static void setUniversalString(string tag, string save) {
+        storeTag(-1, tag);
+        PlayerPrefs.SetString(universalTag() + tag, save);
+        PlayerPrefs.Save();
+    }
     public static string getString(string tag, string catcher = null) {
         return PlayerPrefs.GetString(saveIndexTag() + tag, catcher);
+    }
+    public static string getUniversalString(string tag, string catcher = null) {
+        return PlayerPrefs.GetString(universalTag() + tag, catcher);
     }
     public static string getStringInSave(int index, string tag) {
         return PlayerPrefs.GetString(saveTag(index) + tag, null);
@@ -32,8 +43,16 @@ public static class SaveData {
         PlayerPrefs.SetInt(saveIndexTag() + tag, save);
         PlayerPrefs.Save();
     }
+    public static void setUniversalInt(string tag, int save) {
+        storeTag(-1, tag);
+        PlayerPrefs.SetInt(universalTag() + tag, save);
+        PlayerPrefs.Save();
+    }
     public static int getInt(string tag, int catcher = 0) {
         return PlayerPrefs.GetInt(saveIndexTag() + tag, catcher);
+    }
+    public static int getUniversalInt(string tag, int catcher = 0) {
+        return PlayerPrefs.GetInt(universalTag() + tag, catcher);
     }
     public static int getIntInSave(int index, string tag) {
         return PlayerPrefs.GetInt(saveTag(index) + tag, 0);
@@ -45,16 +64,24 @@ public static class SaveData {
         PlayerPrefs.SetFloat(saveIndexTag() + tag, save);
         PlayerPrefs.Save();
     }
+    public static void setUniversalFloat(string tag, float save) {
+        storeTag(-1, tag);
+        PlayerPrefs.SetFloat(universalTag() + tag, save);
+        PlayerPrefs.Save();
+    }
     public static float getFloat(string tag, float catcher = 0.0f) {
         return PlayerPrefs.GetFloat(saveIndexTag() + tag, catcher);
+    }
+    public static float getUniversalFloat(string tag, float catcher = 0.0f) {
+        return PlayerPrefs.GetFloat(universalTag() + tag, catcher);
     }
     public static float getFloatInSave(int index, string tag) {
         return PlayerPrefs.GetFloat(saveTag(index) + tag, 0.0f);
     }
 
 
-    public static void deleteKey(string tag) {
-        PlayerPrefs.DeleteKey(saveIndexTag() + tag);
+    public static void deleteKey(string tag, bool uTag) {
+        PlayerPrefs.DeleteKey(uTag ? universalTag() : saveIndexTag() + tag);
         PlayerPrefs.Save();
     }
     public static void deleteKeyInSave(int index, string tag) {
@@ -88,7 +115,7 @@ public static class SaveData {
             case 0:
                 //  deletes all keys
                 foreach(var i in th.t1)
-                    deleteKey(i);
+                    deleteKey(i, false);
 
                 //  saves the new, empty list
                 th.t1 = new List<string>();
@@ -96,7 +123,7 @@ public static class SaveData {
             case 1:
                 //  deletes all keys
                 foreach(var i in th.t2)
-                    deleteKey(i);
+                    deleteKey(i, false);
 
                 //  saves the new, empty list
                 th.t2 = new List<string>();
@@ -104,7 +131,7 @@ public static class SaveData {
             case 2:
                 //  deletes all keys
                 foreach(var i in th.t3)
-                    deleteKey(i);
+                    deleteKey(i, false);
 
                 //  saves the new, empty list
                 th.t3 = new List<string>();
@@ -119,6 +146,11 @@ public static class SaveData {
 
         //  adds the new tag into memory if it's new
         switch(saveIndex) {
+            //  Universal save tags
+            case -1:
+                if(!holder.universals.Contains(tag))
+                    holder.universals.Add(tag);
+                break;
             case 0:
                 if(!holder.t1.Contains(tag))
                     holder.t1.Add(tag);
@@ -170,6 +202,7 @@ public static class SaveData {
 [System.Serializable]
 public class TagCollector {
     //  I tried using an array that held these lists, didn't work :(
+    public List<string> universals = new List<string>();
     public List<string> t1 = new List<string>();
     public List<string> t2 = new List<string>();
     public List<string> t3 = new List<string>();

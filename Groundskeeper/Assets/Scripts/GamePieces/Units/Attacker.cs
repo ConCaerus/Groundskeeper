@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Attacker : Movement {
     Coroutine cooldown;
-    protected bool canAttack = true;
+    protected bool canAttack { get; private set; } = true;
 
 
     public abstract int getDamage();
@@ -56,9 +56,5 @@ public abstract class Attacker : Movement {
 
     public bool getCanAttack() {
         return canAttack;
-    }
-
-    public void setCanAttack(bool b) {
-        canAttack = b;
     }
 }

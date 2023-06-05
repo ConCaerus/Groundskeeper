@@ -77,9 +77,6 @@ public class PresetLibrary : MonoBehaviour {
     public GameObject getRandomDeadGuy() {
         //  selects a random dead guy from the array
         var temp = deadGuys[Random.Range(0, deadGuys.Length)];
-
-        //  determines how many souls it gives based on the night count
-        temp.GetComponent<DeadGuyInstance>().soulsGiven = 150f * (GameInfo.getNightCount() + 1);
         return temp;
     }
     public GameObject getDeadGuy(string title) {
@@ -90,9 +87,6 @@ public class PresetLibrary : MonoBehaviour {
                 break;
             }
         }
-
-        if(temp != null)
-            temp.GetComponent<DeadGuyInstance>().soulsGiven = 150f * (GameInfo.getNightCount() + 1);
         return temp;
     }
 

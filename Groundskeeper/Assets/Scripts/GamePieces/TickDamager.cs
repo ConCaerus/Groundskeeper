@@ -31,7 +31,7 @@ public class TickDamager : MonoBehaviour {
 
     List<TickInfo> ticks = new List<TickInfo>();
 
-    public void addTick(GameObject m, DefenceInstance def) {
+    public void addTick(GameObject m, DefenseInstance def) {
         addTick(m, def.dealDamage, def.GetComponent<Buyable>().title, def.btwHitTime, def.slowAmt, def.tickCount);
     }
     public void addTick(GameObject m, action ac, Buyable.buyableTitle tit, float btwTime, float slowAmt, int endAfterCount = -1) {

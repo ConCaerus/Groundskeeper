@@ -28,14 +28,13 @@ public static class GameInfo {
 
     //  player / house shit
     static string playerStatsTag = "PlayerStatsTag";
-    static string pWeaponTag = "PlayerWeaponInex";
 
     //  Game Board shit
     public static string helperTag = "helperTag";
     public static string lastSavedHelperCount = "LastSavedHelperCount";
 
-    public static string defenceTag = "defenceTag";
-    public static string lastSavedDefenceCount = "LastSavedDefenceCount";
+    public static string defenseTag = "defenseTag";
+    public static string lastSavedDefenseCount = "LastSavedDefenseCount";
 
     public static string structureTag = "miscTag";
     public static string lastSavedStructureCount = "LastSavedMiscCount";
@@ -63,7 +62,7 @@ public static class GameInfo {
     }
     //  buffs
     static string helperStatsTag = "HelperStatsTag";
-    static string defenceStatsTag = "DamageStatsTag";
+    static string defenseStatsTag = "DamageStatsTag";
     static string structureStatsTag = "StructureStatsTag";
 
     //  house buffs
@@ -87,13 +86,13 @@ public static class GameInfo {
         Both, Physical, Nonphysical
     }
     public enum GamePiece {
-        None, Player, Helper, Defence, Structure, House, Monster, Environment
+        None, Player, Helper, Defense, Structure, House, Monster, Environment
     }
     public static GamePiece tagToGamePiece(string tag) {
         switch(tag) {
             case "Player": return GamePiece.Player;
             case "Helper": return GamePiece.Helper;
-            case "Defence": return GamePiece.Defence;
+            case "Defense": return GamePiece.Defense;
             case "Structure": return GamePiece.Structure;
             case "House": return GamePiece.House;
             case "Monster": return GamePiece.Monster;
@@ -131,16 +130,16 @@ public static class GameInfo {
     public static void clearBoard() {
         //      clears all of the shit before saving new shit
         for(int i = 0; i < SaveData.getInt(lastSavedHelperCount) + 1; i++)
-            SaveData.deleteKey(helperTag + i.ToString());
-        for(int i = 0; i < SaveData.getInt(lastSavedDefenceCount) + 1; i++)
-            SaveData.deleteKey(defenceTag + i.ToString());
+            SaveData.deleteKey(helperTag + i.ToString(), false);
+        for(int i = 0; i < SaveData.getInt(lastSavedDefenseCount) + 1; i++)
+            SaveData.deleteKey(defenseTag + i.ToString(), false);
         for(int i = 0; i < SaveData.getInt(lastSavedStructureCount) + 1; i++)
-            SaveData.deleteKey(structureTag + i.ToString());
+            SaveData.deleteKey(structureTag + i.ToString(), false);
         for(int i = 0; i < SaveData.getInt(envCount) + 1; i++)
-            SaveData.deleteKey(envTag + i.ToString());
+            SaveData.deleteKey(envTag + i.ToString(), false);
 
         SaveData.setInt(lastSavedHelperCount, 0);
-        SaveData.setInt(lastSavedDefenceCount, 0);
+        SaveData.setInt(lastSavedDefenseCount, 0);
         SaveData.setInt(lastSavedStructureCount, 0);
         SaveData.setInt(envCount, 0);
     }
@@ -250,16 +249,16 @@ public static class GameInfo {
             return new HelperStats(1.0f, 1.0f);
         return JsonUtility.FromJson<HelperStats>(data);
     }
-    //  defence buffs
-    public static void setDefenceStats(DefenceStats stats) {
+    //  defense buffs
+    public static void setdefenseStats(defenseStats stats) {
         var data = JsonUtility.ToJson(stats);
-        SaveData.setString(defenceStatsTag, data);
+        SaveData.setString(defenseStatsTag, data);
     }
-    public static DefenceStats getDefenceStats() {
-        var data = SaveData.getString(defenceStatsTag);
+    public static defenseStats getdefenseStats() {
+        var data = SaveData.getString(defenseStatsTag);
         if(string.IsNullOrEmpty(data))
-            return new DefenceStats(1.0f);
-        return JsonUtility.FromJson<DefenceStats>(data);
+            return new defenseStats(1.0f);
+        return JsonUtility.FromJson<defenseStats>(data);
     }
     //  structure buffs
     public static void setStructureStats(StructureStats stats) {
@@ -300,10 +299,10 @@ public static class GameInfo {
     }
 
     public static void saveGameOptions(GameOptions go) {
-        SaveData.setString(gameOptionsTag, JsonUtility.ToJson(go));
+        SaveData.setUniversalString(gameOptionsTag, JsonUtility.ToJson(go));
     }
     public static GameOptions getGameOptions() {
-        var data = SaveData.getString(gameOptionsTag);
+        var data = SaveData.getUniversalString(gameOptionsTag);
         if(!string.IsNullOrEmpty(data))
             return JsonUtility.FromJson<GameOptions>(data);
 
@@ -372,11 +371,11 @@ public class HelperStats {
 }
 
 [System.Serializable]
-public class DefenceStats {
-    public float defenceDamageBuff;
+public class defenseStats {
+    public float defenseDamageBuff;
 
-    public DefenceStats(float dmgBuff) {
-        defenceDamageBuff = dmgBuff;
+    public defenseStats(float dmgBuff) {
+        defenseDamageBuff = dmgBuff;
     }
 }
 

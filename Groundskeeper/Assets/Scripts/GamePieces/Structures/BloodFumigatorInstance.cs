@@ -10,9 +10,9 @@ public class BloodFumigatorInstance : StructureInstance {
     }
 
     public override void aoeEffect(GameObject effected) {
-        //  rolls a chance to see if the monster gets confused (20% chance)
-        if(Random.Range(0, 5) == 0) {
-            effected.GetComponent<MonsterInstance>().setConfused(true);
+        //  rolls a chance to see if the monster gets confused (25% chance)
+        if(Random.Range(0, 4) == 0) {
+            effected.GetComponent<MonsterInstance>().setConfused(true, transform.position);
         }
     }
 

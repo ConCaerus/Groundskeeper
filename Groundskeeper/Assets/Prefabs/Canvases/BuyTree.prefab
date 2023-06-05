@@ -1491,6 +1491,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ca0ef60ed1ca1c418d4597044c38a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buySound: {fileID: 8300000, guid: 1b98dc1218421424cb0ebd1448af837c, type: 3}
+  buyFailSound: {fileID: 8300000, guid: ef74712c74190e444ae6ac5b049b3dbc, type: 3}
 --- !u!1 &7045346603444407279
 GameObject:
   m_ObjectHideFlags: 0

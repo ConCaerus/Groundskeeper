@@ -21,7 +21,7 @@ public class PauseMenu : MenuCanvas {
                 i.tryClose();
             }
         }
-        if(!background.activeInHierarchy)
+        if(!background.activeInHierarchy && FindObjectOfType<TransitionCanvas>().finishedLoading)
             tryShow();
         else
             tryClose();

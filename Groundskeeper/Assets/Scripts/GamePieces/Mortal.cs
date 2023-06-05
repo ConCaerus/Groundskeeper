@@ -6,7 +6,7 @@ using DG.Tweening;
 public abstract class Mortal : MonoBehaviour {
     [SerializeField] public int maxHealth;
     [SerializeField] int unitHealth;
-    [SerializeField] AudioClip hurtSound;
+    [SerializeField] AudioClip hurtSound, dieSound;
     GameObject bloodParticle = null;
     [SerializeField] GameObject bloodStain;
     public int health {
@@ -57,9 +57,10 @@ public abstract class Mortal : MonoBehaviour {
             bloodParticle.transform.position = transform.position;
         }
         if(bloodStain != null && bloodEffect) {
+            float disappearTime = 15f;
             var bs = Instantiate(bloodStain.gameObject, transform.position, Quaternion.identity, null);
-            bs.GetComponent<SpriteRenderer>().DOColor(Color.clear, 30f);
-            Destroy(bs.gameObject, 10.1f);
+            bs.GetComponent<SpriteRenderer>().DOColor(Color.clear, disappearTime);
+            Destroy(bs.gameObject, disappearTime + .1f);
         }
 
         health -= dmg;
@@ -96,6 +97,8 @@ public abstract class Mortal : MonoBehaviour {
                 Destroy(bloodParticle.gameObject, bloodParticle.GetComponent<ParticleSystem>().main.duration + .1f);
             }
 
+            if(dieSound != null)
+                FindObjectOfType<AudioManager>().playSound(dieSound, transform.position);
             die();  //  this probably has a enabled = false; in there
             return true;
         }

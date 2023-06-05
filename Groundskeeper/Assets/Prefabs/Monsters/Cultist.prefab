@@ -356,6 +356,7 @@ MonoBehaviour:
   shadowObj: {fileID: 933399977097924331}
   canMove: 1
   movementParticles: {fileID: 6949006053084930653}
+  walkSound: {fileID: 8300000, guid: f7610a448612a8341868f6aedad6e772, type: 3}
   title: 8
   speed: 0.5
   attackDamage: 7
@@ -374,6 +375,7 @@ MonoBehaviour:
   attackKnockBack: 0
   followingTransform: {fileID: 0}
   hasTarget: 0
+  hasAttractiveTarget: 0
   hasCultistBuff: 0
   leader: 0
   closestLeader: {fileID: 0}
@@ -383,7 +385,8 @@ MonoBehaviour:
   relevantWave: 0
   direction: 0
   sCol: {fileID: 3458673470204341085}
-  sightEffectedPieces: 
+  sightEffectedPieces: 06000000
+  buffedParticles: {fileID: 2488634485986811026, guid: 98fc1c665cd9114498c6ba4881198621, type: 3}
 --- !u!1001 &3999800981870502007
 PrefabInstance:
   m_ObjectHideFlags: 0

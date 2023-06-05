@@ -1,10 +1,10 @@
 Grounds Keeper Game:
 
-Gameplay Explanation: Tower defence game where the player defends against waves of monsters to protect a mansion. The mansion is having a ball every day for a month/year/time period and the sound 
+Gameplay Explanation: Tower defense game where the player defends against waves of monsters to protect a mansion. The mansion is having a ball every day for a month/year/time period and the sound 
 	of it is attracting monters. The player has to protect the guests of the party who sometimes wander around outside, and protect the house.
 
 Other Mechs: The player also can hire helpers that get paid nightly. These helpers will do specific tasks like hunting down monters or repairing equipment. The player can also spend
-	their money to build defences. These will include scarecrows (or dummies) to distract monsters, spikes and tripwire crossbows (to hurt monsters), and party decorations (to increase pay).
+	their money to build defenses. These will include scarecrows (or dummies) to distract monsters, spikes and tripwire crossbows (to hurt monsters), and party decorations (to increase pay).
 
 Currency: The player's main income will come from the owners of the mansion at the end of each night. The base pay will increase each night, and the player will get a bonus for each monster killed.
 	Pay will be deducted for each guest killed, hurt, or scared.
@@ -16,8 +16,8 @@ Monsters: Monsters will come from the darkness surrounding the house. There will
 Mansion: The mansion will be able to be upgraded with curency. These upgrades will include: tar that falls down killing/slowing monsters, moats (either filled with water/spikes/or nothing)
 	will slow monsters down, and armored bricks that increase the health of the building.
 
-Defences: The player will be able to spend their money to repair and buy defences. The main goal of the game is to have the player hire more people to help instead of purchasing a lot of 
-	traps, so there won't be that many defences in the game. These will include fences that monsters will have to destory to pass threw (the player will be able to jump
+defenses: The player will be able to spend their money to repair and buy defenses. The main goal of the game is to have the player hire more people to help instead of purchasing a lot of 
+	traps, so there won't be that many defenses in the game. These will include fences that monsters will have to destory to pass threw (the player will be able to jump
 	over the fences), 
 
 Darkness / Spawning Mech: Monsters will spawn in the darkness surrounding the house and move in to attack it. The darkness can be pushed back with lamp posts / any other sources of light.

@@ -26,9 +26,13 @@ public abstract class Movement : MortalUnit {
 
     Transform playerTrans;
 
+    bool playWalkSound;
+    [SerializeField] AudioClip walkSound;
+    AudioManager am;
+
     //  abstract because monsters change their sprites differently to everyone else
     public abstract void updateSprite(Vector2 movingDir, bool opposite);
-    protected void movementInit(SetupSequenceManager s, LayerSorter l) {
+    protected void movementInit(SetupSequenceManager s, LayerSorter l, bool audibleWalking) {
         ssm = s;
         ls = l;
         sr = spriteObj.GetComponent<SpriteRenderer>();
@@ -36,6 +40,8 @@ public abstract class Movement : MortalUnit {
         ggc = FindObjectOfType<GameGamepadCursor>();
         fgc = FindObjectOfType<FreeGamepadCursor>();
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
+        playWalkSound = audibleWalking;
+        am = FindObjectOfType<AudioManager>();
         foreach(var i in GetComponents<Collider2D>()) {
             if(!i.isTrigger) {
                 srCol = i;
@@ -92,8 +98,6 @@ public abstract class Movement : MortalUnit {
         if(shadowObj != null)
             shadOriginal = shadowObj.transform.localScale;
 
-        //  play walk sound
-
         if(movementParticles != null)
             movementParticles.Play();
 
@@ -109,12 +113,19 @@ public abstract class Movement : MortalUnit {
         if(shadowObj != null) {
             shadowObj.transform.DOScale(new Vector2(shadOriginal.x / 2.0f, shadOriginal.y / 1.5f), getWalkInfo().time / 2.0f);
             yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
+            if(playWalkSound)
+                am.playSound(walkSound, transform.position);
             shadowObj.transform.DOComplete();
             shadowObj.transform.DOScale(shadOriginal, getWalkInfo().time / 2.0f);
             yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
         }
-        else
-            yield return new WaitForSeconds(getWalkInfo().time);
+        else {
+            yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
+
+            if(playWalkSound)
+                am.playSound(walkSound, transform.position);
+            yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
+        }
 
         anim = restartWalkAnim() ? StartCoroutine(walkAnim(!jumpDir)) : null;
     }
