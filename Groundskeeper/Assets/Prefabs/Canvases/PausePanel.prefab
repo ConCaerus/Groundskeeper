@@ -89,8 +89,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 461.91995, y: -321.28525}
-  m_SizeDelta: {x: 423.8399, y: 94.55684}
+  m_AnchoredPosition: {x: 461.8886, y: -321.30292}
+  m_SizeDelta: {x: 423.77722, y: 94.56861}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &239314291793317912
 CanvasRenderer:
@@ -175,32 +175,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 239314291467055312}
-        m_TargetAssemblyTypeName: MenuCanvas, Assembly-CSharp
-        m_MethodName: tryClose
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3787590486565450897}
-        m_TargetAssemblyTypeName: MenuCanvas, Assembly-CSharp
-        m_MethodName: tryShow
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3787590486565450897}
-        m_TargetAssemblyTypeName: OptionsCanvas, Assembly-CSharp
-        m_MethodName: setup
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: options
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -940,8 +916,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 461.91995, y: -207.27841}
-  m_SizeDelta: {x: 423.8399, y: 94.55684}
+  m_AnchoredPosition: {x: 461.8886, y: -207.2843}
+  m_SizeDelta: {x: 423.77722, y: 94.56861}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &239314293212237074
 CanvasRenderer:
@@ -1087,8 +1063,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 461.91995, y: -435.29208}
-  m_SizeDelta: {x: 423.8399, y: 94.55684}
+  m_AnchoredPosition: {x: 461.8886, y: -435.32153}
+  m_SizeDelta: {x: 423.77722, y: 94.56861}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &239314293455888596
 CanvasRenderer:
@@ -1491,14 +1467,3 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4361316974653698100, guid: 5c985c1d68eab1e4592b850b90207381, type: 3}
   m_PrefabInstance: {fileID: 6762425600079630742}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3787590486565450897 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7586541427880944903, guid: 5c985c1d68eab1e4592b850b90207381, type: 3}
-  m_PrefabInstance: {fileID: 6762425600079630742}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5120714c3f06dba48a4cd21be591977b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

@@ -179,7 +179,9 @@ public class PlayerInstance : Attacker {
         return pwi.getWeapon().cooldown / pStats.playerWeaponSpeedBuff;
     }
     public override int getDamage() {
-        return (int)(pwi.getWeapon().damage * pStats.playerWeaponDamageBuff * weaponAttackMod);
+        //  weaponAttackMod is reset back to 1.0f in the swing animation coroutine
+        var temp = (int)(pwi.getWeapon().damage * pStats.playerWeaponDamageBuff * weaponAttackMod);
+        return temp;
     }
     public override float getKnockback() {
         return pwi.getWeapon().knockback;

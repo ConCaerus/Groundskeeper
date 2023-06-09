@@ -32,7 +32,7 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
         DOTween.To(() => gunLight.size, x => gunLight.size = x, 0.0f, .15f);
 
         //  logic
-        attack(GameInfo.mousePos(), Vector2.zero, pi.weaponAttackMod);
+        attack(GameInfo.mousePos(), Vector2.zero, pi, pi.weaponAttackMod);
         pi.weaponAttackMod = 1.0f;
     }
 

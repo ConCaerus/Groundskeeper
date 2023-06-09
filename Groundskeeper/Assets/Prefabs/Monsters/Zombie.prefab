@@ -231,8 +231,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4397de6deb7e4ad4983d46cdfa99894a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 30
-  unitHealth: 30
+  maxHealth: 15
+  unitHealth: 15
   hurtSound: {fileID: 8300000, guid: 9baf9dc19f77df447b41ed0eeb03a23f, type: 3}
   dieSound: {fileID: 0}
   bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
@@ -252,8 +252,8 @@ MonoBehaviour:
   attackDamage: 5
   damageTodefenses: 0
   diff: 1
-  originalSoulsGiven: 1
-  soulsGiven: 1
+  originalSoulsGiven: 0.5
+  soulsGiven: 0.5
   earliestNight: 0
   favoriteTarget: 0
   type: 1

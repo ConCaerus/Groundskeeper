@@ -6,6 +6,7 @@ using UnityEngine;
 public class HouseDoorInteractable : Interactable {
 
     public bool isTheEnd = false;
+    bool startedEnding = false;
     GameBoard gb;
 
 
@@ -15,20 +16,21 @@ public class HouseDoorInteractable : Interactable {
 
 
     public override void interact() {
+        startedEnding = true;
         StartCoroutine(intAnim());
 
         //  achievement shit
         if(GameInfo.getNightCount() == 0)
-            FindObjectOfType<SteamManager>().unlockAchievement(SteamManager.achievements.Live);
+            FindObjectOfType<SteamHandler>().unlockAchievement(SteamHandler.achievements.Live);
         else if(GameInfo.getNightCount() == 9)
-            FindObjectOfType<SteamManager>().unlockAchievement(SteamManager.achievements.LiveMore);
+            FindObjectOfType<SteamHandler>().unlockAchievement(SteamHandler.achievements.LiveMore);
     }
 
     public override void deinteract() {
         //  nothing 
     }
     public override bool canInteract() {
-        return isTheEnd;
+        return isTheEnd && !startedEnding;
     }
     public override void anim(bool b) {
     }

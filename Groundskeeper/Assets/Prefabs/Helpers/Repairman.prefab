@@ -736,6 +736,7 @@ MonoBehaviour:
   maxHealth: 150
   unitHealth: 150
   hurtSound: {fileID: 0}
+  dieSound: {fileID: 0}
   bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
@@ -890,6 +891,7 @@ MonoBehaviour:
   gunFireParticlesPos: {fileID: 0}
   gunLight: {fileID: 0}
   lobObject: {fileID: 1981169365813095468, guid: 8c99d3e068c7a2046a76484878c1d15e, type: 3}
+  attackSound: {fileID: 0}
   canMove: 1
   used: 1
 --- !u!1 &8522752653620781266

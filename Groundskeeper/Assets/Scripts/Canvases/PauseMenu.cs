@@ -1,3 +1,4 @@
+using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,11 +43,21 @@ public class PauseMenu : MenuCanvas {
     }
 
     public void resume() {
-        togglePause();
+        //if(!SteamManager.Initialized || !SteamUtils.IsOverlayEnabled())
+            togglePause();
+    }
+
+    public void options() {
+        //if(!SteamManager.Initialized || !SteamUtils.IsOverlayEnabled()) {
+            tryClose();
+            FindObjectOfType<OptionsCanvas>().tryShow();
+            FindObjectOfType<OptionsCanvas>().setup();
+        //}
     }
 
     public void menu() {
-        FindObjectOfType<TransitionCanvas>().loadScene("MainMenu");
+        //if(!SteamManager.Initialized || !SteamUtils.IsOverlayEnabled())
+            FindObjectOfType<TransitionCanvas>().loadScene("MainMenu");
     }
 
 

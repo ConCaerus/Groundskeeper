@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DoorInteractable : Interactable {
+    bool startedLeaving = false;
 
     public override bool canInteract() {
-        return FindObjectOfType<BedInteractable>().hasSlept;
+        return FindObjectOfType<BedInteractable>().hasSlept && !startedLeaving;
     }
 
     public override void interact() {
+        startedLeaving = true;
         StartCoroutine(intAnim());
     }
     public override void deinteract() {

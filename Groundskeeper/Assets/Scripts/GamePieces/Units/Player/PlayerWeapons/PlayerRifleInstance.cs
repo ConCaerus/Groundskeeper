@@ -28,7 +28,7 @@ public class PlayerRifleInstance : PlayerWeaponVariant {
         gunLight.size = 20f;
         DOTween.To(() => gunLight.size, x => gunLight.size = x, 0.0f, .15f);
 
-        attack(GameInfo.mousePos(), Vector2.zero, pi.weaponAttackMod);
+        attack(GameInfo.mousePos(), Vector2.zero, pi, pi.weaponAttackMod);
         pi.weaponAttackMod = 1.0f;
     }
 

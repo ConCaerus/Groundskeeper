@@ -118,7 +118,7 @@ public class PlayerWeaponInstance : WeaponInstance {
     }
 
     IEnumerator attackAfterCooldown() {
-        while(!a.getCanAttack())
+        while(!(canAttackG && transform.lossyScale.x > 0f && a.getCanAttack()))
             yield return new WaitForEndOfFrame();
         attackPerformed(new InputAction.CallbackContext());
     }

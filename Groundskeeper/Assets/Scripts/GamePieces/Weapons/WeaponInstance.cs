@@ -170,26 +170,27 @@ public abstract class WeaponInstance : MonoBehaviour {
 
     //  set attackingPos to Vector2.zero to not use it
     //  set targetPos to Vector2.zero to not use it
-    public void attack(Vector2 attackingPos, Vector2 targetPos, float mod = 0.0f) {
+    public void attack(Vector2 attackingPos, Vector2 targetPos, PlayerInstance pi = null, float mod = 0.0f) {
         if(anim != null || !used || !a.getCanAttack())
             return;
         if(reference.swingSound != null)
             am.playSound(reference.swingSound, transform.position);
+
         if(reference.aType == Weapon.attackType.Swing)
-            anim = StartCoroutine(swingAttackAnim(mod, attackingPos));
+            anim = StartCoroutine(swingAttackAnim(mod, attackingPos, pi));
         else if(reference.aType == Weapon.attackType.Stab)
-            anim = StartCoroutine(stabAttackAnim(mod, attackingPos));
+            anim = StartCoroutine(stabAttackAnim(mod, attackingPos, pi));
         else if(reference.aType == Weapon.attackType.Shoot)
-            anim = StartCoroutine(shootAttackAnim(mod, attackingPos));
+            anim = StartCoroutine(shootAttackAnim(mod, attackingPos, pi));
         else if(reference.aType == Weapon.attackType.Lob)
-            StartCoroutine(lobAttackAnim(targetPos));
+            StartCoroutine(lobAttackAnim(targetPos, pi));
     }
 
 
     public abstract void shootMonster();
     public abstract void lobToMonster();
 
-    IEnumerator shootAttackAnim(float mod, Vector2 attackingPos) {
+    IEnumerator shootAttackAnim(float mod, Vector2 attackingPos, PlayerInstance pi) {
         canMove = false;
         trail.emitting = false;
         this.c.enabled = false;
@@ -246,7 +247,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         */
     }
 
-    IEnumerator swingAttackAnim(float mod, Vector2 attackingPos) {
+    IEnumerator swingAttackAnim(float mod, Vector2 attackingPos, PlayerInstance pi) {
         canMove = false;
         trail.emitting = true;
         a.startCooldown();
@@ -275,6 +276,8 @@ public abstract class WeaponInstance : MonoBehaviour {
         yield return new WaitForSeconds(ableToHitMonsterTime);
         c.enabled = false;
 
+        if(isPlayerWeapon && pi != null)
+            pi.weaponAttackMod = 1.0f;
         //  start moving again
         c.enabled = false;
         trail.emitting = false;
@@ -311,7 +314,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         */
     }
 
-    IEnumerator stabAttackAnim(float mod, Vector2 attackingPos) {
+    IEnumerator stabAttackAnim(float mod, Vector2 attackingPos, PlayerInstance pi) {
         canMove = false;
         trail.emitting = true;
         a.startCooldown();
@@ -347,7 +350,7 @@ public abstract class WeaponInstance : MonoBehaviour {
         anim = null;
     }
 
-    IEnumerator lobAttackAnim(Vector2 targetPos) {
+    IEnumerator lobAttackAnim(Vector2 targetPos, PlayerInstance pi) {
         float duration = .75f;
         a.startCooldown();
         user.GetComponent<Movement>().lookAtPos(targetPos);

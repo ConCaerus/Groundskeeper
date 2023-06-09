@@ -22,7 +22,7 @@ public class PlayerSledgehammerInstance : PlayerWeaponVariant {
                 if(pi.weaponAttackMod > 1.01f)
                     gtc.hasChargedAttacked();
             }
-            attack(GameInfo.mousePos(), Vector2.zero, pi.weaponAttackMod);
+            attack(GameInfo.mousePos(), Vector2.zero, pi, pi.weaponAttackMod);
             pi.weaponAttackMod = 1.0f;
         }
     }

@@ -113,7 +113,7 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.Label("Steam");
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Clear Achievements"))
-            FindObjectOfType<SteamManager>().resetAchievements();
+            FindObjectOfType<SteamHandler>().resetAchievements();
         if(GUILayout.Button("Unlock Achievement")) 
             unlockAchievement();
         GUILayout.EndHorizontal();
@@ -122,16 +122,16 @@ public class DebuggerWindow : EditorWindow {
     void unlockAchievement() {
         int i = 0;
         bool found = false;
-        while((SteamManager.achievements)i != SteamManager.achievements.None && !found) {
-            if(FindObjectOfType<SteamManager>().isAchievementUnlocked((SteamManager.achievements)i))
+        while((SteamHandler.achievements)i != SteamHandler.achievements.None && !found) {
+            if(FindObjectOfType<SteamHandler>().isAchievementUnlocked((SteamHandler.achievements)i))
                 i++;
             else {
                 found = true;
-                FindObjectOfType<SteamManager>().unlockAchievement((SteamManager.achievements)i);
+                FindObjectOfType<SteamHandler>().unlockAchievement((SteamHandler.achievements)i);
             }
         }
         if(!found) {
-            FindObjectOfType<SteamManager>().resetAchievements();
+            FindObjectOfType<SteamHandler>().resetAchievements();
             unlockAchievement();
         }
     }

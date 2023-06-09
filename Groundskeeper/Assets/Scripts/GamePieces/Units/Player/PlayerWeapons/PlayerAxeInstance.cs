@@ -36,8 +36,7 @@ public class PlayerAxeInstance : PlayerWeaponVariant {
             StopCoroutine(charger);
             charger = null;
             puc.updateChargeSlider(0.0f, 1.0f);
-            attack(GameInfo.mousePos(), Vector2.zero, pi.weaponAttackMod);
-            pi.weaponAttackMod = 1.0f;
+            attack(GameInfo.mousePos(), Vector2.zero, pi, pi.weaponAttackMod);
         }
     }
 

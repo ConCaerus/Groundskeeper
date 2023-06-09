@@ -121,7 +121,7 @@ public class BuyTreeCanvas : MenuCanvas {
 
                             //  check for achievements
                             if(qw == null)
-                                FindObjectOfType<SteamManager>().unlockAchievement(SteamManager.achievements.WeaponsMaster);
+                                FindObjectOfType<SteamHandler>().unlockAchievement(SteamHandler.achievements.WeaponsMaster);
                         }
                     }
                 }
@@ -214,9 +214,9 @@ public class BuyTreeCanvas : MenuCanvas {
 
                             //  check for achievements
                             if(qb == null)
-                                FindObjectOfType<SteamManager>().unlockAchievement(t == Buyable.buyType.Helper ? SteamManager.achievements.InNeedOfHelp :
-                                    t == Buyable.buyType.Defense ? SteamManager.achievements.Defender : t == Buyable.buyType.Structure ? SteamManager.achievements.StructurallySound :
-                                    SteamManager.achievements.None);
+                                FindObjectOfType<SteamHandler>().unlockAchievement(t == Buyable.buyType.Helper ? SteamHandler.achievements.InNeedOfHelp :
+                                    t == Buyable.buyType.Defense ? SteamHandler.achievements.Defender : t == Buyable.buyType.Structure ? SteamHandler.achievements.StructurallySound :
+                                    SteamHandler.achievements.None);
                         }
                     }
                 }

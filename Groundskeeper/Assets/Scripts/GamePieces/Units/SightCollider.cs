@@ -16,6 +16,10 @@ public class SightCollider : MonoBehaviour {
     MonsterInstance mi = null;
     HelperInstance hi = null;
 
+    List<string> relevantTags = new List<string>() {
+        "Player", "Helper", "Structure", "House", "Monster"
+    };
+
     private void OnTriggerEnter2D(Collider2D col) {
         //  monster shit
         if(mi != null) {
@@ -107,8 +111,9 @@ public class SightCollider : MonoBehaviour {
     private void Awake() {
         for(int i = 0; i < 20; i++) {
             var tag = LayerMask.LayerToName(i);
-            if(tag != "Player" && tag != "Helper" && tag != "Structure" && tag != "House" && tag != "Monster")
+            if(!relevantTags.Contains(tag)) {
                 Physics2D.IgnoreLayerCollision(gameObject.layer, i);
+            }
         }
         c = GetComponent<CircleCollider2D>();
         StartCoroutine(areaStartExpansion(c.radius));
@@ -136,32 +141,31 @@ public class SightCollider : MonoBehaviour {
     }
 
     bool isTagTargetable(string tag, MonsterInstance mi) {
-        //  checks if tag is in the attackable pool
-        if(!(tag == "Player" || tag == "Helper" || tag == "Structure" || tag == "House"))
+        if(!relevantTags.Contains(tag))
             return false;
-        //  if can attack all, return true right away
-        if(mi.favoriteTarget == Monster.targetType.All)
-            return true;
+
+        var ft = mi.favoriteTarget;
 
         //  specifics
         switch(tag) {
-            case "Player":
-            case "Helper": return mi.favoriteTarget == Monster.targetType.People;
-            case "Structure": return mi.favoriteTarget == Monster.targetType.Structures;
-            case "House": return mi.favoriteTarget == Monster.targetType.House;
+            case "Player": return ft == Monster.targetType.People || ft == Monster.targetType.All;
+            case "Helper": return ft == Monster.targetType.People || ft == Monster.targetType.All;
+            case "Structure": return ft == Monster.targetType.Structures || ft == Monster.targetType.All;
+            case "House": return ft == Monster.targetType.House || ft == Monster.targetType.All;
+            case "Monster": return false;
         }
         return false;
     }
     bool isTagTargetable(string tag, HelperInstance mi, StructureInstance si) {
-        //  checks if tag is in the attackable pool
-        if(!(tag == "Player" || tag == "Helper" || tag == "Structure" || tag == "Monster"))
+        if(!relevantTags.Contains(tag))
             return false;
 
         //  specifics
         switch(tag) {
-            case "Player":
+            case "Player": return false;
             case "Helper": return mi.helpType == Helper.helperType.Heal;
             case "Structure": return mi.helpType == Helper.helperType.Repair && si.health < si.maxHealth;
+            case "House": return false;
             case "Monster": return mi.helpType == Helper.helperType.Attack;
         }
         return false;
