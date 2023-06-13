@@ -41,10 +41,8 @@ public class AudioManager : MonoBehaviour {
             return;
         dist = distCutOff - dist;
         dist = dist / distCutOff;
+
         effectPlayer.volume = normVolume * dist;
-
-        transform.position = pos;
-
         //  randomize the pitch
         effectPlayer.pitch = normPitch;
         if(randomize)

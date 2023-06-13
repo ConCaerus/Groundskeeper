@@ -11,9 +11,10 @@ public abstract class Attacker : Movement {
     public abstract float getAttackCoolDown();
     public abstract float getKnockback();
     public abstract void specialEffectOnAttack(GameObject defender);
+    public abstract Weapon.weaponTitle getWeapon();
     //  NOTE: function getBloodParticles moved over to Mortal class
 
-    public void attack(GameObject target, bool cooldown) {
+    public void attack(GameObject target, bool cooldown, float stunTime) {
         if(target.gameObject.GetComponent<Mortal>() != null) {
             //  perform special tasks based on what got attacked
             //  House
@@ -22,7 +23,7 @@ public abstract class Attacker : Movement {
             //  Voodoo Doll
             else if(target.gameObject.GetComponent<VoodooDollInstance>() != null && getDamage() > 0.0f) {
                 var mod = target.gameObject.GetComponent<VoodooDollInstance>().getMirroredDamageMod();
-                takeDamage((int)Mathf.Clamp(getDamage() * mod, 1, getDamage()), 0.0f, target.transform.position, false, false, true);
+                takeDamage((int)Mathf.Clamp(getDamage() * mod, 1, getDamage()), 0.0f, target.transform.position, false, stunTime, true);
                 specialEffectOnAttack(gameObject);
 
                 //  checks if this fucker died to the doll
@@ -32,7 +33,7 @@ public abstract class Attacker : Movement {
 
             //  deal damage
             if(getDamage() > 0.0f) {
-                target.gameObject.GetComponent<Mortal>().takeDamage(getDamage(), getKnockback(), transform.position, true, true, true);
+                target.gameObject.GetComponent<Mortal>().takeDamage(getDamage(), getKnockback(), transform.position, true, stunTime, true);
                 specialEffectOnAttack(target);
             }
             //  start cooldown

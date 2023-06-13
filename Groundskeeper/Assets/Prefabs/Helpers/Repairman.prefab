@@ -782,7 +782,7 @@ MonoBehaviour:
   bType: 1
   description: Thinks monsters are fucked
   isAttractive: 0
-  effectRadius: 35
+  effectRadius: 20
   unlockedImagePos: {x: 3.3, y: -10.6}
   unlockedImageSize: {x: 0.36, y: 0.36}
 --- !u!1 &5885474164528724324

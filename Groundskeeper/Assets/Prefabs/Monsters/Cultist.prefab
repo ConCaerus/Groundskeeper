@@ -259,6 +259,7 @@ GameObject:
   - component: {fileID: 1477919414227495091}
   - component: {fileID: 6935577520523582635}
   - component: {fileID: 498804029045914972}
+  - component: {fileID: 9084256098175615917}
   m_Layer: 7
   m_Name: Cultist
   m_TagString: Monster
@@ -345,6 +346,7 @@ MonoBehaviour:
   maxHealth: 100
   unitHealth: 100
   hurtSound: {fileID: 8300000, guid: ddb92acf59f1c0c43824049952f6d2fd, type: 3}
+  dieSound: {fileID: 0}
   bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
@@ -360,11 +362,11 @@ MonoBehaviour:
   title: 8
   speed: 0.5
   attackDamage: 7
-  damageToDefences: 1
-  diff: 4
-  originalSoulsGiven: 7
+  damageTodefenses: 0
+  diff: 8
+  originalSoulsGiven: 1.2
   soulsGiven: 7
-  earliestNight: 6
+  earliestNight: 7
   favoriteTarget: 3
   type: 1
   freqInWave: 0
@@ -387,6 +389,102 @@ MonoBehaviour:
   sCol: {fileID: 3458673470204341085}
   sightEffectedPieces: 06000000
   buffedParticles: {fileID: 2488634485986811026, guid: 98fc1c665cd9114498c6ba4881198621, type: 3}
+--- !u!82 &9084256098175615917
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477919414227495092}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 25
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &3999800981870502007
 PrefabInstance:
   m_ObjectHideFlags: 0

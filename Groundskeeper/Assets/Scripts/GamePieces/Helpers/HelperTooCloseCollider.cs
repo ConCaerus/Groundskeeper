@@ -12,7 +12,9 @@ public class HelperTooCloseCollider : MonoBehaviour {
     HelperInstance hi;
     CircleCollider2D c;
 
-    float maxRad;
+    [HideInInspector] public float maxRad { get; private set; }
+
+    Coroutine resetWaiter = null;
 
     private void Awake() {
         hi = unit.GetComponent<HelperInstance>();
@@ -47,9 +49,17 @@ public class HelperTooCloseCollider : MonoBehaviour {
 
     //  resets the collider to check and see if there are still any relevant collisions
     public void resetCollider() {
+        if(resetWaiter == null)
+            resetWaiter = StartCoroutine(waitToResetCollider());
+    }
+
+    //  waits for the helper to have a chance to get away from the monster before coming back
+    IEnumerator waitToResetCollider() {
+        yield return new WaitForSeconds(2.0f);
         hi.tooClose = false;
         c.radius = 0f;
         expandArea();
+        resetWaiter = null;
     }
 
     public IEnumerator areaStartExpansion(float radius) {

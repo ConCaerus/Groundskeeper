@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 
 public class DeadGuyInstance : MonoBehaviour {
-    [HideInInspector] float soulsGiven = 10f; //  have this number go up as the nights increase
+    [HideInInspector] float soulsGiven = 5f; //  have this number go up as the nights increase
     [SerializeField] public string title;
     [SerializeField] AudioClip interactSound;
 

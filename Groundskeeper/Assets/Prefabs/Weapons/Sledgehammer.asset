@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Sledgehammer
   m_EditorClassIdentifier: 
   title: 7
-  damage: 50
-  knockback: 5
+  damage: 20
+  knockback: 1.5
   cooldown: 1
   aType: 0
   range: 0

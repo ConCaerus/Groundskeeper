@@ -14,6 +14,9 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
 
     public override void variantSetup() {
         gtc = FindObjectOfType<GameTutorialCanvas>();
+        mm = FindObjectOfType<MouseManager>();
+        fgc = FindObjectOfType<FreeGamepadCursor>();
+        ggc = FindObjectOfType<GameGamepadCursor>();
         //  destroys all gunfire particles that aren't being used
         foreach(var i in gunFireParticles.transform.parent.GetComponentsInChildren<ParticleSystem>()) {
             if(i != gunFireParticles)
@@ -63,16 +66,26 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
         LayerMask monsterLayer = LayerMask.GetMask("Monster");
         var curSpread = 0.0f;
 
+        var mousePos = Vector2.zero;
+        if(mm.usingKeyboard()) {
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+        else if(!fgc.isActiveAndEnabled) {
+            mousePos = ggc.getMousePosInWorld();
+        }
+        else {
+            mousePos = fgc.getWorldCursorPos();
+        }
 
         for(int i = 0; i < numOfShots; i++) {
-            var p = rotate_point(transform.position.x, transform.position.y, curSpread, GameInfo.mousePos());
+            var p = rotate_point(transform.position.x, transform.position.y, curSpread, mousePos);
             RaycastHit2D hit = Physics2D.Raycast(transform.position, p - (Vector2)transform.position, reference.range, monsterLayer);
             Debug.DrawRay(transform.position, p - (Vector2)transform.position, Color.white);
             curSpread += (i + 1) * (spreadAmt * 2.0f) / numOfShots * (i % 2 == 0 ? -1f : 1f);
 
             if(hit.collider != null) {
                 var o = hit.collider.gameObject.GetComponentInParent<MonsterInstance>().gameObject;
-                a.attack(o.gameObject, false);
+                a.attack(o.gameObject, false, reference.cooldown - .15f);
                 if(pi != null) {
                     cm.shake(pi.getDamage());
                 }

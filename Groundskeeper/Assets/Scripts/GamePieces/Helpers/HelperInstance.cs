@@ -27,6 +27,7 @@ public abstract class HelperInstance : Helper {
         hi = FindObjectOfType<HouseInstance>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Environment"));
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Helper"));
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("DeadGuy"));
         FindObjectOfType<UnitMovementUpdater>().addHelper(this);
         //FindObjectOfType<HelperAttackManager>().addHelper(this);
         spriteOriginal = spriteObj.transform.localScale;
@@ -131,6 +132,9 @@ public abstract class HelperInstance : Helper {
         return wi.reference.knockback;
     }
     public override void specialEffectOnAttack(GameObject defender) {
+    }
+    public override Weapon.weaponTitle getWeapon() {
+        return wi != null && wi.reference != null ? wi.reference.title : Weapon.weaponTitle.None;
     }
     #endregion
 

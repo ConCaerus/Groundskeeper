@@ -5,6 +5,7 @@ using DG.Tweening;
 using System.Linq;
 using UnityEngine.InputSystem;
 using System;
+using System.Runtime.InteropServices;
 
 public class PlayerWeaponInstance : WeaponInstance {
     bool canAttack;
@@ -21,6 +22,7 @@ public class PlayerWeaponInstance : WeaponInstance {
     GameTutorialCanvas gtc;
     TransitionCanvas tc;
     PregameCanvas pc;
+    PauseMenu pm;
 
     Coroutine queuedAttack = null;
 
@@ -34,6 +36,7 @@ public class PlayerWeaponInstance : WeaponInstance {
         gtc = FindObjectOfType<GameTutorialCanvas>();
         tc = FindObjectOfType<TransitionCanvas>();
         pc = FindObjectOfType<PregameCanvas>();
+        pm = FindObjectOfType<PauseMenu>();
 
 
         //  sets up the variant
@@ -92,7 +95,7 @@ public class PlayerWeaponInstance : WeaponInstance {
     }
 
     void attackPerformed(InputAction.CallbackContext c) {
-        if((ssm != null && ssm.isActiveAndEnabled) || !tc.finishedLoading || this == null)
+        if((ssm != null && ssm.isActiveAndEnabled) || !tc.finishedLoading || this == null || pm.isOpen() || Time.timeScale == 0.0f)
             return;
         if(canAttackG && transform.lossyScale.x > 0f && a.getCanAttack()) {
             if(gtc != null)
@@ -137,6 +140,9 @@ public class PlayerWeaponInstance : WeaponInstance {
 public abstract class PlayerWeaponVariant : WeaponInstance {
     [SerializeField] Weapon.weaponTitle title;
 
+    protected Coroutine charger = null;
+    protected PlayerUICanvas puc;
+
     public abstract void variantSetup();
 
     public abstract void performOnAttack();
@@ -146,5 +152,74 @@ public abstract class PlayerWeaponVariant : WeaponInstance {
 
     public override void movementLogic() {
         lookAtMouse();
+    }
+
+    protected IEnumerator chargeTimer() {
+        float maxCharge = 2.0f;
+        float tickTime = .3f, origTickTime = .3f;
+        float ticksToComplete = 5;  //  zero doens't count, so it'll seem like it'll take this +1 ticks to complete
+        float target = 0f;
+        bool firstTime = true;
+
+        for(int i = 0; i <= ticksToComplete; i++) {
+            //  not charging anymore
+            if(charger == null)
+                yield return 0;
+
+
+
+            var s = pi.isSprinting();
+            //  the player is sprinting
+            if(s) {
+                tickTime = .25f;
+            }
+
+            yield return new WaitForSeconds(tickTime * .85f);  //  tick time
+
+            if(pi.isSprinting()) {
+                i--;
+                if(i < 0)
+                    i = 0;
+                s = true;
+            }
+
+            //  charge is empty
+            if(i == 0) {
+                pi.weaponAttackMod = 1.0f;
+                target = 1.01f;
+                //  initial wait time that only exists for before ticks are counted
+                if(firstTime) {
+                    //yield return new WaitForSeconds(tickTime);   //  - ticktime because ticktime gets waited for at the end
+                    s = pi.isSprinting();
+                    firstTime = false;
+                }
+            }
+            //  charge is full
+            else if(i == ticksToComplete) {
+                target = maxCharge;
+                if(!s)
+                    yield return new WaitForSeconds(tickTime * .15f);
+                i -= 1;
+            }
+            else if(i > 0 && i < ticksToComplete) {
+                if(!s)
+                    yield return new WaitForSeconds(tickTime * .15f);
+                target = ((i * (maxCharge - 1f)) / ticksToComplete) + 1f;
+            }
+            else if(!s)
+                yield return new WaitForSeconds(tickTime * .15f);
+
+            DOTween.To(() => pi.weaponAttackMod, x => pi.weaponAttackMod = x, target, .1f).OnUpdate(() => {
+                if(charger != null)
+                    puc.updateChargeSlider(pi.weaponAttackMod - 1f, maxCharge - 1f);
+                else
+                    puc.updateChargeSlider(0f, maxCharge);
+            });
+
+            if(s)
+                i--;
+
+            tickTime = origTickTime;
+        }
     }
 }

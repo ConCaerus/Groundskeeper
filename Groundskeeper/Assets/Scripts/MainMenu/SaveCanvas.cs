@@ -39,14 +39,18 @@ public class SaveCanvas : MonoBehaviour {
         showSaveInfo();
     }
 
-    public void loadNewGame() {
+    void loadNewGame() {
         SaveData.deleteCurrentSave();
         GameInfo.resetSave(FindObjectOfType<BuyableLibrary>(), FindObjectOfType<PresetLibrary>());
-        FindObjectOfType<TransitionCanvas>().loadScene("Game");
+        FindObjectOfType<TransitionCanvas>().loadScene("Intro");
     }
 
-    public void loadGame(int i) {
+    void loadGame(int i) {
+        //  checks if the save is empty, if so, load a new game
         SaveData.setCurrentSaveIndex(i);
-        FindObjectOfType<TransitionCanvas>().loadScene("Game");
+        if(SaveData.hasSaveDataForSlot(i))
+            FindObjectOfType<TransitionCanvas>().loadScene("Game");
+        else
+            loadNewGame();
     }
 }

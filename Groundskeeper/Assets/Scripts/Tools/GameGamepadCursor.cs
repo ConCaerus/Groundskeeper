@@ -10,6 +10,8 @@ public class GameGamepadCursor : MonoBehaviour {
 
     InputMaster controls;
 
+    Vector2 lastTarget = Vector2.zero;
+
     Image image;
 
     private void Start() {
@@ -37,10 +39,16 @@ public class GameGamepadCursor : MonoBehaviour {
     }
 
     void aimCursor(Vector2 dir) {
-        if(Time.timeScale == 0f)
+        if(Time.timeScale == 0f || !image.enabled)
             return;
+
+        //  checks if the position is too close to the last pos, if so, do nothing
         var worldTarget = (Vector2)player.transform.position + dir * rangeMod;
-        transform.position = Camera.main.WorldToScreenPoint(worldTarget);
+        float minDist = .1f;
+        if(Vector2.Distance(lastTarget, worldTarget) > minDist) {
+            transform.position = Camera.main.WorldToScreenPoint(worldTarget);
+            lastTarget = worldTarget;
+        }
     }
 
     public Vector2 getMousePosInWorld() {

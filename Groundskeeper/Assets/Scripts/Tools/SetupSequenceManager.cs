@@ -14,8 +14,6 @@ public class SetupSequenceManager : MonoBehaviour {
 
     MouseManager mm;
 
-    bool p = false;
-
     private void Awake() {
         if(GameInfo.getNightCount() > 0) {
             enabled = false;
@@ -62,8 +60,16 @@ public class SetupSequenceManager : MonoBehaviour {
         //  dialog from the devil that introduces the player to the world
         //  and tells them that they need to place their house
         dc.loadDialogText(new DialogText(
-            new List<string>() { "Welcome to the world", "Place your <color=\"yellow\">house" },
-            new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.normal}), 
+            new List<string>() { 
+                "Haha! It actually worked!", "I mean, of course it worked. I'm amazing.", "Hmmmm...",
+                "It doesn't seem to be moving that much...", "It's probably just captivated by my presence!",
+                "...", "....", ".....", "Wow it's really not moving, huh?", "HEY! CAN YOU HEAR ME?!",
+                "PLACE DOWN YOUR HOUSE!"},
+            new List<DialogText.facialExpression>() { 
+                DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.thinking,
+                DialogText.facialExpression.thinking, DialogText.facialExpression.happy, 
+                DialogText.facialExpression.dismissive, DialogText.facialExpression.dismissive, DialogText.facialExpression.thinking, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal,
+                DialogText.facialExpression.normal}),
             null);
 
         yield return new WaitForSeconds(.1f);
@@ -74,14 +80,19 @@ public class SetupSequenceManager : MonoBehaviour {
     }
 
     IEnumerator weaponSetup() {
+        bool firstPass = false;
         dc.loadDialogText(new DialogText(
-            new List<string>() { "Mediocre placement", "Anyways... ", "Here, take this <color=\"red\">" + pwi.getWeapon().title.ToString() },
-            new List<DialogText.facialExpression>() { DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal}),
-            delegate {
-            p = true;
-        });
+            new List<string>() { 
+                "Aha! It does stuff!", "How exciting!", "I hope it doesn't die too quickly...", "...", 
+                "Eh, I'll just make a new one.", "TAKE THIS WEAPON!", "DON'T DIE!", "please..."
+            },
+            new List<DialogText.facialExpression>() { 
+                DialogText.facialExpression.happy, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.thinking,
+                DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive
+            }),
+            delegate { firstPass = true; });
         yield return new WaitForSeconds(.1f);
-        while(!p)
+        while(!firstPass)
             yield return new WaitForEndOfFrame();
         playerWeaponSr.sprite = FindObjectOfType<PresetLibrary>().getWeapon(GameInfo.getPlayerStats().getWeaponTitle(FindObjectOfType<PresetLibrary>())).sprite;
         pwi.enabled = true;
@@ -96,8 +107,14 @@ public class SetupSequenceManager : MonoBehaviour {
         pi.setCanMove(false);
 
         dc.loadDialogText(new DialogText(
-            new List<string>() { "Great! You're ready for the game", "I guess...", "...", "Press this <color=\"yellow\">button<color=\"white\"> when you're ready to <color=\"yellow\">start" }, 
-            new List<DialogText.facialExpression>() { DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.thinking, DialogText.facialExpression.normal}),
+            new List<string>() { 
+                "Oh, that's a relief.", "It can hold things.", "I was worried, because of the no-hands thing...",
+                "...", "This is going to be so much fun!", "REMEMBER, DON'T DIE TOO QUICKLY!", "I really hope it can understand me."
+            }, 
+            new List<DialogText.facialExpression>() { 
+                DialogText.facialExpression.happy, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive,
+                DialogText.facialExpression.thinking, DialogText.facialExpression.happy, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive
+            }),
             delegate {
             StartCoroutine(endSetup());
         });

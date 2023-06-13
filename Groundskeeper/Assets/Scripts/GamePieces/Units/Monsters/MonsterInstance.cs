@@ -32,6 +32,8 @@ public abstract class MonsterInstance : Monster {
 
     [SerializeField] public List<GameInfo.GamePiece> sightEffectedPieces = new List<GameInfo.GamePiece>();
 
+    [HideInInspector] public SlashEffect slash { get; private set; }
+
     //  storage
     Transform pt;
     Vector2 houseCenter;
@@ -46,21 +48,21 @@ public abstract class MonsterInstance : Monster {
         if(canAttack) {
             //  if the unit is confused, have it attack other monsters 
             if(confused && col.gameObject.tag == "Monster") {
-                attack(col.gameObject, true);
+                attack(col.gameObject, true, 0.0f);
             }
 
             //  normal attack
             else if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Structure" || col.gameObject.tag == "House") {
                 //  if can attack all targets, skip testing and just attack
                 if(favoriteTarget == targetType.All)
-                    attack(col.gameObject, true);
+                    attack(col.gameObject, true, 0.0f);
                 //  check if the target is attackable by this monster
                 else if(col.gameObject.tag == "House" && (favoriteTarget == targetType.Structures || favoriteTarget == targetType.House))
-                    attack(col.gameObject, true);
+                    attack(col.gameObject, true, 0.0f);
                 else if((col.gameObject.tag == "Helper" || col.gameObject.tag == "Player") && favoriteTarget == targetType.People)
-                    attack(col.gameObject, true);
+                    attack(col.gameObject, true, 0.0f);
                 else if(col.gameObject.tag == "Structure" && favoriteTarget == targetType.Structures)
-                    attack(col.gameObject, true);
+                    attack(col.gameObject, true, 0.0f);
             }
         }
     }
@@ -82,17 +84,20 @@ public abstract class MonsterInstance : Monster {
         wwr = FindObjectOfType<WaveWarnerRose>();
         ms = FindObjectOfType<MonsterSpawner>();
         c = GetComponent<Collider2D>();
+        slash = GetComponentInChildren<SlashEffect>();
 
         //  roll chance to become a boss monster
         bool boss = Random.Range(0, 10) == 0;
         float bossSizeMod = 1.5f;
 
-        if(boss) {
+        if(boss && false) {
             soulsGiven *= 2f;
-            maxHealth *= 2;
-            health *= 2;
+            maxHealth += (int)(maxHealth * 1.5f);
+            health += (int)(maxHealth * 1.5f);
             attackDamage *= 2;
         }
+        else
+            soulsGiven = originalSoulsGiven;
 
         //  randomize the look of the monster
         float sizeDiff = Random.Range(1.0f - .2f, 1.0f + .2f), minColor = .4f, maxColor = .9f;
@@ -220,6 +225,9 @@ public abstract class MonsterInstance : Monster {
         }
         if(defender.GetComponent<PlayerInstance>() != null)
             defender.GetComponent<Movement>().inhibitMovementCauseBeingAttacked();
+    }
+    public override Weapon.weaponTitle getWeapon() {
+        return Weapon.weaponTitle.None;
     }
     #endregion
 

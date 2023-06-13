@@ -45,7 +45,7 @@ public class PlayerRifleInstance : PlayerWeaponVariant {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, GameInfo.mousePos() - (Vector2)transform.position, reference.range, monsterLayer);
         if(hit.collider != null) {
             var o = hit.collider.gameObject.GetComponentInParent<MonsterInstance>().gameObject;
-            a.attack(o.gameObject, true);   //  also starts the cooldown
+            a.attack(o.gameObject, true, reference.cooldown - .15f);   //  also starts the cooldown
             if(pi != null) {
                 cm.shake(pi.getDamage());
             }

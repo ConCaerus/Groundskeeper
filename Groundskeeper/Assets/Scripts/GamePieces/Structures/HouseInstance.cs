@@ -81,6 +81,13 @@ public class HouseInstance : StructureInstance {
         //  nothing in the way
         return target;
     }
+    public bool alreadyGoingTowardsPathPoint(Vector2 target) {
+        foreach(var i in corners) {
+            if(Vector2.Distance(target, i.transform.position) < .001f)
+                return true;
+        }
+        return false;
+    }
 
     public void saveCurrentHouseStats() {
         GameInfo.setHouseStats(new HouseStats(health, maxHealth, hLight.size));

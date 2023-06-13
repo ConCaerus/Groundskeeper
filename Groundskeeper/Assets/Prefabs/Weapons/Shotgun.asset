@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   title: 3
-  damage: 20
-  knockback: 3
+  damage: 30
+  knockback: 1
   cooldown: 0.5
   aType: 1
   range: 10

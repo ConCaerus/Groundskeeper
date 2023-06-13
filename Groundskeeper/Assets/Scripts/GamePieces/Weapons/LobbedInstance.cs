@@ -42,7 +42,7 @@ public class LobbedInstance : MonoBehaviour {
 
         if(triggerer == null || triggerer.GetComponent<Mortal>() == null || reference == null)
             return;
-        triggerer.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, false, false);
+        triggerer.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, 0.0f, false);
     }
 
     public void lob(float airTime) {

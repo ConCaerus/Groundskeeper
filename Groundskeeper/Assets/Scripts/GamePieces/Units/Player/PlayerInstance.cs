@@ -189,6 +189,9 @@ public class PlayerInstance : Attacker {
     public override void specialEffectOnAttack(GameObject defender) {
         stopInhibitingMovement();
     }
+    public override Weapon.weaponTitle getWeapon() {
+        return pwi.reference.title;
+    }
     #endregion
 
 

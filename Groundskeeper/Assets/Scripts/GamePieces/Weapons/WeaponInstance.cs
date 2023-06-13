@@ -32,9 +32,9 @@ public abstract class WeaponInstance : MonoBehaviour {
     [SerializeField] GameObject lobObject;
     [SerializeField] AudioClip attackSound;
 
-    MouseManager mm;
-    GameGamepadCursor ggc;
-    FreeGamepadCursor fgc;
+    protected MouseManager mm;
+    protected GameGamepadCursor ggc;
+    protected FreeGamepadCursor fgc;
 
     bool isPlayerWeapon = false;
 
@@ -48,14 +48,14 @@ public abstract class WeaponInstance : MonoBehaviour {
         if(reference == null || reference.aType == Weapon.attackType.Shoot)
             return;
         if(target == attackTarget.Monsters && col.gameObject.tag == "Monster") {
-            a.attack(col.gameObject, false);
+            a.attack(col.gameObject, false, reference.cooldown - .15f);
             if(pi != null) {
                 cm.shake(pi.getDamage());
             }
-            col.gameObject.GetComponentInChildren<SlashEffect>().slash(user.transform.position, rotObj.transform.GetChild(0).localRotation.x != 0f);
+            col.gameObject.GetComponent<MonsterInstance>().slash.slash(user.transform.position, rotObj.transform.GetChild(0).localRotation.x != 0f);
         }
         else if(target == attackTarget.People && col.gameObject.tag == "Helper") {
-            a.attack(col.gameObject, false);
+            a.attack(col.gameObject, false, 0.0f);
         }
         else if(col.gameObject.tag == "Environment") {
             em.hitEnvironment(col.ClosestPoint(transform.position));

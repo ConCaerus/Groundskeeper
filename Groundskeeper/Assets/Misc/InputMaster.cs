@@ -460,9 +460,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Mouse"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""d312956b-d664-40e7-8b8d-1a6a9c87648d"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -487,17 +487,6 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""a481c007-86d7-4394-9959-5085d91bd58a"",
-                    ""path"": ""<Mouse>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""Mouse"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""8c5974a7-8200-4b6e-9695-b7e6e2ecde9c"",

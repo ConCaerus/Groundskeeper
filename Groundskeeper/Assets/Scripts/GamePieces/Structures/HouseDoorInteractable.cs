@@ -20,9 +20,9 @@ public class HouseDoorInteractable : Interactable {
         StartCoroutine(intAnim());
 
         //  achievement shit
-        if(GameInfo.getNightCount() == 0)
+        if(GameInfo.getNightCount() == 0 && FindObjectOfType<SteamHandler>() != null)
             FindObjectOfType<SteamHandler>().unlockAchievement(SteamHandler.achievements.Live);
-        else if(GameInfo.getNightCount() == 9)
+        else if(GameInfo.getNightCount() == 9 && FindObjectOfType<SteamHandler>() != null)
             FindObjectOfType<SteamHandler>().unlockAchievement(SteamHandler.achievements.LiveMore);
     }
 

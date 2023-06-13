@@ -20,7 +20,7 @@ public abstract class DefenseInstance : Defense {
         if(triggerer.GetComponent<Mortal>().health <= realDmg)
             td.removeTick(triggerer);
 
-        triggerer.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, false, true);
+        triggerer.GetComponent<Mortal>().takeDamage(realDmg, 0, transform.position, false, 0.0f, true);
     }
 
     public abstract void specialTickAction(GameObject triggerer);
@@ -32,7 +32,7 @@ public abstract class DefenseInstance : Defense {
         td = FindObjectOfType<TickDamager>();
     }
 
-    public override void hitLogic(float knockback, Vector2 origin, bool stun) {
+    public override void hitLogic(float knockback, Vector2 origin, float stunTime) {
     }
 
     public override GameObject getBloodParticles() {

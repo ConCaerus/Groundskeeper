@@ -19,7 +19,7 @@ public class DebuggerWindow : EditorWindow {
             GameInfo.addSouls(-GameInfo.getSouls(true), true);
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
-        if(GUILayout.Button("+100s")) 
+        if(GUILayout.Button("+100s"))
             GameInfo.addSouls(100, true);
         if(GUILayout.Button("+1000s"))
             GameInfo.addSouls(1000, true);
@@ -55,6 +55,79 @@ public class DebuggerWindow : EditorWindow {
         if(GUILayout.Button("Unlock Everything")) {
             FindObjectOfType<BuyableLibrary>().unlockAll();
             FindObjectOfType<PresetLibrary>().unlockAllWeapons();
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("Monsters By Diff")) {
+            int c = FindObjectOfType<PresetLibrary>().getMonsters().Length;
+            int l = 0;
+            int max = 0;
+
+            //  finds the max diff out of all of the monsters
+            for(int i = 0; i < c; i++) {
+                var m = FindObjectOfType<PresetLibrary>().getMonster(i).GetComponent<MonsterInstance>();
+                if(m.diff > max)
+                    max = m.diff;
+            }
+            while(l <= max) {
+                for(int j = 0; j < c; j++) {
+                    var m = FindObjectOfType<PresetLibrary>().getMonster(j).GetComponent<MonsterInstance>();
+                    if(m.diff == l)
+                        Debug.Log("Monster: " + m.title + " | diff : " + m.diff);
+                }
+                l++;
+            }
+        }
+        if(GUILayout.Button("Monsters By Night")) {
+            int c = FindObjectOfType<PresetLibrary>().getMonsters().Length;
+            int l = 0;
+            int max = 0;
+
+            //  finds the max diff out of all of the monsters
+            for(int i = 0; i < c; i++) {
+                var m = FindObjectOfType<PresetLibrary>().getMonster(i).GetComponent<MonsterInstance>();
+                if(m.earliestNight > max)
+                    max = m.diff;
+            }
+            while(l <= max) {
+                for(int j = 0; j < c; j++) {
+                    var m = FindObjectOfType<PresetLibrary>().getMonster(j).GetComponent<MonsterInstance>();
+                    if(m.earliestNight == l)
+                        Debug.Log("Monster: " + m.title + " | night : " + m.earliestNight);
+                }
+                l++;
+            }
+        }
+        if(GUILayout.Button("Monsters By Souls")) {
+            int c = FindObjectOfType<PresetLibrary>().getMonsters().Length;
+            float l = 0.00f;
+            float max = 0f;
+            List<Monster.monsterTitle> used = new List<Monster.monsterTitle>();
+            int catcher = 0;
+
+            //  finds the max diff out of all of the monsters
+            for(int i = 0; i < c; i++) {
+                var m = FindObjectOfType<PresetLibrary>().getMonster(i).GetComponent<MonsterInstance>();
+                if(m.originalSoulsGiven > max)
+                    max = m.originalSoulsGiven;
+            }
+            while(l <= max && catcher < FindObjectOfType<PresetLibrary>().getMonsterCount() * 2f) {
+                MonsterInstance next = null;
+                l = max;
+                for(int j = 0; j < c; j++) {
+                    var m = FindObjectOfType<PresetLibrary>().getMonster(j).GetComponent<MonsterInstance>();
+                    if(m.originalSoulsGiven <= l && !used.Contains(m.title)) {
+                        l = m.originalSoulsGiven;
+                        next = m;
+                    }
+                }
+                if(next == null)
+                    break;
+                catcher++;
+                Debug.Log("Monster: " + next.title + " | souls : " + next.originalSoulsGiven.ToString("0.00"));
+                used.Add(next.title);
+            }
         }
         GUILayout.EndHorizontal();
 
@@ -114,7 +187,7 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Clear Achievements"))
             FindObjectOfType<SteamHandler>().resetAchievements();
-        if(GUILayout.Button("Unlock Achievement")) 
+        if(GUILayout.Button("Unlock Achievement"))
             unlockAchievement();
         GUILayout.EndHorizontal();
     }

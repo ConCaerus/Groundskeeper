@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public abstract class StructureMortal : Mortal {
 
-    public override void hitLogic(float knockback, Vector2 origin, bool stun = true) {
+    public override void hitLogic(float knockback, Vector2 origin, float stunTime) {
         float takeTime = .5f;
 
         //  show that this got hurt

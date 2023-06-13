@@ -104,7 +104,7 @@ public class FreeGamepadCursor : MonoBehaviour {
         anchorCursor(newPos);
     }
     void changeCursor(bool usingKeyboard) {
-        if(cursorImage == null)
+        if(cursorImage == null || vMouse == null)
             return;
         onControlsChanged(playerInput);
         cursorImage.enabled = !usingKeyboard;
@@ -113,10 +113,10 @@ public class FreeGamepadCursor : MonoBehaviour {
     //  when hiding (and moveCursor is true) if b is true, the cursor will move out of the way of all UI and move to (0, 0)
     //  when showing (and moveCursor is true) if b is false, the cursor will move to the previously stored position (stored when hiding)
     public void showCursor(bool b, bool moveCursor) {
-        if(cursorImage != null) {
+        if(cursorImage != null && vMouse != null) {
             cursorImage.enabled = b;
             if(moveCursor) {
-                if(!b)
+                if(!b && vMouse != null)
                     prevPos = vMouse.position.ReadValue();
                 InputState.Change(vMouse.position, !b ? Vector2.zero : prevPos);
             }
@@ -136,7 +136,7 @@ public class FreeGamepadCursor : MonoBehaviour {
     }
 
     void onControlsChanged(PlayerInput pl) {
-        if(cursorImage == null)
+        if(cursorImage == null || vMouse == null)
             return;
         if(pl.currentControlScheme == keyboardScheme && prevControls != keyboardScheme && vMouse != null) {
             Cursor.visible = true;

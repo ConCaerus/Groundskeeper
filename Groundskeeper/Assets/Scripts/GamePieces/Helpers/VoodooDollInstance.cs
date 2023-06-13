@@ -6,8 +6,11 @@ public class VoodooDollInstance : Helper {
     [SerializeField] GameObject bloodParticles;
 
     //  functions that don't do squat but i'm too lazy to make the helper class not need these
-    public override void hitLogic(float knockback, Vector2 origin, bool stunMonster = true) {
+    public override void hitLogic(float knockback, Vector2 origin, float stunTime) {
 
+    }
+    public override Weapon.weaponTitle getWeapon() {
+        return Weapon.weaponTitle.None;
     }
     public override float getAttackCoolDown() {
         return 100.0f;

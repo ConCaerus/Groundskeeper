@@ -28,7 +28,7 @@ public abstract class Movement : MortalUnit {
 
     bool playWalkSound;
     [SerializeField] AudioClip walkSound;
-    AudioManager am;
+    AudioSource aSource;
 
     //  abstract because monsters change their sprites differently to everyone else
     public abstract void updateSprite(Vector2 movingDir, bool opposite);
@@ -41,7 +41,7 @@ public abstract class Movement : MortalUnit {
         fgc = FindObjectOfType<FreeGamepadCursor>();
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
         playWalkSound = audibleWalking;
-        am = FindObjectOfType<AudioManager>();
+        aSource = GetComponent<AudioSource>();
         foreach(var i in GetComponents<Collider2D>()) {
             if(!i.isTrigger) {
                 srCol = i;
@@ -113,8 +113,10 @@ public abstract class Movement : MortalUnit {
         if(shadowObj != null) {
             shadowObj.transform.DOScale(new Vector2(shadOriginal.x / 2.0f, shadOriginal.y / 1.5f), getWalkInfo().time / 2.0f);
             yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
-            if(playWalkSound)
-                am.playSound(walkSound, transform.position);
+            if(playWalkSound && aSource != null) {
+                aSource.pitch = Random.Range(0.6f, 1.25f);
+                aSource.PlayOneShot(walkSound);
+            }
             shadowObj.transform.DOComplete();
             shadowObj.transform.DOScale(shadOriginal, getWalkInfo().time / 2.0f);
             yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
@@ -122,8 +124,10 @@ public abstract class Movement : MortalUnit {
         else {
             yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
 
-            if(playWalkSound)
-                am.playSound(walkSound, transform.position);
+            if(playWalkSound && aSource != null) {
+                aSource.pitch = Random.Range(0.6f, 1.25f);
+                aSource.PlayOneShot(walkSound);
+            }
             yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
         }
 

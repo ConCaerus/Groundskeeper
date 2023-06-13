@@ -38,11 +38,11 @@ public abstract class Mortal : MonoBehaviour {
 
     public abstract void die();
 
-    public abstract void hitLogic(float knockback, Vector2 origin, bool stun = true);
+    public abstract void hitLogic(float knockback, Vector2 origin, float stunTime);
     public abstract GameObject getBloodParticles();
     public abstract Color getStartingColor();
 
-    public void takeDamage(int dmg, float knockback, Vector2 origin, bool activateInvinc, bool stun, bool bloodEffect) {
+    public void takeDamage(int dmg, float knockback, Vector2 origin, bool activateInvinc, float stunTime, bool bloodEffect) {
         if(invincible || dmg <= 0.0f)
             return;
         if(activateInvinc)
@@ -70,7 +70,7 @@ public abstract class Mortal : MonoBehaviour {
         if(bloodParticle != null && bloodEffect)
             bloodParticle.GetComponent<ParticleSystem>().Play();
 
-        hitLogic(knockback, origin, stun);
+        hitLogic(knockback, origin, stunTime);
     }
     public void heal(int hAmt, bool triggerEffect = true) {
         if(hAmt < 0) {

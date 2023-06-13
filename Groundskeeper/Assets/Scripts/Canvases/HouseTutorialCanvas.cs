@@ -5,7 +5,7 @@ using TMPro;
 using DG.Tweening;
 
 public class HouseTutorialCanvas : MonoBehaviour {
-    [SerializeField] GameObject mouth;
+    [SerializeField] GameObject mouth, bed;
 
     //  night should be 0
     private void Start() {
@@ -20,11 +20,19 @@ public class HouseTutorialCanvas : MonoBehaviour {
         FindObjectOfType<PlayerHouseInstance>().setCanMove(false);
         yield return new WaitForSeconds(1.0f);
         FindObjectOfType<DialogCanvas>().loadDialogText(new DialogText(new List<string>() {
-            "You lived?", "I mean, <color=\"yellow\">you lived!", "<color=\"yellow\">Congratulations!", "...", "Anyways...", "You need to strengthen your defenses", "This cabin is outfitted with a <color=\"red\">soul eater",
-            "Give it some of the <color=\"red\">souls<color=\"white\"> you've collected and it will reward you with...", "with things...", "It's hard to explain. You'll figure it out I'm sure", "When you're done, sleep in the bed"
+            "Aha! It lived!", "I can't believe that it actually lived!", "I'm a genius!",
+            "...", "....", "It's not moving again...", "HEY, GUY!", "GOOD JOB AT NOT DYING!",
+            "GRADE A STUFF! REALLY!", "THERE'S A SOUL EATER IN THIS HOUSE!", "BIG MOUTH, CAN'T MISS IT!",
+            "please don't miss it.", "USE IT TO BUY AND UPGRADE YOUR DEFENSES!", "THERE'S ALSO A BED TO SLEEP IN WHEN YOU'RE DONE!",
+            "AND A FISH TO KEEP YOU COMPANY!", "please don't eat him.", "humans always loved eating things...", "...",
+            "YOU'LL BE FINE HERE FOR NOW!", "JUST KEEP NOT DYING!"
         }, new List<DialogText.facialExpression>() {
-            DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.happy, DialogText.facialExpression.thinking, DialogText.facialExpression.dismissive,
-            DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.dismissive
+            DialogText.facialExpression.happy, DialogText.facialExpression.normal, DialogText.facialExpression.happy,
+            DialogText.facialExpression.normal, DialogText.facialExpression.thinking, DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.normal,
+            DialogText.facialExpression.happy, DialogText.facialExpression.normal, DialogText.facialExpression.normal,
+            DialogText.facialExpression.dismissive, DialogText.facialExpression.normal, DialogText.facialExpression.normal,
+            DialogText.facialExpression.happy, DialogText.facialExpression.dismissive, DialogText.facialExpression.dismissive, DialogText.facialExpression.thinking,
+            DialogText.facialExpression.normal, DialogText.facialExpression.happy
         }),
         delegate { StartCoroutine(mouthTutEnd()); });
     }
@@ -34,6 +42,8 @@ public class HouseTutorialCanvas : MonoBehaviour {
         var sPos = Camera.main.transform.position;
         yield return new WaitForSeconds(.5f);
         Camera.main.transform.DOMoveY(mouth.transform.position.y, .35f);
+        yield return new WaitForSeconds(2.0f);
+        Camera.main.transform.DOMoveY(bed.transform.position.y, .35f);
         yield return new WaitForSeconds(2.0f);
         Camera.main.transform.DOMoveY(sPos.y, .25f);
         yield return new WaitForSeconds(.75f);

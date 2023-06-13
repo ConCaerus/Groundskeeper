@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8111100207874937072}
   - component: {fileID: 3185873290074950876}
   - component: {fileID: 5430946049859399000}
+  - component: {fileID: 8713206943689709431}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -243,6 +244,7 @@ MonoBehaviour:
   ambientPlayer: {fileID: 5430946049859399000}
   playOnStartAndKeepPlayingMusic: []
   playOnStartAndKeepPlayingAmbient: []
+  audioSourcePreset: {fileID: 9165472072873966443, guid: 60dfaa67d65bcb748bcc2639dbda5ab1, type: 3}
 --- !u!82 &5430946049859399000
 AudioSource:
   m_ObjectHideFlags: 0
@@ -339,3 +341,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!81 &8713206943689709431
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4330141788910636674}
+  m_Enabled: 1

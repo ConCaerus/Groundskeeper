@@ -175,7 +175,6 @@ public class MonsterSpawner : MonoBehaviour {
         }
 
         position prevPos = position.First;
-        float timeBtwPositions = 3f;
 
         float minDistToLight = 50f; //  CHANGE THIS TO CHANGE HOW FAR MONSTERS SPAWN FROM HOUSE
         int numOfLeaders = 5;
@@ -201,6 +200,8 @@ public class MonsterSpawner : MonoBehaviour {
                     //  spawns the monster
                     var temp = Instantiate(monsterPresets[i].gameObject, transform);
                     var tmi = temp.GetComponent<MonsterInstance>();
+                    if(tmi == null)
+                        continue;
 
                     //  finds a position for the monster to have
                     bool tooClose = true;

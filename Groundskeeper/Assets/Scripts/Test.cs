@@ -1,11 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
-public class Test : MonoBehaviour {
-
+public class Test : MonoBehaviour
+{
+    [SerializeField] AudioClip clip;
     private void Start() {
-        //GameInfo.getPlayerWeaponTitle(FindObjectOfType<PresetLibrary>());
+        StartCoroutine(player());
+    }
+
+    IEnumerator player() {
+        GetComponent<AudioSource>().PlayOneShot(clip);
+        yield return new WaitForSeconds(.5f);
+        StartCoroutine(player());
     }
 }

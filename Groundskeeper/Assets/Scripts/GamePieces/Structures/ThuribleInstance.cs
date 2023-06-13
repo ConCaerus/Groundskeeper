@@ -41,7 +41,7 @@ public class ThuribleInstance : StructureInstance {
             
             //  does things
             var m = beingSucked[i].GetComponent<MonsterInstance>();
-            m.takeDamage(1, 0f, transform.position, false, false, false);
+            m.takeDamage(1, 0f, transform.position, false, 0.0f, false);
             GameInfo.addSouls(m.soulsGiven / 10f, false);
         }
         yield return new WaitForSeconds(.5f);
