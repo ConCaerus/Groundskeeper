@@ -8,7 +8,6 @@ public class SoulNibblerInstance : DefenseInstance {
     public override void specialTickAction(GameObject triggerer) {
         if(triggerer != null) {
             GameInfo.addSouls(triggerer.GetComponent<MonsterInstance>().soulsGiven * soulStealMod, false);
-            Debug.Log(GameInfo.souls);
         }
     }
 }

@@ -10,7 +10,6 @@ public class CultistMonsterInstance : MonsterInstance {
         other.GetComponent<MonsterInstance>().hasCultistBuff = true;
         var part = Instantiate(buffedParticles.gameObject, other.transform);
         part.transform.localPosition = Vector3.zero;
-        Debug.Log("here");
     }
 
     public override void sightExitEffect(GameObject other) {

@@ -26,6 +26,7 @@ public class DoorInteractable : Interactable {
         DOTween.To(() => Camera.main.orthographicSize, x => Camera.main.orthographicSize = x, Camera.main.orthographicSize / 2f, .25f);
         yield return new WaitForSeconds(.5f);
         GameInfo.addNights(1);
+        GameInfo.setCurrentScene(GameInfo.SceneType.Game);
         FindObjectOfType<TransitionCanvas>().loadScene("Game");
     }
 }

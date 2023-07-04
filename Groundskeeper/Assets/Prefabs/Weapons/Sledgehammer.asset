@@ -15,7 +15,7 @@ MonoBehaviour:
   title: 7
   damage: 20
   knockback: 1.5
-  cooldown: 1
+  cooldown: 1.5
   aType: 0
   range: 0
   groundedTime: 0

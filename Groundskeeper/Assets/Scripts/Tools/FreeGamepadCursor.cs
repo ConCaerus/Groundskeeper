@@ -71,9 +71,8 @@ public class FreeGamepadCursor : MonoBehaviour {
     }
 
     void updateMotion() {
-        if(vMouse == null || Gamepad.current == null || mm.usingKeyboard() || cursorImage == null)
+        if(vMouse == null || Gamepad.current == null || mm.usingKeyboard() || cursorImage == null || Time.timeScale == 0f)
             return;
-
         Vector2 stickVal = Gamepad.current.rightStick.ReadValue();
         stickVal *= curSpeed * Time.deltaTime;
 
@@ -104,21 +103,41 @@ public class FreeGamepadCursor : MonoBehaviour {
         anchorCursor(newPos);
     }
     void changeCursor(bool usingKeyboard) {
-        if(cursorImage == null || vMouse == null)
+        if(cursorImage == null)
             return;
+
+        if(!usingKeyboard) {
+            if(vMouse == null) {
+                vMouse = (Mouse)InputSystem.AddDevice("VirtualMouse");
+            }
+            else if(vMouse.added) {
+                InputSystem.AddDevice(vMouse);
+            }
+            curMouse = Mouse.current;
+
+            InputUser.PerformPairingWithDevice(vMouse, playerInput.user);
+
+            if(cursorTrans != null) {
+                Vector2 pos = cursorTrans.anchoredPosition;
+                InputState.Change(vMouse.position, pos);
+            }
+        }
+
         onControlsChanged(playerInput);
         cursorImage.enabled = !usingKeyboard;
+        cursorTrans.gameObject.GetComponent<Image>().enabled = !usingKeyboard;
     }
 
     //  when hiding (and moveCursor is true) if b is true, the cursor will move out of the way of all UI and move to (0, 0)
     //  when showing (and moveCursor is true) if b is false, the cursor will move to the previously stored position (stored when hiding)
     public void showCursor(bool b, bool moveCursor) {
-        if(cursorImage != null && vMouse != null) {
+        if(cursorImage != null && mm != null && !mm.usingKeyboard()) {
             cursorImage.enabled = b;
             if(moveCursor) {
-                if(!b && vMouse != null)
+                if(!b && vMouse != null) {
                     prevPos = vMouse.position.ReadValue();
-                InputState.Change(vMouse.position, !b ? Vector2.zero : prevPos);
+                    InputState.Change(vMouse.position, !b ? Vector2.zero : prevPos);
+                }
             }
         }
     }
@@ -131,22 +150,20 @@ public class FreeGamepadCursor : MonoBehaviour {
             return;
         Vector2 anchoredPos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, pos, canvas.renderMode
-            ==  RenderMode.ScreenSpaceOverlay ? null : Camera.main, out anchoredPos);
+            == RenderMode.ScreenSpaceOverlay ? null : Camera.main, out anchoredPos);
         cursorTrans.anchoredPosition = anchoredPos;
     }
 
     void onControlsChanged(PlayerInput pl) {
-        if(cursorImage == null || vMouse == null)
+        if(cursorImage == null || mm.usingKeyboard())
             return;
+        cursorTrans.gameObject.GetComponent<Image>().enabled = false;
         if(pl.currentControlScheme == keyboardScheme && prevControls != keyboardScheme && vMouse != null) {
-            Cursor.visible = true;
             curMouse.WarpCursorPosition(vMouse.position.ReadValue());
-            cursorTrans.gameObject.GetComponent<Image>().enabled = false;
             prevControls = keyboardScheme;
         }
-        else if(pl.currentControlScheme == gamepadscheme && prevControls != gamepadscheme) {
+        else if(pl.currentControlScheme == gamepadscheme && prevControls != gamepadscheme && vMouse != null) {
             cursorTrans.gameObject.GetComponent<Image>().enabled = true;
-            Cursor.visible = false;
             InputState.Change(vMouse.position, curMouse.position.ReadValue());
             anchorCursor(curMouse.position.ReadValue());
             prevControls = gamepadscheme;

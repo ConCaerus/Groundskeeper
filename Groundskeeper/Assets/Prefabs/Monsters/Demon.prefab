@@ -234,10 +234,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 150
   unitHealth: 150
-  hurtSound: {fileID: 8300000, guid: ddb92acf59f1c0c43824049952f6d2fd, type: 3}
+  hurtSound: {fileID: 8300000, guid: 9baf9dc19f77df447b41ed0eeb03a23f, type: 3}
   dieSound: {fileID: 0}
-  bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
+  healingParticles: {fileID: 0}
   healthBar: {fileID: 0}
+  dsi: {fileID: 0}
   hi: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: a2088fef082a03142b42b27783e201dd, type: 3}
   backSprite: {fileID: 21300000, guid: d0d42e66c9ec6f2409fdc13f9ea04329, type: 3}
@@ -248,31 +249,30 @@ MonoBehaviour:
   canMove: 1
   movementParticles: {fileID: 838880790227583927}
   walkSound: {fileID: 8300000, guid: f7610a448612a8341868f6aedad6e772, type: 3}
-  title: 6
+  title: 9
   speed: 0.6
-  attackDamage: 10
+  attackDamage: 25
   damageTodefenses: 0
   diff: 10
-  originalSoulsGiven: 1.5
+  originalSoulsGiven: 2
   soulsGiven: 15
-  earliestNight: 9
+  earliestNight: 30
   favoriteTarget: 0
   type: 1
   freqInWave: 1
   posInWave: 0
   flying: 0
   sprite: {fileID: 21300000, guid: a2088fef082a03142b42b27783e201dd, type: 3}
-  attackCoolDown: 0.25
+  attackCoolDown: 0.35
   attackKnockBack: 0
   followingTransform: {fileID: 0}
   hasTarget: 0
   hasAttractiveTarget: 0
   hasCultistBuff: 0
+  confused: 0
   leader: 0
   closestLeader: {fileID: 0}
   affectedMoveAmt: 0
-  bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
-  soulParticles: {fileID: 656110837553578308, guid: f2cdc443f20380e499b92936481b8140, type: 3}
   relevantWave: 0
   direction: 0
   sCol: {fileID: 8504702241391989741}

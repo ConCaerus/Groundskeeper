@@ -4,17 +4,15 @@ using UnityEngine;
 using DG.Tweening;
 
 public class DeadGuyInstance : MonoBehaviour {
-    [HideInInspector] float soulsGiven = 5f; //  have this number go up as the nights increase
+    float soulsGiven;
     [SerializeField] public string title;
     [SerializeField] AudioClip interactSound;
 
     GameUICanvas guc;
-    GameBoard gb;
 
     private void Start() {
-        soulsGiven *= (GameInfo.getNightCount() + 1);
+        soulsGiven = 3f * (GameInfo.getNightCount() + 1);
         guc = FindObjectOfType<GameUICanvas>();
-        gb = FindObjectOfType<GameBoard>();
 
         FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), GetComponent<SpriteRenderer>());
     }

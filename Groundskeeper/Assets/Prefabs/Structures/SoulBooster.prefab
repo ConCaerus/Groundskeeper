@@ -131,6 +131,7 @@ MonoBehaviour:
   maxHealth: 200
   unitHealth: 200
   hurtSound: {fileID: 0}
+  dieSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
@@ -153,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 25
+  cost: 150
   title: 19
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 3f729711d698cf44db7cb2f8196338ed, type: 2}

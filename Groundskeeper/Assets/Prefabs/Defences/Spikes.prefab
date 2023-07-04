@@ -109,7 +109,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 20, y: 20}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &4812259985906576421
 MonoBehaviour:
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 7
+  cost: 5
   title: 2
   placementObstacleLayers: 0200000001000000
   tile: {fileID: 11400000, guid: 937b47b7d8729504ea240264a4a310b8, type: 2}
@@ -136,6 +136,7 @@ MonoBehaviour:
   effectRadius: 0
   unlockedImagePos: {x: 0, y: -2.5}
   unlockedImageSize: {x: 1, y: 1}
+  placedThisNight: 0
 --- !u!114 &3169957001068333607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,8 +156,8 @@ MonoBehaviour:
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
-  dmgAmt: 4
-  slowAmt: 0.3
+  dmgAmt: 2
+  slowAmt: 0.15
   btwHitTime: 1
   tickCount: -1
   target: 1

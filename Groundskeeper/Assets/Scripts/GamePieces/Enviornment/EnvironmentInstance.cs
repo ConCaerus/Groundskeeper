@@ -11,6 +11,8 @@ public class EnvironmentInstance : MonoBehaviour {
     [SerializeField] bool sways = false;
     [SerializeField] AudioClip hitSound;
 
+    SoulParticlePooler spp;
+
     AudioManager am;
 
     public enum triggerInteractionType {
@@ -19,6 +21,7 @@ public class EnvironmentInstance : MonoBehaviour {
 
     private void Start() {
         am = FindObjectOfType<AudioManager>();
+        spp = FindObjectOfType<SoulParticlePooler>();
         if(sways) {
             StartCoroutine(swayWaiter());
         }
@@ -41,8 +44,12 @@ public class EnvironmentInstance : MonoBehaviour {
         GetComponent<Collider2D>().enabled = false;
         GetComponentInParent<CompositeCollider2D>().GenerateGeometry();
         Destroy(gameObject, .25f);
-        if(giveSouls)
-            GameInfo.addSouls(Random.Range(1, 6), false);
+        float soulsGiven = Random.Range(1, 4);
+        if(giveSouls) {
+            GameInfo.addSouls(soulsGiven, false);
+            spp.showParticle(transform.position, soulsGiven);
+            FindObjectOfType<GameUICanvas>().incSouls(soulsGiven);
+        }
     }
 
     public void turnOffCol() {

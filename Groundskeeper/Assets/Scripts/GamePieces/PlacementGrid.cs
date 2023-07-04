@@ -67,8 +67,6 @@ public class PlacementGrid : MonoBehaviour {
     }
 
     private void Update() {
-        if(mouseDown && placer == null)
-            placer = StartCoroutine(place());
         if(placing) {
             var pos = map.WorldToCell(mm.usingKeyboard() ? GameInfo.mousePos() : fgc.getWorldCursorPos());
             var p = map.CellToWorld(pos);
@@ -133,6 +131,8 @@ public class PlacementGrid : MonoBehaviour {
                 justUpdatedBoard = false;
             }
         }
+        if(mouseDown && placer == null)
+            placer = StartCoroutine(place());
     }
 
     public void changePlacing(GameObject thing, bool toggle) {
@@ -178,10 +178,10 @@ public class PlacementGrid : MonoBehaviour {
             GameObject obj = null;
             //  checks if the player can afford to place
             var title = currentObj.GetComponent<Buyable>().title;
-            bool costIsZero = !bl.hasPlayerSeenBuyable(title);
+            bool costIsZero = bl.getNightBuyableWasSeen(title) == -1 || (bl.getNightBuyableWasSeen(title) == GameInfo.getNightCount() && !gb.hasBuyableOnBoard(title));
             if(!cth.tryTransaction(costIsZero ? 0f : currentObj.GetComponent<Buyable>().cost, pc.soulsText, false, false))
                 yield break;
-            if(!bl.hasPlayerSeenBuyable(title)) {
+            if(costIsZero) {
                 bl.playerSawBuyable(title);
                 FindObjectOfType<BuyableButtonSpawner>().updateBuyableButtons();
                 foreach(var i in FindObjectsOfType<PregameBuyableButton>())
@@ -192,15 +192,14 @@ public class PlacementGrid : MonoBehaviour {
 
                 //  places the object in the correct spot
                 obj.transform.position = p;
-
-                if(obj.GetComponent<HelperInstance>() != null)
-                    obj.GetComponent<HelperInstance>().startingPos = p;
             }
             else {
                 obj = FindObjectOfType<DefenseHolderSpawner>().spawnDefense(currentObj.gameObject, p);
             }
 
             obj.GetComponent<Buyable>().animateBeingPlaced();
+            obj.GetComponent<Buyable>().placedThisNight = true;
+            obj.GetComponent<Buyable>().placedForFree = costIsZero;
             FindObjectOfType<AudioManager>().playSound(placeSound, p);
             map.color = Color.red;
 
@@ -216,6 +215,12 @@ public class PlacementGrid : MonoBehaviour {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
+
+            //  other shit
+            if(obj.GetComponent<BloodFumigatorInstance>() != null) 
+                obj.GetComponent<BloodFumigatorInstance>().setup();
+            else if(obj.GetComponent<ThuribleInstance>() != null)
+                obj.GetComponent<ThuribleInstance>().setup();
             placer = null;
         }
     }
@@ -236,13 +241,16 @@ public class PlacementGrid : MonoBehaviour {
                     break;
                 }
             }
-            if(found) {
+            if(found && f != FindObjectOfType<HouseInstance>().gameObject) {
                 gb.removeFromGameBoard(f.gameObject);
                 Destroy(f.gameObject);
             }
             else return;
 
-            cth.tryTransaction(-c * .9f, pc.soulsText, false, false);
+            if(!f.GetComponent<Buyable>().placedForFree) {
+                bool fullRefund = f.GetComponent<Buyable>().placedThisNight;
+                cth.tryTransaction(fullRefund ? -c : -c * .9f, pc.soulsText, false, false);
+            }
             map.color = Color.green;
             prevPos += new Vector2(50f, 0f);    //  makes the prevPos something completely different, making sure that it gets checked next frame
             StartCoroutine(mapUpdater());

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class DefenseInstance : Defense {
-    [SerializeField] GameObject bloodParticles;
     TickDamager td;
     defenseStats dStats;
 
@@ -33,10 +32,6 @@ public abstract class DefenseInstance : Defense {
     }
 
     public override void hitLogic(float knockback, Vector2 origin, float stunTime) {
-    }
-
-    public override GameObject getBloodParticles() {
-        return bloodParticles;
     }
     public override Color getStartingColor() {
         return Color.white;

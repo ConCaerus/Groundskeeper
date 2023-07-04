@@ -8,11 +8,15 @@ public class IronMaidenInstance : StructureInstance {
     [SerializeField] Sprite openSprite, closedSprite;
     SpriteRenderer sr;
     [SerializeField] AudioClip snapSound;
+    GameBoard gb;
 
     private void Start() {
         mortalInit();
         structureInit();
         sr = GetComponent<SpriteRenderer>();
+        gb = FindObjectOfType<GameBoard>();
+
+        StartCoroutine(checker());
     }
 
     public override void aoeEffect(GameObject effected) {
@@ -51,5 +55,15 @@ public class IronMaidenInstance : StructureInstance {
         saoe.expandArea();
         sr.sprite = openSprite;
         eaterWaiter = null;
+    }
+
+    IEnumerator checker() {
+        if(gb.monsters.Count > 0) {
+            if(Vector2.Distance(gb.monsters.FindClosest(transform.position).transform.position, transform.position) < saoe.maxRad) {
+                aoeEffect(gb.monsters.FindClosest(transform.position).gameObject);
+            }
+        }
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(checker());
     }
 }

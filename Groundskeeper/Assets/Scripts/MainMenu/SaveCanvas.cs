@@ -9,6 +9,8 @@ public class SaveCanvas : MonoBehaviour {
 
     [SerializeField] TextMeshProUGUI nameText;
 
+    MouseManager mm;
+
     private void Start() {
         nameText.transform.parent.gameObject.SetActive(false);
     }
@@ -34,6 +36,12 @@ public class SaveCanvas : MonoBehaviour {
         SaveData.setCurrentSaveIndex(curInd);
     }
 
+    public void selectIfShould(Selectable firstButton) {
+        mm = FindObjectOfType<MouseManager>();
+        if(!mm.usingKeyboard())
+            firstButton.Select();
+    }
+
     public void deleteSave(int ind) {
         SaveData.deleteSave(ind);
         showSaveInfo();
@@ -48,8 +56,9 @@ public class SaveCanvas : MonoBehaviour {
     void loadGame(int i) {
         //  checks if the save is empty, if so, load a new game
         SaveData.setCurrentSaveIndex(i);
+        TimeInfo.setStartTime();
         if(SaveData.hasSaveDataForSlot(i))
-            FindObjectOfType<TransitionCanvas>().loadScene("Game");
+            FindObjectOfType<TransitionCanvas>().loadScene(GameInfo.getCurrentScene());
         else
             loadNewGame();
     }

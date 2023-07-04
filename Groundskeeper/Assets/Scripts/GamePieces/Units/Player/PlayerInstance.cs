@@ -33,19 +33,22 @@ public class PlayerInstance : Attacker {
     Rigidbody2D rb;
     PlayerWeaponInstance pwi;
 
-    [SerializeField] GameObject bloodParticles;
-
     [SerializeField] Light2D pLight;
     public Vector2 hCenter;
     Collider2D c;
     PlayerStats pStats;
 
     private void OnCollisionStay2D(Collision2D col) {
-        ls.requestNewSortingLayer(c, sr);
+        if(!isDead)
+            ls.requestNewSortingLayer(c, sr);
     }
 
 
     private void Awake() {
+        if(GameInfo.getNightCount() >= 14) {
+            maxHealth = 200;
+            health = 200;
+        }
         mortalInit();
         controls = new InputMaster();
         rb = GetComponent<Rigidbody2D>();
@@ -72,6 +75,13 @@ public class PlayerInstance : Attacker {
         StartCoroutine(passiveHealthRegen());
         if(pLight.isActiveAndEnabled)
             StartCoroutine(moveLightWithPlayer());
+        StartCoroutine(layerWaiter());
+    }
+    IEnumerator layerWaiter() {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        ls.requestNewSortingLayer(c, sr);
     }
 
 
@@ -100,7 +110,7 @@ public class PlayerInstance : Attacker {
         //  if player is not moving, decrement the movementInfo
         //  if player is moving, increase the movementInfo to target value
         moveInfo = controls.Player.Move.inProgress ? Vector2.MoveTowards(moveInfo, targetMoveInfo, accSpeed * 100.0f * Time.fixedDeltaTime) : Vector2.MoveTowards(moveInfo, Vector2.zero, slowSpeed * 100.0f * Time.fixedDeltaTime);
-        
+
         //  if the player's not moving, look at the mouse
         if(!controls.Player.Move.inProgress) {
             lookAtPos(mm.usingKeyboard() ? GameInfo.mousePos() : !fgc.isActiveAndEnabled ? ggc.getMousePosInWorld() : fgc.getWorldCursorPos());
@@ -137,7 +147,7 @@ public class PlayerInstance : Attacker {
             return;
 
         //  moving more along the y axis, set to a y axis sprite
-        else if(Mathf.Abs(movingDir.x) < .1f && Mathf.Abs(movingDir.y) > .1f) {
+        else if(Mathf.Abs(movingDir.y) > Mathf.Abs(movingDir.x)) {
             if(movingDir.y > 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = backSprite;
             else
@@ -166,7 +176,7 @@ public class PlayerInstance : Attacker {
     }
 
     IEnumerator moveLightWithPlayer() {
-        while(true) {
+        while(!isDead) {
             pLight.transform.position = transform.position;
             yield return new WaitForSeconds(0f);
         }
@@ -196,22 +206,21 @@ public class PlayerInstance : Attacker {
 
 
     #region ---   MORTAL SHIT   ---
-    public override GameObject getBloodParticles() {
-        return bloodParticles;
-    }
     public override Color getStartingColor() {
         return Color.white;
     }
     public override void die() {
-        //  create a new empty player obj
-        var obj = new GameObject("deadPlayer");
-        obj.tag = "Player";
-        obj.transform.position = transform.position;
-
+        if(isDead)
+            return;
         GameInfo.playing = false;
         FindObjectOfType<GameOverCanvas>().show();
-        Destroy(gameObject);
+        Destroy(gameObject.transform.GetChild(0).gameObject);
         Destroy(healthBar.gameObject);
+        isDead = true;
+        FindObjectOfType<MonsterSpawner>().enabled = false;
+        foreach(var i in FindObjectsOfType<MonsterInstance>())
+            i.enabled = false;
+        enabled = false;
     }
     IEnumerator passiveHealthRegen() {
         while(health > 0.0f) {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static StructureAreaOfEffect;
 
 public class DevilsShrineInstance : StructureInstance {
     Coroutine healer = null;
@@ -8,7 +9,6 @@ public class DevilsShrineInstance : StructureInstance {
     //  make this game object because monster instance might not be being attactched after modifying
     [SerializeField] GameObject healingEffect;
     List<GameObject> beingHealed = new List<GameObject>();
-    List<GameObject> activeEffects = new List<GameObject>();
 
     private void Start() {
         mortalInit();
@@ -16,11 +16,11 @@ public class DevilsShrineInstance : StructureInstance {
     }
 
     public override void aoeEffect(GameObject effected) {
-        //  adds the unit to the healing coroutine
+        //  if the guy already is being effected by a devils shrine, remove it from the other list and add it to this one
+        if(effected.GetComponent<Mortal>().dsi != null && effected.GetComponent<Mortal>().dsi != this)
+            effected.GetComponent<Mortal>().dsi.aoeLeaveEffect(effected.gameObject);
+        effected.GetComponent<Mortal>().dsi = this;
         beingHealed.Add(effected.gameObject);
-        var e = Instantiate(healingEffect, effected.gameObject.transform);
-        e.transform.localPosition = Vector3.zero;
-        activeEffects.Add(e.gameObject);
         //  starts the coroutine if it's not started
         if(healer == null)
             StartCoroutine(healUnits());
@@ -28,10 +28,9 @@ public class DevilsShrineInstance : StructureInstance {
 
     public override void aoeLeaveEffect(GameObject effected) {
         //  removes the unit from the healing coroutine
-        int index = beingHealed.IndexOf(effected.gameObject);
-        beingHealed.RemoveAt(index);
-        activeEffects[index].GetComponent<ParticleSystem>().Stop();
-        activeEffects.RemoveAt(index);
+        beingHealed.Remove(effected.gameObject);
+        effected.GetComponent<Mortal>().stopHealingParticles();
+        effected.GetComponent<Mortal>().dsi = null;
         //  stops the coroutine if there are not more units being healed
         if(beingHealed.Count == 0 && healer != null) {
             StopCoroutine(healer);
@@ -44,15 +43,23 @@ public class DevilsShrineInstance : StructureInstance {
             //  check if the thing exists
             if(beingHealed[i] == null || beingHealed[i].GetComponent<Mortal>() == null) {
                 beingHealed.RemoveAt(i);
-                activeEffects[i].GetComponent<ParticleSystem>().Stop();
-                activeEffects.RemoveAt(i);
+                if(beingHealed[i].GetComponent<Mortal>() != null)
+                    beingHealed[i].GetComponent<Mortal>().stopHealingParticles();
                 continue;
             }
+            var m = beingHealed[i].GetComponent<Mortal>();
 
+            //  checks if thing needs healing
+            if(Mathf.Abs(m.health - m.maxHealth) < .1f) {
+                m.stopHealingParticles();
+            }
             //  does things
-            beingHealed[i].GetComponent<Mortal>().heal(20);
+            else {
+                m.heal(2);
+                m.playHealingParticles();
+            }
         }
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3f);
         healer = StartCoroutine(healUnits());
     }
 }

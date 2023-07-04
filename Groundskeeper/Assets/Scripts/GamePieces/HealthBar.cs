@@ -34,14 +34,16 @@ public class HealthBar : MonoBehaviour {
         if(shower != null)
             StopCoroutine(shower);
         shower = StartCoroutine(showTimeWaiter());
+        slider.DOKill();
+        slider.DOValue(parent.GetComponent<Mortal>().health, .15f);
         if(!slider.isActiveAndEnabled && parent.GetComponent<Mortal>().health < parent.GetComponent<Mortal>().maxHealth)
             slider.gameObject.SetActive(true);
         else if(slider.isActiveAndEnabled && parent.GetComponent<Mortal>().health >= parent.GetComponent<Mortal>().maxHealth) {
+            slider.DOKill();
+            slider.value = parent.GetComponent<Mortal>().maxHealth;
             slider.gameObject.SetActive(false);
             return;
         }
-        slider.DOKill();
-        slider.DOValue(parent.GetComponent<Mortal>().health, .15f);
     }
 
     public void setParent(GameObject obj) {

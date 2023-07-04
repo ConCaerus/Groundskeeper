@@ -4,7 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 
 public class PriestWeaponInstance : WeaponInstance {
-    HelperInstance hi = null;
 
     private void Awake() {
         hi = user.GetComponent<HelperInstance>();

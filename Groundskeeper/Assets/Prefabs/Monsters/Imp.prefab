@@ -236,8 +236,9 @@ MonoBehaviour:
   unitHealth: 30
   hurtSound: {fileID: 8300000, guid: 9baf9dc19f77df447b41ed0eeb03a23f, type: 3}
   dieSound: {fileID: 0}
-  bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
+  healingParticles: {fileID: 0}
   healthBar: {fileID: 0}
+  dsi: {fileID: 0}
   hi: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: e7f1984c254e1f0408cbaeff1c8fb7a9, type: 3}
   backSprite: {fileID: 21300000, guid: 8ebf1138684ecc54cba631579e4ade81, type: 3}
@@ -248,14 +249,14 @@ MonoBehaviour:
   canMove: 1
   movementParticles: {fileID: 2088077460893613882}
   walkSound: {fileID: 8300000, guid: f7610a448612a8341868f6aedad6e772, type: 3}
-  title: 9
+  title: 3
   speed: 0.6
-  attackDamage: 5
+  attackDamage: 8
   damageTodefenses: 0
   diff: 4
-  originalSoulsGiven: 0.7
+  originalSoulsGiven: 0.85
   soulsGiven: 5
-  earliestNight: 3
+  earliestNight: 6
   favoriteTarget: 1
   type: 1
   freqInWave: 0
@@ -268,11 +269,10 @@ MonoBehaviour:
   hasTarget: 0
   hasAttractiveTarget: 0
   hasCultistBuff: 0
+  confused: 0
   leader: 0
   closestLeader: {fileID: 0}
   affectedMoveAmt: 0
-  bloodParticles: {fileID: 6432194347724991542, guid: 6ba8d3f18b946444a992b42aae546c16, type: 3}
-  soulParticles: {fileID: 656110837553578308, guid: f2cdc443f20380e499b92936481b8140, type: 3}
   relevantWave: 0
   direction: 0
   sCol: {fileID: 107147300482145878}

@@ -8,7 +8,10 @@ public abstract class Mortal : MonoBehaviour {
     [SerializeField] int unitHealth;
     [SerializeField] AudioClip hurtSound, dieSound;
     GameObject bloodParticle = null;
-    [SerializeField] GameObject bloodStain;
+    [HideInInspector] public bool isDead { get; protected set; } = false;
+    BloodStainPooler bsp;
+    BloodParticlePooler bpp;
+    [SerializeField] ParticleSystem healingParticles;
     public int health {
         get {
             return unitHealth;
@@ -16,13 +19,15 @@ public abstract class Mortal : MonoBehaviour {
 
         set {
             unitHealth = value;
-            if(healthBar != null)
+            if(healthBar != null && unitHealth < maxHealth)
                 healthBar.updateBar();
         }
     }
     protected bool invincible = false;
 
     public HealthBar healthBar = null;
+
+    [HideInInspector] public DevilsShrineInstance dsi = null;
 
     //  storage
     protected GameUICanvas guc;
@@ -34,12 +39,13 @@ public abstract class Mortal : MonoBehaviour {
         if(FindObjectOfType<HouseInstance>() != null)
             hi = FindObjectOfType<HouseInstance>();
         gtc = FindObjectOfType<GameTutorialCanvas>();
+        bsp = FindObjectOfType<BloodStainPooler>();
+        bpp = FindObjectOfType<BloodParticlePooler>();
     }
 
     public abstract void die();
 
     public abstract void hitLogic(float knockback, Vector2 origin, float stunTime);
-    public abstract GameObject getBloodParticles();
     public abstract Color getStartingColor();
 
     public void takeDamage(int dmg, float knockback, Vector2 origin, bool activateInvinc, float stunTime, bool bloodEffect) {
@@ -51,16 +57,11 @@ public abstract class Mortal : MonoBehaviour {
         //  flair
         if(hurtSound != null)
             FindObjectOfType<AudioManager>().playSound(hurtSound, transform.position);
-        if(getBloodParticles() != null && bloodEffect) {
-            if(bloodParticle == null)
-                bloodParticle = Instantiate(getBloodParticles().gameObject, transform.position, Quaternion.identity, null);
-            bloodParticle.transform.position = transform.position;
+        if(bloodEffect && bpp != null) {
+            bpp.showParticle(transform.position);
         }
-        if(bloodStain != null && bloodEffect) {
-            float disappearTime = 15f;
-            var bs = Instantiate(bloodStain.gameObject, transform.position, Quaternion.identity, null);
-            bs.GetComponent<SpriteRenderer>().DOColor(Color.clear, disappearTime);
-            Destroy(bs.gameObject, disappearTime + .1f);
+        if(bsp != null && bloodEffect) {
+            bsp.showStain(transform.position);
         }
 
         health -= dmg;
@@ -78,9 +79,12 @@ public abstract class Mortal : MonoBehaviour {
             return;
         }
         health = Mathf.Clamp(health + hAmt, 0, maxHealth);
+        if(healthBar != null)
+            healthBar.updateBar();
 
         if(triggerEffect) {
             //  do a little particle system here
+            playHealingParticles();
         }
     }
 
@@ -103,6 +107,15 @@ public abstract class Mortal : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+    public void playHealingParticles() {
+        if(healingParticles != null && health < maxHealth)
+            healingParticles.Play();
+    }
+    public void stopHealingParticles() {
+        if(healingParticles != null)
+            healingParticles.Stop();
     }
 
 

@@ -11,6 +11,7 @@ public class ThuribleInstance : StructureInstance {
     private void Start() {
         mortalInit();
         structureInit();
+        GetComponentInChildren<ParticleSystemRenderer>().sortingOrder = GetComponent<SpriteRenderer>().sortingOrder;
     }
 
     public override void aoeEffect(GameObject effected) {
@@ -30,9 +31,16 @@ public class ThuribleInstance : StructureInstance {
             sucker = null;
         }
     }
+    public void setup() {
+        FindObjectOfType<LayerSorter>().requestNewSortingLayer(GetComponent<Collider2D>(), GetComponent<SpriteRenderer>());
+        GetComponentInChildren<ParticleSystemRenderer>().sortingOrder = GetComponent<SpriteRenderer>().sortingOrder;
+    }
 
     IEnumerator suckMonsters() {
         for(int i = beingSucked.Count - 1; i >= 0; i--) {
+            //  check if the number of monsters has decreased
+            if(i > beingSucked.Count - 1)
+                continue;
             //  check if the thing exists
             if(beingSucked[i] == null || beingSucked[i].GetComponent<MonsterInstance>() == null) {
                 beingSucked.RemoveAt(i);
@@ -41,8 +49,9 @@ public class ThuribleInstance : StructureInstance {
             
             //  does things
             var m = beingSucked[i].GetComponent<MonsterInstance>();
-            m.takeDamage(1, 0f, transform.position, false, 0.0f, false);
+            m.takeDamage(2, 0f, transform.position, false, 0.0f, false);
             GameInfo.addSouls(m.soulsGiven / 10f, false);
+            yield return new WaitForEndOfFrame();
         }
         yield return new WaitForSeconds(.5f);
         sucker = StartCoroutine(suckMonsters());

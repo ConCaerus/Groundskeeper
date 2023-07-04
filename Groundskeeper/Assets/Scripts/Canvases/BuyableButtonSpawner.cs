@@ -20,6 +20,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
     int prevGenre = -1;
     BuyableLibrary bl;
     PlacementGrid pg;
+    GameBoard gb;
 
     MouseManager mm;
 
@@ -27,6 +28,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
         bl = FindObjectOfType<BuyableLibrary>();
         pg = FindObjectOfType<PlacementGrid>();
         mm = FindObjectOfType<MouseManager>();
+        gb = FindObjectOfType<GameBoard>();
     }
 
     public void switchGenre(int index) {
@@ -50,7 +52,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
             obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().titleToText();
             obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().cost.ToString("0.0") + "s";
             obj.GetComponent<InfoableImage>().info = i.GetComponent<Buyable>().title.ToString() + ":\n" + i.GetComponent<Buyable>().description;
-            if(!bl.hasPlayerSeenBuyable(i.GetComponent<Buyable>().title) || i.GetComponent<Buyable>().cost == 0f) {
+            if(bl.getNightBuyableWasSeen(i.GetComponent<Buyable>().title) == -1 || i.GetComponent<Buyable>().cost == 0f || (bl.getNightBuyableWasSeen(i.GetComponent<Buyable>().title) == GameInfo.getNightCount() && !gb.hasBuyableOnBoard(i.GetComponent<Buyable>().title))) {
                 StartCoroutine(setupDot(obj.transform, obj.transform.GetChild(2).transform, i.GetComponent<Buyable>()));
                 obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Free!";
             }
@@ -64,28 +66,7 @@ public class BuyableButtonSpawner : MonoBehaviour {
     }
 
     public void updateBuyableButtons() {
-        List<GameObject> buyables = prevGenre == 0 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Helper, true) :
-            prevGenre == 1 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Defense, true) :
-            bl.getUnlockedBuyablesOfType(Buyable.buyType.Structure, true);
-
-        foreach(var i in buttons)
-            Destroy(i.gameObject);
-        buttons.Clear();
-
-        foreach(var i in buyables) {
-            var obj = Instantiate(buyableButton.gameObject, holder);
-            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().title.ToString();
-            obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().cost.ToString("0.0") + "s";
-            obj.GetComponent<InfoableImage>().info = i.GetComponent<Buyable>().title.ToString() + ":\n" + i.GetComponent<Buyable>().description;
-            if(!bl.hasPlayerSeenBuyable(i.GetComponent<Buyable>().title)) {
-                StartCoroutine(setupDot(obj.transform, obj.transform.GetChild(2).transform, i.GetComponent<Buyable>()));
-                obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Free!";
-            }
-            else
-                obj.transform.GetChild(2).gameObject.SetActive(false);
-            obj.GetComponent<Button>().onClick.AddListener(delegate { pg.changePlacing(i.gameObject, i.gameObject == pg.currentObj); });
-            buttons.Add(obj.gameObject);
-        }
+        StartCoroutine(waitToUpdateDot());
     }
 
     public IEnumerator setupDot(Transform parent, Transform dot, Buyable b) {
@@ -131,5 +112,33 @@ public class BuyableButtonSpawner : MonoBehaviour {
             dot.transform.DOScale(1f, animTime);
         yield return new WaitForSeconds(animTime);
         StartCoroutine(animateDot(dot));
+    }
+
+    IEnumerator waitToUpdateDot() {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        List<GameObject> buyables = prevGenre == 0 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Helper, true) :
+            prevGenre == 1 ? bl.getUnlockedBuyablesOfType(Buyable.buyType.Defense, true) :
+            bl.getUnlockedBuyablesOfType(Buyable.buyType.Structure, true);
+
+        foreach(var i in buttons)
+            Destroy(i.gameObject);
+        buttons.Clear();
+
+        foreach(var i in buyables) {
+            var obj = Instantiate(buyableButton.gameObject, holder);
+            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().title.ToString();
+            obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = i.GetComponent<Buyable>().cost.ToString("0.0") + "s";
+            obj.GetComponent<InfoableImage>().info = i.GetComponent<Buyable>().title.ToString() + ":\n" + i.GetComponent<Buyable>().description;
+            if(bl.getNightBuyableWasSeen(i.GetComponent<Buyable>().title) == -1 || i.GetComponent<Buyable>().cost == 0f || (bl.getNightBuyableWasSeen(i.GetComponent<Buyable>().title) == GameInfo.getNightCount() && !gb.hasBuyableOnBoard(i.GetComponent<Buyable>().title))) {
+                StartCoroutine(setupDot(obj.transform, obj.transform.GetChild(2).transform, i.GetComponent<Buyable>()));
+                obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Free!";
+            }
+            else
+                obj.transform.GetChild(2).gameObject.SetActive(false);
+            obj.GetComponent<Button>().onClick.AddListener(delegate { pg.changePlacing(i.gameObject, i.gameObject == pg.currentObj); });
+            buttons.Add(obj.gameObject);
+        }
     }
 }

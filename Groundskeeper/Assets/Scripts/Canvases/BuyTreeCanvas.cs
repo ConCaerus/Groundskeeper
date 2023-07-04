@@ -84,9 +84,10 @@ public class BuyTreeCanvas : MenuCanvas {
         int index = 3;
         var h = Instantiate(node.gameObject, mainCircles[index].transform);
         var hbtn = h.GetComponent<BuyTreeNode>();
+        hbtn.mainType = Buyable.buyType.Weapon;
         hbtn.getSlider().setText(pl.getUnlockedWeapons(true).Count.ToString());
         hbtn.setTitle("Weapon");
-        var c = 200;    //  cost of the fucker
+        var c = getUpdatedMainNodeCost(hbtn);
         hbtn.setCost(c);
         hbtn.setTier(-1); //  hides the tierText
         var qw = queuedWeapon;
@@ -104,7 +105,7 @@ public class BuyTreeCanvas : MenuCanvas {
                         //  checks if there are any more locked buyables of that type
                         if(qw != null && pl.unlockWeapon(qw.title)) {
                             //  transaction
-                            hbtn.setCost(c);
+                            hbtn.setCost(getUpdatedMainNodeCost(hbtn));
 
                             //  flair
                             hbtn.getSlider().doValue((float)pl.getUnlockedWeapons(true).Count / pl.getWeapons(true).Count, sliderFillSpeed, true);
@@ -135,13 +136,14 @@ public class BuyTreeCanvas : MenuCanvas {
         int index = 4;
         var h = Instantiate(node.gameObject, mainCircles[index].transform);
         var hbtn = h.GetComponent<BuyTreeNode>();
+        hbtn.mainType = Buyable.buyType.House;
         hbtn.getSlider().setText("0");
         hbtn.setTitle("House");
         hbtn.info.info = "House Health";
         var hs = GameInfo.getHouseStats();
         hbtn.maxTier = 1;
         hbtn.maxTicks = hs.houseMaxHealth / houseRepairAmt;
-        var c = getUpdatedCost(Buyable.buyType.House, hbtn);
+        var c = getUpdatedMainNodeCost(hbtn);
         hbtn.setCost(c);
         hbtn.setTier(-1); //  hides the tierText
         hbtn.setTick(hs.houseHealth / houseRepairAmt);
@@ -153,6 +155,7 @@ public class BuyTreeCanvas : MenuCanvas {
             if(isOpen()) {
                 if(hbtn.canIncrease()) {
                     if(FindObjectOfType<SoulTransactionHandler>().tryTransaction(c, soulsText, true, true)) {
+                        hbtn.setCost(getUpdatedMainNodeCost(hbtn));
                         var hStats = GameInfo.getHouseStats();
                         subLogic(4, subType.Repair, 1);   //  does the thing that the sub slider is supposed to do
                         hbtn.incTick();
@@ -173,7 +176,7 @@ public class BuyTreeCanvas : MenuCanvas {
         hbtn.mainType = t;
         hbtn.getSlider().setText(bl.getNumberOfUnlockedBuyables(t, false).ToString());
         hbtn.setTitle(t.ToString() + "s");
-        hbtn.setCost(getUpdatedCost(hbtn));
+        hbtn.setCost(getUpdatedMainNodeCost(hbtn));
         hbtn.setTier(-1); //  hides the tierText
         var qb = queuedBuyables[index];
         hbtn.info.info = (qb == null || qb.GetComponent<Buyable>() == null) ? "Completed" : qb.GetComponent<Buyable>().title.ToString();
@@ -191,7 +194,7 @@ public class BuyTreeCanvas : MenuCanvas {
                         //  checks if there are any more locked buyables of that type
                         if(bl.unlockBuyable(qb)) {
                             //  transaction
-                            hbtn.setCost(getUpdatedCost(hbtn));
+                            hbtn.setCost(getUpdatedMainNodeCost(hbtn));
 
                             //  flair
                             hbtn.getSlider().doValue((float)bl.getNumberOfUnlockedBuyables(t, false) / bl.getTotalNumberOfBuyables(t), sliderFillSpeed, true);
@@ -248,9 +251,9 @@ public class BuyTreeCanvas : MenuCanvas {
         obtn.maxTier = maxTier;
         obtn.maxTicks = maxTick;
         obtn.info.info = s.ToString();
-        obtn.setCost(getUpdatedCost(obtn));
-
         obtn.setTier(GameInfo.getBuyTreeSubNodeTier(indexToMainType(sInd), s));
+        obtn.setCost(getUpdatedSubNodeCost(sInd, s, obtn.tier));
+
         if(s != subType.Repair)
             obtn.setTick(GameInfo.getBuyTreeSubNodeTick(indexToMainType(sInd), s));
         else
@@ -356,15 +359,53 @@ public class BuyTreeCanvas : MenuCanvas {
         c.GetComponentInParent<BuyTreeNode>().showAnimation(sub);
     }
 
-    int getUpdatedCost(BuyTreeNode node) {
-        return getUpdatedCost(node.mainType, node);
+    int getUpdatedMainNodeCost(BuyTreeNode node) {
+        if(node.mainType == Buyable.buyType.Weapon)
+            return 100;
+        else if(node.mainType == Buyable.buyType.House)
+            return Mathf.Clamp((GameInfo.getNightCount() + 1) / 2, 1, 10);
+        else
+            return getUpdatedCost(node.mainType);
     }
-    int getUpdatedCost(Buyable.buyType bt, BuyTreeNode node) {
-        var c = FindObjectOfType<BuyableLibrary>().getBuyableUnlockCost(bt, FindObjectOfType<BuyableLibrary>().getRelevantUnlockTierForBuyableType(bt));
-        if(c == 0)
-            c = node.cost + 50;
+    int getUpdatedCost(Buyable.buyType bt) {
+        var c = bl.getBuyableUnlockCost(bt, bl.getRelevantUnlockTierForBuyableType(bt));
 
         return c;
+    }
+    int getUpdatedSubNodeCost(int index, subType s, int tier) {
+        switch(index) {
+            //  helpers
+            case 0:
+                if(s == subType.Damage)
+                    return 25 * (tier + 1);
+                else if(s == subType.Health)
+                    return 35 * (tier + 1);
+                break;
+            //  defenses
+            case 1:
+                if(s == subType.Damage)
+                    return 35 * (tier + 1);
+                break;
+            //  structures
+            case 2:
+                if(s == subType.Health)
+                    return 35 * (tier + 1);
+                break;
+            //  weapons
+            case 3:
+                if(s == subType.Damage)
+                    return 50 * (tier + 1);
+                else if(s == subType.Speed)
+                    return 35 * (tier + 1);
+                break;
+            //  house
+            case 4:
+                if(s == subType.Light)
+                    return 35 * (tier + 1);
+                //  you're not seeing repair here because repair is a main node
+                break;
+        }
+        return 0;
     }
 
 

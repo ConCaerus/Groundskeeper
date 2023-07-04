@@ -6,7 +6,7 @@ using DG.Tweening;
 public class StructureAreaOfEffect : MonoBehaviour {
     public delegate void effect(GameObject effected);
     public effect aoeEffect, aoeLeaveEffect;
-    float maxRad;
+    public float maxRad { get; private set; }
     [HideInInspector] public List<GameInfo.GamePiece> effectedPieces = new List<GameInfo.GamePiece>();
 
     CircleCollider2D col;

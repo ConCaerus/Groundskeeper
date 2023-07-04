@@ -30,6 +30,11 @@ public abstract class Movement : MortalUnit {
     [SerializeField] AudioClip walkSound;
     AudioSource aSource;
 
+    bool jumpDir = true;
+
+    protected Coroutine spriteUpdater = null;
+    protected Coroutine queuedUpdatedSpriteChange = null;
+
     //  abstract because monsters change their sprites differently to everyone else
     public abstract void updateSprite(Vector2 movingDir, bool opposite);
     protected void movementInit(SetupSequenceManager s, LayerSorter l, bool audibleWalking) {
@@ -42,6 +47,8 @@ public abstract class Movement : MortalUnit {
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
         playWalkSound = audibleWalking;
         aSource = GetComponent<AudioSource>();
+        if(aSource != null)
+            aSource.volume = GameInfo.getGameOptions().sfxVol * GameInfo.getGameOptions().masterVol;
         foreach(var i in GetComponents<Collider2D>()) {
             if(!i.isTrigger) {
                 srCol = i;
@@ -88,7 +95,7 @@ public abstract class Movement : MortalUnit {
 
     public abstract WalkAnimInfo getWalkInfo();
 
-    protected IEnumerator walkAnim(bool jumpDir = true) {
+    protected IEnumerator walkAnim() {
         spriteObj.transform.DOPunchPosition(new Vector3(0.0f, 0.7f, 0.0f), getWalkInfo().time);
         float tehe = 0.15f;
         spriteObj.transform.DOPunchScale(new Vector3(-tehe, tehe), getWalkInfo().time);
@@ -117,8 +124,10 @@ public abstract class Movement : MortalUnit {
                 aSource.pitch = Random.Range(0.6f, 1.25f);
                 aSource.PlayOneShot(walkSound);
             }
-            shadowObj.transform.DOComplete();
-            shadowObj.transform.DOScale(shadOriginal, getWalkInfo().time / 2.0f);
+            if(shadowObj != null) {
+                shadowObj.transform.DOComplete();
+                shadowObj.transform.DOScale(shadOriginal, getWalkInfo().time / 2.0f);
+            }
             yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
         }
         else {
@@ -131,7 +140,8 @@ public abstract class Movement : MortalUnit {
             yield return new WaitForSeconds(getWalkInfo().time / 2.0f);
         }
 
-        anim = restartWalkAnim() ? StartCoroutine(walkAnim(!jumpDir)) : null;
+        jumpDir = !jumpDir;
+        anim = restartWalkAnim() ? StartCoroutine(walkAnim()) : null;
     }
 
 
@@ -150,6 +160,19 @@ public abstract class Movement : MortalUnit {
         yield return new WaitForSeconds(time);
         canMove = true;
         moveWaiter = null;
+    }
+
+    //  only used in helper functions to try and make them less demonic
+    protected IEnumerator spriteChangeWaiter(Sprite sprite) {
+        sr.sprite = sprite;
+        yield return new WaitForSeconds(.15f);
+        spriteUpdater = null;
+    }
+    protected IEnumerator queuedSpriteChange(Sprite sprite) {
+        while(spriteUpdater != null)
+            yield return new WaitForEndOfFrame();
+        spriteUpdater = StartCoroutine(spriteChangeWaiter(sprite));
+        queuedUpdatedSpriteChange = null;
     }
 
     public void hide() {

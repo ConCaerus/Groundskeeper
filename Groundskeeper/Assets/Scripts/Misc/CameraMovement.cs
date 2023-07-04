@@ -42,7 +42,7 @@ public class CameraMovement : MonoBehaviour {
     }
 
     public void shake(float dmg) {
-        var s = Mathf.Clamp(dmg / 50.0f, 0.0f, 5.0f);
+        var s = Mathf.Clamp(dmg / 30.0f, 0.0f, 1.5f);
         transform.parent.DOShakePosition(.25f, s);
         if(shakeCenterer != null)
             StopCoroutine(shakeCenterer);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DemonWeaponInstance : WeaponInstance {
-    HelperInstance hi = null;
 
     private void Awake() {
         hi = user.GetComponent<HelperInstance>();

@@ -13,14 +13,14 @@ public class UnitMovementUpdater : MonoBehaviour {
     }
 
     IEnumerator waitToFindANewTargetForHelper(HelperInstance helper) {
-        while(helper != null && helper.gameObject != null) {
+        while(helper != null && helper.gameObject != null && !helper.isDead) {
             helper.updateMovement();
             yield return new WaitForFixedUpdate();
         }
     }
 
     IEnumerator updateMovementEachFrame(MonsterInstance monster) {
-        while(monster != null && monster.gameObject != null) {
+        while(monster != null && monster.gameObject != null && !monster.isDead) {
             monster.updateMovement();
             yield return new WaitForFixedUpdate();
         }

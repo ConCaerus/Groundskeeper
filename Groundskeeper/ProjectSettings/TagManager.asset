@@ -26,7 +26,7 @@ TagManager:
   - Light
   - Helper
   - Defence
-  - 
+  - HelperReachCollider
   - DeadGuy
   - HouseFloor
   - Structure
@@ -34,9 +34,9 @@ TagManager:
   - SightCollider
   - House
   - PlayerBoundsCollider
-  - 
-  - 
-  - 
+  - HelperTooCloseCollider
+  - MonsterBounds
+  - HouseHelperCollider
   - 
   - 
   - 

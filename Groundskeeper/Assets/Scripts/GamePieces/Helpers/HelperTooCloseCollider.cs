@@ -11,6 +11,7 @@ public class HelperTooCloseCollider : MonoBehaviour {
 
     HelperInstance hi;
     CircleCollider2D c;
+    GameBoard gb;
 
     [HideInInspector] public float maxRad { get; private set; }
 
@@ -19,6 +20,7 @@ public class HelperTooCloseCollider : MonoBehaviour {
     private void Awake() {
         hi = unit.GetComponent<HelperInstance>();
         c = GetComponent<CircleCollider2D>();
+        gb = FindObjectOfType<GameBoard>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("SightCollider"));
         StartCoroutine(areaStartExpansion(c.radius));
     }
@@ -42,9 +44,23 @@ public class HelperTooCloseCollider : MonoBehaviour {
     void inReachExitLogic(GameObject col) {
         //  checks if the exited collider was the thing that the helper was following
         if(hi.hasTarget && hi.followingTransform == col.transform) {
-            hi.inReach = false;
-            resetCollider();
+            if(gb.monsters.Count > 0) {
+                var closest = gb.monsters.FindClosest(transform.position);
+                //  checks if the next closest monster is also inside the sight
+                if(Vector2.Distance(closest.transform.position, transform.position) < maxRad) {
+                    hi.tooClose = true;
+                }
+                else {
+                    hi.tooClose = false;
+                    resetCollider();
+                }
+            }
+            else {
+                hi.tooClose = false;
+                resetCollider();
+            }
         }
+
     }
 
     //  resets the collider to check and see if there are still any relevant collisions

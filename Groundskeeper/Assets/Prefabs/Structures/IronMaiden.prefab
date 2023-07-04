@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 35
+  cost: 100
   title: 15
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 4fc564cf42dad2b4e89f0a3acbe054b5, type: 2}
@@ -169,6 +169,7 @@ MonoBehaviour:
   effectRadius: 2.5
   unlockedImagePos: {x: 0, y: -0.8}
   unlockedImageSize: {x: 0.28, y: 0.28}
+  placedThisNight: 0
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

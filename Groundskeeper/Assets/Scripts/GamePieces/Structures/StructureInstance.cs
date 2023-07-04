@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class StructureInstance : Structure {
-    [SerializeField] GameObject bloodParticles;
     protected StructureAreaOfEffect saoe;
 
     protected void structureInit() {
@@ -29,9 +28,6 @@ public abstract class StructureInstance : Structure {
     public abstract void aoeEffect(GameObject effected);
     public abstract void aoeLeaveEffect(GameObject effected);
 
-    public override GameObject getBloodParticles() {
-        return bloodParticles;
-    }
     public override Color getStartingColor() {
         return Color.white;
     }

@@ -15,15 +15,13 @@ public abstract class MonsterInstance : Monster {
     [HideInInspector] public bool hasCultistBuff = false;
 
     //  cannot be confused if is leader
-    public bool confused { get; private set; } = false;
-    Vector2 confusedTarget = Vector2.zero;
+    public bool confused = false;
     [HideInInspector] public bool leader = false;
     [HideInInspector] public MonsterInstance closestLeader = null;
 
     Vector2 spriteOriginal, shadowOriginal;   //  for showing and hiding
 
     [HideInInspector] public float affectedMoveAmt = 0f;
-    [SerializeField] GameObject bloodParticles, soulParticles;
     Color normColor;
 
     [HideInInspector] public int relevantWave;
@@ -42,27 +40,29 @@ public abstract class MonsterInstance : Monster {
     WaveWarnerRose wwr;
     MonsterSpawner ms;
     Collider2D c;
+    SoulParticlePooler spp;
 
 
     private void OnCollisionStay2D(Collision2D col) {
         if(canAttack) {
-            //  if the unit is confused, have it attack other monsters 
-            if(confused && col.gameObject.tag == "Monster") {
-                attack(col.gameObject, true, 0.0f);
-            }
-
             //  normal attack
-            else if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Structure" || col.gameObject.tag == "House") {
+            if(col.gameObject.tag == "House")
+                attack(col.gameObject, true, 0.0f);
+            else if(col.gameObject.tag == "Player" || col.gameObject.tag == "Helper" || col.gameObject.tag == "Structure") {
                 //  if can attack all targets, skip testing and just attack
                 if(favoriteTarget == targetType.All)
                     attack(col.gameObject, true, 0.0f);
                 //  check if the target is attackable by this monster
-                else if(col.gameObject.tag == "House" && (favoriteTarget == targetType.Structures || favoriteTarget == targetType.House))
-                    attack(col.gameObject, true, 0.0f);
                 else if((col.gameObject.tag == "Helper" || col.gameObject.tag == "Player") && favoriteTarget == targetType.People)
                     attack(col.gameObject, true, 0.0f);
                 else if(col.gameObject.tag == "Structure" && favoriteTarget == targetType.Structures)
                     attack(col.gameObject, true, 0.0f);
+            }
+
+
+            //  if the unit is confused, have it attack other monsters 
+            if(confused && col.gameObject.tag == "Monster") {
+                attack(col.gameObject, true, 0.0f);
             }
         }
     }
@@ -76,7 +76,8 @@ public abstract class MonsterInstance : Monster {
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("PlayerBoundsCollider"));
         //stopMovingForATime(.2f);    //  so the character doesn't jump ahead at the start
         //FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
-        pt = FindObjectOfType<PlayerInstance>().transform;
+        if(FindObjectOfType<PlayerInstance>() != null)
+            pt = FindObjectOfType<PlayerInstance>().transform;
         houseCenter = FindObjectOfType<HouseInstance>().getCenter();
         rb = GetComponent<Rigidbody2D>();
         sr = spriteObj.GetComponent<SpriteRenderer>();
@@ -85,6 +86,7 @@ public abstract class MonsterInstance : Monster {
         ms = FindObjectOfType<MonsterSpawner>();
         c = GetComponent<Collider2D>();
         slash = GetComponentInChildren<SlashEffect>();
+        spp = FindObjectOfType<SoulParticlePooler>();
 
         //  roll chance to become a boss monster
         bool boss = Random.Range(0, 10) == 0;
@@ -122,9 +124,8 @@ public abstract class MonsterInstance : Monster {
         sCol.SetActive(true);
         leader = true;
     }
-    public void setConfused(bool b, Vector2 confusedOrigin) {
+    public void setConfused(bool b) {
         confused = b;
-        confusedTarget = confusedOrigin;
         StartCoroutine(unconfuseSelf());
     }
 
@@ -134,9 +135,16 @@ public abstract class MonsterInstance : Monster {
     IEnumerator unconfuseSelf() {
         if(leader)
             sCol.GetComponent<SightCollider>().shrinkArea();
-        yield return new WaitForSeconds(Random.Range(10f, 15f));
+        yield return new WaitForSeconds(Random.Range(5f, 10f));
+        followingTransform = null;
+        hasTarget = false;
         if(leader)
             sCol.GetComponent<SightCollider>().expandArea();
+        else if(closestLeader != null) {
+            moveTarget = closestLeader.moveTarget;
+            hasTarget = true;
+        }
+
         confused = false;
     }
 
@@ -145,27 +153,34 @@ public abstract class MonsterInstance : Monster {
     public void updateMovement() {
         //  checks if confused
         if(confused) {
-            //  if the monster is confused, target their leader
-            if(!leader)
-                moveTarget = closestLeader.transform.position;
-            //  if the monster is the leader, go to the confused target
-            else
-                moveTarget = confusedTarget;
-            moveToPos(moveTarget, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
+            //  checks if it's the last monster
+            if(gb.monsters.Count <= 1) {
+                confused = false;
+                followingTransform = closestLeader != null ? closestLeader.transform : null;
+                hasTarget = followingTransform != null;
+            }
+            else {
+                gb.monsters.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
+                followingTransform = gb.monsters.FindClosest(transform.position).transform;
+                gb.monsters.Add(this);
+                moveToPos(followingTransform.position, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
+                return;
+
+            }
         }
 
         //  if not confused, set the movetarget to be something normal in case the monster has any followers
         //  following person
         if(!leader && closestLeader != null) {
             //  move towards the same person / structure as the leader
-            if(closestLeader.hasTarget)
+            if(closestLeader.hasTarget && closestLeader.followingTransform != null)
                 moveTarget = closestLeader.followingTransform.position;
             //  move towards the same position as the leader with the same offset as current
             else
                 moveTarget = closestLeader.moveTarget;
         }
         else {
-            if(hasTarget)
+            if(hasTarget && followingTransform != null)
                 moveTarget = followingTransform.position;
 
             //  if doesn't have a target, give it a generic target to follow
@@ -176,8 +191,7 @@ public abstract class MonsterInstance : Monster {
                     moveTarget = houseCenter;
             }
         }
-        if(!confused)
-            moveToPos(moveTarget, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
+        moveToPos(moveTarget, rb, Mathf.Clamp(speed - affectedMoveAmt, .075f, Mathf.Infinity));
     }
     public override bool restartWalkAnim() {
         return canMove;
@@ -192,10 +206,18 @@ public abstract class MonsterInstance : Monster {
             return;
         }
         //  should never have opposite sprite so im not gonna add it
-        else if(Mathf.Abs(offset.x) > Mathf.Abs(offset.y))
-            sr.sprite = offset.x > 0.0f ? rightSprite : leftSprite;
-        else
-            sr.sprite = offset.y > 0.0f ? backSprite : forwardSprite;
+        else if(Mathf.Abs(offset.x) > Mathf.Abs(offset.y)) {
+            if(offset.x > 0.0f)
+                sr.sprite = !opposite ? rightSprite : leftSprite;
+            else
+                sr.sprite = !opposite ? leftSprite : rightSprite;
+        }
+        else {
+            if(offset.y > 0.0f)
+                sr.sprite = !opposite ? backSprite : forwardSprite;
+            else
+                sr.sprite = !opposite ? forwardSprite : backSprite;
+        }
     }
 
 
@@ -214,14 +236,16 @@ public abstract class MonsterInstance : Monster {
         return attackCoolDown;
     }
     public override int getDamage() {
-        return (int)(attackDamage * (hasCultistBuff ? 1.5f : 1f));
+        return (int)(attackDamage * (hasCultistBuff ? 1.25f : 1f));
     }
     public override float getKnockback() {
         return attackKnockBack;
     }
     public override void specialEffectOnAttack(GameObject defender) {
         if(title == monsterTitle.Vampire) {
-            health = Mathf.Clamp(health + attackDamage, 0, maxHealth);
+            var rand = Random.Range(0, 10);
+            if(rand == 0)
+                health = Mathf.Clamp(health + (attackDamage), 0, maxHealth);
         }
         if(defender.GetComponent<PlayerInstance>() != null)
             defender.GetComponent<Movement>().inhibitMovementCauseBeingAttacked();
@@ -233,25 +257,23 @@ public abstract class MonsterInstance : Monster {
 
 
     #region ---   MORTAL SHIT   ---
-    public override GameObject getBloodParticles() {
-        return bloodParticles;
-    }
     public override Color getStartingColor() {
         return normColor;
     }
     public override void die() {
+        //  logic
+        isDead = true;
         //  souls 
         guc.incSouls(soulsGiven);
         GameInfo.addSouls(soulsGiven, guc.ended);
 
         //  falir
-        var s = Instantiate(soulParticles.gameObject, transform.position, Quaternion.identity, null).GetComponent<ParticleSystem>();
-        s.emission.SetBurst(0, new ParticleSystem.Burst(.5f, soulsGiven * 4.0f));
-        s.Play();
+        spp.showParticle(transform.position, soulsGiven);
 
         unshownDie();
     }
     public void unshownDie() {
+        isDead = true;
         c.enabled = false;
         //  removes the monster from the game board monsters
         gb.monsters.RemoveAll(x => x.gameObject.GetInstanceID() == gameObject.GetInstanceID());
@@ -263,7 +285,7 @@ public abstract class MonsterInstance : Monster {
         else
             ms.removeMonsterFromGroup(this, relevantWave);
         //  start a new wave if this was the last monster of the wave
-        if(!ms.stillHasMonstersFromWave(relevantWave)) {
+        if(!ms.stillHasMonstersFromWave(relevantWave) || gb.monsters.Count == 0) {
             if(relevantWave == GameInfo.wavesPerNight())    //  this is the last monster of the night
                 ms.endGame();
             else if(relevantWave == GameInfo.wave)              //  this monster is the last monster of the current wave

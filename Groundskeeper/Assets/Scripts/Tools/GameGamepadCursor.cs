@@ -11,13 +11,13 @@ public class GameGamepadCursor : MonoBehaviour {
     InputMaster controls;
 
     Vector2 lastTarget = Vector2.zero;
+    Vector2 curDir = Vector2.zero;
 
-    Image image;
+    [SerializeField] Image image;
 
     private void Start() {
         controls = new InputMaster();
         controls.Enable();
-        image = GetComponent<Image>();
         changeCursor(true);
     }
 
@@ -31,20 +31,31 @@ public class GameGamepadCursor : MonoBehaviour {
     }
 
     public void changeCursor(bool usingKeyboard) {
-        image.enabled = !usingKeyboard && Time.timeScale != 0f;
+        if(image == null)
+            return;
+        image.enabled = !usingKeyboard && Time.timeScale != 0f && !pastCutoff();
     }
 
     void cursorChange(bool showCursor) {
-        image.enabled = showCursor && Time.timeScale != 0f;
+        if(image == null)
+            return;
+        image.enabled = showCursor && Time.timeScale != 0f && !pastCutoff();
     }
 
     void aimCursor(Vector2 dir) {
-        if(Time.timeScale == 0f || !image.enabled)
+        if(image == null)
             return;
+        if(Time.timeScale == 0f || !image.gameObject.activeInHierarchy)
+            return;
+        curDir = dir;
+        if(pastCutoff())
+            return;
+        else if(!image.enabled)
+            image.enabled = true;
 
         //  checks if the position is too close to the last pos, if so, do nothing
         var worldTarget = (Vector2)player.transform.position + dir * rangeMod;
-        float minDist = .1f;
+        float minDist = .2f;
         if(Vector2.Distance(lastTarget, worldTarget) > minDist) {
             transform.position = Camera.main.WorldToScreenPoint(worldTarget);
             lastTarget = worldTarget;
@@ -57,6 +68,13 @@ public class GameGamepadCursor : MonoBehaviour {
     }
     public Vector2 getMousePosInScreen() {
         return transform.position;
+    }
+
+    public bool changingDir() {
+        return image.enabled && !pastCutoff();
+    }
+    bool pastCutoff() {
+        return Vector2.Distance(Vector2.zero, curDir) < .35f;
     }
 
 

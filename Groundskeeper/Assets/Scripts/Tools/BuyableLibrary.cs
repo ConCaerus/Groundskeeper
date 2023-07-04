@@ -19,41 +19,7 @@ public class BuyableLibrary : MonoBehaviour {
         return new GameObject[][] { earlyBuyables, midBuyables, lateBuyables, uniqueBuyables };
     }
 
-    public int getBuyableCost(Buyable.buyType t, unlockTier u) {
-        switch(u) {
-            case unlockTier.Early:
-                switch(t) {
-                    case Buyable.buyType.Helper:
-                        return 50;
-                    case Buyable.buyType.Defense:
-                        return 35;
-                    case Buyable.buyType.Structure:
-                        return 75;
-                }
-                return 0;
-            case unlockTier.Mid:
-                switch(t) {
-                    case Buyable.buyType.Helper:
-                        return 150;
-                    case Buyable.buyType.Defense:
-                        return 50;
-                    case Buyable.buyType.Structure:
-                        return 100;
-                }
-                return 0;
-            case unlockTier.Late:
-                switch(t) {
-                    case Buyable.buyType.Helper:
-                        return 200;
-                    case Buyable.buyType.Defense:
-                        return 100;
-                    case Buyable.buyType.Structure:
-                        return 200;
-                }
-                return 0;
-        }
-        return 0;
-    }
+
     public int getBuyableUnlockCost(Buyable.buyType t, unlockTier u) {
         switch(u) {
             case unlockTier.Early:
@@ -69,21 +35,21 @@ public class BuyableLibrary : MonoBehaviour {
             case unlockTier.Mid:
                 switch(t) {
                     case Buyable.buyType.Helper:
-                        return 50;
+                        return 150;
                     case Buyable.buyType.Defense:
-                        return 25;
+                        return 50;
                     case Buyable.buyType.Structure:
-                        return 100;
+                        return 250;
                 }
                 return 0;
             case unlockTier.Late:
                 switch(t) {
                     case Buyable.buyType.Helper:
-                        return 100;
+                        return 300;
                     case Buyable.buyType.Defense:
-                        return 35;
+                        return 75;
                     case Buyable.buyType.Structure:
-                        return 200;
+                        return 500;
                 }
                 return 0;
         }
@@ -162,11 +128,11 @@ public class BuyableLibrary : MonoBehaviour {
     }
 
 
-    public bool hasPlayerSeenBuyable(Buyable.buyableTitle title) {
-        return SaveData.getInt(seenTag(title)) != 0;
+    public int getNightBuyableWasSeen(Buyable.buyableTitle title) {
+        return SaveData.getInt(seenTag(title), -1);
     }
     public void playerSawBuyable(Buyable.buyableTitle title) {
-        SaveData.setInt(seenTag(title), 1);
+        SaveData.setInt(seenTag(title), GameInfo.getNightCount());
     }
 
 

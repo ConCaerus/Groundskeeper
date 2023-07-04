@@ -78,9 +78,10 @@ public class TickDamager : MonoBehaviour {
 
     public IEnumerator tick(TickInfo info) {
         //  does something
-        if(info.obj == null || info.tickAction == null)
+        if(info == null || info.obj == null || info.tickAction == null)
             yield break;
-        info.tickAction(info.obj);
+        if(info != null && info.obj != null && info.tickAction != null)
+            info.tickAction(info.obj);
 
         //  checks if the ticks are done
         if(info.determinedTickCount == 0)

@@ -10,6 +10,7 @@ public class MainMenuCanvas : MonoBehaviour {
     Coroutine starter = null, optionsChecker = null;
 
     InputMaster controls;
+    MouseManager mm;
 
     bool keybHold = false, padHold = false;
 
@@ -18,6 +19,8 @@ public class MainMenuCanvas : MonoBehaviour {
         key.SetActive(true);
         menu.SetActive(false);
         save.SetActive(false);
+
+        mm = FindObjectOfType<MouseManager>();
 
         controls = new InputMaster();
         controls.Enable();
@@ -49,7 +52,8 @@ public class MainMenuCanvas : MonoBehaviour {
             if(save.activeInHierarchy) {
                 save.SetActive(false);
                 menu.SetActive(true);
-                playButton.Select();
+                if(!mm.usingKeyboard())
+                    playButton.Select();
             }
         };
     }
@@ -65,7 +69,8 @@ public class MainMenuCanvas : MonoBehaviour {
         //  does stuff
         key.SetActive(false);
         menu.SetActive(true);
-        playButton.Select();
+        if(!mm.usingKeyboard())
+            playButton.Select();
     }
 
     public void openedOptions() {
@@ -85,9 +90,9 @@ public class MainMenuCanvas : MonoBehaviour {
             yield return new WaitForEndOfFrame();
 
 
-        Debug.Log("here");
         menu.SetActive(true);
-        playButton.Select();
+        if(!mm.usingKeyboard())
+            playButton.Select();
         optionsChecker = null;
     }
 

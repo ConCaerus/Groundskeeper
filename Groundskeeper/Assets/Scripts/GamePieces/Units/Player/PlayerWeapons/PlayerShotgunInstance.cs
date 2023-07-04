@@ -17,6 +17,7 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
         mm = FindObjectOfType<MouseManager>();
         fgc = FindObjectOfType<FreeGamepadCursor>();
         ggc = FindObjectOfType<GameGamepadCursor>();
+        em = FindObjectOfType<EnvironmentManager>();
         //  destroys all gunfire particles that aren't being used
         foreach(var i in gunFireParticles.transform.parent.GetComponentsInChildren<ParticleSystem>()) {
             if(i != gunFireParticles)
@@ -64,6 +65,7 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
 
     public override void shootMonster() {
         LayerMask monsterLayer = LayerMask.GetMask("Monster");
+        LayerMask envLayer = LayerMask.GetMask("Environment");
         var curSpread = 0.0f;
 
         var mousePos = Vector2.zero;
@@ -80,7 +82,8 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
         for(int i = 0; i < numOfShots; i++) {
             var p = rotate_point(transform.position.x, transform.position.y, curSpread, mousePos);
             RaycastHit2D hit = Physics2D.Raycast(transform.position, p - (Vector2)transform.position, reference.range, monsterLayer);
-            Debug.DrawRay(transform.position, p - (Vector2)transform.position, Color.white);
+            RaycastHit2D envHit = Physics2D.Raycast(transform.position, p - (Vector2)transform.position, reference.range, envLayer);
+            //Debug.DrawRay(transform.position, p - (Vector2)transform.position, Color.white);
             curSpread += (i + 1) * (spreadAmt * 2.0f) / numOfShots * (i % 2 == 0 ? -1f : 1f);
 
             if(hit.collider != null) {
@@ -90,6 +93,9 @@ public class PlayerShotgunInstance : PlayerWeaponVariant {
                     cm.shake(pi.getDamage());
                 }
                 o.GetComponentInChildren<SlashEffect>().slash(user.transform.position, rotObj.transform.GetChild(0).localRotation.x != 0f);
+            }
+            if(envHit.collider != null) {
+                em.hitEnvironment(envHit.collider.ClosestPoint(transform.position));
             }
         }
     }

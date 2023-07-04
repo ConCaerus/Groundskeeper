@@ -133,7 +133,6 @@ GameObject:
   m_Component:
   - component: {fileID: 244493751}
   - component: {fileID: 244493750}
-  - component: {fileID: 244493749}
   - component: {fileID: 244493748}
   m_Layer: 0
   m_Name: Camera
@@ -175,14 +174,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &244493749
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 244493747}
-  m_Enabled: 1
 --- !u!20 &244493750
 Camera:
   m_ObjectHideFlags: 0
@@ -449,15 +440,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3150334698222742203, guid: 3997549f8cf35b442976c20841872758, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.9314055
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3150334698222742203, guid: 3997549f8cf35b442976c20841872758, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.148874
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3150334698222742203, guid: 3997549f8cf35b442976c20841872758, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.090039
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3150334698222742203, guid: 3997549f8cf35b442976c20841872758, type: 3}
       propertyPath: m_LocalRotation.w

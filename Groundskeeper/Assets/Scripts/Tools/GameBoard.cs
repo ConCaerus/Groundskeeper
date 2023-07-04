@@ -15,7 +15,7 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
-    const int minDeadGuyCount = 10;
+    const int minDeadGuyCount = 5;
 
     const float boardRadius = 75f;
     Coroutine saver = null;
@@ -182,7 +182,6 @@ public class GameBoard : MonoBehaviour {
         SaveData.setInt(GameInfo.envCount, environment.Count);
 
         //  other stuff
-        FindObjectOfType<HouseInstance>().saveCurrentHouseStats();
         saver = null;
     }
 
@@ -316,6 +315,14 @@ public class GameBoard : MonoBehaviour {
         }
         yield return new WaitForSeconds(changeTime + .01f);
         StartCoroutine(musicModder(minPerc));
+    }
+
+    public bool hasBuyableOnBoard(Buyable.buyableTitle title) {
+        foreach(var i in FindObjectsOfType<Buyable>()) {
+            if(i.title == title) 
+                return true;
+        }
+        return false;
     }
 }
 

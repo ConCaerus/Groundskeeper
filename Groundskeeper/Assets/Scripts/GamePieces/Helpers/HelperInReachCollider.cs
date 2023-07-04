@@ -9,12 +9,14 @@ public class HelperInReachCollider : MonoBehaviour {
 
     HelperInstance hi;
     CircleCollider2D c;
+    GameBoard gb;
 
-    float maxRad;
+    public float maxRad { get; private set; }
 
     private void Awake() {
         hi = unit.GetComponent<HelperInstance>();
         c = GetComponent<CircleCollider2D>();
+        gb = FindObjectOfType<GameBoard>();
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("SightCollider"));
         StartCoroutine(areaStartExpansion(c.radius));
     }
@@ -25,6 +27,10 @@ public class HelperInReachCollider : MonoBehaviour {
 
     private void OnTriggerExit2D(Collider2D col) {
         inReachExitLogic(col.gameObject);
+        if(!c.IsTouchingLayers(LayerMask.GetMask("Monster")))
+            hi.inReach = false;
+        else
+            hi.inReach = true;
     }
 
     void inReachEnterLogic(GameObject col) {
@@ -75,9 +81,23 @@ public class HelperInReachCollider : MonoBehaviour {
     void inReachExitLogic(GameObject col) {
         //  checks if the exited collider was the thing that the helper was following
         if(hi.hasTarget && hi.followingTransform == col.transform) {
-            hi.inReach = false;
-            hi.inReachExitAction(col.gameObject);
-            resetCollider();
+            if(gb.monsters.Count > 0) {
+                var closest = gb.monsters.FindClosest(transform.position);
+                //  checks if the next closest monster is also inside the sight
+                if(Vector2.Distance(closest.transform.position, transform.position) < maxRad) {
+                    hi.inReach = true;
+                }
+                else {
+                    hi.inReach = false;
+                    hi.inReachExitAction(col.gameObject);
+                    resetCollider();
+                }
+            }
+            else {
+                hi.inReach = false;
+                hi.inReachExitAction(col.gameObject);
+                resetCollider();
+            }
         }
     }
 
@@ -88,7 +108,7 @@ public class HelperInReachCollider : MonoBehaviour {
         expandArea();
     }
 
-    public IEnumerator areaStartExpansion(float radius) {
+    IEnumerator areaStartExpansion(float radius) {
         //  shrinks the area of effect at the start of the game
         c.radius = 0f;
         maxRad = radius;

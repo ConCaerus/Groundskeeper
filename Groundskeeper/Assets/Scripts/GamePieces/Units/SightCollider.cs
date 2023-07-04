@@ -4,15 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEditorInternal;
 
 public class SightCollider : MonoBehaviour {
     [SerializeField] GameObject unit;
 
-    [SerializeField] bool dynamicChecking = false;
+    [SerializeField] public bool dynamicChecking = false;
 
     CircleCollider2D c;
-    float maxRad;
+    public float maxRad { get; private set; }
 
     MonsterInstance mi = null;
     HelperInstance hi = null;
@@ -47,10 +46,17 @@ public class SightCollider : MonoBehaviour {
                 return;
 
             //  checks if already going after an attractive target
-            if(mi.hasTarget && mi.hasAttractiveTarget)
-                return;
+            if(mi.hasTarget && mi.hasAttractiveTarget) {
+                //  checks to make sure that that's actually true
+                if(mi.followingTransform == null || mi.followingTransform.gameObject.GetComponent<Buyable>() == null || !mi.followingTransform.gameObject.GetComponent<Buyable>().isAttractive) {
+                    mi.hasTarget = false;
+                    mi.hasAttractiveTarget = false;
+                }
+                else
+                    return;
+            }
             //  checks if attractive pieces have entered the sight
-            else if(col.GetComponent<Buyable>() != null && col.GetComponent<Buyable>().isAttractive) {
+            if(col.GetComponent<Buyable>() != null && col.GetComponent<Buyable>().isAttractive) {
                 mi.followingTransform = col.gameObject.transform;
                 mi.hasTarget = true;
                 mi.hasAttractiveTarget = true;
@@ -67,22 +73,21 @@ public class SightCollider : MonoBehaviour {
 
         //  lumberjack / helper shit
         else if(hi != null) {
-            //  checks if tag is targetable
-            //  NOTE: uses the structure instance script (even though it checks for more than just structures) to check the health of them
-            if(hi.hasTarget || !isTagTargetable(col.gameObject.tag, hi, col.gameObject.GetComponent<StructureInstance>()))
-                return;
-
-            //  checks if the target has too many monsters around it
-            //Debug.Log((htcc == null) + " " + hi.helpType.ToString());
-            bool scaredOfDestination = false;
-            if(htcc != null) {
-                if(Vector2.Distance(gb.monsters.FindClosest(col.gameObject.transform.position).transform.position, unit.transform.position) < htcc.maxRad) {
-                    Debug.Log("here");
-                    scaredOfDestination = true;
-                }
+            if(hi.helpType == Helper.helperType.Repair && col.gameObject.tag == "Structure") {
+                var si = col.gameObject.GetComponent<StructureInstance>();
+                if(si == null)
+                    return;
+                si.seesRepairman((RepairmanInstance)hi);
             }
+            else {
+                //  checks if tag is targetable
+                //  NOTE: passing the structure instance does nothing because repairmen are tried differently
+                if(hi.hasTarget || !isTagTargetable(col.gameObject.tag, hi, col.gameObject.GetComponent<StructureInstance>()))
+                    return;
 
-            if(!scaredOfDestination) {
+                //  checks if the target has too many monsters around it
+                //Debug.Log((htcc == null) + " " + hi.helpType.ToString());
+
                 hi.hasTarget = true;
                 hi.followingTransform = col.gameObject.transform;
             }
@@ -93,9 +98,7 @@ public class SightCollider : MonoBehaviour {
         if(pauseCheckingWaiter != null)
             return;
         //  monster shit
-        if(unit.GetComponent<MonsterInstance>() != null) {
-            var mi = unit.GetComponent<MonsterInstance>();
-
+        if(mi != null) {
             //  movement
             if(col.gameObject.transform == mi.followingTransform) {
                 if(mi.favoriteTarget == Monster.targetType.People)
@@ -117,15 +120,32 @@ public class SightCollider : MonoBehaviour {
         }
 
         //  helper / lumberjack shit
-        else if(unit.GetComponent<HelperInstance>() != null) {
-            //  an attackable unit entered sights
-            var li = unit.GetComponent<HelperInstance>();
+        else if(hi != null) {
+            if(hi.helpType == Helper.helperType.Repair && col.gameObject.tag == "Structure") {
+                var si = col.gameObject.GetComponent<StructureInstance>();
+                if(si != null) {
+                    si.eligibleRepairmen.Remove((RepairmanInstance)hi);
+                }
+            }
 
             //  checks if the exiter is the same as the current following transform
-            if(col.gameObject.transform == li.followingTransform) {
-                li.hasTarget = false;
-                li.followingTransform = null;
-                resetCollider(li);
+            else if(col.gameObject.transform == hi.followingTransform && hi.helpType == Helper.helperType.Attack) {
+                if(gb.monsters.Count > 0) {
+                    var closest = gb.monsters.FindClosest(transform.position);
+                    //  checks if the next closest monster is also inside the sight
+                    if(Vector2.Distance(closest.transform.position, transform.position) < maxRad) {
+                        hi.hasTarget = true;
+                        hi.followingTransform = closest.transform;
+                    }
+                    else {
+                        hi.hasTarget = false;
+                        hi.followingTransform = null;
+                    }
+                }
+                else {
+                    hi.hasTarget = false;
+                    hi.followingTransform = null;
+                }
             }
         }
     }
@@ -203,7 +223,7 @@ public class SightCollider : MonoBehaviour {
         //  if doesn't have target, check for new target
         //  Helpers
         if(hi != null) {
-            if(!hi.hasTarget || hi.helpType == Helper.helperType.Repair) {
+            if(!hi.hasTarget) {
                 shrinkArea();
                 yield return new WaitForSeconds(.15f);
                 expandArea();
@@ -246,5 +266,9 @@ public class SightCollider : MonoBehaviour {
     IEnumerator toggleChecking(float dur) {
         yield return new WaitForSeconds(dur);
         pauseCheckingWaiter = null;
+    }
+
+    bool touchingLayer(int id) {
+        return c.IsTouchingLayers(id);
     }
 }

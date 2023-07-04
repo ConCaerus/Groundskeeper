@@ -4942,13 +4942,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b03d906a360f240bbd8973d77dab43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 250
-  unitHealth: 250
+  maxHealth: 400
+  unitHealth: 400
   hurtSound: {fileID: 0}
   dieSound: {fileID: 0}
-  bloodStain: {fileID: 0}
+  healingParticles: {fileID: 0}
   healthBar: {fileID: 0}
+  dsi: {fileID: 0}
   hi: {fileID: 0}
+  eligibleRepairmen: []
   title: Blood Fumigator
   sprite: {fileID: 21300000, guid: f878c20f6aa65cf44809ba89225a23b6, type: 3}
   usesAreaOfEffect: 1
@@ -4967,7 +4969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 35
+  cost: 50
   title: 17
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 309761b361eb220459dc0522cc1286d2, type: 2}
@@ -4980,6 +4982,7 @@ MonoBehaviour:
   effectRadius: 10
   unlockedImagePos: {x: 0, y: 4.9}
   unlockedImageSize: {x: 0.27, y: 0.27}
+  placedThisNight: 0
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

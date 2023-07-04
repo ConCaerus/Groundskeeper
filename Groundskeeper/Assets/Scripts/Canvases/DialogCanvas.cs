@@ -15,6 +15,8 @@ public class DialogCanvas : MonoBehaviour {
     bool showingText = false;
 
     DialogText currentTexts;
+    PauseMenu pm;
+    OptionsCanvas oc;
 
     Coroutine anim = null;
 
@@ -34,6 +36,8 @@ public class DialogCanvas : MonoBehaviour {
 
     private void Start() {
         DOTween.Init();
+        pm = FindObjectOfType<PauseMenu>();
+        oc = FindObjectOfType<OptionsCanvas>();
         controls = new InputMaster();
         controls.Enable();
         controls.Dialog.Advance.performed += ctx => advance();
@@ -61,7 +65,7 @@ public class DialogCanvas : MonoBehaviour {
 
 
     void advance() {
-        if(!showingText)
+        if(!showingText || (pm != null && pm.isOpen()) || (oc != null && oc.isOpen()) || Time.timeScale == 0f)
             return;
         FindObjectOfType<AudioManager>().playSound(devilVoice, Camera.main.transform.position);
         faceObj.transform.DOComplete();

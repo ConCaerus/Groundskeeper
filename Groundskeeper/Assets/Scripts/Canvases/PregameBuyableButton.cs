@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PregameBuyableButton : MonoBehaviour {
     [SerializeField] TextMeshProUGUI text;
     [SerializeField] GameObject newDot;
+    GameBoard gb;
 
     BuyableLibrary bl;
 
@@ -15,12 +16,13 @@ public class PregameBuyableButton : MonoBehaviour {
     private void Awake() {
         newDot.SetActive(false);
         bl = FindObjectOfType<BuyableLibrary>();
+        gb = FindObjectOfType<GameBoard>();
     }
 
     public void manageNewDot() {
         bool hasNew = false;
         foreach(var i in bl.getUnlockedBuyablesOfType(getType(), true)) {
-            if(!bl.hasPlayerSeenBuyable(i.GetComponent<Buyable>().title)) {
+            if(bl.getNightBuyableWasSeen(i.GetComponent<Buyable>().title) == -1 || (bl.getNightBuyableWasSeen(i.GetComponent<Buyable>().title) == GameInfo.getNightCount() && !gb.hasBuyableOnBoard(i.GetComponent<Buyable>().title))) {
                 hasNew = true;
                 break;
             }

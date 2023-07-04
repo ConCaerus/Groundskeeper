@@ -16,6 +16,8 @@ public class HouseDoorInteractable : Interactable {
 
 
     public override void interact() {
+        if(startedEnding)
+            return;
         startedEnding = true;
         StartCoroutine(intAnim());
 
@@ -24,6 +26,13 @@ public class HouseDoorInteractable : Interactable {
             FindObjectOfType<SteamHandler>().unlockAchievement(SteamHandler.achievements.Live);
         else if(GameInfo.getNightCount() == 9 && FindObjectOfType<SteamHandler>() != null)
             FindObjectOfType<SteamHandler>().unlockAchievement(SteamHandler.achievements.LiveMore);
+
+        //  saves the state of the game
+        FindObjectOfType<GameBoard>().saveBoard();
+
+        //  sets the current scene to house
+        GameInfo.setCurrentScene(GameInfo.SceneType.House);
+        GameInfo.healHousePerNight();   //  heals the house before starting the next night
     }
 
     public override void deinteract() {

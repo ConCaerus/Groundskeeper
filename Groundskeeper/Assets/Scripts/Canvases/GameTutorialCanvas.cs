@@ -30,7 +30,7 @@ public class GameTutorialCanvas : MonoBehaviour {
     }
 
     public void hasMoved() {
-        if(movementText.color.a < 1f || !shown || FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled)
+        if(has[0] || !shown || FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled)
             return;
         movementText.DOColor(new Color(1.0f, .92f, .016f, 0.0f), .5f);
         has[0] = true;
@@ -38,7 +38,7 @@ public class GameTutorialCanvas : MonoBehaviour {
         StartCoroutine(finish());
     }
     public void hasSprinted() {
-        if(sprintingText.color.a < 1f || !shown || FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled)
+        if(has[1] || !shown || FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled)
             return;
         sprintingText.DOColor(new Color(1.0f, .92f, .016f, 0.0f), .5f);
         has[1] = true;
@@ -46,7 +46,7 @@ public class GameTutorialCanvas : MonoBehaviour {
         StartCoroutine(finish());
     }
     public void hasAttacked() {
-        if(attackingText.color.a < 1f || !shown || FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled)
+        if(has[2] || !shown || FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled)
             return;
         attackingText.DOColor(new Color(1.0f, .92f, .016f, 0.0f), .5f);
         has[2] = true;
@@ -54,7 +54,7 @@ public class GameTutorialCanvas : MonoBehaviour {
         StartCoroutine(finish());
     }
     public void hasChargedAttacked() {
-        if(chargeAttackText.color.a < 1f || !shown || FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled)
+        if(has[3] || !shown || FindObjectOfType<SetupSequenceManager>().isActiveAndEnabled)
             return;
         chargeAttackText.DOColor(new Color(1.0f, .92f, .016f, 0.0f), .5f);
         has[3] = true;

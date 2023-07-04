@@ -11,7 +11,7 @@ public abstract class Helper : Attacker {
     public int helpAmount;
     public helperType helpType;
     public Sprite sprite;
-    [HideInInspector] public Vector2 startingPos;
+    public Vector2 startingPos { get; private set; }
     protected HelperStats hStats;
 
 

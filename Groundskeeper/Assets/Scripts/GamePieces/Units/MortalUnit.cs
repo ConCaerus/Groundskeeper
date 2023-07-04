@@ -5,6 +5,8 @@ using DG.Tweening;
 
 public abstract class MortalUnit : Mortal {
     public override void hitLogic(float knockback, Vector2 origin, float stunTime) {
+        if(isDead)
+            return;
         var rb = gameObject.GetComponent<Rigidbody2D>();
         //  take knockback
         if(rb != null) {

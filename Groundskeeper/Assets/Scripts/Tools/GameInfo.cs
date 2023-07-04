@@ -10,14 +10,14 @@ public static class GameInfo {
         int nc = getNightCount();
         if(nc < 5)
             return 5;
-        if(nc < 10)
+        if(nc < 15)
             return 7;
-        if(nc < 20)
-            return 10;
-        if(nc < 50)
-            return 15;
-        return 20;
+        return 10;
     }
+
+    public static MouseManager curMouseManager = null;
+
+    static int houseHealthHealedPerNight = 100;
 
     public static int monstersKilled { get; set; } = 0;
 
@@ -81,6 +81,9 @@ public static class GameInfo {
     //  options / settings
     static string gameOptionsTag = "GameOptions";
 
+    //  which scene the player is in
+    static string currentSceneTag = "CurrentScene";
+
 
     public enum MonsterType {
         Both, Physical, Nonphysical
@@ -103,6 +106,9 @@ public static class GameInfo {
     public static string gamePieceToTag(GamePiece piece) {
         return piece.ToString();
     }
+    public enum SceneType {
+        None, Game, House
+    }
 
     //  makes it so if the player buys something and leaves the game before the board saves, they don't lose any souls
     public static float souls;
@@ -116,13 +122,14 @@ public static class GameInfo {
         souls = getSouls(true);
     }
     public static void resetSave(BuyableLibrary bl, PresetLibrary pl) {
-        souls = 100;
+        souls = 0;
         lockAllBuyables(bl);
         lockAllWeaponsExceptStarting(pl);
         saveSouls();
         resetNights();
         resetLastSeenEnemy();
         clearBoard();
+        setCurrentScene(SceneType.Game);
 
         //  resets the house
         setHouseStats(new HouseStats(1000, 1000, 30f));
@@ -155,7 +162,7 @@ public static class GameInfo {
 
     //  saves
     public static void addSouls(float c, bool saveImmediately) {
-        souls += c;
+        souls = Mathf.Clamp(souls + c, 0f, Mathf.Infinity);
         if(saveImmediately)
             saveSouls();
     }
@@ -297,6 +304,11 @@ public static class GameInfo {
             return new HouseStats(1000, 1000, 30f);
         return JsonUtility.FromJson<HouseStats>(data);
     }
+    public static void healHousePerNight() {
+        var temp = getHouseStats();
+        temp.houseHealth = (int)Mathf.Clamp(temp.houseHealth + houseHealthHealedPerNight, 0.0f, temp.houseMaxHealth);
+        setHouseStats(temp);
+    }   //  called from the door interactable of the house interior
 
     public static void saveGameOptions(GameOptions go) {
         SaveData.setUniversalString(gameOptionsTag, JsonUtility.ToJson(go));
@@ -307,18 +319,25 @@ public static class GameInfo {
             return JsonUtility.FromJson<GameOptions>(data);
 
         //  doesn't have saved options, so create, save, and return default ones
-        var o = new GameOptions(1.0f, 1.0f, 1.0f, FullScreenMode.ExclusiveFullScreen, true, GameOptions.TargetFrameRate.Unlimited);
+        var o = new GameOptions(1.0f, 1.0f, 1.0f, FullScreenMode.ExclusiveFullScreen, GameOptions.TargetFrameRate.Unlimited);
         saveGameOptions(o);
         return o;
     }
 
-    //  Resets all volume sliders to 1
+    //  Resets all volume sliders to default
     //  keeps old screen mode
     //  turns on vSync and sets targetFrameRate to Unlimited
     public static void resetGameOptions() {
         var p = getGameOptions();
-        var o = new GameOptions(1.0f, 1.0f, 1.0f, p.screenMode, true, GameOptions.TargetFrameRate.Unlimited);
+        var o = new GameOptions(0.75f, 1.0f, 1.0f, p.screenMode, GameOptions.TargetFrameRate.Unlimited);
         saveGameOptions(o);
+    }
+
+    public static void setCurrentScene(SceneType scene) {
+        SaveData.setString(currentSceneTag, scene.ToString());
+    }
+    public static string getCurrentScene() {
+        return SaveData.getString(currentSceneTag);
     }
 }
 
@@ -333,7 +352,7 @@ public class GameOptions {
     public bool vSync;
     public TargetFrameRate targetFPS;
 
-    public GameOptions(float masterVol, float musicVol, float sfxVol, FullScreenMode screenMode, bool vSync, TargetFrameRate targetFPS) {
+    public GameOptions(float masterVol, float musicVol, float sfxVol, FullScreenMode screenMode, TargetFrameRate targetFPS, bool vSync = true) {
         this.masterVol = masterVol;
         this.musicVol = musicVol;
         this.sfxVol = sfxVol;

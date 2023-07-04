@@ -101,7 +101,7 @@ MonoBehaviour:
   damageDealer: 8
   tickBtwTime: 0.15
   tickSlowAmt: 0.25
-  tickEndAfterTicks: 5
+  tickEndAfterTicks: 3
   effect: {fileID: 6617485998793448273}
 --- !u!58 &6310127324770906718
 CircleCollider2D:

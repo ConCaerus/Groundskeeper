@@ -131,13 +131,14 @@ MonoBehaviour:
   maxHealth: 250
   unitHealth: 250
   hurtSound: {fileID: 0}
+  dieSound: {fileID: 0}
   bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
   title: Devil's Shrine
   sprite: {fileID: 21300000, guid: 75bd2a98a4068624b8612754504b84c5, type: 3}
   usesAreaOfEffect: 1
-  aoeEffectedGamePieces: 01000000020000000300000004000000
+  aoeEffectedGamePieces: 0100000002000000
   aoeObject: {fileID: 249622816929867076}
   bloodParticles: {fileID: 0}
   healingEffect: {fileID: 4960845970224103046, guid: 99905d2a455c0794a90ba19a110f21f6, type: 3}
@@ -153,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e37ad9cb475914eab58035139e6549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 100
+  cost: 200
   title: 16
   placementObstacleLayers: 000000000100000002000000
   tile: {fileID: 11400000, guid: 9e2f3584afdfeea46add150f70790c75, type: 2}
@@ -166,6 +167,7 @@ MonoBehaviour:
   effectRadius: 10
   unlockedImagePos: {x: 2.4, y: -0.8}
   unlockedImageSize: {x: 0.3, y: 0.3}
+  placedThisNight: 0
 --- !u!1 &8867277225175597390
 GameObject:
   m_ObjectHideFlags: 0

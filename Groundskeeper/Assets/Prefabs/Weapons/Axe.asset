@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: 1
   damage: 10
-  knockback: 1
-  cooldown: 0.65
+  knockback: 0.75
+  cooldown: 0.85
   aType: 0
   range: 0
   groundedTime: 0

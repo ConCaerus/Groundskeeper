@@ -171,6 +171,7 @@ MonoBehaviour:
   tit: 0
   sways: 1
   hitSound: {fileID: 8300000, guid: e853b7ab198046440a8be7faf09c592e, type: 3}
+  soulParticles: {fileID: 656110837553578308, guid: f2cdc443f20380e499b92936481b8140, type: 3}
 --- !u!60 &721251196033553166
 PolygonCollider2D:
   m_ObjectHideFlags: 0

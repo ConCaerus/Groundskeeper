@@ -62,6 +62,8 @@ public class LobbedInstance : MonoBehaviour {
         //  wait until the object lands
         yield return new WaitForSeconds(airTime);
 
+        FindObjectOfType<LayerSorter>().requestNewSortingLayer(c, GetComponent<SpriteRenderer>());
+        GetComponentInChildren<ParticleSystemRenderer>().sortingOrder = GetComponent<SpriteRenderer>().sortingOrder;
         //  deal damage
         expandArea();
 
@@ -74,7 +76,9 @@ public class LobbedInstance : MonoBehaviour {
         shrinkArea();
         effect.GetComponent<ParticleSystem>().Stop();
         transform.DOScale(0f, .15f);
-        Destroy(gameObject, .15f);
+        yield return new WaitForSeconds(tickEndAfterTicks * tickBtwTime);
+        yield return new WaitForSeconds(.1f);
+        Destroy(gameObject);
     }
 
     void expandArea() {

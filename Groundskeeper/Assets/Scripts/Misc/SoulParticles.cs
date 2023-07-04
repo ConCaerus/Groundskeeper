@@ -6,46 +6,46 @@ using DG.Tweening;
 public class SoulParticles : MonoBehaviour {
     ParticleSystem.Particle[] p = new ParticleSystem.Particle[50];
     [SerializeField] FunkyCode.Light2D lightPreset;
-    List<FunkyCode.Light2D> lights = new List<FunkyCode.Light2D>();
+    FunkyCode.Light2D curLight;
+    SoulParticlePooler spm;
 
-    int maxNumOfLights = 3;
+    public ParticleSystem ps { get; private set; }
 
     private void Start() {
-        StartCoroutine(stopper());
-        StartCoroutine(lightMover());
+        spm = FindObjectOfType<SoulParticlePooler>();
+        ps = GetComponent<ParticleSystem>();
+
+        curLight = Instantiate(lightPreset, transform.position, Quaternion.identity, transform);
+        curLight.enabled = false;
     }
 
-    IEnumerator lightMover() {
-        yield return new WaitForSeconds(.1f);
-
-        int c = Mathf.Clamp(GetComponent<ParticleSystem>().GetParticles(p), 0, maxNumOfLights);
-        float s = Mathf.Clamp(GetComponent<ParticleSystem>().GetParticles(p), lightPreset.size, lightPreset.size * 3f);
-        var ss = GetComponent<ParticleSystem>().main.simulationSpeed;
-        for(int i = 0; i < c; i++) {
-            if(i >= lights.Count) {
-                var temp = Instantiate(lightPreset, p[i].position, Quaternion.identity, transform);
-                temp.size = s;
-                lights.Add(temp);
-                StartCoroutine(lightKiller(lights[lights.Count - 1].gameObject, p[i].remainingLifetime / ss));
-            }
-            else if(lights[i] == null)
-                continue;
-            else
-                lights[i].transform.position = p[i].position;
-        }
-        StartCoroutine(lightMover());
+    public void use() {
+        ps.Play();
+        curLight.enabled = true;
+        StartCoroutine(stopper());
+        float s = Mathf.Clamp(ps.GetParticles(p), lightPreset.size, lightPreset.size * 5f);
+        var ss = ps.main.simulationSpeed;
+        curLight.size = s;
+        curLight.transform.position = transform.position;
+        StartCoroutine(lightKiller(curLight.gameObject, 1f));
     }
 
     IEnumerator lightKiller(GameObject l, float t) {
-        float timeDiff = .25f;
-        yield return new WaitForSeconds(t - timeDiff);
+        float introTime = .15f, outroTime = .25f;
 
-        DOTween.To(() => l.GetComponent<FunkyCode.Light2D>().size, x => l.GetComponent<FunkyCode.Light2D>().size = x, 0.0f, timeDiff);
-        Destroy(l.gameObject, timeDiff);
+        float s = Mathf.Clamp(ps.GetParticles(p), lightPreset.size, lightPreset.size * 3f);
+        DOTween.To(() => l.GetComponent<FunkyCode.Light2D>().size, x => l.GetComponent<FunkyCode.Light2D>().size = x, s, introTime);
+        yield return new WaitForSeconds(introTime + .01f);
+        //  waits for the last .25 seconds before the paritcle system ends and destroys itself
+        yield return new WaitForSeconds(t - outroTime);
+
+        //  scales the light size down to 0 and destroys the light after .25f seconds
+        DOTween.To(() => l.GetComponent<FunkyCode.Light2D>().size, x => l.GetComponent<FunkyCode.Light2D>().size = x, 0.0f, outroTime);
     }
 
     IEnumerator stopper() {
-        yield return new WaitForSeconds(GetComponent<ParticleSystem>().main.duration + .15f);
-        enabled = false;
+        yield return new WaitForSeconds(ps.main.duration + .01f);
+        curLight.enabled = false;
+        spm.hideParticle(this);
     }
 }

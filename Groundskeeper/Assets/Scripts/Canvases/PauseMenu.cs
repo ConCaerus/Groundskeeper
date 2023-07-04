@@ -10,7 +10,10 @@ public class PauseMenu : MenuCanvas {
     [SerializeField] GameObject background;
     [SerializeField] Button defaultButt;
 
+    MouseManager mm;
+
     private void Awake() {
+        mm = FindObjectOfType<MouseManager>();
         controls = new InputMaster();
         controls.Pause.Toggle.started += ctx => togglePause();
     }
@@ -30,7 +33,8 @@ public class PauseMenu : MenuCanvas {
 
     protected override void show() {
         background.SetActive(true);
-        defaultButt.Select();
+        if(!mm.usingKeyboard())
+            defaultButt.Select();
         Time.timeScale = 0.0f;
         if(FindObjectOfType<FreeGamepadCursor>() != null)
             FindObjectOfType<FreeGamepadCursor>().showCursor(false, true);
@@ -44,20 +48,20 @@ public class PauseMenu : MenuCanvas {
 
     public void resume() {
         //if(!SteamManager.Initialized || !SteamUtils.IsOverlayEnabled())
-            togglePause();
+        togglePause();
     }
 
     public void options() {
         //if(!SteamManager.Initialized || !SteamUtils.IsOverlayEnabled()) {
-            tryClose();
-            FindObjectOfType<OptionsCanvas>().tryShow();
-            FindObjectOfType<OptionsCanvas>().setup();
+        tryClose();
+        FindObjectOfType<OptionsCanvas>().tryShow();
+        FindObjectOfType<OptionsCanvas>().setup();
         //}
     }
 
     public void menu() {
         //if(!SteamManager.Initialized || !SteamUtils.IsOverlayEnabled())
-            FindObjectOfType<TransitionCanvas>().loadScene("MainMenu");
+        FindObjectOfType<TransitionCanvas>().loadScene("MainMenu");
     }
 
 

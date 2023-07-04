@@ -7,16 +7,20 @@ using TMPro;
 public class OptionsCanvas : MenuCanvas {
     [SerializeField] Slider masterVolSlider, musicVolSlider, sfxVolSlider;
     [SerializeField] TextMeshProUGUI screenModeText, targetFPSText;
-    [SerializeField] Toggle vsyncToggle;
     [SerializeField] GameObject background;
     FullScreenMode curScreenMode;
     GameOptions.TargetFrameRate tFPS;
 
+    [SerializeField] Selectable firstSelected;
+
     List<Selectable> obscured = new List<Selectable>();
+
+    MouseManager mm;
 
 
     private void Start() {
         setup();
+        mm = FindObjectOfType<MouseManager>();
         background.SetActive(false);
     }
 
@@ -28,23 +32,21 @@ public class OptionsCanvas : MenuCanvas {
         sfxVolSlider.value = o.sfxVol;
 
         //  video
-        QualitySettings.vSyncCount = o.vSync ? 1 : 0;
+        QualitySettings.vSyncCount = o.vSync ? 1 : 0;   //  the player can't change vsync from default value, so vsync is always on
         curScreenMode = o.screenMode;
         screenModeText.text = curScreenMode == FullScreenMode.ExclusiveFullScreen ? "Fullscreen" : curScreenMode == FullScreenMode.FullScreenWindow ? "Windowed Fullscreen" :
             curScreenMode == FullScreenMode.MaximizedWindow ? "Borderless Window" : "Windowed";
         tFPS = o.targetFPS;
         targetFPSText.text = tFPS == GameOptions.TargetFrameRate.Unlimited ? "Unlimited" : tFPS == GameOptions.TargetFrameRate.Thirty ? "30" :
             tFPS == GameOptions.TargetFrameRate.Sixty ? "60" : "120";
-        vsyncToggle.isOn = QualitySettings.vSyncCount == 1;
     }
 
     public void applyChanges() {
         Screen.fullScreenMode = curScreenMode;
-        QualitySettings.vSyncCount = vsyncToggle.isOn ? 1 : 0;
         Application.targetFrameRate = getDesiredTargetFrameRate();
 
         //  Save settings
-        var o = new GameOptions(masterVolSlider.value, musicVolSlider.value, sfxVolSlider.value, curScreenMode, vsyncToggle.isOn, tFPS);
+        var o = new GameOptions(masterVolSlider.value, musicVolSlider.value, sfxVolSlider.value, curScreenMode, tFPS);
         GameInfo.saveGameOptions(o);
         //  Apply settings
         if(FindObjectOfType<AudioManager>() != null)
@@ -67,7 +69,8 @@ public class OptionsCanvas : MenuCanvas {
         if(FindObjectOfType<MortalUnit>() != null)
             Time.timeScale = 0.0f;
         background.SetActive(true);
-        masterVolSlider.Select();
+        if(!mm.usingKeyboard())
+            firstSelected.Select();
 
     }
     protected override void close() {

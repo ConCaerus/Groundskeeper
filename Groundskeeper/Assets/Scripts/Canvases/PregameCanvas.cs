@@ -12,7 +12,7 @@ public class PregameCanvas : MonoBehaviour {
     [SerializeField] public TextMeshProUGUI soulsText;  //  referenced in PlacementGrid place()
     [SerializeField] CircularSlider timer;
     [SerializeField] GameObject helpText;
-    float prepTime = 2 * 60f; // 2 mins
+    float prepTime = 5 * 60f; // 5 mins
 
     [SerializeField] AudioClip gameMusic;
 
@@ -124,6 +124,7 @@ public class PregameCanvas : MonoBehaviour {
         if(gameMusic != null)
             FindObjectOfType<AudioManager>().playMusic(gameMusic, true);
         FindObjectOfType<InfoBox>().gameObject.SetActive(false);
+        FindObjectOfType<DefenseHolderSpawner>().generateAllGeometry();
 
         //  switches controller canvases
         FindObjectOfType<FreeGamepadCursor>().destroyCursor();

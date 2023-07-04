@@ -30,6 +30,7 @@ public class DebuggerWindow : EditorWindow {
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Wipe")) {
             SaveData.wipe();
+            GameInfo.resetGameOptions();
         }
         if(GUILayout.Button("Clear All Saves")) {
             for(int i = 0; i < 3; i++)
@@ -88,7 +89,7 @@ public class DebuggerWindow : EditorWindow {
             for(int i = 0; i < c; i++) {
                 var m = FindObjectOfType<PresetLibrary>().getMonster(i).GetComponent<MonsterInstance>();
                 if(m.earliestNight > max)
-                    max = m.diff;
+                    max = m.earliestNight;
             }
             while(l <= max) {
                 for(int j = 0; j < c; j++) {

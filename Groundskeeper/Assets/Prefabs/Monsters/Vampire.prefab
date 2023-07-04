@@ -260,11 +260,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4397de6deb7e4ad4983d46cdfa99894a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 50
-  unitHealth: 50
+  maxHealth: 25
+  unitHealth: 25
   hurtSound: {fileID: 8300000, guid: 9baf9dc19f77df447b41ed0eeb03a23f, type: 3}
   dieSound: {fileID: 0}
-  bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
+  bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: 72bb858af56f9be4ca23646258848727, type: 3}
@@ -281,9 +281,9 @@ MonoBehaviour:
   attackDamage: 1
   damageTodefenses: 0
   diff: 2
-  originalSoulsGiven: 0.3
+  originalSoulsGiven: 0.4
   soulsGiven: 5
-  earliestNight: 1
+  earliestNight: 2
   favoriteTarget: 1
   type: 1
   freqInWave: 1
@@ -296,6 +296,7 @@ MonoBehaviour:
   hasTarget: 0
   hasAttractiveTarget: 0
   hasCultistBuff: 0
+  confused: 0
   leader: 0
   closestLeader: {fileID: 0}
   affectedMoveAmt: 0

@@ -77,10 +77,8 @@ public class MonsterSpawner : MonoBehaviour {
     public void endGame() {
         gameEnded = true;
         StopAllCoroutines();
-        FindObjectOfType<GameBoard>().saveBoard();
         FindObjectOfType<GameUICanvas>().endGame();
         FindObjectOfType<HouseInstance>().showDoorArrow();
-        FindObjectOfType<WaveWarnerRose>().hide();
         FindObjectOfType<HouseDoorInteractable>().isTheEnd = true;
         enabled = false;
     }
@@ -146,13 +144,14 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     int calcWaveDiff() {
-        int d1 = GameInfo.wave; //  already is 1 on first wave
+        int waveMod = GameInfo.wave; //  already is 1 on first wave
 
         //  greatly increases the diff of the last wave of the night
-        if(d1 == GameInfo.wavesPerNight()) 
-            d1 *= 2;
-        int d2 = GameInfo.getNightCount() + 1;
-        return (int)(d1 * 5) + (int)(d2 * 5);
+        if(waveMod == GameInfo.wavesPerNight())
+            waveMod =(int)(waveMod * 1.5f);
+        int nightMod = GameInfo.getNightCount() + 1;
+        int nightModMod = 5;
+        return (int)(waveMod * 5f) + (int)(nightMod * nightModMod);
     }
 
 
@@ -168,6 +167,7 @@ public class MonsterSpawner : MonoBehaviour {
     }
 
     IEnumerator spawnMonsters(waveInfo info) {
+        yield return new WaitForEndOfFrame();
         FindObjectOfType<PlayerWeaponInstance>().canAttackG = true;
         FindObjectOfType<WaveWarnerRose>().warn(info.dir, maxTimeBtwWaves());
         for(int i = 0; i < monsterPresets.Count(); i++) {
@@ -178,6 +178,10 @@ public class MonsterSpawner : MonoBehaviour {
 
         float minDistToLight = 50f; //  CHANGE THIS TO CHANGE HOW FAR MONSTERS SPAWN FROM HOUSE
         int numOfLeaders = 5;
+
+        //  decreases the number of leaders based on how many groups of monsters there will be
+        int t = info.enemyNumbers.Count / 2;
+        numOfLeaders = Mathf.Clamp(numOfLeaders - t, 1, 5);
         //  loop through the number of directions the monsters can spawn from
         for(int l = 0; l < info.dir.Length; l++) {
 
@@ -200,8 +204,10 @@ public class MonsterSpawner : MonoBehaviour {
                     //  spawns the monster
                     var temp = Instantiate(monsterPresets[i].gameObject, transform);
                     var tmi = temp.GetComponent<MonsterInstance>();
-                    if(tmi == null)
+                    if(tmi == null || temp == null) {
+                        Debug.Log("???");
                         continue;
+                    }
 
                     //  finds a position for the monster to have
                     bool tooClose = true;
@@ -241,12 +247,10 @@ public class MonsterSpawner : MonoBehaviour {
                             pos += new Vector3(x, y);
                         }
                     }
-
-                    
                     temp.transform.position = pos;
 
                     //  desides if this monster should be a leader
-                    if(j < numOfLeaders) {
+                    if(j < numOfLeaders || leaders.Count == 0 || monsterGroups[GameInfo.wave][i][leaders.ToList().IndexOf(leaders.FindClosest(temp.transform.position))][0] == null) {
                         tmi.setAsLeader();
 
                         //  can't use enumerators as indexes you fucking idiot

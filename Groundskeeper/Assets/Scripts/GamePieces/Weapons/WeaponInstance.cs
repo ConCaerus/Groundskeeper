@@ -19,11 +19,12 @@ public abstract class WeaponInstance : MonoBehaviour {
 
     [HideInInspector] public Transform pt;
     protected PlayerInstance pi;
+    protected HelperInstance hi;
     protected LayerSorter ls;
     protected SpriteRenderer sr;
     protected Attacker a;
     Collider2D c;
-    EnvironmentManager em;
+    protected EnvironmentManager em;
     protected CameraMovement cm;
     AudioManager am;
     [SerializeField] public Animator wAnimator;
@@ -38,6 +39,8 @@ public abstract class WeaponInstance : MonoBehaviour {
 
     bool isPlayerWeapon = false;
 
+    Vector4 prevMousePos = Vector4.zero;
+
 
     public Weapon reference { get; protected set; }
 
@@ -48,11 +51,21 @@ public abstract class WeaponInstance : MonoBehaviour {
         if(reference == null || reference.aType == Weapon.attackType.Shoot)
             return;
         if(target == attackTarget.Monsters && col.gameObject.tag == "Monster") {
-            a.attack(col.gameObject, false, reference.cooldown - .15f);
-            if(pi != null) {
+            //  attacks
+            a.attack(col.gameObject, false, reference.cooldown / 2f);
+
+            //  shakes the camera
+            if(pi != null && isPlayerWeapon) 
                 cm.shake(pi.getDamage());
-            }
+            else
+                cm.shake(hi.getDamage());
+
+            //  slash effect
             col.gameObject.GetComponent<MonsterInstance>().slash.slash(user.transform.position, rotObj.transform.GetChild(0).localRotation.x != 0f);
+
+            //  other shit
+            if(isPlayerWeapon && reference.aType != Weapon.attackType.Shoot)
+                pi.weaponAttackMod -= .1f;
         }
         else if(target == attackTarget.People && col.gameObject.tag == "Helper") {
             a.attack(col.gameObject, false, 0.0f);
@@ -63,7 +76,8 @@ public abstract class WeaponInstance : MonoBehaviour {
     }
 
     void Start() {
-        pi = FindObjectOfType<PlayerInstance>();
+        pi = GetComponentInParent<PlayerInstance>();
+        hi = GetComponentInParent<HelperInstance>();
         ls = FindObjectOfType<LayerSorter>();
         sr = GetComponent<SpriteRenderer>();
         pt = FindObjectOfType<PlayerInstance>().transform;
@@ -97,7 +111,7 @@ public abstract class WeaponInstance : MonoBehaviour {
     }
 
     private void Update() {
-        if(anim == null && used)
+        if(anim == null && used && (!isPlayerWeapon || fgc.isActiveAndEnabled || mm.usingKeyboard() || ggc.changingDir()))
             movementLogic();
     }
 
@@ -112,8 +126,15 @@ public abstract class WeaponInstance : MonoBehaviour {
                 orbVector = Input.mousePosition - orbVector;
             }
             else if(!fgc.isActiveAndEnabled) {
-                mousePos = ggc.getMousePosInWorld();
-                orbVector = (Vector3)ggc.getMousePosInScreen() - orbVector;
+                if(ggc.changingDir()) {
+                    mousePos = ggc.getMousePosInWorld();
+                    orbVector = (Vector3)ggc.getMousePosInScreen() - orbVector;
+                    prevMousePos = new Vector4(mousePos.x, mousePos.y, ggc.getMousePosInScreen().x, ggc.getMousePosInScreen().y);
+                }
+                else {
+                    mousePos = new Vector2(prevMousePos.x, prevMousePos.y);
+                    orbVector = new Vector3(prevMousePos.z, prevMousePos.w) - orbVector;
+                }
             }
             else {
                 mousePos = fgc.getWorldCursorPos();
@@ -138,7 +159,11 @@ public abstract class WeaponInstance : MonoBehaviour {
             float angle = Mathf.Atan2(orbVector.y, orbVector.x) * Mathf.Rad2Deg;
 
             rotObj.transform.localPosition = Vector3.zero;
-            rotObj.transform.rotation = Quaternion.Lerp(rotObj.transform.rotation, Quaternion.AngleAxis(angle + 45, Vector3.forward), speed * Time.deltaTime);
+            if(reference.aType == Weapon.attackType.Stab)
+                rotObj.transform.rotation = Quaternion.Lerp(rotObj.transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), speed * Time.deltaTime);
+            else
+                rotObj.transform.rotation = Quaternion.Lerp(rotObj.transform.rotation, Quaternion.AngleAxis(angle + 45, Vector3.forward), speed * Time.deltaTime);
+
 
             ls.requestNewSortingLayer(transform.position.y, sr);
             rotObj.transform.GetChild(0).localRotation = pos.x > user.transform.position.x ? Quaternion.Euler(0.0f, 0.0f, 0.0f) : Quaternion.Euler(180.0f, 0.0f, 90.0f);

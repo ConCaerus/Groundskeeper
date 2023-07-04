@@ -13,7 +13,6 @@ public class HouseInstance : StructureInstance {
     [SerializeField] List<GameObject> corners = new List<GameObject>();
     KdTree<Transform> cs = new KdTree<Transform>();
     [SerializeField] Light2D hLight;
-    int healthRepairedEachNight = 20;
 
     private void OnCollisionStay2D(Collision2D col) {
         if(col.gameObject.tag == "DeadGuy")
@@ -33,7 +32,7 @@ public class HouseInstance : StructureInstance {
         var stats = GameInfo.getHouseStats();
         //  health
         maxHealth = stats.houseMaxHealth;
-        health = (int)Mathf.Clamp(stats.houseHealth + healthRepairedEachNight, 0.0f, maxHealth);
+        health = stats.houseHealth;
 
         //  Light
         hLight.size = stats.houseLightRad;
@@ -101,8 +100,14 @@ public class HouseInstance : StructureInstance {
     }
 
     public override void die() {
+        if(isDead)
+            return;
+        isDead = true;
         GameInfo.playing = false;
         FindObjectOfType<GameOverCanvas>().show();
-        Destroy(gameObject);
+        FindObjectOfType<MonsterSpawner>().enabled = false;
+        foreach(var i in FindObjectsOfType<MonsterInstance>())
+            i.enabled = false;
+        enabled = false;
     }
 }

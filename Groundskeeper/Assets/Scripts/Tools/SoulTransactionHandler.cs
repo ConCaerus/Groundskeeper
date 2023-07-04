@@ -46,13 +46,15 @@ public class SoulTransactionHandler : MonoBehaviour {
     }
 
     public bool tryTransaction(float cost, TextMeshProUGUI soulsText, bool saveSouls, bool playSound) {
+        if(soulsText == null)
+            return false;
         soulsText.DOComplete();
         soulsText.transform.DOComplete();
 
         float poorTime = .25f, richTime = .5f;
 
         //  player ain't bitchin'
-        if(cost > GameInfo.getSouls(false)) {
+        if(GameInfo.getSouls(false) - cost < -.01f) {
             soulsText.color = Color.red;
             soulsText.transform.DOPunchScale(new Vector3(.25f, .25f), poorTime);
             soulsText.DOColor(Color.white, poorTime);

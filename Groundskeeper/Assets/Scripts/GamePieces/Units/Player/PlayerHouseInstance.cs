@@ -11,8 +11,6 @@ public class PlayerHouseInstance : Movement {
     Vector2 targetMoveInfo;
     Rigidbody2D rb;
 
-    [SerializeField] GameObject bloodParticles;
-
     #region ---   MOVEMENT SHIT   ---
     private void Awake() {
         controls = new InputMaster();
@@ -52,7 +50,7 @@ public class PlayerHouseInstance : Movement {
             return;
 
         //  moving more along the y axis, set to a y axis sprite
-        else if(Mathf.Abs(movingDir.x) < .1f && Mathf.Abs(movingDir.y) > .1f) {
+        else if(Mathf.Abs(movingDir.y) > Mathf.Abs(movingDir.x)) {
             if(movingDir.y > 0.0f)
                 spriteObj.GetComponent<SpriteRenderer>().sprite = backSprite;
             else
@@ -85,9 +83,6 @@ public class PlayerHouseInstance : Movement {
 
 
     #region ---   MORTAL SHIT   ---
-    public override GameObject getBloodParticles() {
-        return bloodParticles;
-    }
     public override Color getStartingColor() {
         return Color.white;
     }

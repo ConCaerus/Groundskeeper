@@ -10,11 +10,17 @@ public class GameUICanvas : MonoBehaviour {
     float soulsRecieved = 0;
     [SerializeField] GameObject houseHealthBar;
     bool shownB4 = false;
+    [SerializeField] GameObject soulsChanger;
 
     Coroutine houseHealthShower = null, soulTextCor = null;
 
-    object p = null;
     public bool ended = false;
+
+
+    private void Start() {
+        soulsChanger.transform.position = new Vector3(GameInfo.getSouls(true), 0.0f);
+        soulsRecieved = GameInfo.getSouls(true);
+    }
 
 
     public void show() {
@@ -45,7 +51,6 @@ public class GameUICanvas : MonoBehaviour {
         ended = true;
         waveCount.text = "Completed";
         FindObjectOfType<WaveWarnerRose>().hide();
-        GameInfo.addSouls(soulsRecieved, true);
     }
 
     public void showHouseHealth() {
@@ -70,20 +75,13 @@ public class GameUICanvas : MonoBehaviour {
     IEnumerator soulTextShower(float souls) {
         soulsText.DOKill();
         soulsText.DOColor(Color.white, .15f);
-        var s = soulsRecieved + souls;
-        soulsRecieved += souls;
-        if(p != null)
-            DOTween.Kill(p);
+        soulsRecieved = GameInfo.getSouls(false);
 
-        p = DOTween.To(() => soulsRecieved, x => soulsRecieved = x, s, .35f)
-    .OnUpdate(() => {
-        if(!ended)
-            soulsText.text = (GameInfo.getSouls(false) + soulsRecieved).ToString("0.0") + "s";
-        else
-            soulsText.text = GameInfo.getSouls(false).ToString("0.0") + "s";
-    });
+        soulsChanger.transform.DOKill();
 
-
+        soulsChanger.transform.DOMoveX(GameInfo.getSouls(false), .35f).OnUpdate(() => {
+            soulsText.text = soulsChanger.transform.position.x.ToString("0.0") + "s";
+        });
 
         yield return new WaitForSeconds(2f);
 

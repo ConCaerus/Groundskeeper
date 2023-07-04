@@ -23,6 +23,8 @@ public class Buyable : MonoBehaviour {
     [SerializeField] public Vector2 unlockedImagePos;
     [SerializeField] public Vector2 unlockedImageSize;
 
+    [SerializeField] public bool placedThisNight = false, placedForFree = false;
+
     [System.Serializable]
     public enum buyType {
         None, Helper, Defense, Structure, Weapon, House

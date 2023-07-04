@@ -9,12 +9,17 @@ public class GameOverCanvas : MonoBehaviour {
     [SerializeField] GameObject background;
     [SerializeField] Selectable firstInSequence;
 
+    bool shown = false;
+
     private void Awake() {
         background.SetActive(false);
     }
 
 
     public void show() {
+        if(shown)
+            return;
+        shown = true;
         background.transform.localScale = Vector3.zero;
         background.SetActive(true);
         background.transform.DOScale(1.0f, .5f);

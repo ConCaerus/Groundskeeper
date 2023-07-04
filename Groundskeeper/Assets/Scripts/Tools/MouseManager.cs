@@ -3,66 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MouseManager : MonoBehaviour {
     static InputMaster controls;
 
     public delegate void func(bool usingKeyboard);
 
-    List<func> changeFuncs = new List<func>();
+    static List<func> changeFuncs = new List<func>();
 
     FreeGamepadCursor fgc;
     FreeGamepadHouseCursor fghc;
     GameGamepadCursor ggc;
 
-    [SerializeField] bool debug = false;
+    [SerializeField] bool debugging = false;
 
     static bool initted = false;
 
     //  false - controller, true - keyboard
-    bool state = false;
+    static bool state = true;
+    [SerializeField] bool seenState;    //  only used to see what state it's in in the inspector, not actually used in any code
 
 
     private void Awake() {
         //  if 100% not that guy, check if there is a guy present
         //  if not, become that guy
-        if(!initted) {
-            //  checks for other instances of this script
-            //  this is nice because it has the duds destory themselves
-            foreach(var i in FindObjectsOfType<MouseManager>()) {
-                //  found that guy
-                if(i != this && i.isInitted()) {
-                    Destroy(gameObject);    //  you're not that guy pal
-                }
-            }
+        //  is that guy
+        if(GameInfo.curMouseManager == null)
+            GameInfo.curMouseManager = this;
+        //  not that guy, pal
+        else if(GameInfo.curMouseManager != this) {
+            Destroy(gameObject);
         }
 
         fgc = FindObjectOfType<FreeGamepadCursor>();
         fghc = FindObjectOfType<FreeGamepadHouseCursor>();
         ggc = FindObjectOfType<GameGamepadCursor>();
-        changeFuncs.Clear();
 
         //  if not setup yet, setup
         if(!initted) {
-            controls = new InputMaster();
-            controls.Enable();
-            controls.InputSwitch.Mouse.performed += ctx => switchToKeyboard();
-            controls.InputSwitch.Keyboard.performed += ctx => switchToKeyboard();
-            controls.InputSwitch.Gamepad.performed += ctx => switchToGamepad();
-
             StartCoroutine(checkForInputDeviceAfterTransition());
             initted = true;
         }
 
         DontDestroyOnLoad(gameObject);
+        seenState = state;
     }
 
     void switchToGamepad() {
-        if(debug)
+        if(debugging)
             Debug.Log("Tried to Gamepad");
-        if(state) {
+        if(state || Cursor.visible) {
             Cursor.visible = false;
-            if(debug)
+            if(debugging)
                 Debug.Log("Gamepad");
             if(fgc != null && fgc.isActiveAndEnabled)
                 Cursor.lockState = CursorLockMode.Confined;
@@ -70,28 +63,43 @@ public class MouseManager : MonoBehaviour {
                 Cursor.lockState = CursorLockMode.Confined;
             else
                 Cursor.lockState = CursorLockMode.Locked;
-            foreach(var i in changeFuncs)
+
+            //  selects a random selectable
+            if((SceneManager.GetActiveScene().name == "MainMenu" || (FindObjectOfType<PauseMenu>() != null && FindObjectOfType<PauseMenu>().isOpen()) || Time.timeScale == 0f) && FindObjectsOfType<Selectable>().Length > 0)
+                EventSystem.current.SetSelectedGameObject(FindObjectOfType<Selectable>().gameObject);
+
+            foreach(var i in changeFuncs) {
                 i(false);
+            }
+            state = false;
+            seenState = state;
         }
-        state = false;
     }
 
     void switchToKeyboard() {
-        if(debug)
+        if(debugging)
             Debug.Log("Tried to Keyboard");
-        if(!state) {
+        if(!state || !Cursor.visible) {
             Cursor.visible = true;
-            if(debug)
+            if(debugging)
                 Debug.Log("Keyboard");
             Cursor.lockState = CursorLockMode.Confined;
-            foreach(var i in changeFuncs)
+
+            //  unselects any selected selecatable
+            EventSystem.current.SetSelectedGameObject(null);
+
+            foreach(var i in changeFuncs) {
                 i(true);
+            }
+            state = true;
+            seenState = state;
+            if(SceneManager.GetActiveScene().name == "Intro")
+                Cursor.visible = false;
         }
-        state = true;
     }
 
     public bool usingKeyboard() {
-        return Cursor.visible;
+        return state;
     }
 
 
@@ -104,9 +112,16 @@ public class MouseManager : MonoBehaviour {
         changeFuncs.Remove(f);
     }
 
+    private void OnEnable() {
+        controls = new InputMaster();
+        controls.Enable();
+        controls.InputSwitch.Mouse.performed += ctx => switchToKeyboard();
+        controls.InputSwitch.Keyboard.performed += ctx => switchToKeyboard();
+        controls.InputSwitch.Gamepad.performed += ctx => switchToGamepad();
+    }
     private void OnDisable() {
-        controls.Disable();
-        initted = false;
+        //controls.Disable();
+        changeFuncs.Clear();
     }
 
     public bool isInitted() {
@@ -143,5 +158,6 @@ public class MouseManager : MonoBehaviour {
             state = true;
             switchToGamepad();
         }
+        seenState = state;
     }
 }

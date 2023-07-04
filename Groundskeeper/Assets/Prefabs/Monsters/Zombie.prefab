@@ -236,7 +236,7 @@ MonoBehaviour:
   unitHealth: 15
   hurtSound: {fileID: 8300000, guid: 9baf9dc19f77df447b41ed0eeb03a23f, type: 3}
   dieSound: {fileID: 0}
-  bloodStain: {fileID: 1561005313551885066, guid: db0a70fb2c687484d80b1b1cad680d4c, type: 3}
+  bloodStain: {fileID: 0}
   healthBar: {fileID: 0}
   hi: {fileID: 0}
   forwardSprite: {fileID: 21300000, guid: 76ddb35818606eb48860a478e68d0aa8, type: 3}
@@ -253,7 +253,7 @@ MonoBehaviour:
   attackDamage: 5
   damageTodefenses: 0
   diff: 1
-  originalSoulsGiven: 0.2
+  originalSoulsGiven: 0.3
   soulsGiven: 0.5
   earliestNight: 0
   favoriteTarget: 0
@@ -268,6 +268,7 @@ MonoBehaviour:
   hasTarget: 0
   hasAttractiveTarget: 0
   hasCultistBuff: 0
+  confused: 0
   leader: 0
   closestLeader: {fileID: 0}
   affectedMoveAmt: 0

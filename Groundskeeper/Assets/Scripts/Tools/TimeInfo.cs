@@ -6,10 +6,9 @@ public static class TimeInfo {
     static string timeTag = "TimeInfoSeconds";
     static float lastUpdatedTime;
 
-    public static void resetTime() {
+    public static void setStartTime() {
         lastUpdatedTime = Time.realtimeSinceStartup;
     }
-
     public static void saveTime() { //  gets called in transitioncanvas everytime it hides
         float passedTime = Time.realtimeSinceStartup - lastUpdatedTime;
         var totTime = SaveData.getFloat(timeTag) + passedTime;
