@@ -6,10 +6,11 @@ using TMPro;
 
 public class OptionsCanvas : MenuCanvas {
     [SerializeField] Slider masterVolSlider, musicVolSlider, sfxVolSlider;
-    [SerializeField] TextMeshProUGUI screenModeText, targetFPSText;
+    [SerializeField] TextMeshProUGUI screenModeText, targetFPSText, vSyncText;
     [SerializeField] GameObject background;
     FullScreenMode curScreenMode;
     GameOptions.TargetFrameRate tFPS;
+    bool vSync = true;
 
     [SerializeField] Selectable firstSelected;
 
@@ -33,6 +34,9 @@ public class OptionsCanvas : MenuCanvas {
 
         //  video
         QualitySettings.vSyncCount = o.vSync ? 1 : 0;   //  the player can't change vsync from default value, so vsync is always on
+        vSync = o.vSync;
+        vSyncText.text = vSync ? "On" : "Off";
+
         curScreenMode = o.screenMode;
         screenModeText.text = curScreenMode == FullScreenMode.ExclusiveFullScreen ? "Fullscreen" : curScreenMode == FullScreenMode.FullScreenWindow ? "Windowed Fullscreen" :
             curScreenMode == FullScreenMode.MaximizedWindow ? "Borderless Window" : "Windowed";
@@ -44,9 +48,10 @@ public class OptionsCanvas : MenuCanvas {
     public void applyChanges() {
         Screen.fullScreenMode = curScreenMode;
         Application.targetFrameRate = getDesiredTargetFrameRate();
+        QualitySettings.vSyncCount = vSync ? 1 : 0;
 
         //  Save settings
-        var o = new GameOptions(masterVolSlider.value, musicVolSlider.value, sfxVolSlider.value, curScreenMode, tFPS);
+        var o = new GameOptions(masterVolSlider.value, musicVolSlider.value, sfxVolSlider.value, curScreenMode, tFPS, vSync);
         GameInfo.saveGameOptions(o);
         //  Apply settings
         if(FindObjectOfType<AudioManager>() != null)
@@ -120,5 +125,9 @@ public class OptionsCanvas : MenuCanvas {
         tFPS = (GameOptions.TargetFrameRate)cur;
         targetFPSText.text = tFPS == GameOptions.TargetFrameRate.Unlimited ? "Unlimited" : tFPS == GameOptions.TargetFrameRate.Thirty ? "30" :
             tFPS == GameOptions.TargetFrameRate.Sixty ? "60" : "120";
+    }
+    public void changeVsync() { //  doesn't need to know if right or not because either way it's going to change to the other option
+        vSync = !vSync;
+        vSyncText.text = vSync ? "On" : "Off";
     }
 }

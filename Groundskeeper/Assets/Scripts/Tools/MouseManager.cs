@@ -21,7 +21,7 @@ public class MouseManager : MonoBehaviour {
     static bool initted = false;
 
     //  false - controller, true - keyboard
-    static bool state = true;
+    static bool state = false;
     [SerializeField] bool seenState;    //  only used to see what state it's in in the inspector, not actually used in any code
 
 
@@ -57,12 +57,13 @@ public class MouseManager : MonoBehaviour {
             Cursor.visible = false;
             if(debugging)
                 Debug.Log("Gamepad");
+            /*
             if(fgc != null && fgc.isActiveAndEnabled)
                 Cursor.lockState = CursorLockMode.Confined;
             else if(fghc != null && fghc.isActiveAndEnabled)
                 Cursor.lockState = CursorLockMode.Confined;
             else
-                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.lockState = CursorLockMode.Locked;*/
 
             //  selects a random selectable
             if((SceneManager.GetActiveScene().name == "MainMenu" || (FindObjectOfType<PauseMenu>() != null && FindObjectOfType<PauseMenu>().isOpen()) || Time.timeScale == 0f) && FindObjectsOfType<Selectable>().Length > 0)

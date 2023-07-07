@@ -9,6 +9,7 @@ public class HealthBar : MonoBehaviour {
     [SerializeField] bool moveWithParent = true;
     [SerializeField] Slider slider;
     GameObject parent;
+    Mortal pm;
 
     Vector2 startSize;
 
@@ -22,7 +23,7 @@ public class HealthBar : MonoBehaviour {
     public void updatePos() {
         if(!moveWithParent)
             return;
-        if(parent == null || parent.GetComponent<Mortal>().health <= 0.0f) {
+        if(parent == null || pm.health <= 0.0f) {
             Destroy(transform.parent.gameObject);
             enabled = false;
             return;
@@ -34,13 +35,14 @@ public class HealthBar : MonoBehaviour {
         if(shower != null)
             StopCoroutine(shower);
         shower = StartCoroutine(showTimeWaiter());
+        slider.maxValue = pm.maxHealth;
         slider.DOKill();
-        slider.DOValue(parent.GetComponent<Mortal>().health, .15f);
-        if(!slider.isActiveAndEnabled && parent.GetComponent<Mortal>().health < parent.GetComponent<Mortal>().maxHealth)
+        slider.DOValue(pm.health, .15f);
+        if(!slider.isActiveAndEnabled && pm.health < pm.maxHealth)
             slider.gameObject.SetActive(true);
-        else if(slider.isActiveAndEnabled && parent.GetComponent<Mortal>().health >= parent.GetComponent<Mortal>().maxHealth) {
+        else if(slider.isActiveAndEnabled && pm.health >= pm.maxHealth) {
             slider.DOKill();
-            slider.value = parent.GetComponent<Mortal>().maxHealth;
+            slider.value = pm.maxHealth;
             slider.gameObject.SetActive(false);
             return;
         }
@@ -48,9 +50,10 @@ public class HealthBar : MonoBehaviour {
 
     public void setParent(GameObject obj) {
         parent = obj;
-        slider.maxValue = parent.GetComponent<Mortal>().maxHealth;
-        slider.value = parent.GetComponent<Mortal>().health;
-        obj.GetComponent<Mortal>().healthBar = this;
+        pm = parent.GetComponent<Mortal>();
+        slider.maxValue = pm.maxHealth;
+        slider.value = pm.health;
+        pm.healthBar = this;
         slider.gameObject.SetActive(false);
         updateBar();
     }

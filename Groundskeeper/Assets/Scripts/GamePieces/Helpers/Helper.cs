@@ -25,5 +25,6 @@ public abstract class Helper : Attacker {
         //  apply health buff
         maxHealth = (int)(maxHealth * hStats.helperWeaponHealthBuff);
         health = maxHealth;
+        healthBar.setParent(gameObject);
     }
 }

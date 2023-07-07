@@ -62,7 +62,7 @@ public class WaveWarnerRose : MonoBehaviour {
         //  shows any lingering monsters' incoming direction
         foreach(var i in FindObjectsOfType<MonsterInstance>()) {
             int ind = (int)i.direction - 1;
-            if(seen[ind] || i.health <= 0.0f)
+            if(seen[ind] || i.health <= 0.0f || i.isDead)
                 continue;
             dAnim[ind] = StartCoroutine(dotAnim(dots[ind], 1.25f));
             seen[ind] = true;

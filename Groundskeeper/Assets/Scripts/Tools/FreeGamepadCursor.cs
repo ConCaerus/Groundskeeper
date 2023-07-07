@@ -42,7 +42,6 @@ public class FreeGamepadCursor : MonoBehaviour {
         mm.addOnInputChangeFunc(changeCursor);
     }
 
-
     private void OnEnable() {
         mm = FindObjectOfType<MouseManager>();
         prevControls = keyboardScheme;
@@ -62,12 +61,14 @@ public class FreeGamepadCursor : MonoBehaviour {
         }
 
         InputSystem.onAfterUpdate += updateMotion;
+        playerInput.onControlsChanged += onControlsChanged;
     }
 
     private void OnDisable() {
         if(vMouse != null && vMouse.added)
             InputSystem.RemoveDevice(vMouse);
         InputSystem.onAfterUpdate -= updateMotion;
+        playerInput.onControlsChanged -= onControlsChanged;
     }
 
     void updateMotion() {
@@ -113,7 +114,7 @@ public class FreeGamepadCursor : MonoBehaviour {
             else if(vMouse.added) {
                 InputSystem.AddDevice(vMouse);
             }
-            curMouse = Mouse.current;
+            curMouse = vMouse;
 
             InputUser.PerformPairingWithDevice(vMouse, playerInput.user);
 
@@ -121,6 +122,8 @@ public class FreeGamepadCursor : MonoBehaviour {
                 Vector2 pos = cursorTrans.anchoredPosition;
                 InputState.Change(vMouse.position, pos);
             }
+
+            showCursor(true, true);
         }
 
         onControlsChanged(playerInput);
@@ -155,7 +158,7 @@ public class FreeGamepadCursor : MonoBehaviour {
     }
 
     void onControlsChanged(PlayerInput pl) {
-        if(cursorImage == null || mm.usingKeyboard())
+        if(cursorImage == null)
             return;
         cursorTrans.gameObject.GetComponent<Image>().enabled = false;
         if(pl.currentControlScheme == keyboardScheme && prevControls != keyboardScheme && vMouse != null) {

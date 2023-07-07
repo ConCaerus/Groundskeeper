@@ -19,7 +19,7 @@ public class LobbedInstance : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D col) {
         //  add tick damage
         if(col.gameObject.tag == "Monster") {
-            td.addTick(col.gameObject, dealDamage, damageDealer, tickBtwTime, tickSlowAmt);
+            td.addTick(col.gameObject, dealDamage, damageDealer, tickBtwTime, tickSlowAmt, null);
         }
     }
 

@@ -32,6 +32,10 @@ public class HouseDoorInteractable : Interactable {
 
         //  sets the current scene to house
         GameInfo.setCurrentScene(GameInfo.SceneType.House);
+        //  saves the house's health as what it is
+        var stats = GameInfo.getHouseStats();
+        stats.houseHealth = FindObjectOfType<HouseInstance>().health;
+        GameInfo.setHouseStats(stats);
         GameInfo.healHousePerNight();   //  heals the house before starting the next night
     }
 

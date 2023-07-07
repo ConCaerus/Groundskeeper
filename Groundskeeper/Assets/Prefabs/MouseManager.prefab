@@ -43,3 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76c35be4af5aa746ab744ddad788af6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugging: 0
+  seenState: 0
+  fgcPreset: {fileID: 652027453065198241, guid: 7da7ea5805211a84b999e7d6b52324b9, type: 3}

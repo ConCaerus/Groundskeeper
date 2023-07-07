@@ -377,31 +377,31 @@ public class BuyTreeCanvas : MenuCanvas {
             //  helpers
             case 0:
                 if(s == subType.Damage)
-                    return 25 * (tier + 1);
+                    return 25 + 20 * tier;
                 else if(s == subType.Health)
-                    return 35 * (tier + 1);
+                    return 35 + 20 * tier;
                 break;
             //  defenses
             case 1:
                 if(s == subType.Damage)
-                    return 35 * (tier + 1);
+                    return 35 + 20 * tier;
                 break;
             //  structures
             case 2:
                 if(s == subType.Health)
-                    return 35 * (tier + 1);
+                    return 35 + 20 * tier;
                 break;
             //  weapons
             case 3:
                 if(s == subType.Damage)
-                    return 50 * (tier + 1);
+                    return 35 + 20 * tier;
                 else if(s == subType.Speed)
-                    return 35 * (tier + 1);
+                    return 25 + 20 * tier;
                 break;
             //  house
             case 4:
                 if(s == subType.Light)
-                    return 35 * (tier + 1);
+                    return 25 + 20 * tier;
                 //  you're not seeing repair here because repair is a main node
                 break;
         }

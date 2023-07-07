@@ -217,7 +217,7 @@ public class PlacementGrid : MonoBehaviour {
             yield return new WaitForEndOfFrame();
 
             //  other shit
-            if(obj.GetComponent<BloodFumigatorInstance>() != null) 
+            if(obj.GetComponent<BloodFumigatorInstance>() != null)
                 obj.GetComponent<BloodFumigatorInstance>().setup();
             else if(obj.GetComponent<ThuribleInstance>() != null)
                 obj.GetComponent<ThuribleInstance>().setup();
@@ -244,6 +244,8 @@ public class PlacementGrid : MonoBehaviour {
             if(found && f != FindObjectOfType<HouseInstance>().gameObject) {
                 gb.removeFromGameBoard(f.gameObject);
                 Destroy(f.gameObject);
+                if(f.GetComponent<DefenseInstance>() != null)
+                    FindObjectOfType<DefenseHolderSpawner>().generateAllGeometry();
             }
             else return;
 

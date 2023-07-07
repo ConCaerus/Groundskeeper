@@ -319,7 +319,7 @@ public static class GameInfo {
             return JsonUtility.FromJson<GameOptions>(data);
 
         //  doesn't have saved options, so create, save, and return default ones
-        var o = new GameOptions(1.0f, 1.0f, 1.0f, FullScreenMode.ExclusiveFullScreen, GameOptions.TargetFrameRate.Unlimited);
+        var o = new GameOptions(1.0f, 1.0f, 1.0f, FullScreenMode.ExclusiveFullScreen, GameOptions.TargetFrameRate.Unlimited, true);
         saveGameOptions(o);
         return o;
     }
@@ -329,7 +329,7 @@ public static class GameInfo {
     //  turns on vSync and sets targetFrameRate to Unlimited
     public static void resetGameOptions() {
         var p = getGameOptions();
-        var o = new GameOptions(0.75f, 1.0f, 1.0f, p.screenMode, GameOptions.TargetFrameRate.Unlimited);
+        var o = new GameOptions(0.75f, 1.0f, 1.0f, p.screenMode, GameOptions.TargetFrameRate.Unlimited, true);
         saveGameOptions(o);
     }
 
@@ -352,7 +352,7 @@ public class GameOptions {
     public bool vSync;
     public TargetFrameRate targetFPS;
 
-    public GameOptions(float masterVol, float musicVol, float sfxVol, FullScreenMode screenMode, TargetFrameRate targetFPS, bool vSync = true) {
+    public GameOptions(float masterVol, float musicVol, float sfxVol, FullScreenMode screenMode, TargetFrameRate targetFPS, bool vSync) {
         this.masterVol = masterVol;
         this.musicVol = musicVol;
         this.sfxVol = sfxVol;

@@ -15,7 +15,7 @@ public class GameBoard : MonoBehaviour {
     [HideInInspector] public KdTree<MonsterInstance> monsters = new KdTree<MonsterInstance>();  //  used for attack logic with helpers and whatnot
     [HideInInspector] public KdTree<EnvironmentInstance> environment = new KdTree<EnvironmentInstance>();
 
-    const int minDeadGuyCount = 5;
+    const int minDeadGuyCount = 3;
 
     const float boardRadius = 75f;
     Coroutine saver = null;
@@ -82,7 +82,11 @@ public class GameBoard : MonoBehaviour {
         if(GameInfo.getNightCount() == 0 && deadGuys.Count == 0) {
             for(int i = 0; i < minDeadGuyCount; i++) {
                 var obj = pl.getRandomDeadGuy();
-                deadGuys.Add(Instantiate(obj, getRandomMapPos(), Quaternion.identity, deadGuyHolder.transform).GetComponent<DeadGuyInstance>());
+                var randP = getRandomMapPos();
+                while(Vector2.Distance(randP, Vector2.zero) > 50f) {    //  clamps how far away the dead guy can spawn
+                    randP = getRandomMapPos();
+                }
+                deadGuys.Add(Instantiate(obj, randP, Quaternion.identity, deadGuyHolder.transform).GetComponent<DeadGuyInstance>());
             }
         }
         //  spawns new dead guys if needs to spawn more

@@ -136,6 +136,8 @@ MonoBehaviour:
   effectRadius: 0
   unlockedImagePos: {x: 0, y: -2.5}
   unlockedImageSize: {x: 1.1, y: 1.1}
+  placedThisNight: 0
+  placedForFree: 0
 --- !u!114 &-787261996472260171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,13 +154,13 @@ MonoBehaviour:
   unitHealth: 350
   hurtSound: {fileID: 0}
   dieSound: {fileID: 0}
-  bloodStain: {fileID: 0}
+  healingParticles: {fileID: 0}
   healthBar: {fileID: 0}
+  dsi: {fileID: 0}
   hi: {fileID: 0}
-  dmgAmt: 10
+  dmgAmt: 5
   slowAmt: 0.2
   btwHitTime: 1
   tickCount: -1
   target: 2
   soulStealMod: 0
-  bloodParticles: {fileID: 0}

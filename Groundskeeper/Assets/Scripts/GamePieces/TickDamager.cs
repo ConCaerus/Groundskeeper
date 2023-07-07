@@ -32,15 +32,15 @@ public class TickDamager : MonoBehaviour {
     List<TickInfo> ticks = new List<TickInfo>();
 
     public void addTick(GameObject m, DefenseInstance def) {
-        addTick(m, def.dealDamage, def.GetComponent<Buyable>().title, def.btwHitTime, def.slowAmt, def.tickCount);
+        addTick(m, def.dealDamage, def.GetComponent<Buyable>().title, def.btwHitTime, def.slowAmt, def, def.tickCount);
     }
-    public void addTick(GameObject m, action ac, Buyable.buyableTitle tit, float btwTime, float slowAmt, int endAfterCount = -1) {
+    public void addTick(GameObject m, action ac, Buyable.buyableTitle tit, float btwTime, float slowAmt, DefenseInstance def, int endAfterCount = -1) {
         int index = getTickIndex(m);
         //  create a tick for a new object
         if(index == -1) {
             var t = new TickInfo(m, ac, tit, btwTime, endAfterCount);
             ticks.Add(t);
-            StartCoroutine(tick(ticks[ticks.Count - 1]));
+            StartCoroutine(tick(ticks[ticks.Count - 1], def));
         }
 
         //  increment the touching count of the already ticking object
@@ -69,6 +69,12 @@ public class TickDamager : MonoBehaviour {
             if(ticks[i].obj.GetInstanceID() == m.GetInstanceID())
                 return i;
         }
+        for(int i = 0; i < ticks.Count; i++) {
+            if(ticks[i].obj == m) {
+                Debug.Log("caught");
+                return i;
+            }
+        }
         return -1;
     }
     public TickInfo getTickInfo(GameObject m) {
@@ -76,7 +82,7 @@ public class TickDamager : MonoBehaviour {
         return ind == -1 ? null : ticks[ind];
     }
 
-    public IEnumerator tick(TickInfo info) {
+    public IEnumerator tick(TickInfo info, DefenseInstance def) {
         //  does something
         if(info == null || info.obj == null || info.tickAction == null)
             yield break;
@@ -84,8 +90,14 @@ public class TickDamager : MonoBehaviour {
             info.tickAction(info.obj);
 
         //  checks if the ticks are done
-        if(info.determinedTickCount == 0)
+        if(info.determinedTickCount == 0) {
+            //  if they are, check if the monster is still touching the defense
+            if(def != null && info.obj.GetComponent<Collider2D>().IsTouchingLayers(LayerMask.GetMask("DefenseCollider"))) {
+                ticks.Remove(info);
+                addTick(info.obj, def);
+            }
             yield break;
+        }
 
         //  decrements the ticks
         if(info.determinedTickCount > -1)
@@ -94,8 +106,8 @@ public class TickDamager : MonoBehaviour {
         yield return new WaitForSeconds(info.timeBtwTicks);
 
         if(info.obj != null && ticks.Contains(info))
-            info.ticker = StartCoroutine(tick(info));
-        else 
+            info.ticker = StartCoroutine(tick(info, def));
+        else
             ticks.Remove(info);
     }
 }

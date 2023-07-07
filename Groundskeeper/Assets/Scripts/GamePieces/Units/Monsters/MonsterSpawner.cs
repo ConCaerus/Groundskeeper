@@ -21,7 +21,7 @@ public class MonsterSpawner : MonoBehaviour {
         return reg;
     }
 
-    [SerializeField] int nightsBetweenDirAddition = 5;  //  monsters can spawn from 1 additional direction after this number of nights
+    [SerializeField] int nightsBetweenDirAddition;  //  monsters can spawn from 1 additional direction after this number of nights
     bool gameEnded = false;
 
     waveInfo curWave;

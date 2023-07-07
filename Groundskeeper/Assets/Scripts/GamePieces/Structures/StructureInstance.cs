@@ -12,7 +12,8 @@ public abstract class StructureInstance : Structure {
         FindObjectOfType<HealthBarSpawner>().giveHealthBar(gameObject);
         //  apply health buff
         maxHealth = (int)(maxHealth * sStats.structureHealthBuff);
-        health = (int)(health * sStats.structureHealthBuff); //  i don't know if buildings start each night with full health
+        health = maxHealth;
+        healthBar.setParent(gameObject);
 
         //  AOE shit
         if(usesAreaOfEffect) {
