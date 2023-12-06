@@ -150,8 +150,8 @@ public class MonsterSpawner : MonoBehaviour {
         if(waveMod == GameInfo.wavesPerNight())
             waveMod =(int)(waveMod * 1.5f);
         int nightMod = GameInfo.getNightCount() + 1;
-        int nightModMod = 5;
-        return (int)(waveMod * 5f) + (int)(nightMod * nightModMod);
+        int nightModMod = 3;
+        return (int)(waveMod * 4f) + (int)(nightMod * nightModMod);
     }
 
 
